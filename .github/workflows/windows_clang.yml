@@ -1,0 +1,113 @@
+name: 👽 Windows binary using Clang/LLVM 
+
+on: [push]
+
+jobs:
+  mybuild:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - {
+              # 64bit
+              name: 64bit,
+              os: windows-latest,
+              addpath: 'echo "C:\\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
+              
+              hello: "hello.exe",
+              cp: 'copy',
+              sudo: ' ',
+            }
+          - {
+              # 32bit
+              name: 32bit,
+              os: windows-latest,
+              addpath_old: 'echo "::add-path::C:\msys64\mingw32\bin"',
+              addpath: 'echo "C:\\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
+              hello: "hello32.exe",
+              cp: 'copy',
+              sudo: ' ',
+            }
+          
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: enable problem matcher
+        run: |
+          ${{ matrix.config.addpath }}
+          #echo "D:\\a\door\door\llvm\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+
+          echo "::add-matcher::.github/problem_matcher.json"
+
+          
+      - name: Install clang (Windows)
+        shell: bash
+        run: |
+            curl -fsSLO https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/LLVM-10.0.0-win64.exe
+            7z x LLVM-10.0.0-win64.exe -y -o"llvm"
+            dir /d/a/door/door/llvm/bin
+            pwd
+            #echo "::add-path::/d/a/door/door/llvm/bin"
+            echo "::set-env name=WASM_AR::/d/a/door/door/llvm/bin/llvm-ar.exe"
+        if: matrix.config.os == 'windows-latest'
+
+      # - name: Install llvm-nm (Windows)
+      #   shell: bash
+      #   run: |
+      #     rustup update stable
+      #     rustup default stable
+      #     rustup component add llvm-tools-preview
+      #     echo "::set-env name=WASM_NM::$(rustc --print sysroot|sed 's|C:|/c|'|sed 's|\\|/|g')/lib/rustlib/x86_64-pc-windows-msvc/bin/llvm-nm.exe"
+      #   if: matrix.config.os == 'windows-latest'
+
+
+      - name: do build
+        shell: bash
+        run: |
+          npm --version
+          npm i
+          node_modules/.bin/gulp show --github_actions
+
+          echo node_modules--
+          #dir node_modules
+          #node scripts/make_bins.js --github_actions
+          # scripts/make_bins.js --github_actions
+      
+
+      - name: Emulating output binary from doorlang - msys64/mingw clang++/llvm compile msys64/mingw on Windows
+        run: |
+          #dir C:\\msys64\\mingw32\\bin
+
+          #clang.exe --version
+          #dir $(pwd)/llvm/bin
+
+          
+          cd llvm_ir_test
+
+          clang -S -emit-llvm main.cpp 
+          clang -S -emit-llvm lib.cpp
+
+          llc main.ll
+          llc lib.ll
+
+          #clang++.exe -static -lstdc++ -lpthread  main.s lib.s -o hello.exe;
+          clang -mwindows main.s lib.s -o hello.exe;
+          dir;
+          .\hello.exe;
+
+         
+      - name: Copy artifact
+        run: |
+          cd build;
+          mkdir -p deb;
+
+      - name: Copy artifact for windows
+        run: |
+          cd llvm_ir_test;
+          ${{ matrix.config.cp }} hello.exe ../build/deb/${{ matrix.config.hello }}
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: llvm-_${{ github.sha }}_a
+          path: build/deb

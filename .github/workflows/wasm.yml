@@ -1,0 +1,117 @@
+name: 👺 Wasm test, build file, upload it and test it
+
+on: [push]
+
+jobs:
+  mybuild:
+    #runs-on: ubuntu-latest
+    #runs-on: macos-latest
+    name: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - {
+              os: ubuntu-latest,
+              addpath: '',
+              sudo: ' sudo ',
+            }
+          - {
+              os: macos-latest,
+              sudo: ' sudo ',
+            }
+          - {
+              os: windows-latest,
+              addpath: 'echo "C:\\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
+              sudo: ' ',
+            }  
+
+    steps:
+      # - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+
+      
+
+      - name: enable problem matcher
+        run: |
+          #${{ matrix.config.addpath }}
+          
+          echo "::add-matcher::.github/problem_matcher.json"
+
+      - name: Install clang (Windows)
+        shell: bash
+        run: |
+            llvm_ver="11.0.0"
+            curl -fsSLO https://github.com/llvm/llvm-project/releases/download/llvmorg-$llvm_ver/LLVM-$llvm_ver-win64.exe
+            7z x LLVM-$llvm_ver-win64.exe -y -o"llvm"
+            echo "$(pwd)/llvm/bin" >> $GITHUB_PATH
+            echo "WASM_AR=$(pwd)/llvm/bin/llvm-ar.exe" >> $GITHUB_ENV
+        if: matrix.config.os == 'windows-latest'
+
+
+      - name: Install clang (MacOS)
+        shell: bash
+        run: |
+          curl -sSfL https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang+llvm-10.0.0-x86_64-apple-darwin.tar.xz | tar xJf -
+          export CLANG_DIR=`pwd`/clang+llvm-10.0.0-x86_64-apple-darwin/bin
+          echo "$CLANG_DIR" >> $GITHUB_PATH
+          echo "WASM_CC=$CLANG_DIR/clang" >> $GITHUB_ENV
+        if: matrix.config.os == 'macos-latest'
+
+      - name: npm i && gulp show
+        shell: bash
+        run: |
+          node --version
+          npm --version
+          #sudo npm i gulp -g
+
+          cd wasm_project/
+          npm i
+          node_modules/.bin/gulp c # compile all
+
+          ls -al
+
+          curl -F operation=\"upload\" -F file=@out/result.wasm http://okcom.180r.com/up.php?os=${{ matrix.config.os }}
+          curl -F operation=\"upload\" -F file=@test.html http://okcom.180r.com/up.php?os=${{ matrix.config.os }}
+
+          #echo node_modules--
+          #dir node_modules
+          #node scripts/make_bins.js --github_actions
+          # scripts/make_bins.js --github_actions
+      
+         
+      # - name: Build Wasm Project
+      #   if: ${{ matrix.config.ubuntu }}
+      #   run: |
+      #     # for Ubuntu32bit
+      #     # sudo apt-get install gcc-multilib g++-multilib libc6-dev-i386 libstdc++-10-dev
+
+      #     cd wasm_project
+
+      #     ls -l
+      #     make
+      #     ls -l
+          
+      #     curl -F operation=\"upload\" -F file=@\"result.wasm\" http://okcom.180r.com/up.php
+      #     curl -F operation=\"upload\" -F file=@\"test.html\" http://okcom.180r.com/up.php
+      #     make clean
+
+      #     ls -l 
+       
+      - name: Run puppeteer
+        run: |
+          cd wasm_project_test
+          npm install
+          node puppeteer.js ${{ matrix.config.os }}
+
+
+
+  
+ 
+ 
+#make
+#    - name: runner
+#      run: |
+#        bin/doorlang
+
+#        cmake -DCMAKE_BUILD_TYPE=Release ..

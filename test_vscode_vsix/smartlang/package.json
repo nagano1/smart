@@ -1,0 +1,25 @@
+{
+    "name": "smartlang",
+    "displayName": "smartlang",
+    "description": "smartlang",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.48.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "smartlang",
+            "aliases": ["smartlang", "smartlang"],
+            "extensions": [".smt"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "smartlang",
+            "scopeName": "source.smt",
+            "path": "./syntaxes/smartlang.tmLanguage.json"
+        }]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "problemMatcher": [
+        {
+            "owner": "cpp",
+            "pattern": [
+                {
+                    "regexp": "^(.*):(\\d+):\\s+(Failure)$",
+                    "file": 1,
+                    "line": 2
+                },
+                {
+                    "regexp": "^(?!\\[)(.*)$",
+                    "message": 1,
+                    "loop": true
+                }
+            ]
+        }
+    ]
+}

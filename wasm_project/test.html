@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+
+<body>
+    <h1>Wasm</h1>
+    <p id="factorial500"></p>
+
+    <h1>string_to_int('42')</h1>
+    <p id="stringToInt"></p>
+
+    <h1>Control</h1>
+    <p>
+        <button onclick="wasm.instance.exports.debug_dump_memory();">
+            Dump memory
+        </button>
+    </p>
+    <div id="one">1</div>
+    <script>
+        let wasm;
+        let subwasm;
+        let table = new WebAssembly.Table( { initial: 2, element: 'anyfunc' } )
+
+        const wasmMemory = new WebAssembly.Memory({ initial:2});
+        // WebAssembly page is 65,536 byte
+        //const wasmMemory = new WebAssembly.Memory({ initial:2, maximum:4 });
+
+        function get_memory() {
+            //return new Uint8Array(wasm.instance.exports.memory.buffer);
+            return new Uint8Array(wasmMemory.buffer);
+        }
+
+        const decoder = new TextDecoder("utf-8");
+        const encoder = new TextEncoder("utf-8");
+
+        function charPtrToString(str) {
+            const memory = get_memory();
+            let length = 0;
+            for (; memory[str + length] !== 0; ++length) { }
+            return decoder.decode(memory.subarray(str, str + length));
+        }
+
+        function stringToCharPtr(str) {
+            const data = encoder.encode(str + "\x00");
+            const ptr = wasm.instance.exports.get_memory_for_string(data.length + 1);
+            const memory = get_memory();
+            memory.subarray(ptr).set(data);
+            return ptr;
+        }
+
+        function freeCharPtr(ptr) {
+            wasm.instance.exports.free_memory_for_string(ptr);
+        }
+
+        // If the Webassemby module had been linked with
+        //
+        //   --import-memory
+        //
+        // its memory will be provided with
+        //
+        //   const wasmMemory = new WebAssembly.Memory({initial:10, maximum:100});
+        //   const memory = new Uint8Array(wasmMemory.buffer);
+        //
+        // But this module is providing its own memory and exporting it.
+
+        let printString = function (str) {
+            console.log(str);
+        };
+
+        const maps = {};
+        let mapIndex = 1;
+
+        const importObject2 = {
+            env: {
+                memory: wasmMemory,
+                allocRequest: function(bytes) {
+
+                },
+                freeRequest: function(pointer) {
+
+                },
+            }
+        };
+
+        const importObject = {
+            env: {
+                wasmObj: null,
+                memory: wasmMemory,
+                sendAllocateRequest: function(bytes) {
+
+                },
+                print_string: function (str) {
+                    printString(charPtrToString(str));
+                },
+                __print_num: function (n) {
+                    console.log("Your number is " + n);
+                    return 123;
+                },
+                print_num: function(n) {
+                    console.log("Your number is " + n);
+                },
+                new_address_map: function () {
+                    maps[mapIndex] = {};
+                    return mapIndex++;
+
+                },
+                do_nothing: function() {
+                    return 5;
+                },
+                consoleTime: function () {
+                    console.time();
+                },
+                consoleTimeEnd: function () {
+                    console.timeEnd();
+                },
+                set_address_map: function (map_id, key, val) {
+                    const map = maps[map_id];
+                    if (map) {
+                        map[key] = val;
+                    }
+                },
+                get_address_map: function (map_id, key) {
+                    const map = maps[map_id];
+                    if (map && map[key]) {
+                        return map[key];
+                    }
+                    return 0;
+                },
+                print: function (str) {
+                    const cs = charPtrToString(str);
+                    console.log(cs);
+                },
+                timeSeed: function () {
+                    //2147483647
+                    //1000000000
+                    return Math.floor(Math.random() * 2147483647);
+                }
+            }
+        };
+
+    fetch('out/result.wasm?g='+Math.random()).then(response =>
+            response.arrayBuffer()
+            ).then(bytes =>
+                WebAssembly.instantiate(bytes, importObject)
+                ).then(function (wasmObj)  {
+        //WebAssembly2.instantiateStreaming(fetch('out/result.wasm'), importObject)
+            //.then(function (wasmObj) {
+                wasm = wasmObj;
+
+                console.log(wasm.instance.exports.calling);
+                const ret = wasm.instance.exports.calling(200);
+                console.info(wasm.instance)
+                console.info(importObject.env);
+
+                console.info(importObject.env);
+
+                console.info(ret);
+                console.info("wasm.instance.exports.memory")
+                // console.info(wasm.instance.exports.memory)
+                // console.info(wasm.instance.exports.memory.buffer)
+                // console.info(wasm.instance.exports.memory.buffer.byteLength)
+                console.info(wasmMemory.buffer.byteLength)
+                //console.info(memory2.buffer.byteLength)
+                //const s = stringToCharPtr("22055");
+                //console.info("s = " + wasm.instance.exports.string_to_int(s));
+                //document.getElementById("stringToInt").innerHTML = "" + wasm.instance.exports.string_to_int(s);
+                //freeCharPtr(s);
+                /*
+        
+                wasm.instance.exports.factorial(50);
+                wasm.instance.exports.factorial(100);
+                wasm.instance.exports.factorial(200);
+        
+                const oldPrintString = printString;
+                printString = function(str) {
+                    document.getElementById("factorial500").innerHTML += str;
+                }
+                wasm.instance.exports.factorial(500);
+                printString = oldPrintString;
+                */
+
+                fetch('out/sub.wasm?a=3'+ Math.random()).then(response2 =>
+                        {return response2.arrayBuffer();}
+                ).then(bytes2 =>
+                    WebAssembly.instantiate(bytes2, importObject)
+                ).then(function (wasmObj2)  {
+                            subwasm = wasmObj2;
+
+                            console.log(" subwasm.instance.exports.calling");
+                            const ret = subwasm.instance.exports.calling2(200);
+                            console.info(subwasm.instance)
+
+                            console.info(ret)
+                            console.info("subwasm.instance.exports.memory")
+                            console.info(wasmMemory.buffer.byteLength)
+                            document.getElementById("one").innerHTML = "8" + ret;
+
+                        });
+            });
+
+    </script>
+</body>
+
+</html>

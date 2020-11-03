@@ -1,0 +1,117 @@
+name: 👻 CMake Build Matrix
+
+on: [push]
+
+jobs:
+  mybuild:
+    #runs-on: ubuntu-latest
+    #runs-on: macos-latest
+    name: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - {
+              os: windows-latest,
+              windows: true,
+              unix: false,
+              bin: 'src/Release/main_run.exe',
+              testbin: 'tests/Release/main_tst.exe',
+              lspbin: 'lsp_vscode_server/Release/main_lsp.exe',
+              cmakeConfig: '', #'-A Win32 -T v142,host=x64',
+              cmakeBuildConfig: '--config Release',
+              runPuppeteer: '',
+              prescript: 'chcp 65001',
+              cp: 'copy',
+              sudo: '  ',
+            }
+          - {
+              ubuntu: true,
+              unix: true,
+              windows: false,
+              os: ubuntu-latest,
+              bin: './src/main_run',
+              testbin: './tests/main_tst',
+              lspbin: './lsp_vscode_server/main_lsp',
+              prescript: 'export CXX=clang++',
+              cmakeConfig: ' -D NODOOR32=1 ',
+              cmakeBuildConfig: '',
+              cp: 'cp',
+              sudo: ' sudo ',
+            }
+
+          - {
+              mac: true,
+              unix: true,
+              windows: false,
+              os: macos-latest,
+              bin: "./src/main_run",
+              runPuppeteer: '',
+              testbin: "./tests/main_tst",
+              lspbin: './lsp_vscode_server/main_lsp',
+              cmakeConfig: '',
+              cmakeBuildConfig: '',
+              cp: 'cp',
+              sudo: ' ',
+              prescript: "",
+            }
+
+    steps:
+      # - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+      #    - name: configure
+      #      run: ./configure
+      #- name: make
+      #run: make
+      #    - name: make check
+      #      run: make check
+      #    - name: make distcheck
+      #      run: make distcheck
+      - name: enable problem matcher
+        run: |
+          echo "::add-matcher::.github/problem_matcher.json"
+
+      - name: cmake
+        run: |
+          cd build/
+
+          ${{ matrix.config.prescript }}
+
+          # this doesn't affect at all
+          #-DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32  -DCMAKE_C_FLAGS=-m32 -DCMAKE_MODULE_LINKER_FLAGS=-m32 -DCMAKE_STATIC_LINKER_FLAGS=-m32  -DCMAKE_SHARED_LINKER_FLAGS=-m32
+
+          cmake -D NO_SPEED_TEST=1 --config Release ${{ matrix.config.cmakeConfig }} .. 
+          #make all
+          cmake --build . ${{ matrix.config.cmakeBuildConfig }}
+          #ls -R .
+      
+      - name: run test
+        run: |
+          cd build/
+
+          ${{ matrix.config.bin }}
+          ${{ matrix.config.testbin }}
+          ${{ matrix.config.lspbin }}
+
+      - name: Copy artifact
+        run: |
+          cd build;
+          mkdir -p deb/${{ matrix.config.os }};
+          ${{ matrix.config.cp }} ${{ matrix.config.bin }} deb/${{ matrix.config.os }}
+          ${{ matrix.config.cp }} ${{ matrix.config.testbin }} deb/${{ matrix.config.os }}
+          ${{ matrix.config.cp }} ${{ matrix.config.lspbin }} deb/${{ matrix.config.os }}
+       
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: python-lucene_${{ github.sha }}_amd64
+          path: build/deb
+  
+ 
+ 
+#make
+#    - name: runner
+#      run: |
+#        bin/doorlang
+
+#        cmake -DCMAKE_BUILD_TYPE=Release ..

@@ -1,0 +1,60 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "smartlang",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+        },
+        {
+			"include": "#strings2"
+        }
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+                {
+                    "name": "keyword.control.smartlang",
+                    "match": "\\b(float|int|auto|::|if|while|for|return|fn)\\b"
+                },
+                {
+                    "name": "keyword.operator.arithmetic.smartlang",
+                    "match": "\\;|=|\\+|-|\\*|/|\\*\\*|\\!"
+                },
+                {
+                    "name":"entity.name.smartlang",
+                    "match": "[a-z]+"
+                },
+                {
+                    "name":"constant.numeric.smartlang",
+                    "match": "[0-9]+"
+                }
+            ]
+		},
+		"strings": {
+			"name": "string.quoted.double.smartlang",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.smartlang",
+					"match": "\\\\."
+				}
+			]
+        },
+        "strings2": {
+			"name": "string.quoted.single.smartlang",
+			"begin": "'",
+			"end": "'",
+			"patterns": [
+				{
+					"name": "constant.character.escape.smartlang",
+					"match": "\\\\."
+				}
+			]
+        }
+	},
+	"scopeName": "source.smt"
+}

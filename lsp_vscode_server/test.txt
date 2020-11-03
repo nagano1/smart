@@ -1,0 +1,29 @@
+a
+b
+ca
+b
+cZa
+b
+ca
+b
+cZa
+b
+ca
+b
+cZa
+b
+ca
+b
+cZa
+b
+ca
+b
+cZa
+b
+ca
+b
+a0
+b0
+function () {
+    let a = "#joiff";
+}

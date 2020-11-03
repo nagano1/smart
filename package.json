@@ -1,0 +1,41 @@
+{
+  "name": "doorlang",
+  "version": "1.0.0",
+  "description": "run on Mac Windows",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shinyamada/door.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shinyamada/door/issues"
+  },
+  "homepage": "https://github.com/shinyamada/door#readme",
+  "dependencies": {
+    "delete": "^1.1.0",
+    "glob": "^7.1.6",
+    "gulp": "^4.0.2"
+  },
+  "dependencies2": {
+    "crypto": "^1.0.1",
+    "delete": "^1.1.0",
+    "fs-extra": "^5.0.0",
+    "glob": "^7.1.6",
+    "gulp": "^4.0.2",
+    "gulp-cli": "^2.2.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-plumber": "^1.2.1",
+    "gulp-rename": "^1.4.0",
+    "run-sequence": "^1.2.2",
+    "username": "^3.0.0"
+  }
+}

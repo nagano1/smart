@@ -1,0 +1,86 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
+android {
+    signingConfigs {
+        release_sign {
+            storeFile file('release.jks')
+            storePassword 'doorlang'
+            keyAlias = 'key0'
+            keyPassword 'doorlang'
+        }
+    }
+    compileSdkVersion 29
+    //buildToolsVersion '30.0.1'
+    defaultConfig {
+        applicationId "org.rokist.canlangtest"
+        minSdkVersion 23
+        //noinspection OldTargetApi
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        externalNativeBuild {
+            cmake {
+                arguments "-DCMAKE_CXX_FLAGS_DEBUG=-O2"
+                //arguments "-DCMAKE_CXX_FLAGS_DEBUG=-Ofast"
+                //cppFlags "-fopenmp"
+                cppFlags "-std=c++17 -Ofast"
+                //cppFlags ""
+                //arguments "-DANDROID_STL=c++_shared"
+            }
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+        }
+    }
+    ndkVersion "21.3.6528147"
+    //20.1.5948944, 21.0.6113669, 21.0.6113669
+
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
+
+
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+    implementation "android.arch.navigation:navigation-fragment:1.0.0"
+    implementation "android.arch.navigation:navigation-ui:1.0.0"
+    implementation "android.arch.navigation:navigation-fragment-ktx:1.0.0"
+    implementation "android.arch.navigation:navigation-ui-ktx:1.0.0"
+
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
+
+
+    implementation 'com.caverock:androidsvg-aar:1.4'
+}

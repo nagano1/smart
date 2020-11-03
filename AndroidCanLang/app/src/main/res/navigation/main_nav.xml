@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/firstFragment">
+
+    <fragment
+        android:id="@+id/firstFragment"
+        android:name="org.rokist.canlangtest.TestListFragment"
+        android:label="fragment_first">
+        <action
+            android:id="@+id/action_first_to_second"
+            app:destination="@id/testEntryFragment"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
+
+            />
+
+
+
+        <action
+            android:id="@+id/action_first_to_first"
+            app:destination="@id/firstFragment"
+            app:enterAnim="@anim/slide_from_right"
+            app:exitAnim="@anim/slide_to_left"
+
+            app:popEnterAnim="@anim/slide_from_left"
+            app:popExitAnim="@anim/slide_to_right"
+
+            />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/testEntryFragment"
+        android:name="org.rokist.canlangtest.TestEntryFragment"
+        android:label="fragment_second">
+    </fragment>
+
+</navigation>
