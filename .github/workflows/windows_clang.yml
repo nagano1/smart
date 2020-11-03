@@ -36,7 +36,7 @@ jobs:
       - name: enable problem matcher
         run: |
           ${{ matrix.config.addpath }}
-          #echo "D:\\a\door\door\llvm\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+          #echo "D:\\a\smart\smart\llvm\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
 
           echo "::add-matcher::.github/problem_matcher.json"
 
@@ -46,10 +46,10 @@ jobs:
         run: |
             curl -fsSLO https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/LLVM-10.0.0-win64.exe
             7z x LLVM-10.0.0-win64.exe -y -o"llvm"
-            dir /d/a/door/door/llvm/bin
+            dir /d/a/smart/smart/llvm/bin
             pwd
-            #echo "::add-path::/d/a/door/door/llvm/bin"
-            echo "::set-env name=WASM_AR::/d/a/door/door/llvm/bin/llvm-ar.exe"
+            #echo "::add-path::/d/a/smart/smart/llvm/bin"
+            echo "::set-env name=WASM_AR::/d/a/smart/smart/llvm/bin/llvm-ar.exe"
         if: matrix.config.os == 'windows-latest'
 
       # - name: Install llvm-nm (Windows)
