@@ -70,6 +70,8 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Native.masm" />
+    <MASM Include="Native.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

@@ -36,6 +36,7 @@ gulp.task("show", async function (cb) {
     await promise;
     
     const val = await altCmake.dev()
+    
     console.info(val)
     cb();
 });
