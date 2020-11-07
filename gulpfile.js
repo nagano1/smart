@@ -31,7 +31,7 @@ gulp.task("watchtest", async function (cb) {
     await promise;
 
     var gaze_opt = {
-        debounceDelay: 1000 // wait 4 sec after the last run
+        debounceDelay: 1000 // wait 1 sec after the last run
     }
 
     gulp.watch(
@@ -73,7 +73,7 @@ function collectTestList() {
                         const nextTestIndex = text.indexOf("TEST(", testIndex + 2)
                         if (
                             (nextTestIndex == -1 || testEndIndex < nextTestIndex) && testEndIndex > -1) {
-                            console.info("========== TEST :-------------------\n" + text.substring(testIndex, testEndIndex))
+                            console.info("========== TEST ==========\n" + text.substring(testIndex, testEndIndex))
 
                             const testText = text.substring(testIndex, testEndIndex)
                             const indexOfEndParenthes = testText.indexOf(")")
@@ -91,22 +91,17 @@ function collectTestList() {
                                     }
                                 )
                             }
-
-
                         }
                         currentIndex = testIndex + 2
                     } else {
                         break;
                     }
                 }
-
             });
 
         } catch (err) {
             console.error(err)
         }
-
-
     }
 
     fs.writeFileSync(
@@ -115,9 +110,7 @@ function collectTestList() {
     )
 
     console.info(testlist)
-
 }
-
 
 
 function line(str) {
@@ -205,45 +198,3 @@ gulp.task('wow', function (callback) {
 
 //gulp.task('default', ['typescript'])
 //gulp.task('default', ['typescript', 'watch']);
-
-gulp.task('typescript', function (cb) {
-    console.log('start compiling with typescript')
-    gulp
-        .src(targetTS)
-        // .pipe(plumber())
-        .pipe(
-            ts({
-                target: 'ES6',
-                noImplicitAny: true,
-                strictNullChecks: true
-            })
-        )
-        .pipe(concat('all.js'))
-        // .pipe(uglify())
-        // .pipe(babel({
-        // presets: ['es2015']
-        // }))
-        // .pipe(rename(function(path) { path.dirname = path.dirname.replace('ts', 'js') }))
-        // .pipe(uglify())
-
-        .pipe(gulp.dest('./dist/'))
-        .on('end', cb)
-    /* .on('end', function() {
-            console.log("compile end");
-            child = exec('uglifyjs dist/all_.js -o dist/all.js',
-            function (error, stdout, stderr) {
-                console.log("test node finished");
-                console.log('\n' + stdout);
-  
-                if (stderr) {
-                    console.log('stderr: ' + stderr);
-                }
-  
-                if (error !== null) {
-                    console.log('exec error: ' + error);
-                }
-                //process.exit();
-                cb();
-            });
-       }); */
-})
