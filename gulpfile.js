@@ -4,7 +4,7 @@ const path = require('path');
 const gulp = require('gulp')
 const fs = require('fs')
 const util = require('util')
-const exec = require('child_process').exec, child
+const exec = require('child_process').exec;
 const del = require('delete')
 const glob = require('glob')
 
