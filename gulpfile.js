@@ -30,12 +30,13 @@ gulp.task("show", async function (cb) {
 gulp.task("watchtest", async function (cb) {
     await promise;
 
+    collectTestList();
+
     var gaze_opt = {
         debounceDelay: 1000 // wait 1 sec after the last run
     }
 
-    gulp.watch(
-        [
+    gulp.watch([
             `./tests/google_tests/*.cc`,
             `./tests/google_tests/*.h`,
             `./tests/google_tests/*.cpp`,
@@ -112,6 +113,16 @@ function collectTestList() {
     console.info(testlist)
 }
 
+
+
+
+
+
+
+
+
+
+// --------- util functions ---------
 
 function line(str) {
     return str.split('\n').join(' ')
