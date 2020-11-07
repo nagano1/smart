@@ -154,40 +154,8 @@ async function doExecAsync(str) {
     })
 }
 
-const WebPack = isWin
-    ? 'node_modules\\.bin\\webpack'
-    : 'node_modules/.bin/webpack'
 
 
-gulp.task('watch_native', async cb => {
-    runSequence('watch_main_entry', 'watch_parser_addon', cb)
-})
-
-
- 
-
-
-
-async function aRe() {
-    return new Promise((res, rej) => {
-        // runSequence(['buildaddon'], () => {
-        setTimeout(() => {
-            res()
-        }, 4000)
-        // });
-    })
-}
-
-
-
-
-async function embedJsIntoCC(
-    productMode,
-    jsPath,
-    srcCCDir,
-    targetDir,
-    originalCCFiles
-) { }
 
 async function readyWindowsCommandPrompt() {
     if (isWin) {
@@ -196,30 +164,6 @@ async function readyWindowsCommandPrompt() {
 }
 
 
-
-gulp.task('buildLayout', cb => {
-    doExec(`${WebPack} --config layoutTest/webpack.config.js`, cb)
-})
-
-gulp.task('watchLayout', cb => {
-    doExec(`${WebPack} -w --config layoutTest/webpack.config.js`, cb)
-})
-
-gulp.task('distLayout', cb => {
-    doExec(`cd layoutTest/dist && npm run dist`, cb)
-})
-
-
-
-// Unit Tests
-
-gulp.task('buildTest', cb => {
-    doExec(`tsc -p unittests --outDir unittests/out`, cb)
-})
-
-// tsc --target "es5" --lib  "dom,es2015,es6" unittests/stream_test.ts --outDir unittests/out  && ./node_modules/.bin/ts-node unittests/out/unittests/stream_test.js
-
-// ./node_modules/.bin/ts-node unittests/stream_test.ts
 
 gulp.task('runTest', cb => {
     runSequence('buildTest', () => {
@@ -243,34 +187,6 @@ gulp.task('runTest', cb => {
     })
 })
 
-// Virtual List Sample
-let webpack_virtual_list_js = 'samples/webpack.virtual_list.js'
-gulp.task('buildVirtualList', cb => {
-    var args = process.argv.slice(2)
-
-    // if (args[0] === "--env" && args[1] === "production");
-    console.log(args)
-    doExec(`${WebPack} --config ${webpack_virtual_list_js} `, cb)
-})
-
-gulp.task('watchVirtualList', cb => {
-    doExec(`${WebPack} --watch --config ${webpack_virtual_list_js} `, cb)
-})
-gulp.task('runVirtualList', cb => {
-    doExec(`${nw_exe} samples/virtual_list_test/virtual_list_debug`, cb)
-})
-
-var targetTS = ['./src/*.ts']
-
-gulp.task('watch', function () {
-    gulp.watch(targetTS, ['watch_task'])
-})
-
-gulp.task('watch_task', function (callback) {
-    // return runSequence( 'clearTerminal', 'typescript', callback);
-    return runSequence('typescript', callback)
-})
-
 
 gulp.task('wow', function (callback) {
 
@@ -285,26 +201,10 @@ gulp.task('wow', function (callback) {
 
 
 });
-gulp.task('js_test', function (callback) {
-    // return runSequence( 'clearTerminal', 'typescript', callback);
-    //return runSequence('typescript', callback)
-
-    function customAsync(val) {
-        if (val < 50) {
-            return new Promise((res, rej) => {
-
-            });
-        }
-        return 54
-    }
-
-    var g = customAsync(46);
-    console.info(g)
-})
 
 
 //gulp.task('default', ['typescript'])
-// gulp.task('default', ['typescript', 'watch']);
+//gulp.task('default', ['typescript', 'watch']);
 
 gulp.task('typescript', function (cb) {
     console.log('start compiling with typescript')
