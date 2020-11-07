@@ -1,36 +1,21 @@
 console.log('Gulp starting...')
 
-//var crypto = require("crypto");
-
 const path = require('path');
-var gulp = require('gulp')
-var fs = require('fs')
-var util = require('util')
-
-//var concat = require('gulp-concat')
-var exec = require('child_process').exec, child
-
-//var plumber = require('gulp-plumber')
-//var runSequence = require('run-sequence')
-//var rename = require('gulp-rename')
-var del = require('delete')
-
-var glob = require('glob')
-//var copydir = require('copy-dir')
+const gulp = require('gulp')
+const fs = require('fs')
+const util = require('util')
+const exec = require('child_process').exec, child
+const del = require('delete')
+const glob = require('glob')
 
 
-//var copy = require('copy')
-//const fse = require('fs-extra')
 //const username = require('username')
-var isWin = /^win/.test(process.platform)
+const isWin = /^win/.test(process.platform)
 const sep = isWin ? '\\' : '/'
 
 const altCmake = require('./scripts/alt_cmake');
 
-
-
-var promise = readyWindowsCommandPrompt()
-
+const promise = readyWindowsCommandPrompt()
 
 gulp.task("show", async function (cb) {
     await promise;
