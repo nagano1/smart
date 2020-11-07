@@ -46,8 +46,6 @@ gulp.task("watchtest", async function (cb) {
             collectTestList()
         }
     )
-
-
 });
 
 
@@ -121,24 +119,6 @@ function collectTestList() {
 }
 
 
-// const gypArch = "ia32";//process.arch === "x64" ? "x64" : "ia32";
-
-
-async function withGypScriptPath() {
-    let userName = await username()
-
-    console.log(userName)
-
-    let gypScriptPath = ``
-    // if (isWin) {
-    // gypScriptPath = `node "C:\\Users\\${userName}//\\AppData\\Roaming\\npm\\node_modules\\node-gyp\\bin\\node-gyp.js"`;
-    // } else {
-    gypScriptPath = `node-gyp`
-    // }
-
-    return gypScriptPath
-}
-
 
 function line(str) {
     return str.split('\n').join(' ')
@@ -184,132 +164,9 @@ gulp.task('watch_native', async cb => {
 })
 
 
-gulp.task('buildaddon', async () => {
-    await continueBuildAddon()
-})
+ 
 
-let continueBuildAddon = async function (testDir, debug) {
-    let compileMode = debug ? '--debug' : '--release'
 
-    console.log('buildaddon')
-
-    if (isWin) {
-        await doExecAsync(`chcp 65001`) // --release --jobs=4 --no-debug
-    }
-    let gypScriptPath = await withGypScriptPath()
-    fse.copySync(
-        `./native_tests/${testDir}/src`,
-        `./native_tests/workspace/${testDir}/src`
-    )
-    fse.copySync('./src_cc', 'native_tests/workspace/src_cc')
-
-    let tester = `echo [ -------------- test --------------- ] && node native_tests/js_gen/native_tests/${testDir}.js`
-
-    var error = await doExecAsync(
-        `cd native_tests/workspace/${testDir} && ${gypScriptPath} build ${compileMode}   --jobs=4 --arch=${'x64'}`
-    ) // --release --no-debug --jobs=4
-
-    if (error) {
-    } else {
-        await doExecAsync(`cd ../../..`)
-
-        fse.copySync(
-            `./native_tests/workspace/${testDir}/build`,
-            `./node_modules/${testDir}/build`
-        )
-
-        await doExecAsync(`${tester}`)
-    }
-
-    // await doExecAsync(`.\\node_modules\\.bin\\ts-node unittests\\stream_test.ts`);
-    // await doExecAsync(`node unittests\\out\\unittests\\stream_test.js`);
-
-    // tsc --target "es5" --lib  "dom,es2015,es6" unittests/stream_test.ts --outDir unittests/out  && ./node_modules/.bin/ts-node unittests/out/unittests/stream_test.js
-}
-
-gulp.task('watch_parser_addon', async () => {
-    await watch_test('node_0.10')
-})
-gulp.task('w-decoder', async () => {
-    await watch_test('HtmlDecoderTest', true)
-})
-gulp.task('w-python', async () => {
-    await watch_test('PythonBoostTest', true)
-})
-
-async function watch_test(testDir, debug) {
-    let compileMode = debug ? '--debug' : '--release'
-
-    fse.copySync(
-        `./native_tests/${testDir}`,
-        `./native_tests/workspace/${testDir}`
-    )
-    fse.copySync('./src_cc', './native_tests/workspace/src_cc')
-
-    const gypScriptPath = await withGypScriptPath()
-    await doExecAsync(
-        `cd native_tests/workspace/${testDir} && ${gypScriptPath} rebuild  --jobs=4 ${compileMode}  --arch=${'x64'}`
-    ) // --release --jobs=4 --no-debug
-    await doExecAsync(`cd ../../..`)
-
-    var gaze_opt = {
-        debounceDelay: 1000 // wait 4 sec after the last run
-    }
-
-    fse.copySync(
-        `./native_tests/workspace/${testDir}/build`,
-        `./node_modules/${testDir}/build`
-    )
-    fse.copySync(
-        `./native_tests/workspace/${testDir}/index.js`,
-        `./node_modules/${testDir}/index.js`
-    )
-
-    await doExecAsync(
-        `tsc --target "es5" --lib  "dom,es2015,es6" native_tests/${testDir}.ts --outDir native_tests/js_gen`
-    )
-
-    // 一度実行
-    await continueBuildAddon(testDir)
-
-    var isStarted = false
-    var shouldStartAfterDone = false
-
-    gulp.watch(
-        [
-            `./native_tests/${testDir}/src/*.cc`,
-            `./native_tests/${testDir}/src/*.h`,
-            './src_cc/**/*.cc',
-            './src_cc/**/*.h'
-        ],
-        gaze_opt,
-        async cb => {
-            if (isStarted == false) {
-                isStarted = true
-            } else {
-                console.info('pending.....')
-                shouldStartAfterDone = true
-                return
-            }
-            while (true) {
-                shouldStartAfterDone = false
-
-                console.info(`\n\n\n\n\nStart building ${testDir} .....`)
-                console.time(`continue Build: ${testDir}`)
-                await continueBuildAddon(testDir)
-                console.timeEnd(`continue Build: ${testDir}`)
-
-                await aRe()
-
-                if (shouldStartAfterDone) {
-                } else {
-                    break
-                }
-            }
-            isStarted = false
-        }
-    )
-}
 
 async function aRe() {
     return new Promise((res, rej) => {
@@ -320,8 +177,6 @@ async function aRe() {
         // });
     })
 }
-
-
 
 
 
