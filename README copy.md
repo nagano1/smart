@@ -24,7 +24,17 @@ export CXX=clang++-10
 
 cd build
 cmake --config Release ..
-cmake --build .
+cmake --build . --config Release 
+
+
+# Windows
+## command line: cmake  Windows
+install cmake and llvm
+
+cd build
+cmake --config Release ..;
+cmake --build . --config Release 
+tests\Release\main_tst.exe
 
 ## for Visual Studio 2019
 the sln file is configured for VS2017. Required to install below components to build with VS2019. 
