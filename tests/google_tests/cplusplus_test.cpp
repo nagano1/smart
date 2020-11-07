@@ -723,7 +723,7 @@ TEST(concept, add_consume_test) {
 
     using newtype = unsigned int;
 
-    static int work_node_max = ARM ? 2050 * 2 : 180 * 1;
+    static int work_node_max = ARM ? 2050 * 2 : 1800 * 1;
 
     static std::atomic<bool> wow2{ false };
 

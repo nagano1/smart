@@ -168,44 +168,5 @@ async function readyWindowsCommandPrompt() {
 }
 
 
-
-gulp.task('runTest', cb => {
-    runSequence('buildTest', () => {
-        let nodeTests = []
-        let testList = ''
-        glob.sync('unittests/*.ts').forEach(function (filePath) {
-            testList += ' ' + filePath.replace('unittests', '')
-            nodeTests.push(
-                'echo ' +
-                filePath +
-                ' && node ' +
-                (filePath + '')
-                    .replace('.ts', '.js')
-                    .replace('unittests', 'unittests/out/unittests')
-            )
-        })
-        doExec(nodeTests.join(' && ') + ` && echo ...............OK!`, err => {
-            console.info(testList)
-            cb(err)
-        })
-    })
-})
-
-
-gulp.task('wow', function (callback) {
-
-    var password = 'aapa12awjiofe8awo';
-
-    var sha512 = crypto.createHash('sha1');
-    sha512.update(password)
-    var hash = sha512.digest("hex")
-    let ag = parseInt(hash, 16);
-    ag = ag % 7;
-    console.log(ag)
-
-
-});
-
-
 //gulp.task('default', ['typescript'])
 //gulp.task('default', ['typescript', 'watch']);
