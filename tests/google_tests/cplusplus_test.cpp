@@ -221,7 +221,7 @@ struct A {
 };
 
 #ifdef __ANDROID__
-//#ifdef __aarch64__
+#ifdef __aarch64__
 
 static int add(int i, int j);
 
@@ -275,6 +275,7 @@ static int add(int i, int j)
 
 ENDTEST
 
+#endif
 #endif
 
 
