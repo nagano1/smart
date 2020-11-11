@@ -46,8 +46,9 @@ jobs:
         run: |
             curl -fsSLO https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/LLVM-10.0.0-win64.exe
             7z x LLVM-10.0.0-win64.exe -y -o"llvm"
-            dir /d/a/smart/smart/llvm/bin
-            echo "$(pwd)/llvm/bin" >> $GITHUB_PATH
+            #dir /d/a/smart/smart/llvm/bin
+            dir "$(pwd)/llvm/bin"
+            echo "$(pwd)/smart/llvm/bin" >> $GITHUB_PATH
 
             pwd
             #echo "::add-path::/d/a/smart/smart/llvm/bin"
