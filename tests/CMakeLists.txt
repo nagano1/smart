@@ -1,8 +1,7 @@
 set(BINARY ${CMAKE_PROJECT_NAME}_tst)
 
 file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false
-        "./codenodes/*.cpp"
-
+        ../codenodes/*.cpp
         google_tests/*.h
         google_tests/*.cpp
         test.cpp
