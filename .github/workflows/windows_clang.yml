@@ -87,14 +87,18 @@ jobs:
 
           clang -S -O3 -emit-llvm main.cpp 
           clang -S -O3 -emit-llvm lib.cpp
+          clang -S -O3 -emit-llvm hello.cpp
 
           llc main.ll
           llc lib.ll
+          llc hello.ll
 
           #clang++.exe -static -lstdc++ -lpthread  main.s lib.s -o hello.exe;
-          clang -O3 -mwindows main.s lib.s -o hello.exe;
+          clang -O3 -mwindows main.s lib.s -o WinDialog.exe;
+          clang -O3 hello.s lib.s -o hello.exe;
           dir;
           .\hello.exe;
+          .\WinDialog.exe;
 
          
       - name: Copy artifact
@@ -106,6 +110,7 @@ jobs:
         run: |
           cd llvm_ir_test;
           ${{ matrix.config.cp }} hello.exe ../build/deb/${{ matrix.config.hello }}
+          ${{ matrix.config.cp }} WinDialog.exe ../build/deb/win${{ matrix.config.hello }}
       
       - uses: actions/upload-artifact@v2
         with:
