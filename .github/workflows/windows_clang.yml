@@ -82,15 +82,15 @@ jobs:
           #dir $(pwd)/llvm/bin
           
           cd llvm_ir_test
-          clang++ main.cpp 
-          clang++ lib.cpp
+          clang++ -S main.cpp 
+          clang++ -S lib.cpp
           #llc main.ll
           #llc lib.ll
 
           dir
 
           #clang++.exe -static -lstdc++ -lpthread  main.s lib.s -o hello.exe;
-          clang++ -mwindows main.o lib.o -o hello.exe;
+          clang++ -mwindows main.s lib.s -o hello.exe;
           dir;
           .\hello.exe;
 
