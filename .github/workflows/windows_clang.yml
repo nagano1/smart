@@ -41,16 +41,16 @@ jobs:
           echo "::add-matcher::.github/problem_matcher.json"
 
           
-      # - name: Install clang (Windows)
-      #   shell: bash
-      #   run: |
-      #       curl -fsSLO https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/LLVM-10.0.0-win64.exe
-      #       7z x LLVM-10.0.0-win64.exe -y -o"llvm"
-      #       dir /d/a/smart/smart/llvm/bin
-      #       pwd
-      #       #echo "::add-path::/d/a/smart/smart/llvm/bin"
-      #       echo "::set-env name=WASM_AR::/d/a/smart/smart/llvm/bin/llvm-ar.exe"
-      #   if: matrix.config.os == 'windows-latest'
+      - name: Install clang (Windows)
+        shell: bash
+        run: |
+            curl -fsSLO https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/LLVM-10.0.0-win64.exe
+            7z x LLVM-10.0.0-win64.exe -y -o"llvm"
+            dir /d/a/smart/smart/llvm/bin
+            pwd
+            #echo "::add-path::/d/a/smart/smart/llvm/bin"
+            echo "::set-env name=WASM_AR::/d/a/smart/smart/llvm/bin/llvm-ar.exe"
+        if: matrix.config.os == 'windows-latest'
 
       # - name: Install llvm-nm (Windows)
       #   shell: bash
@@ -82,22 +82,19 @@ jobs:
           #clang.exe --version
           #dir $(pwd)/llvm/bin
 
+          
           cd llvm_ir_test
 
-          clang -S -O3 -emit-llvm main.cpp 
-          clang -S -O3 -emit-llvm lib.cpp
-          clang -S -O3 -emit-llvm hello.cpp
+          clang -S -emit-llvm main.cpp 
+          clang -S -emit-llvm lib.cpp
 
           llc main.ll
           llc lib.ll
-          llc hello.ll
 
           #clang++.exe -static -lstdc++ -lpthread  main.s lib.s -o hello.exe;
-          clang -O3 -mwindows main.s lib.s -o WinDialog.exe;
-          clang -O3 hello.s lib.s -o hello.exe;
+          clang -mwindows main.s lib.s -o hello.exe;
           dir;
           .\hello.exe;
-          #.\WinDialog.exe;
 
          
       - name: Copy artifact
@@ -109,7 +106,6 @@ jobs:
         run: |
           cd llvm_ir_test;
           ${{ matrix.config.cp }} hello.exe ../build/deb/${{ matrix.config.hello }}
-          ${{ matrix.config.cp }} WinDialog.exe ../build/deb/win${{ matrix.config.hello }}
       
       - uses: actions/upload-artifact@v2
         with:
