@@ -52,7 +52,7 @@ jobs:
 
             pwd
             #echo "::add-path::/d/a/smart/smart/llvm/bin"
-            echo "::set-env name=WASM_AR::/d/a/smart/smart/llvm/bin/llvm-ar.exe"
+            #echo "::set-env name=WASM_AR::/d/a/smart/smart/llvm/bin/llvm-ar.exe"
         if: matrix.config.os == 'windows-latest'
 
       # - name: Install llvm-nm (Windows)
