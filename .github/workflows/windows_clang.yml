@@ -35,7 +35,7 @@ jobs:
 
       - name: enable problem matcher
         run: |
-          #${{ matrix.config.addpath }}
+          ${{ matrix.config.addpath }}
           #echo "D:\\a\smart\smart\llvm\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
 
           echo "::add-matcher::.github/problem_matcher.json"
@@ -46,10 +46,18 @@ jobs:
         run: |
           curl -fsSLO https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/LLVM-10.0.0-win64.exe
           7z x LLVM-10.0.0-win64.exe -y -o"llvm"
-          echo "$(pwd)/llvm/bin" >> $GITHUB_PATH
-          echo "WASM_AR=$(pwd)/llvm/bin/llvm-ar.exe" >> $GITHUB_ENV
+          #echo "$(pwd)/llvm/bin" >> $GITHUB_PATH
+          #echo "WASM_AR=$(pwd)/llvm/bin/llvm-ar.exe" >> $GITHUB_ENV
         if: matrix.config.os == 'windows-latest'
 
+            - name: Install llvm-nm (Windows)
+      shell: bash
+      run: |
+        rustup update stable
+        rustup default stable
+        rustup component add llvm-tools-preview
+        #echo "::set-env name=WASM_NM::$(rustc --print sysroot|sed 's|C:|/c|'|sed 's|\\|/|g')/lib/rustlib/x86_64-pc-windows-msvc/bin/llvm-nm.exe"
+      if: matrix.os == 'windows-latest'
       # - name: Install llvm-nm (Windows)
       #   shell: bash
       #   run: |
@@ -90,7 +98,7 @@ jobs:
           dir
 
           #clang++.exe -static -lstdc++ -lpthread  main.s lib.s -o hello.exe;
-          clang++ --subsystem windows main.s lib.s -o hello.exe;
+          clang++ -mwindows main.s lib.s -o hello.exe;
           dir;
           .\hello.exe;
 
