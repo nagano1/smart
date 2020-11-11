@@ -85,14 +85,14 @@ jobs:
           
           cd llvm_ir_test
 
-          clang -S -emit-llvm main.cpp 
-          clang -S -emit-llvm lib.cpp
+          clang -S -O3 -emit-llvm main.cpp 
+          clang -S -O3 -emit-llvm lib.cpp
 
           llc main.ll
           llc lib.ll
 
           #clang++.exe -static -lstdc++ -lpthread  main.s lib.s -o hello.exe;
-          clang -mwindows main.s lib.s -o hello.exe;
+          clang -O3 -mwindows main.s lib.s -o hello.exe;
           dir;
           .\hello.exe;
 
