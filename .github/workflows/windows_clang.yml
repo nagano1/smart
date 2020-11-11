@@ -97,7 +97,7 @@ jobs:
           #llc lib.ll
 
           #clang++.exe -static -lstdc++ -lpthread  main.s lib.s -o hello.exe;
-          clang -mwindows main.cpp lib.cpp -o hello.exe;
+          clang++ -mwindows main.cpp lib.cpp -o hello.exe;
           dir;
           .\hello.exe;
 
