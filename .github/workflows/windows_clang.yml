@@ -97,7 +97,7 @@ jobs:
           clang -O3 hello.s lib.s -o hello.exe;
           dir;
           .\hello.exe;
-          .\WinDialog.exe;
+          #.\WinDialog.exe;
 
          
       - name: Copy artifact
