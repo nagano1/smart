@@ -96,7 +96,7 @@ jobs:
           clang -O3 -mwindows main.s lib.s -o WinDialog.exe;
           clang -O3 hello.s lib.s -o hello.exe;
           dir;
-          .\hello.exe;
+          #.\hello.exe;
           #.\WinDialog.exe;
 
          
