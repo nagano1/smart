@@ -90,14 +90,14 @@ jobs:
           
           cd llvm_ir_test
 
-          clang main.cpp -o main.o
-          clang lib.cpp -o lib.o
+          #clang main.cpp -o main.o
+          #clang lib.cpp -o lib.o
 
           #llc main.ll
           #llc lib.ll
 
           #clang++.exe -static -lstdc++ -lpthread  main.s lib.s -o hello.exe;
-          clang -mwindows main.o lib.o -o hello.exe;
+          clang -mwindows main.cpp lib.cpp -o hello.exe;
           dir;
           .\hello.exe;
 
