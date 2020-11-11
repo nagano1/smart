@@ -47,6 +47,8 @@ jobs:
             curl -fsSLO https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/LLVM-10.0.0-win64.exe
             7z x LLVM-10.0.0-win64.exe -y -o"llvm"
             dir /d/a/smart/smart/llvm/bin
+            echo "$(pwd)/llvm/bin" >> $GITHUB_PATH
+
             pwd
             #echo "::add-path::/d/a/smart/smart/llvm/bin"
             echo "::set-env name=WASM_AR::/d/a/smart/smart/llvm/bin/llvm-ar.exe"
