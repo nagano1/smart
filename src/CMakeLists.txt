@@ -5,8 +5,8 @@ set(BINARY ${CMAKE_PROJECT_NAME})
 #set(SOURCES ${SOURCES})
 
 file(GLOB cpp_files
-    "./*.cpp"
-    "./codenodes/*.cpp"
+    "./main.cpp"
+    #"./codenodes/*.cpp"
 )
 
 add_executable(${BINARY}_run ${cpp_files})
