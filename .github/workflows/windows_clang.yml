@@ -82,7 +82,6 @@ jobs:
           #clang.exe --version
           #dir $(pwd)/llvm/bin
 
-          
           cd llvm_ir_test
 
           clang -S -O3 -emit-llvm main.cpp 
