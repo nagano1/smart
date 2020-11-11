@@ -80,6 +80,7 @@ jobs:
       
 
       - name: Emulating output binary from doorlang - msys64/mingw clang++/llvm compile msys64/mingw on Windows
+        shell: bash
         run: |
           #dir C:\\msys64\\mingw32\\bin
 
