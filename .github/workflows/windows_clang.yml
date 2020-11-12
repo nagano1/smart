@@ -99,7 +99,7 @@ jobs:
 
           dir
 
-          #clang++.exe -static -lstdc++ -lpthread  main.s lib.s -o hello.exe;
+          #clang++.exe -static -lstdc++ -lpthread main.s lib.s -o hello.exe;
           clang++ -mwindows main.s lib.s -o hello.exe;
           ls -al;
           #./hello.exe;
