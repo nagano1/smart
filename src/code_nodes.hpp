@@ -337,21 +337,7 @@ namespace smart {
             , reinterpret_cast<appendToLineFunction> (f3) \
         } \
         ;static const int check_result_##T = vtable_type_check<T>(f1,f2,f3)
-
-//    template<typename T>
-//    static inline node_vtable CREATE_VTABLE(
-//            decltype(std::declval<vtableT<T>>().selfTextLength) f1,
-//            decltype(std::declval<vtableT<T>>().selfText) f2,
-//            decltype(std::declval<vtableT<T>>().appendToLine) f3
-//    ) {
-//        //static_assert(std::is_same<F2, decltype(std::declval<vtableT<T>>().selfText)>::value, "");
-//
-//        return node_vtable{
-//                reinterpret_cast<selfTextLengthFunction> (f1),
-//                reinterpret_cast<selfTextFunction> (f2),
-//                reinterpret_cast<appendToLineFunction> (f3)
-//        };
-//    }
+        // static_assert(std::is_same<F2, decltype(std::declval<vtableT<T>>().selfText)>::value, "");
 
     struct VTables {
         static const node_vtable
