@@ -151,7 +151,7 @@ TEST(parser_test, utf16Length) {
     {
         const char *str = u8"👨‍👩‍👧";
         int utf16length = utf16_length(str, strlen(str));
-        EXPECT_EQ(utf16length, 9);
+        EXPECT_EQ(utf16length, 8);
     }
 
     {
