@@ -196,7 +196,6 @@ namespace smart {
 
     /*
     struct TextBuffer {
-
     private:
         // bufferMode == 1: has Next Buffer
         utf8byte *allBuffer;
@@ -204,28 +203,20 @@ namespace smart {
 
     public:
         int bufferMode = 0;
-
         int bufferOffset;
-
         int currentBufferLength;
-
         utf8byte *currentBuffer;
-
         bool (*nextBufferGetter)(TextBuffer *textBuffer);
 
         bool waitNextTextBuffer() {
             if (this->bufferMode == 0) {
-
                 return false;
-
             } else {
-
             }
-
             return true;
         };
     };
-     */
+    */
 
     using ErrorInfo = struct _errorInfo{
         bool hasError {false};
