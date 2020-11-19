@@ -181,6 +181,10 @@ namespace smart {
             }
         }
 
+        if (totalCount == 0) {
+            return nullptr;
+        }
+
         // malloc and copy text
         auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
         text[totalCount] = '\0';

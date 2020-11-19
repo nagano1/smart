@@ -60,16 +60,14 @@ namespace smart {
     }
 
     static CodeLine *appendToLine(JsonObjectStruct *self, CodeLine *currentCodeLine) {
-        auto *jsonObjectNode = self;//Cast::downcast<JsonObjectStruct *>((NodeBase *) self);
+        currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
 
-        currentCodeLine = currentCodeLine->addPrevLineBreakNode(jsonObjectNode);
+        currentCodeLine->appendNode(self);
 
-        currentCodeLine->appendNode(jsonObjectNode);
-
-        currentCodeLine = VTableCall::appendToLine(jsonObjectNode->firstKeyValueItem,
+        currentCodeLine = VTableCall::appendToLine(self->firstKeyValueItem,
                                                    currentCodeLine);
 
-        currentCodeLine = VTableCall::appendToLine(&jsonObjectNode->endBodyNode, currentCodeLine);
+        currentCodeLine = VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
         //currentCodeLine = VTableCall::appendToLine(&classNode->bodyNode, currentCodeLine);
 
         return currentCodeLine;
@@ -86,6 +84,16 @@ namespace smart {
                                                                selfText,
                                                                appendToLine);
     const struct node_vtable *VTables::JsonObjectVTable = &_JsonObjectVTable;
+
+
+
+
+
+
+
+
+
+
 
 
     // -------------------- Implements ClassNode Allocator --------------------- //

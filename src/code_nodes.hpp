@@ -47,7 +47,6 @@ namespace smart {
 
     //(node)->nextErrorNode = nullptr;
 
-
     using NodeBase = struct _NodeBase {
         NODE_HEADER
     };
