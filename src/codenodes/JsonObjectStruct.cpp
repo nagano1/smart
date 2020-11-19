@@ -25,7 +25,7 @@ namespace smart {
 
     // --------------------- Defines JsonKeyValueItemStruct VTable ---------------------- /
 
-    static CodeLine* appendToLine2(JsonKeyValueItemStruct *self, CodeLine *currentCodeLine) {
+    static CodeLine *appendToLine2(JsonKeyValueItemStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
 
         currentCodeLine->appendNode(self);
@@ -37,7 +37,7 @@ namespace smart {
     };
 
 
-    static const utf8byte *selfText2(JsonKeyValueItemStruct *node) {
+    static const utf8byte *selfText_JsonKeyValueItemStruct(JsonKeyValueItemStruct *node) {
         return "b:9";
     }
 
@@ -45,10 +45,9 @@ namespace smart {
         return 3;
     }
 
-
     static const node_vtable _JsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
                                                                              selfTextLength2,
-                                                                             selfText2,
+                                                                             selfText_JsonKeyValueItemStruct,
                                                                              appendToLine2);
 
     const struct node_vtable *VTables::JsonKeyValueItemVTable = &_JsonObjectKeyValueStructVTable;
@@ -57,7 +56,6 @@ namespace smart {
 
 
     // --------------------- Defines JsonObjectStruct VTable ---------------------- /
-
     static int selfTextLength(JsonObjectStruct *self) {
         return 1;
     }
@@ -79,7 +77,7 @@ namespace smart {
 
     static const utf8byte *selfText(JsonObjectStruct *node) {
         return "{";
-    };
+    }
 
 
     static const node_vtable _JsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,
@@ -116,7 +114,6 @@ namespace smart {
         classNode->endBodyNode.symbol[0] = '}';
         classNode->endBodyNode.symbol[1] = '\0';
 
-
         return classNode;
     }
 
@@ -149,7 +146,6 @@ namespace smart {
             //auto *nameNode = Allocator::newNameNode(context, parent);
             context->codeNode = Cast::upcast(nameNode);
             nameNode->name = context->charBuffer.newChars(found_count + 1);
-            // (char*)malloc(found_count+1);
             nameNode->nameLength = found_count;
 
             memcpy(nameNode->name, context->chars + start, found_count);
@@ -196,7 +192,6 @@ namespace smart {
 
         JsonKeyValueItemStruct *nextItem = Allocator::newJsonKeyValueItemNode(context, parent);
 
-
         jsonObject->firstKeyValueItem = nextItem;
         int result;
         if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(parent, ch, start, context))) {
@@ -218,12 +213,11 @@ namespace smart {
     }
 
     // --------------------- Implements JsonObject Parser ----------------------
-
+    //  TODO: Add supports for syntax like  @<MutableDict>{ awef:"fjiowe", test:true }
     int Tokenizers::jsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
         if (ch == '{') {
             int returnPosition = start + 1;
             auto *jsonObject = Allocator::newJsonObject(context, parent);
-
             int result = Scanner::scan(jsonObject,
                                        internal_JsonObjectTokenizer,
                                        returnPosition,
