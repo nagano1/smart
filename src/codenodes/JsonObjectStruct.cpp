@@ -25,10 +25,6 @@ namespace smart {
 
     // --------------------- Defines JsonKeyValueItemStruct VTable ---------------------- /
 
-    static int selfTextLength2(JsonKeyValueItemStruct *self) {
-        return 3;
-    }
-
     static CodeLine* appendToLine2(JsonKeyValueItemStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
 
@@ -43,7 +39,11 @@ namespace smart {
 
     static const utf8byte *selfText2(JsonKeyValueItemStruct *node) {
         return "b:9";
-    };
+    }
+
+    static int selfTextLength2(JsonKeyValueItemStruct *self) {
+        return 3;
+    }
 
 
     static const node_vtable _JsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
