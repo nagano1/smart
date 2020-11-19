@@ -18,18 +18,21 @@
 
 namespace smart {
 
+    /**
+     * JsonKeyValueItemStruct
+     *
+     */
 
     // --------------------- Defines JsonKeyValueItemStruct VTable ---------------------- /
 
-    static int selfTextLength2(JsonKeyValueItemStruct *classNode) {
+    static int selfTextLength2(JsonKeyValueItemStruct *self) {
         return 3;
     }
 
-    static CodeLine *
-    appendToLine2(JsonKeyValueItemStruct *jsonObjectNode, CodeLine *currentCodeLine) {
-        currentCodeLine = currentCodeLine->addPrevLineBreakNode(jsonObjectNode);
+    static CodeLine* appendToLine2(JsonKeyValueItemStruct *self, CodeLine *currentCodeLine) {
+        currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
 
-        currentCodeLine->appendNode(jsonObjectNode);
+        currentCodeLine->appendNode(self);
 
         //currentCodeLine = VTableCall::appendToLine(&jsonObjectNode->endBodyNode, currentCodeLine);
         //currentCodeLine = VTableCall::appendToLine(&classNode->bodyNode, currentCodeLine);
@@ -55,7 +58,7 @@ namespace smart {
 
     // --------------------- Defines JsonObjectStruct VTable ---------------------- /
 
-    static int selfTextLength(JsonObjectStruct *classNode) {
+    static int selfTextLength(JsonObjectStruct *self) {
         return 1;
     }
 
