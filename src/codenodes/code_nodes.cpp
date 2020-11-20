@@ -118,7 +118,7 @@ namespace smart {
             }
 
             int result = tokenizer(Cast::upcast(parentNode), ch, i, context);
-            if (context->errorInfo.hasError) {
+            if (context->syntaxErrorInfo.hasError) {
                 return -1;
             }
 

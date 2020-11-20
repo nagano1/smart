@@ -173,7 +173,7 @@ namespace smart {
         JsonDocument
     };
 
-    using DocumentStruct = struct _documentStruct{
+    using DocumentStruct = struct _documentStruct {
         NODE_HEADER
 
         DocumentType documentType;
@@ -217,12 +217,16 @@ namespace smart {
     };
     */
 
-    using ErrorInfo = struct _errorInfo{
-        bool hasError {false};
+    /**
+     * Syntax error is allowed only once
+     */
+    using SyntaxErrorInfo = struct _errorInfo {
+        bool hasError{false};
 
         int startLine;
-        int startCharacter;
         int endLine;
+
+        int startCharacter;
         int endCharacter;
 
         int errorCode = 100;
@@ -236,7 +240,7 @@ namespace smart {
         NodeBase *codeNode;
         int former_start;
         utf8byte *chars;
-        ErrorInfo errorInfo;
+        SyntaxErrorInfo syntaxErrorInfo;
         bool has_cancel_request = false;
 
         void (*actionCreator)(void *node1, void *node2, int actionRequest);
@@ -327,7 +331,7 @@ namespace smart {
             , reinterpret_cast<appendToLineFunction> (f3) \
         } \
         ;static const int check_result_##T = vtable_type_check<T>(f1,f2,f3)
-        // static_assert(std::is_same<F2, decltype(std::declval<vtableT<T>>().selfText)>::value, "");
+    // static_assert(std::is_same<F2, decltype(std::declval<vtableT<T>>().selfText)>::value, "");
 
     struct VTables {
         static const node_vtable
@@ -471,7 +475,8 @@ namespace smart {
 
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
 
-        static JsonKeyValueItemStruct *newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
+        static JsonKeyValueItemStruct *
+        newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
 
         static void deleteClassNode(NodeBase *node);
 

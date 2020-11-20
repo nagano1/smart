@@ -236,7 +236,7 @@ namespace smart {
             return result;
         }
 
-        if (context->errorInfo.hasError) {
+        if (context->syntaxErrorInfo.hasError) {
             //throw 3;
         }
 
@@ -275,7 +275,7 @@ namespace smart {
         assert(docStruct->context != nullptr);
 
         auto *context = docStruct->context;
-        context->errorInfo.hasError = false;
+        context->syntaxErrorInfo.hasError = false;
         context->chars = const_cast<utf8byte *>(text);
         context->start = 0;
         context->length = length;

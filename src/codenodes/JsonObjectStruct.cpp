@@ -140,10 +140,8 @@ namespace smart {
 
         if (found_count > 0) {
             context->scanEnd = true;
-            //auto *nameNode = Cast::downcast<NameNodeStruct *>(context->codeNode);
             auto *nameNode = Cast::downcast<NameNodeStruct *>(parent);
 
-            //auto *nameNode = Allocator::newNameNode(context, parent);
             context->codeNode = Cast::upcast(nameNode);
             nameNode->name = context->charBuffer.newChars(found_count + 1);
             nameNode->nameLength = found_count;
@@ -177,7 +175,6 @@ namespace smart {
 
         INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable)
 
-
         Init::initNameNode(&keyValueItem->keyNode, context, parentNode);
         //keyValueItem->startFound = false;
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
@@ -186,7 +183,7 @@ namespace smart {
     }
 
 
-    static inline int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
+    static int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
         auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
         JsonKeyValueItemStruct *currentKeyValueItem = nullptr;
 
