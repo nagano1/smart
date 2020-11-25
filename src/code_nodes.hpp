@@ -84,6 +84,14 @@ namespace smart {
         size_t nameLength;
     };
 
+    using NumberNodeStruct = struct {
+        NODE_HEADER
+        char *text;
+        size_t textLength;
+        int num;
+        int unit;
+    };
+
     using SymbolStruct = struct {
         NODE_HEADER
 
@@ -153,6 +161,8 @@ namespace smart {
 
         NodeBase *valueNode;
 
+        SymbolStruct delimeter;
+
         SymbolStruct follwingComma;
     };
 
@@ -160,6 +170,8 @@ namespace smart {
     // --------- Json Syntax --------- //
     using JsonObjectStruct = struct {
         NODE_HEADER
+
+        int parsePhase;
 
         utf8byte body[2]; // '{'
         SymbolStruct endBodyNode;
@@ -241,7 +253,8 @@ namespace smart {
         int former_start;
         utf8byte *chars;
         SyntaxErrorInfo syntaxErrorInfo;
-        bool has_cancel_request = false;
+        bool has_cancel_request{ false };
+        bool afterLineBreak{ false };
 
         void (*actionCreator)(void *node1, void *node2, int actionRequest);
 
@@ -341,6 +354,7 @@ namespace smart {
                 *JsonKeyValueItemVTable,
                 *ClassBodyVTable,
                 *NameVTable,
+                *NumberVTable,
                 *SymbolVTable,
                 *EndOfFileVTable,
                 *SimpleTextVTable,
@@ -423,6 +437,7 @@ namespace smart {
 
     struct Tokenizers {
         static int nameTokenizer(TokenizerParams_parent_ch_start_context);
+        static int numberTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int classTokenizer(TokenizerParams_parent_ch_start_context);
 
@@ -458,6 +473,7 @@ namespace smart {
 
     struct Init {
         static void initNameNode(NameNodeStruct *name, ParseContext *context, NodeBase *parentNode);
+        static void initNumberNode(NumberNodeStruct *name, ParseContext *context, NodeBase *parentNode);
 
         static void initSymbolNode(SymbolStruct *self, ParseContext *context, void *parentNode,
                                    utf8byte letter);

@@ -71,6 +71,8 @@ namespace smart {
 
         int32_t whitespace_startpos = -1;
 
+        bool afterLineBreak = false;
+
         //context->scanEnd = false;
         for (uint32_t i = start; i < context->length;) {
             ch = context->chars[i];
@@ -78,6 +80,7 @@ namespace smart {
             //console_log("i:" + std::string(":") + ch + "," + std::to_string(i));
 
             if (Tokenizer::isBreakLine(ch)) {
+                afterLineBreak = true;
                 auto *newLineBreak
                         = Allocator::newLineBreakNode(context, Cast::upcast(parentNode));
 
@@ -97,9 +100,7 @@ namespace smart {
 
                 i++;
                 continue;
-            }
-
-            if (Tokenizer::isSpace(ch)) {
+            } else if (Tokenizer::isSpace(ch)) {
                 uint32_t spaceEndIndex = i + 1;
 
                 for (; spaceEndIndex < context->length; spaceEndIndex++) {
@@ -117,7 +118,10 @@ namespace smart {
                 break;
             }
 
+            context->afterLineBreak = afterLineBreak;
             int result = tokenizer(Cast::upcast(parentNode), ch, i, context);
+            afterLineBreak = false;
+
             if (context->syntaxErrorInfo.hasError) {
                 return -1;
             }
