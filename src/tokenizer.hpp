@@ -126,6 +126,9 @@ struct Tokenizer {
         return '\r' == ch || '\n' == ch;
     };
 
+    static inline bool isNumberLetter(utf8byte ch) {
+        return '0' <= ch && ch <= '9';
+    }
 
     static inline bool isIdentifierLetter(utf8byte ch) {
         if ('A' <= ch && ch <= 'Z') {

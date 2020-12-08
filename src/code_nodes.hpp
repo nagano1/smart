@@ -35,6 +35,10 @@ namespace smart {
         ParseContext *context; \
         char prev_char; \
 
+
+    #define TEXT_MEMCPY(p, q, l) \
+        memcpy((p), (q), (l))
+
     #define INIT_NODE(node, context, parent, argvtable) \
         (node)->vtable = (argvtable); \
         (node)->prev_char = '\0'; \
@@ -86,6 +90,7 @@ namespace smart {
 
     using NumberNodeStruct = struct {
         NODE_HEADER
+
         char *text;
         size_t textLength;
         int num;
@@ -432,6 +437,8 @@ namespace smart {
     #define TokenizerParams_parent_ch_start_context \
         NodeBase *parent, utf8byte ch, int start, ParseContext *context
 
+    #define TokenizerParams_pass parent, ch, start, context
+
     using TokenizerFunction = int (*)(TokenizerParams_parent_ch_start_context);
 
 
@@ -477,10 +484,11 @@ namespace smart {
 
         static void initSymbolNode(SymbolStruct *self, ParseContext *context, void *parentNode,
                                    utf8byte letter);
-
     };
 
     struct Allocator {
+        static NumberNodeStruct *newNumberNode(ParseContext *context, NodeBase *parentNode);
+
 
         static LineBreakNodeStruct *newLineBreakNode(ParseContext *context, NodeBase *parentNode);
         //static ErrorNodeStruct *newErrorNode(ParseContext *context, NodeBase *parentNode);

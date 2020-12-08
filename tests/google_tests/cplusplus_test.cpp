@@ -776,22 +776,22 @@ TEST(concept, add_consume_test) {
         */
 
 
-        uint64_t value0;
-        uint64_t value1;
-        uint64_t value2;
-        uint64_t value3;
-        uint64_t value4;
-        uint64_t value5;
-        uint64_t value6;
-        uint64_t value7;
-        uint64_t value8;
-        uint64_t value9;
-        uint64_t value10;
-        uint64_t value11;
-        uint64_t value12;
-        uint64_t value13;
-        uint64_t value14;
-        uint64_t value15;
+        char value0;
+        char value1;
+        char value2;
+        char value3;
+        char value4;
+        char value5;
+        char value6;
+        char value7;
+        char value8;
+        char value9;
+        char value10;
+        char value11;
+        char value12;
+        char value13;
+        char value14;
+        char value15;
 
 
         /*

@@ -170,6 +170,7 @@
     <ClCompile Include="..\..\src\codenodes\JsonObjectStruct.cpp" />
     <ClCompile Include="..\..\src\codenodes\LineBreak.cpp" />
     <ClCompile Include="..\..\src\codenodes\NameNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\NumberNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
     <ClCompile Include="..\..\src\LSP_server\LSPMain.cpp" />

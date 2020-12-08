@@ -18,6 +18,13 @@
 
 namespace smart {
 
+    enum phase {
+        NAME = 0,
+        DELIMETER = 1,
+        VALUE = 2,
+        COMMA = 3
+    };
+
     /**
      * JsonKeyValueItemStruct
      *
@@ -47,10 +54,16 @@ namespace smart {
 
     static const node_vtable _JsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
                                                                              selfTextLength2,
-                                                                             selfText_JsonKeyValueItemStruct,
+                                                                            selfText_JsonKeyValueItemStruct,
                                                                              appendToLine2);
 
     const struct node_vtable *VTables::JsonKeyValueItemVTable = &_JsonObjectKeyValueStructVTable;
+
+
+
+
+
+
 
 
     // --------------------- Defines JsonObjectStruct VTable ---------------------- /
@@ -63,10 +76,11 @@ namespace smart {
 
         currentCodeLine->appendNode(self);
 
-        currentCodeLine = VTableCall::appendToLine(self->firstKeyValueItem,
-                                                   currentCodeLine);
+        if (self->firstKeyValueItem != nullptr) {
+//            currentCodeLine = VTableCall::appendToLine(self->firstKeyValueItem, currentCodeLine);
+        }
 
-        currentCodeLine = VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
+        //currentCodeLine = VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
         //currentCodeLine = VTableCall::appendToLine(&classNode->bodyNode, currentCodeLine);
 
         return currentCodeLine;
@@ -98,22 +112,22 @@ namespace smart {
     // -------------------- Implements ClassNode Allocator --------------------- //
 
     JsonObjectStruct *Allocator::newJsonObject(ParseContext *context, NodeBase *parentNode) {
-        auto *classNode = simpleMalloc<JsonObjectStruct>();
-        INIT_NODE(classNode, context, parentNode, &_JsonObjectVTable);
-        classNode->firstKeyValueItem = nullptr;
-        classNode->lastKeyValueItem = nullptr;
-        classNode->parsePhase = 0;
+        auto *jsonObjectNode = simpleMalloc<JsonObjectStruct>();
+        INIT_NODE(jsonObjectNode, context, parentNode, VTables::JsonObjectVTable);
+        jsonObjectNode->firstKeyValueItem = nullptr;
+        jsonObjectNode->lastKeyValueItem = nullptr;
+        jsonObjectNode->parsePhase = phase::NAME;
 
         //Init::initNameNode(&classNode->nameNode, context);
 
-        INIT_NODE(&classNode->endBodyNode,
+        INIT_NODE(&jsonObjectNode->endBodyNode,
                   context,
-                  Cast::upcast(classNode),
+                  Cast::upcast(jsonObjectNode),
                   VTables::SymbolVTable);
-        classNode->endBodyNode.symbol[0] = '}';
-        classNode->endBodyNode.symbol[1] = '\0';
+        jsonObjectNode->endBodyNode.symbol[0] = '}';
+        jsonObjectNode->endBodyNode.symbol[1] = '\0';
 
-        return classNode;
+        return jsonObjectNode;
     }
 
     void Allocator::deleteJsonObject(NodeBase *node) {
@@ -165,9 +179,6 @@ namespace smart {
     }
 
 
-    int Tokenizers::jsonValueTokenizer(TokenizerParams_parent_ch_start_context) {
-        return -1;
-    }
 
 
     static void appendRootNode(JsonObjectStruct *doc, JsonKeyValueItemStruct *node) {
@@ -180,6 +191,39 @@ namespace smart {
         doc->lastKeyValueItem = node;
         //doc->itemCount++;
     }
+
+
+
+    static int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context);
+
+        // --------------------- Implements JsonObject Parser ----------------------
+    //  TODO: Add supports for new syntax like  @<MutableDict>{ awef:"fjiowe", test:true }
+    int Tokenizers::jsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
+        if (ch == '{') {
+            int returnPosition = start + 1;
+            auto *jsonObject = Allocator::newJsonObject(context, parent);
+            int result = Scanner::scan(jsonObject,
+                                       internal_JsonObjectTokenizer,
+                                       returnPosition,
+                                       context);
+
+            if (result > -1) {
+                returnPosition = result;
+            }
+
+            context->codeNode = Cast::upcast(jsonObject);
+            return returnPosition;
+        }
+
+        return -1;
+    }
+
+
+
+
+
+
+
 
 
     JsonKeyValueItemStruct *
@@ -195,7 +239,11 @@ namespace smart {
         return keyValueItem;
     }
 
-    static int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
+    int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
+        if (ch == '}') {
+            return start + 1;
+        }
+
         auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
         printf("\njsonObject->parsePhase = %d\n", jsonObject->parsePhase);
         printf("\ncontext->afterLineBreak= %d\n", context->afterLineBreak);
@@ -211,12 +259,13 @@ namespace smart {
         //                 .awfe()
         // }
         // aaawef = awe.fwe()
-        //             .func() + 234123
-        //          + 1234
-        //          ;
-        // aweff = 2342;
+        //             .func()
+        //             + 234123
+        //             + 1234
+        // (-1243).afwef; test(); jfiowajo();
+        // aweff = 2342
 
-        if (jsonObject->parsePhase == 0) {
+        if (jsonObject->parsePhase == phase::NAME) {
             JsonKeyValueItemStruct *nextItem = Allocator::newJsonKeyValueItemNode(context, parent);
             if (jsonObject->firstKeyValueItem == nullptr) {
                 jsonObject->firstKeyValueItem = nextItem;
@@ -227,34 +276,49 @@ namespace smart {
 
             int result;
             if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(parent, ch, start, context))) {
-                jsonObject->parsePhase = 1;
+                jsonObject->parsePhase = phase::DELIMETER;
                 return result;
             }
             return -1;
         }
 
-        auto *lastKeyValueItem = jsonObject->lastKeyValueItem;
-        if (jsonObject->parsePhase == 1) {
+
+        auto *currentKeyValueItem = jsonObject->lastKeyValueItem;
+        if (jsonObject->parsePhase == phase::DELIMETER) {
             if (ch == ':') { // delimeter
-                context->codeNode = Cast::upcast(&lastKeyValueItem->delimeter);
-                jsonObject->parsePhase = 2;
+                context->codeNode = Cast::upcast(&currentKeyValueItem->delimeter);
+                jsonObject->parsePhase = phase::VALUE;
                 return start + 1;
             }
             return -1;
         }
 
-        if (jsonObject->parsePhase == 2) {
+
+        if (jsonObject->parsePhase == phase::VALUE) {
             int result;
-            if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(parent, ch, start, context))) {
-                jsonObject->parsePhase = 3;
+            if (-1 < (result = Tokenizers::jsonValueTokenizer(parent, ch, start, context))) {
+                currentKeyValueItem->valueNode = context->codeNode;
+                jsonObject->parsePhase = phase::COMMA;
+                printf("wowowow");
+                context->scanEnd = true;
                 return result;
             }
             return -1;
         }
 
-        if (jsonObject->parsePhase == 3) {
+        if (jsonObject->parsePhase == phase::COMMA) {
+            printf("here 3 result");
 
-
+            if (ch == ',') { // try to find ',' which leads to next key-value
+                printf("here 3 result");
+                context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
+                return start + 1;
+            }
+            else if (ch == '}') {
+                context->codeNode = Cast::upcast(&jsonObject->endBodyNode);
+                return start + 1;
+            }
+            return -1;
         }
 
 
@@ -265,7 +329,7 @@ namespace smart {
         //appendRootNode(doc, context->codeNode);
         //return result;
         //} else
- if (ch == ',') { // try to find ',' which leads to next key-value
+        if (ch == ',') { // try to find ',' which leads to next key-value
 
         } else if (ch == '}') { // try to find '}' which finalizes this object
 
@@ -275,25 +339,10 @@ namespace smart {
         return -1;
     }
 
-    // --------------------- Implements JsonObject Parser ----------------------
-    //  TODO: Add supports for new syntax like  @<MutableDict>{ awef:"fjiowe", test:true }
-    int Tokenizers::jsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
-        if (ch == '{') {
-            int returnPosition = start + 1;
-            auto *jsonObject = Allocator::newJsonObject(context, parent);
-            int result = Scanner::scan(jsonObject,
-                                       internal_JsonObjectTokenizer,
-                                       returnPosition,
-                                       context);
-            printf("\n WWWWWWW");
-            if (result > -1) {
-                returnPosition = result;
-            }
 
-            context->codeNode = Cast::upcast(jsonObject);
-            return returnPosition;
-        }
+    int Tokenizers::jsonValueTokenizer(TokenizerParams_parent_ch_start_context) {
+        printf("value tokenizer\n");
+        return Tokenizers::numberTokenizer(TokenizerParams_pass);
+    }
 
-        return -1;
-    };
 }

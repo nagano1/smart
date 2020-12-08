@@ -41,6 +41,9 @@ namespace smart {
             return currentCodeLine;
         }
         auto *nodeBase = Cast::upcast(node);
+        if (nodeBase->vtable == nullptr) {
+            int a = 0;
+        }
         return nodeBase->vtable->appendToLine(nodeBase, currentCodeLine);
     }
 
@@ -119,17 +122,21 @@ namespace smart {
             }
 
             context->afterLineBreak = afterLineBreak;
+            printf("START\n");
             int result = tokenizer(Cast::upcast(parentNode), ch, i, context);
             afterLineBreak = false;
+            printf("END\n");
 
             if (context->syntaxErrorInfo.hasError) {
-                return -1;
+                //return -1;
             }
 
             if (result > -1) {
                 //console_log(":try:" + std::to_string(result));
 
                 // Attach a space node
+                /*
+*/
                 if (whitespace_startpos != -1) {
                     if (context->chars[whitespace_startpos] == ' '
                         && i - whitespace_startpos == 1) {
