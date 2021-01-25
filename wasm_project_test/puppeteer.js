@@ -53,15 +53,18 @@ function slp(milliseconds) {
     });
 
     // wait for loading web assembly
-    await slp(2000);
-
-    if (!okOnce) {
-        await slp(6000);
-        if (!okOnce) {
-            console.error("okOnce error");
-            await process.exit(118);
+    for (let t = 0; t < 10; t++) {
+        await slp(2000);
+        if (okOnce) {
+            break;
         }
     }
+
+    if (!okOnce) {
+        console.error("okOnce error");
+        await process.exit(118);
+    }
+    
 
     console.log('Dimensions:', dimensions);
     console.log('title:', dimensions.title);
