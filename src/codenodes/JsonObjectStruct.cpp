@@ -171,7 +171,7 @@ namespace smart {
             nameNode->nameLength = found_count;
 
             memcpy(nameNode->name, context->chars + start, found_count);
-            printf("\nname = %s", nameNode->name);
+            //printf("\nname = %s", nameNode->name);
             //nameNode->name[found_count] = '\0';
             return start + found_count;
         }
@@ -245,8 +245,8 @@ namespace smart {
         }
 
         auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
-        printf("\njsonObject->parsePhase = %d\n", jsonObject->parsePhase);
-        printf("\ncontext->afterLineBreak= %d\n", context->afterLineBreak);
+        //printf("\njsonObject->parsePhase = %d\n", jsonObject->parsePhase);
+        //printf("\ncontext->afterLineBreak= %d\n", context->afterLineBreak);
 
         // object name
         // var val = {
@@ -299,7 +299,7 @@ namespace smart {
             if (-1 < (result = Tokenizers::jsonValueTokenizer(parent, ch, start, context))) {
                 currentKeyValueItem->valueNode = context->codeNode;
                 jsonObject->parsePhase = phase::COMMA;
-                printf("wowowow");
+//                printf("wowowow");
                 context->scanEnd = true;
                 return result;
             }

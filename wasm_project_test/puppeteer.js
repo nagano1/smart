@@ -19,7 +19,7 @@ function slp(milliseconds) {
     const browser = await puppeteer.launch({});
     const page = await browser.newPage();
 
-    let okOnce = true;//false
+    let okOnce = false
 
     page.on('console',
         async msg => {
