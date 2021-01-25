@@ -190,6 +190,7 @@
                 ).then(bytes2 =>
                     WebAssembly.instantiate(bytes2, importObject)
                 ).then(function (wasmObj2)  {
+                    /*
                             subwasm = wasmObj2;
 
                             console.log(" subwasm.instance.exports.calling");
@@ -200,7 +201,7 @@
                             console.info("subwasm.instance.exports.memory")
                             console.info(wasmMemory.buffer.byteLength)
                             document.getElementById("one").innerHTML = "8" + ret;
-
+*/
                         });
             });
 
