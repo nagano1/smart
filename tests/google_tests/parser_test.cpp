@@ -527,7 +527,7 @@ class jips {
     auto one_op_nanosec = nanoseconds / static_cast<double>(loopCount);
 
     //EXPECT_LT(one_op_nanosec, 15000);
-    EXPECT_LT(one_op_nanosec, 25000);
+    EXPECT_LT(one_op_nanosec, 35000);
     std::cout << "one" << one_op_nanosec;
 }
 

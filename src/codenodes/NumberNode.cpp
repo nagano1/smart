@@ -58,7 +58,7 @@ namespace smart {
 
             TEXT_MEMCPY(numberNode->text, context->chars + start, found_count);
             numberNode->text[found_count] = '\0';
-            printf("number : %s\n", numberNode->text);
+//            printf("number : %s\n", numberNode->text);
             return start + found_count;
         }
 

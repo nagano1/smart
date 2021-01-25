@@ -307,10 +307,10 @@ namespace smart {
         }
 
         if (jsonObject->parsePhase == phase::COMMA) {
-            printf("here 3 result");
+            //printf("here 3 result");
 
             if (ch == ',') { // try to find ',' which leads to next key-value
-                printf("here 3 result");
+                //printf("here 3 result");
                 context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
                 return start + 1;
             }
@@ -341,7 +341,6 @@ namespace smart {
 
 
     int Tokenizers::jsonValueTokenizer(TokenizerParams_parent_ch_start_context) {
-        printf("value tokenizer\n");
         return Tokenizers::numberTokenizer(TokenizerParams_pass);
     }
 
