@@ -275,6 +275,7 @@ class CppCompileGroup extends DependencyGroup {
 
         // all, add, addDir, change, unlink, unlinkDir, ready, raw, error
         chokidar.watch(targetFiles).on('all', async (event, file) => {
+            console.info(`watch event: ${event}`);
             if (event == "change") {
                 if (file.indexOf(".hpp") > -1) {
                     await this.initFinishedPromise();

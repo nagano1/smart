@@ -90,7 +90,6 @@ extern "C" {
 
  int calling(int p) {
      print("{\"isTestResult\":true, \"ok\": true}");
-
      print("then, what got there?");
         void * a = malloc(3);
 

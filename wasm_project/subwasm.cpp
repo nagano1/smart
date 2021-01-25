@@ -17,11 +17,9 @@ extern "C" void* memory;
 
 extern "C" {
 
-
     int calling2(int p) {
-        return 13330 + p;
+        return 330 + p;
     }
-
 
     int calling(int p) {
         print("time seed = ");
