@@ -18,6 +18,7 @@ extern "C" void* memory;
 extern "C" {
 
     int calling2(int p) {
+        print("{\"isTestResult\":true, \"ok\": false}");
         return 330 + p;
     }
 
