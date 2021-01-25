@@ -122,10 +122,8 @@ namespace smart {
             }
 
             context->afterLineBreak = afterLineBreak;
-            printf("START\n");
             int result = tokenizer(Cast::upcast(parentNode), ch, i, context);
             afterLineBreak = false;
-            printf("END\n");
 
             if (context->syntaxErrorInfo.hasError) {
                 //return -1;
