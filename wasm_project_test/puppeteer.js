@@ -53,7 +53,7 @@ function slp(milliseconds) {
     });
 
     // wait for loading web assembly
-    await slp(4000);
+    await slp(5000);
 
     if (!okOnce) {
         console.error("okOnce error");
