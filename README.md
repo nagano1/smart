@@ -1,7 +1,7 @@
 
 
 ![👽 Windows binary using Clang/LLVM](https://github.com/nagano1/smart/workflows/%F0%9F%91%BD%20Windows%20binary%20using%20Clang/LLVM/badge.svg)
-
+![👺 Wasm test, build file, upload it and test it](https://github.com/nagano1/smart/workflows/%F0%9F%91%BA%20Wasm%20test,%20build%20file,%20upload%20it%20and%20test%20it/badge.svg)
 
 <aowfeijf ara:=awfjo-ajweoifjoaw aowiejf:=jofaiwe-ojawiefwao awfea:ajwoipjfpowa afe="jafowief" awf=foiawjeopaw
 
