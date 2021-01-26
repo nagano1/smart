@@ -56,6 +56,8 @@ inline void console_log(const std::string &message) {
 #else
 inline void console_log(const std::string &message) {
     //std::cout << message;
+                printf(a.c_str());
+
 }
 #endif
 
