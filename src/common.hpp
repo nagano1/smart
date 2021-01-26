@@ -43,8 +43,8 @@ static inline T *simpleMalloc() {
 
 #include <android/log.h>
 
-inline void console_log(const std::string &message) {
-    __android_log_print(ANDROID_LOG_DEBUG, "aaa", ": %s", message.c_str());
+inline void console_log(const char *str) {
+    __android_log_print(ANDROID_LOG_DEBUG, "aaa", ": %s", str);
 }
 
 
@@ -54,10 +54,9 @@ inline void console_log(const std::string &message) {
 #define GLOG smartlang::Log{}
 
 #else
-inline void console_log(const std::string &message) {
+inline void console_log(const char *str) {
     //std::cout << message;
                 //printf(a.c_str());
-
 }
 #endif
 
