@@ -62,7 +62,7 @@ inline void console_log(const char *str) {
 #else
 inline void console_log(const char *str) {
     //std::cout << message;
-                //printf(a.c_str());
+               printf(str);
 }
 #endif
 
