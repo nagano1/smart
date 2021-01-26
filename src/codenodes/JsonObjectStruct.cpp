@@ -323,6 +323,7 @@ namespace smart {
             return -1;
         }
 
+
         if (jsonObject->parsePhase == phase::COMMA) {
 
             if (ch == ',') { // try to find ',' which leads to next key-value
