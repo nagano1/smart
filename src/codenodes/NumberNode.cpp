@@ -30,6 +30,7 @@ namespace smart {
     };
 
     static const char *self_text(NumberNodeStruct *self) {
+        console_log("self_text");
         return self->text;
     };
 
@@ -60,6 +61,8 @@ namespace smart {
             numberNode->text[found_count] = '\0';
             
 //            printf("number : %s\n", numberNode->text);
+            console_log(numberNode->text);
+
             return start + found_count;
         }
 

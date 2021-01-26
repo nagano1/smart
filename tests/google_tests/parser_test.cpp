@@ -21,7 +21,18 @@ TEST(parser_test, JsonParseTest) {
 )");
 
     text = const_cast<char *>(u8R"(
-{"a":1,
+{     "aowowowo": 2124
+
+
+
+
+
+
+
+
+
+
+
 }
 )");
 
@@ -32,7 +43,7 @@ TEST(parser_test, JsonParseTest) {
     if (treeText != nullptr) {
         Allocator::deleteDocument(document);
         // EXPECT_EQ(std::string(treeText), "\n{b:18}\n");
-        //EXPECT_EQ(std::string{ treeText }, std::string{ text });
+        EXPECT_EQ(std::string{ treeText }, std::string{ text });
     }
 
 }

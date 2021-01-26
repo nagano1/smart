@@ -35,16 +35,24 @@ namespace smart {
     static CodeLine *appendToLine2(JsonKeyValueItemStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
 
-        currentCodeLine->appendNode(self);
+        console_log("appendTo this\n");
+       //currentCodeLine->appendNode(self);
 
-        //currentCodeLine = VTableCall::appendToLine(&jsonObjectNode->endBodyNode, currentCodeLine);
-        //currentCodeLine = VTableCall::appendToLine(&classNode->bodyNode, currentCodeLine);
+        currentCodeLine = VTableCall::appendToLine(&self->keyNode, currentCodeLine);
+        currentCodeLine = VTableCall::appendToLine(&self->delimeter, currentCodeLine);
+        if (self->valueNode) {
+            currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+        }
+        //currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
+
 
         return currentCodeLine;
     };
 
 
     static const utf8byte *selfText_JsonKeyValueItemStruct(JsonKeyValueItemStruct *self) {
+        console_log("appendTo this 3 \n");
+
         return self->keyNode.name;// "b:9";
     }
 
@@ -77,10 +85,10 @@ namespace smart {
         currentCodeLine->appendNode(self);
 
         if (self->firstKeyValueItem != nullptr) {
-//            currentCodeLine = VTableCall::appendToLine(self->firstKeyValueItem, currentCodeLine);
+            currentCodeLine = VTableCall::appendToLine(self->firstKeyValueItem, currentCodeLine);
         }
 
-        //currentCodeLine = VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
+        currentCodeLine = VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
         //currentCodeLine = VTableCall::appendToLine(&classNode->bodyNode, currentCodeLine);
 
         return currentCodeLine;
@@ -234,15 +242,19 @@ namespace smart {
 
         Init::initNameNode(&keyValueItem->keyNode, context, parentNode);
         //keyValueItem->startFound = false;
+        Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
+
 
         return keyValueItem;
     }
 
     int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
+        /*
         if (ch == '}') {
             return start + 1;
         }
+        */
 
         auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
 
@@ -274,11 +286,11 @@ namespace smart {
                 jsonObject->lastKeyValueItem->nextNode = Cast::upcast(nextItem);
             }
             jsonObject->lastKeyValueItem = nextItem;
+            
 
             int result;
-            if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(parent, ch, start, context))) {
+            if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(Cast::upcast(&nextItem->keyNode), ch, start, context))) {
                 jsonObject->parsePhase = phase::DELIMETER;
-                console_log("name");
 
                 return result;
             }
@@ -305,7 +317,7 @@ namespace smart {
                 currentKeyValueItem->valueNode = context->codeNode;
                 jsonObject->parsePhase = phase::COMMA;
 //                printf("wowowow");
-                context->scanEnd = true;
+                context->scanEnd = false;
                 return result;
             }
             return -1;
@@ -314,7 +326,6 @@ namespace smart {
         if (jsonObject->parsePhase == phase::COMMA) {
 
             if (ch == ',') { // try to find ',' which leads to next key-value
-                //printf("here 3 result");
                 context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
                 return start + 1;
             }
