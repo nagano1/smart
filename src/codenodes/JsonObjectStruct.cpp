@@ -245,7 +245,6 @@ namespace smart {
         }
 
         auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
-        console_log("jsonObject\n");
 
         //printf("\njsonObject->parsePhase = %d\n", jsonObject->parsePhase);
         //printf("\ncontext->afterLineBreak= %d\n", context->afterLineBreak);
@@ -279,6 +278,8 @@ namespace smart {
             int result;
             if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(parent, ch, start, context))) {
                 jsonObject->parsePhase = phase::DELIMETER;
+                console_log("name");
+
                 return result;
             }
             return -1;
@@ -288,6 +289,8 @@ namespace smart {
         auto *currentKeyValueItem = jsonObject->lastKeyValueItem;
         if (jsonObject->parsePhase == phase::DELIMETER) {
             if (ch == ':') { // delimeter
+                console_log("comma");
+
                 context->codeNode = Cast::upcast(&currentKeyValueItem->delimeter);
                 jsonObject->parsePhase = phase::VALUE;
                 return start + 1;
@@ -309,7 +312,6 @@ namespace smart {
         }
 
         if (jsonObject->parsePhase == phase::COMMA) {
-            //printf("here 3 result");
 
             if (ch == ',') { // try to find ',' which leads to next key-value
                 //printf("here 3 result");
