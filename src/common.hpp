@@ -51,18 +51,16 @@ inline void console_log(const char *str) {
 #define PREPARE_OSTREAM \
 //Foo foo{}; \
 
-#define GLOG smartlang::Log{}
-
 #else
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 inline void console_log(const char *str) {
     //std::cout << message;
-    printf(str);//message.c_str());
+    printf(str);
 }
 #else
 inline void console_log(const char *str) {
     //std::cout << message;
-               //printf(str);
+    //printf(str);
 }
 #endif
 

@@ -245,7 +245,8 @@ namespace smart {
         }
 
         auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
-        console_log("wowow");// numberNode->text);
+        console_log("jsonObject\n");
+
         //printf("\njsonObject->parsePhase = %d\n", jsonObject->parsePhase);
         //printf("\ncontext->afterLineBreak= %d\n", context->afterLineBreak);
 
