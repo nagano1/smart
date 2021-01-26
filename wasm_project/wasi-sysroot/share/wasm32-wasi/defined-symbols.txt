@@ -172,7 +172,6 @@ __polevll
 __posix_getopt
 __pow_log_data
 __powf_log2_data
-__prepare_for_exit
 __progname
 __progname_full
 __putenv
@@ -219,7 +218,6 @@ __strcoll_l
 __strerror_l
 __strftime_fmt_1
 __strftime_l
-__string_read
 __strncasecmp_l
 __strtoimax_internal
 __strtol_internal
@@ -251,11 +249,14 @@ __uflow
 __unlist_locked_file
 __uselocale
 __utc
+__wasilibc_cwd
 __wasilibc_ensure_environ
 __wasilibc_environ
 __wasilibc_environ
 __wasilibc_fd_renumber
+__wasilibc_find_abspath
 __wasilibc_find_relpath
+__wasilibc_find_relpath_alloc
 __wasilibc_initialize_environ
 __wasilibc_open_nomode
 __wasilibc_openat_nomode
@@ -263,6 +264,7 @@ __wasilibc_register_preopened_fd
 __wasilibc_rmdirat
 __wasilibc_tell
 __wasilibc_unlinkat
+__wasm_call_dtors
 __wcscoll_l
 __wcsftime_l
 __wcsxfrm_l
@@ -275,6 +277,7 @@ _environ
 _exit
 _flushlbf
 _initialize
+_start
 _start
 a64l
 abort
@@ -367,6 +370,7 @@ ceill
 cexp
 cexpf
 cexpl
+chdir
 cimag
 cimagf
 cimagl
@@ -578,6 +582,7 @@ getc
 getc_unlocked
 getchar
 getchar_unlocked
+getcwd
 getdate
 getdate_err
 getdelim
