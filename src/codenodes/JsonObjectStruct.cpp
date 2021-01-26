@@ -317,7 +317,7 @@ namespace smart {
                 currentKeyValueItem->valueNode = context->codeNode;
                 jsonObject->parsePhase = phase::COMMA;
 //                printf("wowowow");
-                context->scanEnd = true;
+                context->scanEnd = false;
                 return result;
             }
             return -1;
