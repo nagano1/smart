@@ -25,7 +25,6 @@ jobs:
               addpath: 'echo "C:\\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
               sudo: ' ',
             }  
-
     steps:
       # - uses: actions/checkout@v1
       - uses: actions/checkout@v2
