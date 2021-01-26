@@ -54,10 +54,18 @@ inline void console_log(const char *str) {
 #define GLOG smartlang::Log{}
 
 #else
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+inline void console_log(const char *str) {
+    //std::cout << message;
+    printf(str);//message.c_str());
+}
+#else
 inline void console_log(const char *str) {
     //std::cout << message;
                 //printf(a.c_str());
 }
+#endif
+
 #endif
 
 
