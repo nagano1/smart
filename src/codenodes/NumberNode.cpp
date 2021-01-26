@@ -39,6 +39,14 @@ namespace smart {
     }
 
 
+    static constexpr const char numberNodeTypeText[] = "<Number>";
+    static const char *typeText(NumberNodeStruct *self) {
+        return numberNodeTypeText;
+    }
+    static int typeTextLength(NumberNodeStruct *self) {
+        return sizeof(numberNodeTypeText) - 1;
+    }
+
     int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context) {
         unsigned int found_count = 0;
         for (uint_fast32_t i = start; i < context->length; i++) {
@@ -50,7 +58,7 @@ namespace smart {
         }
 
         if (found_count > 0) {
-            //context->scanEnd = true;
+            context->scanEnd = true;
             auto *numberNode = Allocator::newNumberNode(context, parent);
 
             context->codeNode = Cast::upcast(numberNode);
@@ -70,10 +78,10 @@ namespace smart {
     };
 
 
-    static const node_vtable _Number_VTable = CREATE_VTABLE(NumberNodeStruct,
-            selfTextLength,
+    static const node_vtable _Number_VTable = CREATE_VTABLE(NumberNodeStruct, selfTextLength,
                                                           self_text,
-                                                          appendToLine);
+                                                          appendToLine, typeTextLength, typeText);
+
     const node_vtable *VTables::NumberVTable = &_Number_VTable;
 
 

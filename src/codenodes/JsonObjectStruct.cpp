@@ -36,7 +36,7 @@ namespace smart {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
 
         console_log("appendTo this\n");
-       //currentCodeLine->appendNode(self);
+       currentCodeLine->appendNode(self);
 
         currentCodeLine = VTableCall::appendToLine(&self->keyNode, currentCodeLine);
         currentCodeLine = VTableCall::appendToLine(&self->delimeter, currentCodeLine);
@@ -51,19 +51,30 @@ namespace smart {
 
 
     static const utf8byte *selfText_JsonKeyValueItemStruct(JsonKeyValueItemStruct *self) {
-        console_log("appendTo this 3 \n");
-
-        return self->keyNode.name;// "b:9";
+        return "";//self->keyNode.name;// "b:9";
     }
 
     static int selfTextLength2(JsonKeyValueItemStruct *self) {
-        return self->keyNode.nameLength;// 3;
+        return 0;// self->keyNode.nameLength;// 3;
+    }
+
+
+    static constexpr char class_chars[] = "<JsonKeyValueItem>";
+    static const utf8byte *typeText2(JsonKeyValueItemStruct *self) {
+        return  class_chars;
+    }
+
+    static int typeTextLength2(JsonKeyValueItemStruct *self) {
+        return sizeof(class_chars) - 1;
+        //const char foo[] = "<JsonKeyValueItem>";
+        //size_t len = sizeof(foo) - 1;
+        //return len;
     }
 
     static const node_vtable _JsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
                                                                              selfTextLength2,
                                                                             selfText_JsonKeyValueItemStruct,
-                                                                             appendToLine2);
+                                                                             appendToLine2, typeTextLength2, typeText2);
 
     const struct node_vtable *VTables::JsonKeyValueItemVTable = &_JsonObjectKeyValueStructVTable;
 
@@ -77,6 +88,18 @@ namespace smart {
     // --------------------- Defines JsonObjectStruct VTable ---------------------- /
     static int selfTextLength(JsonObjectStruct *self) {
         return 1;
+    }
+
+    static const utf8byte *selfText(JsonObjectStruct *node) {
+        return "{";
+    }
+
+    static int typeTextLength(JsonObjectStruct *self) {
+        return 12;
+    }
+
+    static const utf8byte *typeText(JsonObjectStruct *node) {
+        return "<JsonObject>";
     }
 
     static CodeLine *appendToLine(JsonObjectStruct *self, CodeLine *currentCodeLine) {
@@ -95,15 +118,10 @@ namespace smart {
     };
 
 
-    static const utf8byte *selfText(JsonObjectStruct *node) {
-        return "{";
-    }
-
 
     static const node_vtable _JsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,
-                                                               selfTextLength,
-                                                               selfText,
-                                                               appendToLine);
+                                                               selfTextLength, selfText,
+                                                               appendToLine, typeTextLength, typeText);
     const struct node_vtable *VTables::JsonObjectVTable = &_JsonObjectVTable;
 
 
@@ -215,11 +233,11 @@ namespace smart {
                                        returnPosition,
                                        context);
 
+            context->codeNode = Cast::upcast(jsonObject);
             if (result > -1) {
                 returnPosition = result;
             }
 
-            context->codeNode = Cast::upcast(jsonObject);
             return returnPosition;
         }
 
@@ -317,7 +335,7 @@ namespace smart {
                 currentKeyValueItem->valueNode = context->codeNode;
                 jsonObject->parsePhase = phase::COMMA;
 //                printf("wowowow");
-                context->scanEnd = false;
+                //context->scanEnd = false;
                 return result;
             }
             return -1;

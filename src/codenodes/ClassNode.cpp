@@ -33,6 +33,18 @@ namespace smart {
         return 5;
     }
 
+    static const utf8byte *selfText(ClassNodeStruct *node) {
+        return "class";
+    }
+
+    static int selfTypeTextLength(ClassNodeStruct *classNode) {
+        return 7;
+    }
+
+    static const utf8byte *selfTypeText(ClassNodeStruct *node) {
+        return "<Class>";
+    }
+
     static CodeLine *appendToLine(ClassNodeStruct *self, CodeLine *currentCodeLine) {
         auto *classNode = self;//Cast::downcast<ClassNodeStruct *>(self);
 
@@ -57,15 +69,15 @@ namespace smart {
         return currentCodeLine;
     };
 
-    static const utf8byte *selfText(ClassNodeStruct *node) {
-        return "class";
-    };
 
 
     static const node_vtable _ClassVTable = CREATE_VTABLE(ClassNodeStruct,
                                                           selfTextLength,
                                                           selfText,
-                                                          appendToLine);
+                                                          appendToLine,
+                                                          selfTypeTextLength,
+                                                          selfTypeText
+    );
     const struct node_vtable *VTables::ClassVTable = &_ClassVTable;
 
 

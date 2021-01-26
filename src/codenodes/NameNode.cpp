@@ -42,6 +42,15 @@ namespace smart {
         return node->nameLength;
     }
 
+    static constexpr const char nameTypeText[] = "<Name>";
+    static const char *typeText(NameNodeStruct *self) {
+        return nameTypeText;
+    }
+
+    static int typeTextLength(NameNodeStruct *self) {
+        return sizeof(nameTypeText) - 1;
+    }
+
 
     int Tokenizers::nameTokenizer(TokenizerParams_parent_ch_start_context) {
         unsigned int found_count = 0;
@@ -72,10 +81,9 @@ namespace smart {
     };
 
 
-    static const node_vtable _Name_VTable = CREATE_VTABLE(NameNodeStruct,
-            selfTextLength,
+    static const node_vtable _Name_VTable = CREATE_VTABLE(NameNodeStruct, selfTextLength,
                                                           self_text,
-                                                          appendToLine);
+                                                          appendToLine, typeTextLength, typeText);
     const node_vtable *VTables::NameVTable = &_Name_VTable;
 
 

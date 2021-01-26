@@ -36,10 +36,20 @@ namespace smart {
         return 0;
     }
 
+    static constexpr const char endOfFileTypeText[] = "<EndOfFile>";
+    static const utf8byte *typeText(EndOfFileNodeStruct *self) {
+        return endOfFileTypeText;
+    };
+
+    static int typeTextLength(EndOfFileNodeStruct *self) {
+        return sizeof(endOfFileTypeText) - 1;
+    }
+
+
     static const node_vtable _endOfDocVTable = CREATE_VTABLE(EndOfFileNodeStruct,
                                                              selfTextLength,
                                                              selfText,
-                                                             appendToLine);
+                                                             appendToLine, typeTextLength, typeText);
 
     const node_vtable *VTables::EndOfFileVTable = &_endOfDocVTable;
 }

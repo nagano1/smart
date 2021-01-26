@@ -20,6 +20,18 @@ namespace smart {
         return 5;
     }
 
+    static const char *selfText(DocumentStruct *self) {
+        return "";
+    };
+
+    static int selfTypeTextLength(DocumentStruct *self) {
+        return 10;
+    }
+
+    static const char *selfTypeText(DocumentStruct *self) {
+        return "<Document>";
+    };
+
     static CodeLine *appendToLine(DocumentStruct *self, CodeLine *currentCodeLine) {
         auto *doc = self;//Cast::downcast<DocumentStruct *>(self);
         //currentCodeLine = addPrevLineBreakNode(node, currentCodeLine);
@@ -35,15 +47,11 @@ namespace smart {
     };
 
 
-    static const char *selfText(DocumentStruct *self) {
-        return "";
-    };
 
 
-    static const node_vtable _Document = CREATE_VTABLE(DocumentStruct,
-                                                       selfTextLength,
-                                                       selfText,
-                                                       appendToLine);
+
+    static const node_vtable _Document = CREATE_VTABLE(DocumentStruct,selfTextLength, selfText,
+                                                       appendToLine, selfTypeTextLength, selfTypeText);
 
     const node_vtable *VTables::DocumentVTable = &_Document;
 
@@ -159,6 +167,78 @@ namespace smart {
         }
         return text;
     }
+
+    utf8byte *DocumentUtils::getTypeTextFromTree(DocumentStruct *docStruct) {
+        // get size of chars
+        int totalCount = 0;
+        {
+            auto *line = docStruct->firstCodeLine;
+            while (line) {
+                auto *node = line->firstNode;
+                while (node) {
+                    if (node->prev_char != '\0') {
+                        totalCount++;
+                    }
+                    int len = VTableCall::typeTextLength(node) + VTableCall::selfTextLength(node);
+                    totalCount += len;
+                    node = node->nextNodeInLine;
+                }
+
+                line = line->nextLine;
+            }
+        }
+
+        if (totalCount == 0) {
+            return nullptr;
+        }
+
+        // malloc and copy text
+        auto *text = (char *)malloc(sizeof(char) * totalCount + 1);
+        text[totalCount] = '\0';
+        {
+            auto *line = docStruct->firstCodeLine;
+            size_t currentOffset = 0;
+            while (line) {
+                auto *node = line->firstNode;
+                while (node) {
+                    auto *chs = VTableCall::typeText(node);
+                    if (node->prev_char != '\0') {
+                        text[currentOffset] = node->prev_char;
+                        currentOffset++;
+                    }
+
+                    size_t len = VTableCall::typeTextLength(node);
+                    memcpy(text + currentOffset, chs, len);
+
+                    currentOffset += len;
+
+                    {
+                        auto *chs = VTableCall::selfText(node);
+                        if (node->prev_char != '\0') {
+                            text[currentOffset] = node->prev_char;
+                            currentOffset++;
+                        }
+
+                        size_t len = VTableCall::selfTextLength(node);
+                        memcpy(text + currentOffset, chs, len);
+
+                        currentOffset += len;
+
+                    }
+
+
+
+
+                    node = node->nextNodeInLine;
+                }
+
+                line = line->nextLine;
+            }
+        }
+
+        return text;
+    }
+
 
 
     utf8byte *DocumentUtils::getTextFromTree(DocumentStruct *docStruct) {
