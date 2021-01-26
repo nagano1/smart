@@ -58,7 +58,7 @@ namespace smart {
         }
 
         if (found_count > 0) {
-            context->scanEnd = true;
+            //context->scanEnd = true;
             auto *numberNode = Allocator::newNumberNode(context, parent);
 
             context->codeNode = Cast::upcast(numberNode);
