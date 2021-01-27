@@ -25,11 +25,6 @@ namespace smart {
         COMMA = 3
     };
 
-    /**
-     * JsonKeyValueItemStruct
-     *
-     */
-
     // --------------------- Defines JsonKeyValueItemStruct VTable ---------------------- /
 
     static CodeLine *appendToLine2(JsonKeyValueItemStruct *self, CodeLine *currentCodeLine) {
@@ -74,8 +69,8 @@ namespace smart {
 
     static const node_vtable _JsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
                                                                              selfTextLength2,
-                                                                            selfText_JsonKeyValueItemStruct,
-                                                                             appendToLine2, typeTextLength2, typeText2);
+                                                                             selfText_JsonKeyValueItemStruct,
+                                                                             appendToLine2, typeTextLength2,                                                        typeText2);
 
     const struct node_vtable *VTables::JsonKeyValueItemVTable = &_JsonObjectKeyValueStructVTable;
 
@@ -113,7 +108,7 @@ namespace smart {
 
         JsonKeyValueItemStruct *item = self->firstKeyValueItem;
         while (item != nullptr) {
-            currentCodeLine = VTableCall::appendToLine(self->firstKeyValueItem, currentCodeLine);
+            currentCodeLine = VTableCall::appendToLine(item, currentCodeLine);
             item = Cast::downcast<JsonKeyValueItemStruct*>(item->nextNode);
         }
 
