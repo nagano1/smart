@@ -199,8 +199,7 @@ namespace smart {
             nameNode->nameLength = found_count;
 
             memcpy(nameNode->name, context->chars + start, found_count);
-            //printf("\nname = %s", nameNode->name);
-            //nameNode->name[found_count] = '\0';
+            nameNode->name[found_count] = '\0';
             return start + found_count;
         }
         return -1;
@@ -270,11 +269,6 @@ namespace smart {
 
 
     int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
-        /*
-        if (ch == '}') {
-            return start + 1;
-        }
-        */
 
         auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
 
