@@ -25,8 +25,11 @@ TEST(parser_test, JsonParseTest) {
 
 
     "aowowo" : 2124
+        ,
 
-}
+        "jiofw": 123
+
+  }
 )");
 
 
