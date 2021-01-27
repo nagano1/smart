@@ -25,7 +25,7 @@ TEST(parser_test, JsonParseTest) {
 
 
 
-"aowowowo" : 2124
+    "aowowowo" : 2124
 
 }
 )");
