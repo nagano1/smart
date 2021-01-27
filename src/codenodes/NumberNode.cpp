@@ -20,6 +20,8 @@
 namespace smart {
 
     static CodeLine *appendToLine(NumberNodeStruct *self, CodeLine *currentCodeLine) {
+        assert(self->text != nullptr);
+
         if (self->text == nullptr) {
             return currentCodeLine;
         }
@@ -27,12 +29,11 @@ namespace smart {
         currentCodeLine->appendNode(self);
 
         return currentCodeLine;
-    };
+    }
 
-    static const char *self_text(NumberNodeStruct *self) {
-        console_log("self_text");
+    static const char *selfText(NumberNodeStruct *self) {
         return self->text;
-    };
+    }
 
     static int selfTextLength(NumberNodeStruct *self) {
         return self->textLength;
@@ -46,6 +47,7 @@ namespace smart {
     static int typeTextLength(NumberNodeStruct *self) {
         return sizeof(numberNodeTypeText) - 1;
     }
+
 
     int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context) {
         unsigned int found_count = 0;
@@ -68,9 +70,6 @@ namespace smart {
             TEXT_MEMCPY(numberNode->text, context->chars + start, found_count);
             numberNode->text[found_count] = '\0';
             
-//            printf("number : %s\n", numberNode->text);
-            console_log(numberNode->text);
-
             return start + found_count;
         }
 
@@ -79,7 +78,7 @@ namespace smart {
 
 
     static const node_vtable _Number_VTable = CREATE_VTABLE(NumberNodeStruct, selfTextLength,
-                                                          self_text,
+                                                          selfText,
                                                           appendToLine, typeTextLength, typeText);
 
     const node_vtable *VTables::NumberVTable = &_Number_VTable;
@@ -97,6 +96,7 @@ namespace smart {
         node->parentNode = parentNode;
         node->text = nullptr;
         node->textLength = 0;
+
         return node;
     }
 

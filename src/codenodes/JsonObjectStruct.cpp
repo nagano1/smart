@@ -184,9 +184,13 @@ namespace smart {
         for (uint_fast32_t i = letterStart; i < context->length; i++) {
             if (Tokenizer::isIdentifierLetter(context->chars[i])) {
                 found_count++;
-            } else if (startWithDQuote && context->chars[i] == '"') {
+            }
+            else if (startWithDQuote) {
                 found_count++;
-                break;
+
+                if (context->chars[i] == '"') {
+                    break;
+                }
             } else {
                 break;
             }

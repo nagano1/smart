@@ -36,8 +36,8 @@ namespace smart {
         char prev_char; \
 
 
-    #define TEXT_MEMCPY(p, q, l) \
-        memcpy((p), (q), (l))
+    #define TEXT_MEMCPY(dst, src, len) \
+        memcpy((dst), (src), (len))
 
     #define INIT_NODE(node, context, parent, argvtable) \
         (node)->vtable = (argvtable); \
