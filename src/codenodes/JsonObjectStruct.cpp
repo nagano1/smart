@@ -336,6 +336,7 @@ namespace smart {
             if (ch == ',') { // try to find ',' which leads to next key-value
                 currentKeyValueItem->hasComma = true;
                 context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
+                jsonObject->parsePhase = phase::NAME;
                 return start + 1;
             }
             else if (ch == '}') {
