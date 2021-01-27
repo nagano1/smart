@@ -278,9 +278,6 @@ namespace smart {
 
         auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
 
-        //printf("\njsonObject->parsePhase = %d\n", jsonObject->parsePhase);
-        //printf("\ncontext->afterLineBreak= %d\n", context->afterLineBreak);
-
         // object name
         // var val = {
         //   name : "valuevar"

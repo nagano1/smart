@@ -259,7 +259,6 @@ namespace smart {
         utf8byte *chars;
         SyntaxErrorInfo syntaxErrorInfo;
         bool has_cancel_request{ false };
-        bool afterLineBreak{ false };
 
         void (*actionCreator)(void *node1, void *node2, int actionRequest);
 

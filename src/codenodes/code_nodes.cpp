@@ -121,7 +121,7 @@ namespace smart {
                 break;
             }
 
-            context->afterLineBreak = afterLineBreak;
+            !
             int result = tokenizer(Cast::upcast(parentNode), ch, i, context);
             afterLineBreak = false;
 
