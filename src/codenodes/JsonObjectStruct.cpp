@@ -43,7 +43,9 @@ namespace smart {
             currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
         }
 
-        //currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
+        if (self->hasComma) {
+            currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
+        }
 
         return currentCodeLine;
     };
@@ -58,7 +60,7 @@ namespace smart {
     }
 
 
-    static constexpr char class_chars[] = "<JsonKeyValueItem>";
+    static constexpr const char class_chars[] = "<JsonKeyValueItem>";
     static const utf8byte *typeText2(JsonKeyValueItemStruct *self) {
         return  class_chars;
     }
@@ -252,8 +254,7 @@ namespace smart {
 
 
 
-    JsonKeyValueItemStruct *
-    Allocator::newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode) {
+    JsonKeyValueItemStruct *Allocator::newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode) {
         auto *keyValueItem = simpleMalloc<JsonKeyValueItemStruct>();
 
         INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable)
@@ -262,6 +263,9 @@ namespace smart {
         //keyValueItem->startFound = false;
         Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
+
+        keyValueItem->hasComma = false;
+        keyValueItem->valueNode = nullptr;
 
 
         return keyValueItem;
@@ -344,6 +348,7 @@ namespace smart {
         if (jsonObject->parsePhase == phase::COMMA) {
 
             if (ch == ',') { // try to find ',' which leads to next key-value
+                currentKeyValueItem->hasComma = true;
                 context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
                 return start + 1;
             }

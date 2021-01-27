@@ -169,6 +169,7 @@ namespace smart {
         SymbolStruct delimeter;
 
         SymbolStruct follwingComma;
+        bool hasComma;
     };
 
 
