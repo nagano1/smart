@@ -25,7 +25,7 @@ TEST(parser_test, JsonParseTest) {
 
 
 
-    "aowowowo" : 2124
+"aowowowo" : 2124
 
 }
 )");
@@ -35,7 +35,7 @@ TEST(parser_test, JsonParseTest) {
     DocumentUtils::parseText(document, text, strlen(text));
     char *typeText = DocumentUtils::getTypeTextFromTree(document);
 //    if (typeText != nullptr) {
-        EXPECT_EQ(std::string{ typeText }, std::string{ "fjow" });
+        //EXPECT_EQ(std::string{ typeText }, std::string{ "fjow" });
     //}
 
     char *treeText = DocumentUtils::getTextFromTree(document);

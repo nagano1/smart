@@ -334,7 +334,7 @@ namespace smart {
             if (-1 < (result = Tokenizers::jsonValueTokenizer(parent, ch, start, context))) {
                 currentKeyValueItem->valueNode = context->codeNode;
                 jsonObject->parsePhase = phase::COMMA;
-                //context->scanEnd = false;
+                context->scanEnd = false;
                 return result;
             }
             return -1;

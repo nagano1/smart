@@ -358,6 +358,7 @@ namespace smart {
         context->syntaxErrorInfo.hasError = false;
         context->chars = const_cast<utf8byte *>(text);
         context->start = 0;
+        context->scanEnd = false;
         context->length = length;
         context->codeNode = nullptr;
         context->remainedLineBreakNode = nullptr;
