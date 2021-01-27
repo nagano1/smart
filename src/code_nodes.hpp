@@ -313,8 +313,8 @@ namespace smart {
         int (*selfTextLength)(T *self); \
         const utf8byte *(*selfText)(T *self); \
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
-        int (*selfTypeTextLength)(T *self); \
-        const utf8byte *(*selfTypeText)(T *self); \
+        int (*typeTextLength)(T *self); \
+        const utf8byte *(*typeText)(T *self); \
 
 
 
@@ -340,8 +340,8 @@ namespace smart {
             decltype(std::declval<vtableT<T>>().selfTextLength) f1,
             decltype(std::declval<vtableT<T>>().selfText) f2,
             decltype(std::declval<vtableT<T>>().appendToLine) f3,
-            decltype(std::declval<vtableT<T>>().selfTypeTextLength) f4,
-            decltype(std::declval<vtableT<T>>().selfTypeText) f5
+            decltype(std::declval<vtableT<T>>().typeTextLength) f4,
+            decltype(std::declval<vtableT<T>>().typeText) f5
 
     ) {
         return 0;
@@ -352,8 +352,8 @@ namespace smart {
             reinterpret_cast<selfTextLengthFunction> (f1) \
             , reinterpret_cast<selfTextFunction> (f2) \
             , reinterpret_cast<appendToLineFunction> (f3) \
-            , reinterpret_cast<decltype(std::declval<NodeVTable>().selfTypeTextLength)> (f4) \
-            , reinterpret_cast<decltype(std::declval<NodeVTable>().selfTypeText)> (f5) \
+            , reinterpret_cast<decltype(std::declval<NodeVTable>().typeTextLength)> (f4) \
+            , reinterpret_cast<decltype(std::declval<NodeVTable>().typeText)> (f5) \
         } \
         ;static const int check_result_##T = vtable_type_check<T>(f1,f2,f3,f4,f5)
     // static_assert(std::is_same<F2, decltype(std::declval<vtableT<T>>().selfText)>::value, "");
@@ -398,7 +398,7 @@ namespace smart {
         static int typeTextLength(NodeBase *node) {
             assert(node);
             assert(node->vtable);
-            return node->vtable->selfTypeTextLength(node);
+            return node->vtable->typeTextLength(node);
         }
 
 
@@ -408,7 +408,7 @@ namespace smart {
             }
             else {
                 auto *nodeBase = Cast::upcast(node);
-                return nodeBase->vtable->selfTypeText(nodeBase);
+                return nodeBase->vtable->typeText(nodeBase);
             };
         }
 

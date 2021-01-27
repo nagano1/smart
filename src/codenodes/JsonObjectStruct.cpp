@@ -171,6 +171,7 @@ namespace smart {
 
     int Tokenizers::jsonObjectNameTokenizer(TokenizerParams_parent_ch_start_context) {
         unsigned int found_count = 0;
+        
         // starts with "
         bool startWithDQuote = false;
         if (context->chars[start] == '"') {
@@ -217,7 +218,6 @@ namespace smart {
             doc->lastKeyValueItem->nextNode = (NodeBase *) node;
         }
         doc->lastKeyValueItem = node;
-        //doc->itemCount++;
     }
 
 
