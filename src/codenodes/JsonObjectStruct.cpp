@@ -293,13 +293,10 @@ namespace smart {
         //             .func()
         //             + 234123
         //             + 1234
-        // (-1243).afwef; test(); jfiowajo();
+        // (-1243).afwef; test();
         // aweff = 2342
 
-        //{
 
-        //    ret 32
-        //} => let b
         if (jsonObject->parsePhase == phase::NAME) {
             JsonKeyValueItemStruct *nextItem = Allocator::newJsonKeyValueItemNode(context, parent);
             if (jsonObject->firstKeyValueItem == nullptr) {
