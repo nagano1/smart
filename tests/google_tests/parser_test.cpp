@@ -742,6 +742,8 @@ ENDTEST
 
     Tokenizer::letterCheck(&func);
 
+
+
     EXPECT_EQ(true, Tokenizer::isIdentifierLetter('a'));
     EXPECT_EQ(true, Tokenizer::isIdentifierLetter(std::string{ u8"😂" }.c_str()[0]));
     EXPECT_EQ(false, Tokenizer::isIdentifierLetter('\n'));

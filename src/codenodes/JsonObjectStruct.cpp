@@ -95,12 +95,14 @@ namespace smart {
         return "{";
     }
 
+
+    static constexpr const char _typeName[] = "<JsonObject>";
     static int typeTextLength(JsonObjectStruct *self) {
-        return 12;
+        return sizeof(_typeName) - 1;
     }
 
     static const utf8byte *typeText(JsonObjectStruct *node) {
-        return "<JsonObject>";
+        return _typeName;
     }
 
     static CodeLine *appendToLine(JsonObjectStruct *self, CodeLine *currentCodeLine) {
@@ -202,6 +204,7 @@ namespace smart {
 
             return start + found_count;
         }
+
         return -1;
     }
 

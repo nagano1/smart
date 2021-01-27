@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <algorithm>
 #include <iterator>
 #include <atomic>
@@ -157,7 +157,7 @@ TEST(cplusplus_test, stringstream_) {
     for (int i = 0; i < 10; i++) {
         std::lock_guard<std::mutex> lg{ mtx };
 
-        log << "日本語a";
+        log << u8"日本語a";
         log << "C";
 
         // +i % 25);
@@ -173,6 +173,7 @@ TEST(cplusplus_test, stringstream_) {
 }
 
 ENDTEST
+
 
 
 
