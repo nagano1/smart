@@ -260,13 +260,11 @@ namespace smart {
         INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable)
 
         Init::initNameNode(&keyValueItem->keyNode, context, parentNode);
-        //keyValueItem->startFound = false;
         Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
 
         keyValueItem->hasComma = false;
         keyValueItem->valueNode = nullptr;
-
 
         return keyValueItem;
     }
@@ -300,6 +298,10 @@ namespace smart {
         // (-1243).afwef; test(); jfiowajo();
         // aweff = 2342
 
+        //{
+
+        //    ret 32
+        //} => let b
         if (jsonObject->parsePhase == phase::NAME) {
             JsonKeyValueItemStruct *nextItem = Allocator::newJsonKeyValueItemNode(context, parent);
             if (jsonObject->firstKeyValueItem == nullptr) {
@@ -319,12 +321,9 @@ namespace smart {
             return -1;
         }
 
-
         auto *currentKeyValueItem = jsonObject->lastKeyValueItem;
         if (jsonObject->parsePhase == phase::DELIMETER) {
             if (ch == ':') { // delimeter
-                console_log("comma");
-
                 context->codeNode = Cast::upcast(&currentKeyValueItem->delimeter);
                 jsonObject->parsePhase = phase::VALUE;
                 return start + 1;
@@ -346,7 +345,6 @@ namespace smart {
 
 
         if (jsonObject->parsePhase == phase::COMMA) {
-
             if (ch == ',') { // try to find ',' which leads to next key-value
                 currentKeyValueItem->hasComma = true;
                 context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
@@ -358,21 +356,6 @@ namespace smart {
             }
             return -1;
         }
-
-
-
-        // :
-
-        //if (-1 < (result = Tokenizers::jsonValueTokenizer(parent, ch, start, context))) {
-        //appendRootNode(doc, context->codeNode);
-        //return result;
-        //} else
-        if (ch == ',') { // try to find ',' which leads to next key-value
-
-        } else if (ch == '}') { // try to find '}' which finalizes this object
-
-        }
-
 
         return -1;
     }

@@ -160,7 +160,6 @@ namespace smart {
         NODE_HEADER
 
         utf8byte body[2];
-        //NodeBase *keyNode;
 
         NameNodeStruct keyNode;
 
