@@ -224,7 +224,7 @@ namespace smart {
 
     static int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context);
 
-        // --------------------- Implements JsonObject Parser ----------------------
+    // --------------------- Implements JsonObject Parser ----------------------
     //  TODO: Add supports for new syntax like  @<MutableDict>{ awef:"fjiowe", test:true }
     int Tokenizers::jsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
         if (ch == '{') {
