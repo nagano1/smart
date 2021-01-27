@@ -19,6 +19,117 @@
 
 namespace smart {
 
+    static CodeLine *appendToLine2(BoolNodeStruct *self, CodeLine *currentCodeLine) {
+        assert(self->text != nullptr);
+
+        if (self->text == nullptr) {
+            return currentCodeLine;
+        }
+        currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
+        currentCodeLine->appendNode(self);
+
+        return currentCodeLine;
+    }
+
+    static const char *selfText2(BoolNodeStruct*self) {
+        return self->text;
+    }
+
+    static int selfTextLength2(BoolNodeStruct*self) {
+        return self->textLength;
+    }
+
+    static constexpr const char boolNodeTypeText[] = "<bool>";
+    static const char *typeText2(BoolNodeStruct*self) {
+        return boolNodeTypeText;
+    }
+    static int typeTextLength2(BoolNodeStruct*self) {
+        return sizeof(boolNodeTypeText) - 1;
+    }
+
+
+    int Tokenizers::boolTokenizer(TokenizerParams_parent_ch_start_context) {
+
+        static constexpr const char true_chars[] = "true";
+        static constexpr const char false_chars[] = "false";
+
+        bool hit = false;
+        bool boolValue = false;
+        int length = 0;
+        if ('t' == ch) {
+            auto idx = Tokenizer::matchFirstWithTrim(context->chars, true_chars, start);
+            if (idx > -1) {
+                hit = true;
+                boolValue = true;
+                length = sizeof(true_chars) - 1;
+            }
+        }
+        else if ('f' == ch) {
+            auto idx = Tokenizer::matchFirstWithTrim(context->chars, false_chars, start);
+            if (idx > -1) {
+                hit = true;
+                boolValue = false;
+                length = sizeof(false_chars) - 1;
+            }
+        }
+
+
+        if (hit) {
+            if (start + length == context->length // allowed to be the last char of the file
+                || Tokenizer::isNonIdentifierChar(context->chars[start + length])) { // otherwise, 
+
+                context->scanEnd = true;
+                auto *boolNode = Allocator::newBoolNode(context, parent);
+
+                context->codeNode = Cast::upcast(boolNode);
+                boolNode->text = context->charBuffer.newChars(length + 1);
+                boolNode->textLength = length;
+                boolNode->boolValue = boolValue;
+
+                TEXT_MEMCPY(boolNode->text, context->chars + start, length);
+                boolNode->text[length] = '\0';
+
+                return start + length;
+
+            }
+
+        }
+
+        return -1;
+    };
+
+
+    static const node_vtable _Bool_VTable = CREATE_VTABLE(BoolNodeStruct, selfTextLength2,
+        selfText2, appendToLine2, typeTextLength2, typeText2);
+
+    const node_vtable *VTables::BoolVTable = &_Bool_VTable;
+
+    BoolNodeStruct* Allocator::newBoolNode(ParseContext *context, NodeBase *parentNode) {
+        auto *node = (BoolNodeStruct *)malloc(sizeof(BoolNodeStruct));
+        INIT_NODE(node, context, parentNode, VTables::BoolVTable);
+        node->parentNode = parentNode;
+        node->text = nullptr;
+        node->textLength = 0;
+        node->boolValue = false;
+
+        return node;
+    }
+
+
+    /*
+        +--------------------------+
+        | Number                   |
+        | name                     |
+        | pass                     |
+        | mail                     |
+        | timezone                 |
+        | status                   |
+        | changed                  |
+        | login                    |
+        | init                     |
+        +--------------------------+
+    */
+
     static CodeLine *appendToLine(NumberNodeStruct *self, CodeLine *currentCodeLine) {
         assert(self->text != nullptr);
 
@@ -54,7 +165,8 @@ namespace smart {
         for (uint_fast32_t i = start; i < context->length; i++) {
             if (Tokenizer::isNumberLetter(context->chars[i])) {
                 found_count++;
-            } else {
+            }
+            else {
                 break;
             }
         }
@@ -69,7 +181,7 @@ namespace smart {
 
             TEXT_MEMCPY(numberNode->text, context->chars + start, found_count);
             numberNode->text[found_count] = '\0';
-            
+
             return start + found_count;
         }
 
@@ -78,8 +190,8 @@ namespace smart {
 
 
     static const node_vtable _Number_VTable = CREATE_VTABLE(NumberNodeStruct, selfTextLength,
-                                                          selfText,
-                                                          appendToLine, typeTextLength, typeText);
+        selfText,
+        appendToLine, typeTextLength, typeText);
 
     const node_vtable *VTables::NumberVTable = &_Number_VTable;
 
@@ -91,7 +203,7 @@ namespace smart {
     }
 
     NumberNodeStruct *Allocator::newNumberNode(ParseContext *context, NodeBase *parentNode) {
-        auto *node = (NumberNodeStruct *) malloc(sizeof(NumberNodeStruct));
+        auto *node = (NumberNodeStruct *)malloc(sizeof(NumberNodeStruct));
         INIT_NODE(node, context, parentNode, VTables::NumberVTable);
         node->parentNode = parentNode;
         node->text = nullptr;

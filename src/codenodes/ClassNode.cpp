@@ -152,8 +152,8 @@ namespace smart {
 
 
     int Tokenizers::classTokenizer(TokenizerParams_parent_ch_start_context) {
-        static constexpr unsigned int size_of_class = 5;
         static constexpr const char class_chars[] = "class";
+        static constexpr unsigned int size_of_class = sizeof(class_chars) - 1;
 
         if ('c' == ch) {
             auto idx = Tokenizer::matchFirstWithTrim(context->chars, class_chars, start);

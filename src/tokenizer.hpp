@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <iostream>
 #include <string>
@@ -113,7 +113,7 @@ struct Tokenizer {
     };
 
     static inline bool isNonIdentifierChar(utf8byte ch) {
-        return ' ' == ch || '\t' == ch || '!' == ch || '#' == ch || '[' == ch
+        return ' ' == ch || '\t' == ch || '!' == ch || '#' == ch || '[' == ch || '\n' == ch
                || '%' == ch || ']' == ch || '"' == ch || '[' == ch || '\'' == ch
                || '=' == ch || '*' == ch || '+' == ch || '-' == ch || '?' == ch
                || '@' == ch || '{' == ch || '}' == ch || ',' == ch || ';' == ch

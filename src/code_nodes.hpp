@@ -88,6 +88,14 @@ namespace smart {
         size_t nameLength;
     };
 
+    using BoolNodeStruct = struct {
+        NODE_HEADER
+
+        char *text;
+        size_t textLength;
+        bool boolValue;
+    };
+
     using NumberNodeStruct = struct {
         NODE_HEADER
 
@@ -366,7 +374,8 @@ namespace smart {
                 *JsonKeyValueItemVTable,
                 *ClassBodyVTable,
                 *NameVTable,
-                *NumberVTable,
+            *NumberVTable,
+            *BoolVTable,
                 *SymbolVTable,
                 *EndOfFileVTable,
                 *SimpleTextVTable,
@@ -473,6 +482,7 @@ namespace smart {
     struct Tokenizers {
         static int nameTokenizer(TokenizerParams_parent_ch_start_context);
         static int numberTokenizer(TokenizerParams_parent_ch_start_context);
+        static int boolTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int classTokenizer(TokenizerParams_parent_ch_start_context);
 
@@ -517,6 +527,7 @@ namespace smart {
 
     struct Allocator {
         static NumberNodeStruct *newNumberNode(ParseContext *context, NodeBase *parentNode);
+        static BoolNodeStruct *newBoolNode(ParseContext *context, NodeBase *parentNode);
 
 
         static LineBreakNodeStruct *newLineBreakNode(ParseContext *context, NodeBase *parentNode);

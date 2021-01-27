@@ -351,7 +351,18 @@ namespace smart {
 
 
     int Tokenizers::jsonValueTokenizer(TokenizerParams_parent_ch_start_context) {
-        return Tokenizers::numberTokenizer(TokenizerParams_pass);
+        int result = Tokenizers::numberTokenizer(TokenizerParams_pass);
+        if (result > -1) {
+            return result;
+        }
+
+        result = Tokenizers::boolTokenizer(TokenizerParams_pass);
+        if (result > -1) {
+            return result;
+        }
+
+
+        return -1;
     }
 
 }
