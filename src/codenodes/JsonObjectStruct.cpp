@@ -191,7 +191,6 @@ namespace smart {
         }
 
         if (found_count > 0) {
-            //context->scanEnd = true;
             auto *nameNode = Cast::downcast<NameNodeStruct *>(parent);
 
             context->codeNode = Cast::upcast(nameNode);
@@ -200,6 +199,7 @@ namespace smart {
 
             memcpy(nameNode->name, context->chars + start, found_count);
             nameNode->name[found_count] = '\0';
+
             return start + found_count;
         }
         return -1;
