@@ -146,8 +146,6 @@ namespace smart {
         jsonObjectNode->lastKeyValueItem = nullptr;
         jsonObjectNode->parsePhase = phase::NAME;
 
-        //Init::initNameNode(&classNode->nameNode, context);
-
         INIT_NODE(&jsonObjectNode->endBodyNode,
                   context,
                   Cast::upcast(jsonObjectNode),
@@ -157,6 +155,7 @@ namespace smart {
 
         return jsonObjectNode;
     }
+
 
     void Allocator::deleteJsonObject(NodeBase *node) {
         auto *classNode = Cast::downcast<JsonObjectStruct *>(node);
@@ -305,12 +304,10 @@ namespace smart {
                 jsonObject->lastKeyValueItem->nextNode = Cast::upcast(nextItem);
             }
             jsonObject->lastKeyValueItem = nextItem;
-            
 
             int result;
             if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(Cast::upcast(&nextItem->keyNode), ch, start, context))) {
                 jsonObject->parsePhase = phase::DELIMETER;
-
                 return result;
             }
             return -1;
