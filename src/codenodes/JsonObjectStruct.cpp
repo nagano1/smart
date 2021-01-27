@@ -35,16 +35,15 @@ namespace smart {
     static CodeLine *appendToLine2(JsonKeyValueItemStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
 
-        console_log("appendTo this\n");
-       currentCodeLine->appendNode(self);
+        currentCodeLine->appendNode(self);
 
         currentCodeLine = VTableCall::appendToLine(&self->keyNode, currentCodeLine);
         currentCodeLine = VTableCall::appendToLine(&self->delimeter, currentCodeLine);
         if (self->valueNode) {
             currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
         }
-        //currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
 
+        //currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
 
         return currentCodeLine;
     };
@@ -107,13 +106,14 @@ namespace smart {
 
         currentCodeLine->appendNode(self);
 
-        if (self->firstKeyValueItem != nullptr) {
+
+        JsonKeyValueItemStruct *item = self->firstKeyValueItem;
+        while (item != nullptr) {
             currentCodeLine = VTableCall::appendToLine(self->firstKeyValueItem, currentCodeLine);
+            item = Cast::downcast<JsonKeyValueItemStruct*>(item->nextNode);
         }
 
         currentCodeLine = VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
-        //currentCodeLine = VTableCall::appendToLine(&classNode->bodyNode, currentCodeLine);
-
         return currentCodeLine;
     };
 

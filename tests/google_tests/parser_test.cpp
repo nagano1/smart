@@ -22,10 +22,8 @@ TEST(parser_test, JsonParseTest) {
 
     text = const_cast<char *>(u8R"(
 {
-
-
-
-    "aowowowo" : 2124
+    "aowowowo" : 
+2124
 
 }
 )");
