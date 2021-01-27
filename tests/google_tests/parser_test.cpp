@@ -14,6 +14,7 @@
 using namespace smart;
 
 
+static void testJson(const char* codeText);
 TEST(parser_test, JsonParseTest) {
 
     char *text = const_cast<char *>(u8R"(
@@ -30,23 +31,30 @@ TEST(parser_test, JsonParseTest) {
         "jiofw": 123
 
   }
+
 )");
 
+    testJson(text);
 
+
+    
+
+}
+
+static void testJson(const char* codeText) {
     auto *document = Allocator::newDocument(DocumentType::JsonDocument, nullptr);
-    DocumentUtils::parseText(document, text, strlen(text));
+    DocumentUtils::parseText(document, codeText, strlen(codeText));
     char *typeText = DocumentUtils::getTypeTextFromTree(document);
-//    if (typeText != nullptr) {
-        //EXPECT_EQ(std::string{ typeText }, std::string{ "fjow" });
-    //}
+    //    if (typeText != nullptr) {
+            //EXPECT_EQ(std::string{ typeText }, std::string{ "fjow" });
+        //}
 
     char *treeText = DocumentUtils::getTextFromTree(document);
     //if (treeText != nullptr) {
         //Allocator::deleteDocument(document);
         // EXPECT_EQ(std::string(treeText), "\n{b:18}\n");
-        EXPECT_EQ(std::string{ treeText }, std::string{ text });
+    EXPECT_EQ(std::string{ treeText }, std::string{ codeText });
     //}
-    
 
 }
 
