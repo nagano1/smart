@@ -19,7 +19,7 @@
 namespace smart {
 
     enum phase {
-        NAME = 0,
+        EXPECT_NAME = 0,
         DELIMETER = 1,
         VALUE = 2,
         COMMA = 3
@@ -141,7 +141,7 @@ namespace smart {
         INIT_NODE(jsonObjectNode, context, parentNode, VTables::JsonObjectVTable);
         jsonObjectNode->firstKeyValueItem = nullptr;
         jsonObjectNode->lastKeyValueItem = nullptr;
-        jsonObjectNode->parsePhase = phase::NAME;
+        jsonObjectNode->parsePhase = phase::EXPECT_NAME;
 
         INIT_NODE(&jsonObjectNode->endBodyNode,
                   context,
@@ -235,12 +235,14 @@ namespace smart {
                                        returnPosition,
                                        context);
 
-            context->codeNode = Cast::upcast(jsonObject);
             if (result > -1) {
+                context->codeNode = Cast::upcast(jsonObject);
+
                 returnPosition = result;
+                return returnPosition;
+
             }
 
-            return returnPosition;
         }
 
         return -1;
@@ -292,17 +294,26 @@ namespace smart {
         // aweff = 2342
 
 
-        if (jsonObject->parsePhase == phase::NAME) {
-            JsonKeyValueItemStruct *nextItem = Allocator::newJsonKeyValueItemNode(context, parent);
-            if (jsonObject->firstKeyValueItem == nullptr) {
-                jsonObject->firstKeyValueItem = nextItem;
-            } else {
-                jsonObject->lastKeyValueItem->nextNode = Cast::upcast(nextItem);
+        if (jsonObject->parsePhase == phase::EXPECT_NAME) {
+            if (ch == '}') {
+                context->scanEnd = true;
+                context->codeNode = Cast::upcast(&jsonObject->endBodyNode);
+                return start + 1;
             }
-            jsonObject->lastKeyValueItem = nextItem;
+
+            JsonKeyValueItemStruct *nextItem = Allocator::newJsonKeyValueItemNode(context, parent);
 
             int result;
             if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(Cast::upcast(&nextItem->keyNode), ch, start, context))) {
+
+                if (jsonObject->firstKeyValueItem == nullptr) {
+                    jsonObject->firstKeyValueItem = nextItem;
+                }
+                else {
+                    jsonObject->lastKeyValueItem->nextNode = Cast::upcast(nextItem);
+                }
+                jsonObject->lastKeyValueItem = nextItem;
+
                 jsonObject->parsePhase = phase::DELIMETER;
                 return result;
             }
@@ -336,10 +347,11 @@ namespace smart {
             if (ch == ',') { // try to find ',' which leads to next key-value
                 currentKeyValueItem->hasComma = true;
                 context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
-                jsonObject->parsePhase = phase::NAME;
+                jsonObject->parsePhase = phase::EXPECT_NAME;
                 return start + 1;
             }
             else if (ch == '}') {
+                context->scanEnd = true;
                 context->codeNode = Cast::upcast(&jsonObject->endBodyNode);
                 return start + 1;
             }
@@ -357,6 +369,12 @@ namespace smart {
         }
 
         result = Tokenizers::boolTokenizer(TokenizerParams_pass);
+        if (result > -1) {
+            return result;
+        }
+
+
+        result = Tokenizers::jsonObjectTokenizer(TokenizerParams_pass);
         if (result > -1) {
             return result;
         }

@@ -31,7 +31,31 @@ TEST(parser_test, JsonParseTest) {
         testJson(text);
     }
 
-    text = const_cast<char *>(u8R"({"aowfowo" : 21249,"jiofw": false})");
+    text = const_cast<char *>(u8R"({"aowfowo" : 21249, "jiofw": false})");
+    testJson(text);
+
+
+    // empty json object
+    text = const_cast<char *>(u8R"({})");
+    testJson(text);
+
+
+    // nested json object
+    text = const_cast<char *>(u8R"({"jfoiw": {"fjioew":{ } 
+
+        } 
+
+            })");
+    testJson(text);
+
+
+
+    // last comma is allowed
+    text = const_cast<char *>(u8R"({"jfoiw": true
+
+    , 
+}
+)");
     testJson(text);
 }
 
