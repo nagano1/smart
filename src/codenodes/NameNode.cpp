@@ -63,7 +63,7 @@ namespace smart {
         }
 
         if (found_count > 0) {
-            context->scanEnd = true;
+            //context->scanEnd = true;
 
             //auto *nameNode = Cast::downcast<NameNodeStruct *>(context->codeNode);
             auto *nameNode = Cast::downcast<NameNodeStruct *>(parent);

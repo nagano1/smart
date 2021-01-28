@@ -242,7 +242,6 @@ namespace smart {
                 return returnPosition;
 
             }
-
         }
 
         return -1;
@@ -271,11 +270,6 @@ namespace smart {
         return keyValueItem;
     }
 
-
-    int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
-
-        auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
-
         // object name
         // var val = {
         //   name : "valuevar"
@@ -293,6 +287,10 @@ namespace smart {
         // (-1243).afwef; test();
         // aweff = 2342
 
+
+    int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
+
+        auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
 
         if (jsonObject->parsePhase == phase::EXPECT_NAME) {
             if (ch == '}') {
@@ -333,7 +331,7 @@ namespace smart {
 
         if (jsonObject->parsePhase == phase::VALUE) {
             int result;
-            if (-1 < (result = Tokenizers::jsonValueTokenizer(parent, ch, start, context))) {
+            if (-1 < (result = Tokenizers::jsonValueTokenizer(Cast::upcast(currentKeyValueItem), ch, start, context))) {
                 currentKeyValueItem->valueNode = context->codeNode;
                 jsonObject->parsePhase = phase::COMMA;
                 context->scanEnd = false;
@@ -373,12 +371,9 @@ namespace smart {
             return result;
         }
 
-
-        result = Tokenizers::jsonObjectTokenizer(TokenizerParams_pass);
-        if (result > -1) {
+        if (-1 < (result = Tokenizers::jsonObjectTokenizer(TokenizerParams_pass))) {
             return result;
         }
-
 
         return -1;
     }

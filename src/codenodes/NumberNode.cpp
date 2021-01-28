@@ -163,7 +163,7 @@ namespace smart {
     }
 
 
-    static constexpr const char numberNodeTypeText[] = "<Number>";
+    static constexpr const char numberNodeTypeText[] = "<number>";
     static const char *typeText(NumberNodeStruct *self) {
         return numberNodeTypeText;
     }
@@ -175,16 +175,14 @@ namespace smart {
     int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context) {
         unsigned int found_count = 0;
         for (uint_fast32_t i = start; i < context->length; i++) {
-            if (Tokenizer::isNumberLetter(context->chars[i])) {
-                found_count++;
-            }
-            else {
+            if (!Tokenizer::isNumberLetter(context->chars[i])) {
                 break;
             }
+            found_count++;
         }
 
         if (found_count > 0) {
-            context->scanEnd = true;
+            //context->scanEnd = true;
             auto *numberNode = Allocator::newNumberNode(context, parent);
 
             context->codeNode = Cast::upcast(numberNode);

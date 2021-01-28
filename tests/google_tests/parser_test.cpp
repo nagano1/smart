@@ -40,8 +40,11 @@ TEST(parser_test, JsonParseTest) {
     testJson(text);
 
 
+
+    // preserve spaces and line-breaks
+
     // nested json object
-    text = const_cast<char *>(u8R"({"jfoiw": {"fjioew":{ } 
+    text = const_cast<char *>(u8R"({"jfoiw": { "fjioew"  :   { "jfiow": true } 
 
         } 
 
