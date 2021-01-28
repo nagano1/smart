@@ -78,7 +78,7 @@ namespace smart {
         appendToLine, typeTextLength, typeText);
     const node_vtable *VTables::LineBreakVTable = &_LineBreakVTable;
 
-    LineBreakNodeStruct *Allocator::newLineBreakNode(ParseContext *context, NodeBase *parentNode) {
+    LineBreakNodeStruct *Alloc::newLineBreakNode(ParseContext *context, NodeBase *parentNode) {
         auto *lineNode = context->mallocLineBreakNode();
         auto *node = Cast::upcast(lineNode);
 

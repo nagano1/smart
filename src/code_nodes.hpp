@@ -524,7 +524,7 @@ namespace smart {
                                    utf8byte letter);
     };
 
-    struct Allocator {
+    struct Alloc {
         static NumberNodeStruct *newNumberNode(ParseContext *context, NodeBase *parentNode);
         static BoolNodeStruct *newBoolNode(ParseContext *context, NodeBase *parentNode);
 

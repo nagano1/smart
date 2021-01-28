@@ -82,7 +82,7 @@ namespace smart {
 
 
     // -------------------- Implements ClassNode Allocator --------------------- //
-    ClassNodeStruct *Allocator::newClassNode(ParseContext *context, NodeBase *parentNode) {
+    ClassNodeStruct *Alloc::newClassNode(ParseContext *context, NodeBase *parentNode) {
         auto *classNode = simpleMalloc<ClassNodeStruct>();
         //classNode->sub = simpleMalloc<ClassNodeStruct::Impl>();
 
@@ -100,7 +100,7 @@ namespace smart {
         return classNode;
     }
 
-    void Allocator::deleteClassNode(NodeBase *node) {
+    void Alloc::deleteClassNode(NodeBase *node) {
         auto *classNode = Cast::downcast<ClassNodeStruct *>(node);
 
         if (classNode->nameNode.name != nullptr) {
@@ -165,7 +165,7 @@ namespace smart {
                     int returnPos = idx + size_of_class;
 
                     // here "class " came
-                    auto *classNode = Allocator::newClassNode(context, parent);
+                    auto *classNode = Alloc::newClassNode(context, parent);
 
                     {
                         returnPos = Scanner::scan(&classNode->nameNode,

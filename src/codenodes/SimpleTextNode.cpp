@@ -53,7 +53,7 @@ namespace smart {
 
 
     SimpleTextNodeStruct *
-    Allocator::newSimpleTextNode(ParseContext *context, NodeBase *parentNode) {
+    Alloc::newSimpleTextNode(ParseContext *context, NodeBase *parentNode) {
         auto *spaceNode = context->mallocSpaceNode();
         auto *node = Cast::upcast(spaceNode);
 
@@ -62,7 +62,7 @@ namespace smart {
     }
 
 
-    SpaceNodeStruct *Allocator::newSpaceNode(ParseContext *context, NodeBase *parentNode) {
+    SpaceNodeStruct *Alloc::newSpaceNode(ParseContext *context, NodeBase *parentNode) {
         auto *spaceNode = context->mallocSpaceNode();
         auto *node = Cast::upcast(spaceNode);
 

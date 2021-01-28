@@ -63,7 +63,7 @@ TEST(parser_test, JsonParseTest) {
 }
 
 static void testJson(const char* codeText) {
-    auto *document = Allocator::newDocument(DocumentType::JsonDocument, nullptr);
+    auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, codeText, strlen(codeText));
     //char *typeText = DocumentUtils::getTypeTextFromTree(document);
     //    if (typeText != nullptr) {
@@ -557,12 +557,12 @@ class jips {
 
     const char *chars = text.c_str();
     for (unsigned long long i = 0; i < loopCount; i++) {
-        auto *document = Allocator::newDocument(DocumentType::CodeDocument, nullptr);
+        auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
         //VTables::DocumentVTable->init((NodeBase*)&document);
         DocumentUtils::parseText(document, chars, text.size());
 
         //EXPECT_EQ(document->nodeCount, 4);
-        Allocator::deleteDocument(document);
+        Alloc::deleteDocument(document);
         //console_log("i:"+ std::to_string(i));
     }
 
@@ -630,7 +630,7 @@ class AABC  {  }
     */
 
     const char *chars = text.c_str();
-    auto *document = Allocator::newDocument(
+    auto *document = Alloc::newDocument(
                            DocumentType::CodeDocument, nullptr);
 
     DocumentUtils::parseText(document, chars, text.size());
@@ -639,7 +639,7 @@ class AABC  {  }
     EXPECT_EQ(std::string(treeText), std::string(chars));
     EXPECT_EQ(strlen(treeText), strlen(chars));
 
-    Allocator::deleteDocument(document);
+    Alloc::deleteDocument(document);
 
 }
 
@@ -661,7 +661,7 @@ class A {
 )";
 
     const char *chars = text.c_str();
-    auto *document = Allocator::newDocument(DocumentType::CodeDocument, nullptr);
+    auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
 
     DocumentUtils::parseText(document, chars, text.size());
 
@@ -669,7 +669,7 @@ class A {
     EXPECT_EQ(std::string(treeText), std::string(chars));
     EXPECT_EQ(strlen(treeText), strlen(chars));
 
-    Allocator::deleteDocument(document);
+    Alloc::deleteDocument(document);
 
 }
 
@@ -707,7 +707,7 @@ class AABC  {  }
 )";
 
     const char *chars = text.c_str();
-    auto *document = Allocator::newDocument(DocumentType::CodeDocument, nullptr);
+    auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
 
     DocumentUtils::parseText(document, chars, text.size());
 
@@ -715,7 +715,7 @@ class AABC  {  }
     EXPECT_EQ(std::string(treeText), std::string(chars));
     EXPECT_EQ(strlen(treeText), strlen(chars));
 
-    Allocator::deleteDocument(document);
+    Alloc::deleteDocument(document);
 
 }
 

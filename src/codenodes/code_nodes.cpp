@@ -51,7 +51,7 @@ namespace smart {
     static SpaceNodeStruct *
     genSpaceNode(ParseContext *context, void *parentNode, int start, int end) {
 
-        auto *prevSpaceNode = Allocator::newSpaceNode(context, Cast::upcast(parentNode));
+        auto *prevSpaceNode = Alloc::newSpaceNode(context, Cast::upcast(parentNode));
         prevSpaceNode->text = context->charBuffer.newChars(end - start + 1);
         memcpy(prevSpaceNode->text, context->chars + start, (end - start));
         prevSpaceNode->textLength = end - start;
@@ -85,7 +85,7 @@ namespace smart {
             if (Tokenizer::isBreakLine(ch)) {
                 afterLineBreak = true;
                 auto *newLineBreak
-                        = Allocator::newLineBreakNode(context, Cast::upcast(parentNode));
+                        = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
 
                 if (prevLineBreak == nullptr) {
                     lastLineBreak = prevLineBreak = newLineBreak;

@@ -136,7 +136,7 @@ namespace smart {
 
     // -------------------- Implements ClassNode Allocator --------------------- //
 
-    JsonObjectStruct *Allocator::newJsonObject(ParseContext *context, NodeBase *parentNode) {
+    JsonObjectStruct *Alloc::newJsonObject(ParseContext *context, NodeBase *parentNode) {
         auto *jsonObjectNode = simpleMalloc<JsonObjectStruct>();
         INIT_NODE(jsonObjectNode, context, parentNode, VTables::JsonObjectVTable);
         jsonObjectNode->firstKeyValueItem = nullptr;
@@ -154,7 +154,7 @@ namespace smart {
     }
 
 
-    void Allocator::deleteJsonObject(NodeBase *node) {
+    void Alloc::deleteJsonObject(NodeBase *node) {
         auto *classNode = Cast::downcast<JsonObjectStruct *>(node);
 
         //if (classNode->nameNode.name != nullptr) {
@@ -229,7 +229,7 @@ namespace smart {
     int Tokenizers::jsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
         if (ch == '{') {
             int returnPosition = start + 1;
-            auto *jsonObject = Allocator::newJsonObject(context, parent);
+            auto *jsonObject = Alloc::newJsonObject(context, parent);
             int result = Scanner::scan(jsonObject,
                                        internal_JsonObjectTokenizer,
                                        returnPosition,
@@ -255,7 +255,7 @@ namespace smart {
 
 
 
-    JsonKeyValueItemStruct *Allocator::newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode) {
+    JsonKeyValueItemStruct *Alloc::newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode) {
         auto *keyValueItem = simpleMalloc<JsonKeyValueItemStruct>();
 
         INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable)
@@ -299,7 +299,7 @@ namespace smart {
                 return start + 1;
             }
 
-            JsonKeyValueItemStruct *nextItem = Allocator::newJsonKeyValueItemNode(context, parent);
+            JsonKeyValueItemStruct *nextItem = Alloc::newJsonKeyValueItemNode(context, parent);
 
             int result;
             if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(Cast::upcast(&nextItem->keyNode), ch, start, context))) {

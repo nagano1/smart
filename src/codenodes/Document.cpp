@@ -60,7 +60,7 @@ namespace smart {
     }
 
     // --------------------- Implements Document functions ----------------------
-    DocumentStruct *Allocator::newDocument(
+    DocumentStruct *Alloc::newDocument(
             DocumentType docType,
             void (*actionCreator)(void *node1, void *node2, int actionRequest)
     ) {
@@ -105,12 +105,12 @@ namespace smart {
     }
  */
 
-    void Allocator::deleteDocument(DocumentStruct *doc) {
+    void Alloc::deleteDocument(DocumentStruct *doc) {
         auto *node = doc->firstRootNode;
         while (node) {
             auto *nextNode = node->nextNode;
             if (node->vtable == VTables::ClassVTable) {
-                Allocator::deleteClassNode(node);
+                Alloc::deleteClassNode(node);
             }
             node = nextNode;
         }

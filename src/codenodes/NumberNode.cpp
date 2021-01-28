@@ -93,7 +93,7 @@ namespace smart {
                 || Tokenizer::isNonIdentifierChar(context->chars[start + length])) { // otherwise, 
 
                 //context->scanEnd = true;
-                auto *boolNode = Allocator::newBoolNode(context, parent);
+                auto *boolNode = Alloc::newBoolNode(context, parent);
 
                 boolNode->text = context->charBuffer.newChars(length + 1);
                 boolNode->textLength = length;
@@ -117,7 +117,7 @@ namespace smart {
 
     const node_vtable *VTables::BoolVTable = &_Bool_VTable;
 
-    BoolNodeStruct* Allocator::newBoolNode(ParseContext *context, NodeBase *parentNode) {
+    BoolNodeStruct* Alloc::newBoolNode(ParseContext *context, NodeBase *parentNode) {
         auto *node = (BoolNodeStruct *)malloc(sizeof(BoolNodeStruct));
         INIT_NODE(node, context, parentNode, VTables::BoolVTable);
         node->text = nullptr;
@@ -173,7 +173,7 @@ namespace smart {
 
         if (found_count > 0) {
             //context->scanEnd = true;
-            auto *numberNode = Allocator::newNumberNode(context, parent);
+            auto *numberNode = Alloc::newNumberNode(context, parent);
 
             context->codeNode = Cast::upcast(numberNode);
             numberNode->text = context->charBuffer.newChars(found_count + 1);
@@ -197,7 +197,7 @@ namespace smart {
 
 
 
-    NumberNodeStruct *Allocator::newNumberNode(ParseContext *context, NodeBase *parentNode) {
+    NumberNodeStruct *Alloc::newNumberNode(ParseContext *context, NodeBase *parentNode) {
         auto *node = (NumberNodeStruct *)malloc(sizeof(NumberNodeStruct));
         INIT_NODE(node, context, parentNode, VTables::NumberVTable);
         node->text = nullptr;
