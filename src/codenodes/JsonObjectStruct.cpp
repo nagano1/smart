@@ -154,18 +154,18 @@ namespace smart {
         unsigned int found_count = 0;
         
         // starts with "
-        bool startWithDQuote = false;
+        bool startsWithDQuote = false;
         if (context->chars[start] == '"') {
-            startWithDQuote = true;
+            startsWithDQuote = true;
             found_count++;
         }
 
-        int letterStart = startWithDQuote ? start + 1 : start;
+        int letterStart = startsWithDQuote ? start + 1 : start;
         for (uint_fast32_t i = letterStart; i < context->length; i++) {
             if (Tokenizer::isIdentifierLetter(context->chars[i])) {
                 found_count++;
             }
-            else if (startWithDQuote) {
+            else if (startsWithDQuote) {
                 found_count++;
 
                 if (context->chars[i] == '"') {
