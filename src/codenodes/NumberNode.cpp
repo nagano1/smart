@@ -19,6 +19,20 @@
 
 namespace smart {
 
+    /*
+        +--------------------------+
+        |                          |
+        |                          |
+        |                          |
+        |                          |
+        |      BoolNodeStruct      |       
+        |                          |
+        |                          |
+        |                          |
+        |                          |
+        +--------------------------+
+    */
+
     static CodeLine *appendToLine2(BoolNodeStruct *self, CodeLine *currentCodeLine) {
         assert(self->text != nullptr);
 
@@ -68,7 +82,6 @@ namespace smart {
             auto idx = Tokenizer::matchFirstWithTrim(context->chars, false_chars, start);
             if (idx > -1) {
                 hit = true;
-                boolValue = false;
                 length = sizeof(false_chars) - 1;
             }
         }
@@ -81,7 +94,6 @@ namespace smart {
                 context->scanEnd = true;
                 auto *boolNode = Allocator::newBoolNode(context, parent);
 
-                context->codeNode = Cast::upcast(boolNode);
                 boolNode->text = context->charBuffer.newChars(length + 1);
                 boolNode->textLength = length;
                 boolNode->boolValue = boolValue;
@@ -89,10 +101,10 @@ namespace smart {
                 TEXT_MEMCPY(boolNode->text, context->chars + start, length);
                 boolNode->text[length] = '\0';
 
+                context->codeNode = Cast::upcast(boolNode);
                 return start + length;
 
             }
-
         }
 
         return -1;
@@ -107,7 +119,6 @@ namespace smart {
     BoolNodeStruct* Allocator::newBoolNode(ParseContext *context, NodeBase *parentNode) {
         auto *node = (BoolNodeStruct *)malloc(sizeof(BoolNodeStruct));
         INIT_NODE(node, context, parentNode, VTables::BoolVTable);
-        node->parentNode = parentNode;
         node->text = nullptr;
         node->textLength = 0;
         node->boolValue = false;
@@ -205,7 +216,6 @@ namespace smart {
     NumberNodeStruct *Allocator::newNumberNode(ParseContext *context, NodeBase *parentNode) {
         auto *node = (NumberNodeStruct *)malloc(sizeof(NumberNodeStruct));
         INIT_NODE(node, context, parentNode, VTables::NumberVTable);
-        node->parentNode = parentNode;
         node->text = nullptr;
         node->textLength = 0;
 
