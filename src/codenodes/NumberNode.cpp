@@ -92,7 +92,7 @@ namespace smart {
             if (start + length == context->length // allowed to be the last char of the file
                 || Tokenizer::isNonIdentifierChar(context->chars[start + length])) { // otherwise, 
 
-                context->scanEnd = true;
+                //context->scanEnd = true;
                 auto *boolNode = Allocator::newBoolNode(context, parent);
 
                 boolNode->text = context->charBuffer.newChars(length + 1);
@@ -128,19 +128,9 @@ namespace smart {
     }
 
 
-    /*
-        +--------------------------+
-        | Number                   |
-        | name                     |
-        | pass                     |
-        | mail                     |
-        | timezone                 |
-        | status                   |
-        | changed                  |
-        | login                    |
-        | init                     |
-        +--------------------------+
-    */
+    //    +--------------------------+
+    //    | Number                   |
+    //    +--------------------------+
 
     static CodeLine *appendToLine(NumberNodeStruct *self, CodeLine *currentCodeLine) {
         assert(self->text != nullptr);
@@ -206,11 +196,6 @@ namespace smart {
     const node_vtable *VTables::NumberVTable = &_Number_VTable;
 
 
-    void Init::initNumberNode(NumberNodeStruct *name, ParseContext *context, NodeBase *parentNode) {
-        INIT_NODE(name, context, parentNode, VTables::NumberVTable);
-        //name->name = nullptr;
-        //name->nameLength = 0;
-    }
 
     NumberNodeStruct *Allocator::newNumberNode(ParseContext *context, NodeBase *parentNode) {
         auto *node = (NumberNodeStruct *)malloc(sizeof(NumberNodeStruct));

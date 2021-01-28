@@ -519,7 +519,6 @@ namespace smart {
 
     struct Init {
         static void initNameNode(NameNodeStruct *name, ParseContext *context, NodeBase *parentNode);
-        static void initNumberNode(NumberNodeStruct *name, ParseContext *context, NodeBase *parentNode);
 
         static void initSymbolNode(SymbolStruct *self, ParseContext *context, void *parentNode,
                                    utf8byte letter);
