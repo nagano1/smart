@@ -22,12 +22,11 @@ namespace smart {
     static CodeLine *appendToLine(SymbolStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
         currentCodeLine->appendNode(self);
-
         return currentCodeLine;
     };
 
     static const utf8byte *self_text(SymbolStruct *self) {
-        auto *node = self;//Cast::downcast<SymbolStruct *>(self);
+        auto *node = self;
         return node->symbol;
     };
 

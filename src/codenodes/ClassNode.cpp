@@ -37,14 +37,6 @@ namespace smart {
         return "class";
     }
 
-    static int selfTypeTextLength(ClassNodeStruct *classNode) {
-        return 7;
-    }
-
-    static const utf8byte *selfTypeText(ClassNodeStruct *node) {
-        return "<Class>";
-    }
-
     static CodeLine *appendToLine(ClassNodeStruct *self, CodeLine *currentCodeLine) {
         auto *classNode = self;//Cast::downcast<ClassNodeStruct *>(self);
 

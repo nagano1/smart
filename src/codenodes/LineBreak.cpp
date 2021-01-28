@@ -24,7 +24,6 @@ namespace smart {
 
     static int selfTextLength(LineBreakNodeStruct *self) {
         return 1;
-        //return static_cast<int>(strlen(self->text));
     }
 
     static const char *self_text(LineBreakNodeStruct *self) {

@@ -23,25 +23,15 @@ namespace smart {
         +--------------------------+
         |                          |
         |                          |
-        |                          |
-        |                          |
         |      BoolNode            |       
-        |                          |
-        |                          |
         |                          |
         |                          |
         +--------------------------+
     */
 
     static CodeLine *appendToLine2(BoolNodeStruct *self, CodeLine *currentCodeLine) {
-        assert(self->text != nullptr);
-
-        if (self->text == nullptr) {
-            return currentCodeLine;
-        }
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
         currentCodeLine->appendNode(self);
-
         return currentCodeLine;
     }
 
@@ -128,9 +118,6 @@ namespace smart {
     static CodeLine *appendToLine(NumberNodeStruct *self, CodeLine *currentCodeLine) {
         assert(self->text != nullptr);
 
-        if (self->text == nullptr) {
-            return currentCodeLine;
-        }
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
         currentCodeLine->appendNode(self);
 

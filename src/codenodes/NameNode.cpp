@@ -20,11 +20,7 @@
 namespace smart {
 
     static CodeLine *appendToLine(NameNodeStruct *self, CodeLine *currentCodeLine) {
-        auto *node = self;//Cast::downcast<NameNodeStruct *>(self);
-
-        if (node->name == nullptr) {
-            return currentCodeLine;
-        }
+        auto *node = self;
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
         currentCodeLine->appendNode(self);
 
