@@ -32,7 +32,10 @@ namespace smart {
 
         currentCodeLine->appendNode(self);
 
-        currentCodeLine = VTableCall::appendToLine(&self->keyNode, currentCodeLine);
+        if (self->keyNode) {
+            currentCodeLine = VTableCall::appendToLine(self->keyNode, currentCodeLine);
+        }
+
         currentCodeLine = VTableCall::appendToLine(&self->delimeter, currentCodeLine);
         if (self->valueNode) {
             currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
@@ -79,7 +82,6 @@ namespace smart {
     static const utf8byte *selfText(JsonObjectStruct *node) {
         return "{";
     }
-
 
     static constexpr const char _typeName[] = "<JsonObject>";
 
@@ -175,7 +177,10 @@ namespace smart {
         }
 
         if (found_count > 0) {
-            auto *nameNode = Cast::downcast<NameNodeStruct *>(parent);
+            auto *nameNode = simpleMalloc<NameNodeStruct>();
+            Init::initNameNode(nameNode, context, parent);
+
+            //auto *nameNode = Cast::downcast<NameNodeStruct *>(parent);
 
             context->codeNode = Cast::upcast(nameNode);
             nameNode->name = context->charBuffer.newChars(found_count + 1);
@@ -243,11 +248,12 @@ namespace smart {
 
         INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable)
 
-        Init::initNameNode(&keyValueItem->keyNode, context, parentNode);
         Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
 
         keyValueItem->hasComma = false;
+
+        keyValueItem->keyNode = nullptr;
         keyValueItem->valueNode = nullptr;
 
         return keyValueItem;
@@ -282,10 +288,13 @@ namespace smart {
                 return start + 1;
             }
 
-            JsonKeyValueItemStruct *nextItem = Alloc::newJsonKeyValueItemNode(context, parent);
 
             int result;
-            if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(Cast::upcast(&nextItem->keyNode), ch, start, context))) {
+            if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(parent, ch, start, context))) {
+
+                JsonKeyValueItemStruct *nextItem = Alloc::newJsonKeyValueItemNode(context, parent);
+
+                nextItem->keyNode = Cast::downcast<NameNodeStruct*>(context->codeNode);
 
                 if (jsonObject->firstKeyValueItem == nullptr) {
                     jsonObject->firstKeyValueItem = nextItem;

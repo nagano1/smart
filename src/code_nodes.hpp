@@ -169,7 +169,7 @@ namespace smart {
 
         utf8byte body[2];
 
-        NameNodeStruct keyNode;
+        NameNodeStruct *keyNode;
 
         NodeBase *valueNode;
 
@@ -357,7 +357,7 @@ namespace smart {
             reinterpret_cast<selfTextLengthFunction> (f1) \
             , reinterpret_cast<selfTextFunction> (f2) \
             , reinterpret_cast<appendToLineFunction> (f3) \
-            , (char *)f4 \
+            , (char *)(f4) \
             , (sizeof(f4)-1) \
         } \
         ;static const int check_result_##T = vtable_type_check<T>(f1,f2,f3)
