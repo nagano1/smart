@@ -25,7 +25,7 @@ namespace smart {
         |                          |
         |                          |
         |                          |
-        |      BoolNodeStruct      |       
+        |      BoolNode            |       
         |                          |
         |                          |
         |                          |
@@ -70,6 +70,7 @@ namespace smart {
         bool hit = false;
         bool boolValue = false;
         int length = 0;
+
         if ('t' == ch) {
             auto idx = Tokenizer::matchFirstWithTrim(context->chars, true_chars, start);
             if (idx > -1) {

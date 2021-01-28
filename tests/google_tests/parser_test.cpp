@@ -25,13 +25,13 @@ TEST(parser_test, JsonParseTest) {
         text = const_cast<char *>(u8R"({
         "aowowo" : 
 
-    21249,"jiofw": false
+    21249,"jiofw" : true
 
 })");
         testJson(text);
     }
 
-    text = const_cast<char *>(u8R"({"aowowo" : 21249,"jiofw": false})");
+    text = const_cast<char *>(u8R"({"aowfowo" : 21249,"jiofw": false})");
     testJson(text);
 }
 
@@ -150,8 +150,7 @@ static const unsigned char utf8BytesTable[256]{
 };
 
 
-int utf16_length(const char *utf8_chars
-                 , unsigned int byte_len) {
+int utf16_length(const char *utf8_chars, unsigned int byte_len) {
     unsigned int pos = 0;
     int length = 0;
 
@@ -184,37 +183,37 @@ TEST(parser_test, utf16Length) {
 
     {
         const char *str = u8"nanimo-*";
-        int utf16length = utf16_length(str, strlen(str));
+        auto utf16length = utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 8);
     }
 
     {
         const char *str = u8"a𐐀b";
-        int utf16length = utf16_length(str, strlen(str));
+        auto utf16length = utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 4);
     }
 
     {
         const char *str = u8"\r\n\n"; // line break
-        int utf16length = utf16_length(str, strlen(str));
+        auto utf16length = utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 3);
     }
 
     {
         const char *str = u8" "; // 1 space
-        int utf16length = utf16_length(str, strlen(str));
+        auto utf16length = utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 1);
     }
 
     {
         const char *str = u8""; // empty string
-        int utf16length = utf16_length(str, strlen(str));
+        auto utf16length = utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 0);
     }
 
     {
         const char *str = u8"Hasta el próximo miércoles"; // spanish
-        int utf16length = utf16_length(str, strlen(str));
+        auto utf16length = utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 26);
     }
 
