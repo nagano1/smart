@@ -54,13 +54,6 @@ namespace smart {
     }
 
     static constexpr const char boolNodeTypeText[] = "<bool>";
-    static const char *typeText2(BoolNodeStruct*self) {
-        return boolNodeTypeText;
-    }
-    static int typeTextLength2(BoolNodeStruct*self) {
-        return sizeof(boolNodeTypeText) - 1;
-    }
-
 
     int Tokenizers::boolTokenizer(TokenizerParams_parent_ch_start_context) {
 
@@ -113,7 +106,7 @@ namespace smart {
 
 
     static const node_vtable _Bool_VTable = CREATE_VTABLE(BoolNodeStruct, selfTextLength2,
-        selfText2, appendToLine2, typeTextLength2, typeText2);
+        selfText2, appendToLine2, boolNodeTypeText);
 
     const node_vtable *VTables::BoolVTable = &_Bool_VTable;
 
@@ -154,14 +147,6 @@ namespace smart {
 
 
     static constexpr const char numberNodeTypeText[] = "<number>";
-    static const char *typeText(NumberNodeStruct *self) {
-        return numberNodeTypeText;
-    }
-    static int typeTextLength(NumberNodeStruct *self) {
-        return sizeof(numberNodeTypeText) - 1;
-    }
-
-
     int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context) {
         unsigned int found_count = 0;
         for (uint_fast32_t i = start; i < context->length; i++) {
@@ -191,7 +176,7 @@ namespace smart {
 
     static const node_vtable _Number_VTable = CREATE_VTABLE(NumberNodeStruct, selfTextLength,
         selfText,
-        appendToLine, typeTextLength, typeText);
+        appendToLine, numberNodeTypeText);
 
     const node_vtable *VTables::NumberVTable = &_Number_VTable;
 

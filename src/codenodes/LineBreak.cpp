@@ -31,16 +31,6 @@ namespace smart {
         return self->text;
     };
 
-    static constexpr const char lineBreakTypeText[] = "<lineBreak>";
-    static int typeTextLength(LineBreakNodeStruct *self) {
-        return sizeof(lineBreakTypeText) - 1;
-        //return static_cast<int>(strlen(self->text));
-    }
-
-    static const char *typeText(LineBreakNodeStruct *self) {
-        return lineBreakTypeText;
-    };
-
 
     static CodeLine *appendToLine(LineBreakNodeStruct *self, CodeLine *currentCodeLine) {
         auto *lineBreakNode = self;//Cast::downcast<LineBreakNodeStruct *>(self);
@@ -72,10 +62,12 @@ namespace smart {
         return currentCodeLine;
     };
 
+    static constexpr const char lineBreakTypeText[] = "<lineBreak>";
 
     static const node_vtable _LineBreakVTable = CREATE_VTABLE(LineBreakNodeStruct,
         selfTextLength, self_text,
-        appendToLine, typeTextLength, typeText);
+        appendToLine, lineBreakTypeText);
+
     const node_vtable *VTables::LineBreakVTable = &_LineBreakVTable;
 
     LineBreakNodeStruct *Alloc::newLineBreakNode(ParseContext *context, NodeBase *parentNode) {

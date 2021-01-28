@@ -24,14 +24,6 @@ namespace smart {
         return "";
     };
 
-    static int selfTypeTextLength(DocumentStruct *self) {
-        return 10;
-    }
-
-    static const char *selfTypeText(DocumentStruct *self) {
-        return "<Document>";
-    };
-
     static CodeLine *appendToLine(DocumentStruct *self, CodeLine *currentCodeLine) {
         auto *doc = self;//Cast::downcast<DocumentStruct *>(self);
         //currentCodeLine = addPrevLineBreakNode(node, currentCodeLine);
@@ -48,10 +40,10 @@ namespace smart {
 
 
 
-
+    static constexpr const char DocumentTypeText[] = "<Document>";
 
     static const node_vtable _Document = CREATE_VTABLE(DocumentStruct,selfTextLength, selfText,
-                                                       appendToLine, selfTypeTextLength, selfTypeText);
+                                                       appendToLine, DocumentTypeText);
 
     const node_vtable *VTables::DocumentVTable = &_Document;
 

@@ -28,26 +28,18 @@ namespace smart {
         return self->textLength;
     }
 
-    static constexpr const char simpleTextTypeText[] = "<SimpleText>";
-    static const char *typeText(SimpleTextNodeStruct *self) {
-        return simpleTextTypeText;
-    };
-
-    static int typeTextLength(SimpleTextNodeStruct *self) {
-        return sizeof(simpleTextTypeText) - 1;
-    }
-
     static CodeLine *appendToLine(SimpleTextNodeStruct *self, CodeLine *currentCodeLine) {
         //addPrevLineBreakNode(node, currentCodeLine);
         currentCodeLine->appendNode(self);
         return currentCodeLine;
     };
 
+    static constexpr const char simpleTextTypeText[] = "<SimpleText>";
 
     static struct node_vtable _SIMPLE_TEXT_VTABLE = CREATE_VTABLE(SimpleTextNodeStruct,
                                                                   selfTextLength,
                                                                   self_text,
-                                                                  appendToLine, typeTextLength, typeText);
+                                                                  appendToLine, simpleTextTypeText);
     const struct node_vtable *VTables::SimpleTextVTable = &_SIMPLE_TEXT_VTABLE;
     const struct node_vtable *VTables::SpaceVTable = &_SIMPLE_TEXT_VTABLE;
 

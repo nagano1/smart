@@ -56,21 +56,11 @@ namespace smart {
 
 
     static constexpr const char class_chars[] = "<JsonKeyValueItem>";
-    static const utf8byte *typeText2(JsonKeyValueItemStruct *self) {
-        return  class_chars;
-    }
-
-    static int typeTextLength2(JsonKeyValueItemStruct *self) {
-        return sizeof(class_chars) - 1;
-        //const char foo[] = "<JsonKeyValueItem>";
-        //size_t len = sizeof(foo) - 1;
-        //return len;
-    }
 
     static const node_vtable _JsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
                                                                              selfTextLength2,
                                                                              selfText_JsonKeyValueItemStruct,
-                                                                             appendToLine2, typeTextLength2,                                                        typeText2);
+                                                                             appendToLine2, class_chars);
 
     const struct node_vtable *VTables::JsonKeyValueItemVTable = &_JsonObjectKeyValueStructVTable;
 
@@ -92,13 +82,6 @@ namespace smart {
 
 
     static constexpr const char _typeName[] = "<JsonObject>";
-    static int typeTextLength(JsonObjectStruct *self) {
-        return sizeof(_typeName) - 1;
-    }
-
-    static const utf8byte *typeText(JsonObjectStruct *node) {
-        return _typeName;
-    }
 
     static CodeLine *appendToLine(JsonObjectStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
@@ -120,7 +103,7 @@ namespace smart {
 
     static const node_vtable _JsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,
                                                                selfTextLength, selfText,
-                                                               appendToLine, typeTextLength, typeText);
+                                                               appendToLine, _typeName);
     const struct node_vtable *VTables::JsonObjectVTable = &_JsonObjectVTable;
 
 
