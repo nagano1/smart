@@ -17,7 +17,7 @@
 
 #include "common.hpp"
 
-using letterCheckerType = bool (*)(int, char);
+using letterCheckerType = bool(*)(int, char);
 
 struct ParseUtil {
 
@@ -53,7 +53,7 @@ struct ParseUtil {
     };
 
     static inline int
-    matchFirstWithTrim(const std::string &&class_text, const std::string &&target) {
+        matchFirstWithTrim(const std::string &&class_text, const std::string &&target) {
         return ParseUtil::matchFirstWithTrim(class_text.c_str(), target.c_str(), 0);
     };
 
@@ -71,7 +71,7 @@ struct ParseUtil {
         return false;
     }
 
-     
+
 
     // EXPECT_EQ(0, Tokenizer::matchFirstWithTrim("class A{}", "class"));
     static int matchFirstWithTrim(const utf8byte *chars, const char *target, int start) {
@@ -90,9 +90,11 @@ struct ParseUtil {
                 if (matchStartIndex == -1) {
                     if (ch == ' ') { //allow trim
                         continue;
-                    } else if (ch == '\t' || ch == '\n' || ch == '\r') {
+                    }
+                    else if (ch == '\t' || ch == '\n' || ch == '\r') {
                         continue;
-                    } else { // should start match
+                    }
+                    else { // should start match
                         matchStartIndex = i;
                         currentTargetIndex = 0;
                     }
@@ -113,7 +115,8 @@ struct ParseUtil {
 
         if (currentTargetIndex == 0) {
             return -1;
-        } else {
+        }
+        else {
             return matchStartIndex;
         }
     };
@@ -129,11 +132,11 @@ struct ParseUtil {
 
     static inline bool isNonIdentifierChar(utf8byte ch) {
         return ' ' == ch || '\t' == ch || '!' == ch || '#' == ch || '[' == ch || '\n' == ch
-               || '%' == ch || ']' == ch || '"' == ch || '[' == ch || '\'' == ch
-               || '=' == ch || '*' == ch || '+' == ch || '-' == ch || '?' == ch
-               || '@' == ch || '{' == ch || '}' == ch || ',' == ch || ';' == ch
-               || ':' == ch || '.' == ch || '`' == ch || '&' == ch || '|' == ch
-               || '<' == ch || '>' == ch || '^' == ch || '\\' == ch || '/' == ch;
+            || '%' == ch || ']' == ch || '"' == ch || '[' == ch || '\'' == ch
+            || '=' == ch || '*' == ch || '+' == ch || '-' == ch || '?' == ch
+            || '@' == ch || '{' == ch || '}' == ch || ',' == ch || ';' == ch
+            || ':' == ch || '.' == ch || '`' == ch || '&' == ch || '|' == ch
+            || '<' == ch || '>' == ch || '^' == ch || '\\' == ch || '/' == ch;
     };
 
 
@@ -148,11 +151,14 @@ struct ParseUtil {
     static inline bool isIdentifierLetter(utf8byte ch) {
         if ('A' <= ch && ch <= 'Z') {
             return true;
-        } else if ('a' <= ch && ch <= 'z') {
+        }
+        else if ('a' <= ch && ch <= 'z') {
             return true;
-        } else if ('0' <= ch && ch <= '9') {
+        }
+        else if ('0' <= ch && ch <= '9') {
             return true;
-        } else if ('_' == ch) {
+        }
+        else if ('_' == ch) {
             return true;
         }
 

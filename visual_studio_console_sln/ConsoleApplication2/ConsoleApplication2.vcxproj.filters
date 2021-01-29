@@ -71,6 +71,9 @@
     <ClInclude Include="..\..\src\tokenizer.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\parse_util.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="Native.asm">

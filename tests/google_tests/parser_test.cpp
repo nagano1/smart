@@ -8,7 +8,7 @@
 
 
 #include "code_nodes.hpp"
-#include "tokenizer.hpp"
+#include "parse_util.hpp"
 #include "../test_common.h"
 
 using namespace smart;
@@ -822,6 +822,7 @@ ENDTEST
         auto result = ParseUtil::matchWord(class_text.c_str(), class_text.length(), "class", 5, 3);
         EXPECT_EQ(result, true);
     }
+
     {
         std::string class_text(u8"classauto;");
         auto result = ParseUtil::matchWord(class_text.c_str(), class_text.length(), "class", 5, 0);
