@@ -84,16 +84,7 @@ jobs:
           #make all
           cmake --build . ${{ matrix.config.cmakeBuildConfig }}
           #ls -R .
-      - name: run test
-        shell: bash
-        run: |
-          cd lsp_vscode_server
-
-          npm install yo generator-code
-          npm install vsce
-
-          vsce package
-
+      
       - name: run test
         run: |
           cd build/
@@ -101,6 +92,19 @@ jobs:
           ${{ matrix.config.bin }}
           ${{ matrix.config.testbin }}
           ${{ matrix.config.lspbin }}
+
+      - name: LSP Package
+        shell: bash
+        run: |
+          cd lsp_vscode_server
+
+          npm install yo generator-code
+          npm install vsce
+
+          ls node_modules
+
+          vsce package
+
 
       - name: Copy artifact
         run: |
