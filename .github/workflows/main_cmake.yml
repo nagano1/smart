@@ -103,6 +103,7 @@ jobs:
         run: |
           cd lsp_vscode_server
 
+          npm install -g vscode
           npm install -g yo generator-code
           npm install -g vsce
 
