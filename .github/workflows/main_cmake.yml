@@ -92,6 +92,10 @@ jobs:
           ${{ matrix.config.bin }}
           ${{ matrix.config.testbin }}
           ${{ matrix.config.lspbin }}
+      - name: Setup Node ${{ env.NODE_VERSION }} Environment
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: LSP Package
         shell: bash
@@ -99,8 +103,8 @@ jobs:
         run: |
           cd lsp_vscode_server
 
-          sudo npm install -g yo generator-code
-          sudo npm install -g vsce
+          npm install -g yo generator-code
+          npm install -g vsce
 
           vsce package
 
