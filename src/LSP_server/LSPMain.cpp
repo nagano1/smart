@@ -37,7 +37,7 @@ void LSPManager::LSP_main() {
 
     while (true) {
         int n = 0;
-        scanf("Content-Length: %d", &n);
+        scanf_s("Content-Length: %d", &n);
 
         fprintf(stderr, "n: %d", n);
         fflush(stderr);

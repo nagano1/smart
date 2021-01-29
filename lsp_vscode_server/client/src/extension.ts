@@ -45,10 +45,13 @@ export function activate(context: ExtensionContext) {
     //     args: [serverPath],
     // }
 
+    /*
     let consoleApp = context.asAbsolutePath(
         path.join("server", "out", "ConsoleApplication2.exe")
     )
-    consoleApp = 'C:\\GitProjects\\doorLang\\visual_studio_console_sln\\x64\\Release\\ConsoleApplication2.exe';
+*/
+    let consoleApp = require('path').resolve(__dirname, '../../../')+ "/visual_studio_console_sln\\x64\\Release\\ConsoleApplication2.exe";
+    consoleApp = __dirname + "/ConsoleApplication2.exe";
 
     //ConsoleApplication2.exe
     let serverOptions: ServerOptions = {

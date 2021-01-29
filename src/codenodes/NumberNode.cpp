@@ -30,9 +30,7 @@ namespace smart {
     */
 
     static CodeLine *appendToLine2(BoolNodeStruct *self, CodeLine *currentCodeLine) {
-        currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
-        currentCodeLine->appendNode(self);
-        return currentCodeLine;
+        return currentCodeLine->addPrevLineBreakNode(self)->appendNode(self);
     }
 
     static const char *selfText2(BoolNodeStruct*self) {

@@ -442,7 +442,7 @@ namespace smart {
 
         }
 
-        void appendNode(void *node) {
+        CodeLine *appendNode(void *node) {
             if (firstNode == nullptr) {
                 firstNode = (NodeBase *) node;
             }
@@ -452,6 +452,8 @@ namespace smart {
             }
 
             lastNode = (NodeBase *) node;
+
+            return this;
         }
 
         CodeLine *addPrevLineBreakNode(void *node) {

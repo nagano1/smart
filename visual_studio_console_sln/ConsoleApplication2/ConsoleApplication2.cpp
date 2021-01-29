@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <mutex>
 #include <thread>
@@ -40,21 +40,20 @@ extern "C" NTSTATUS NtWriteVirtualMemory(HANDLE processHandle, PVOID baseAddress
 
 int main() {
 
-    //test_central_job_queues();
+    /*
     auto x = 100;
     auto y = 999;
 
     std::cout << "x:" << x << std::endl;
-
     DWORD numBytesWritten = 0;
     NTSTATUS success = NtWriteVirtualMemory(GetCurrentProcess(), &x, &y, sizeof(y), &numBytesWritten);
 
     std::cout << "x:" << x << std::endl;
-    /*
+    */
+
+    //test_central_job_queues();
     LSPManager::LSP_main();
-
-
-
+    /*
     */
 
 
