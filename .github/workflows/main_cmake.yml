@@ -84,8 +84,16 @@ jobs:
           #make all
           cmake --build . ${{ matrix.config.cmakeBuildConfig }}
           #ls -R .
-      
-      
+      - name: run test
+        shell: bash
+        run: |
+          cd lsp_vscode_server
+
+          npm install -g yo generator-code
+          npm install -g vsce
+
+          vsce package
+
       - name: run test
         run: |
           cd build/
