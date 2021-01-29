@@ -68,9 +68,6 @@
     <ClInclude Include="..\..\src\thread_pool.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\tokenizer.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\parse_util.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>

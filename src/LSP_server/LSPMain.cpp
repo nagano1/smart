@@ -39,7 +39,7 @@ void LSPManager::LSP_main() {
         int n = 0;
         scanf("Content-Length: %d", &n);
 
-        fprintf(stderr, "n: %d", n);
+        fprintf(stderr, "n: %d\n", n);
         fflush(stderr);
 
         if (n > 0) {
