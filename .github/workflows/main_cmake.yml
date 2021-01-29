@@ -104,7 +104,7 @@ jobs:
           ls node_modules/vsce
           ls node_modules/.bin
 
-          vsce package
+          node_modules/.bin/vsce package
 
 
       - name: Copy artifact
