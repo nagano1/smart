@@ -101,7 +101,8 @@ jobs:
           npm install yo generator-code
           npm install vsce
 
-          ls node_modules
+          ls node_modules/vsce
+          ls node_modules/.bin
 
           vsce package
 
