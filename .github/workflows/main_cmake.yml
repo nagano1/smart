@@ -98,13 +98,10 @@ jobs:
         run: |
           cd lsp_vscode_server
 
-          npm install yo generator-code
-          npm install vsce
+          sudo npm install -g yo generator-code
+          sudo npm install -g vsce
 
-          ls node_modules/vsce
-          ls node_modules/.bin
-
-          node_modules/.bin/vsce package
+          vsce package
 
 
       - name: Copy artifact
