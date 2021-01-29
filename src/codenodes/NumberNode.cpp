@@ -43,7 +43,6 @@ namespace smart {
         return self->textLength;
     }
 
-    static constexpr const char boolNodeTypeText[] = "<bool>";
 
     int Tokenizers::boolTokenizer(TokenizerParams_parent_ch_start_context) {
 
@@ -94,7 +93,8 @@ namespace smart {
         return -1;
     };
 
-
+    
+    static constexpr const char boolNodeTypeText[] = "<bool>";
     static const node_vtable _Bool_VTable = CREATE_VTABLE(BoolNodeStruct, selfTextLength2,
         selfText2, appendToLine2, boolNodeTypeText);
 

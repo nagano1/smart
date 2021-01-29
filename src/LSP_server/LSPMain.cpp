@@ -117,55 +117,55 @@ void LSPManager::nextRequest(char *chars, size_t length) {
 }
 
 
-static constexpr int CHAR_BUFFER_SIZE = 1;
-
-struct CharBufferItem {
-    utf8byte stack_buffer[CHAR_BUFFER_SIZE];
-    int size = 0;
-    CharBufferItem *next;
-};
-
-/**
- * main entry for Language Server Protocol
- */
-void LSP_main3() {
-
-    int offset = 0;
-
-    auto *firstBufferItem = simpleMalloc<CharBufferItem>();
-    auto *currentBufferItem = firstBufferItem;
-
-    while (true) {
-        int ch = getchar();
-        if (ch == EOF) {
-            currentBufferItem->size = offset;
-            currentBufferItem->next = nullptr;
-            break;
-        }
-
-        if (offset >= CHAR_BUFFER_SIZE) {
-            auto *newBufferItem = simpleMalloc<CharBufferItem>();
-
-            currentBufferItem->next = newBufferItem;
-            currentBufferItem->size = offset;
-
-            currentBufferItem = newBufferItem;
-            offset = 0;
-        }
-
-        currentBufferItem->stack_buffer[offset] = static_cast<utf8byte>(ch);
-        offset++;
-    }
-
-
-    int totalCount = 0;
-    CharBufferItem *target = firstBufferItem;
-    while (target) {
-        totalCount += target->size;
-        for (int i = 0; i < target->size; i++) {
-            printf("[%c]", target->stack_buffer[i]);
-        }
-        target = target->next;
-    }
-    printf("\n totalCount = %d", totalCount);;
-}
+//static constexpr int CHAR_BUFFER_SIZE = 1;
+//
+//struct CharBufferItem {
+//    utf8byte stack_buffer[CHAR_BUFFER_SIZE];
+//    int size = 0;
+//    CharBufferItem *next;
+//};
+//
+///**
+// * main entry for Language Server Protocol
+// */
+//void LSP_main3() {
+//
+//    int offset = 0;
+//
+//    auto *firstBufferItem = simpleMalloc<CharBufferItem>();
+//    auto *currentBufferItem = firstBufferItem;
+//
+//    while (true) {
+//        int ch = getchar();
+//        if (ch == EOF) {
+//            currentBufferItem->size = offset;
+//            currentBufferItem->next = nullptr;
+//            break;
+//        }
+//
+//        if (offset >= CHAR_BUFFER_SIZE) {
+//            auto *newBufferItem = simpleMalloc<CharBufferItem>();
+//
+//            currentBufferItem->next = newBufferItem;
+//            currentBufferItem->size = offset;
+//
+//            currentBufferItem = newBufferItem;
+//            offset = 0;
+//        }
+//
+//        currentBufferItem->stack_buffer[offset] = static_cast<utf8byte>(ch);
+//        offset++;
+//    }
+//
+//
+//    int totalCount = 0;
+//    CharBufferItem *target = firstBufferItem;
+//    while (target) {
+//        totalCount += target->size;
+//        for (int i = 0; i < target->size; i++) {
+//            printf("[%c]", target->stack_buffer[i]);
+//        }
+//        target = target->next;
+//    }
+//    printf("\n totalCount = %d", totalCount);;
+//}
