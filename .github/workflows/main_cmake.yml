@@ -95,6 +95,7 @@ jobs:
 
       - name: LSP Package
         shell: bash
+        if: matrix.config.os == 'windows-latest'
         run: |
           cd lsp_vscode_server
 
