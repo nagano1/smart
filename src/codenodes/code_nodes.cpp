@@ -82,7 +82,7 @@ namespace smart {
             //__android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
             //console_log("i:" + std::string(":") + ch + "," + std::to_string(i));
 
-            if (Tokenizer::isBreakLine(ch)) {
+            if (ParseUtil::isBreakLine(ch)) {
                 afterLineBreak = true;
                 auto *newLineBreak
                         = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
@@ -103,11 +103,11 @@ namespace smart {
 
                 i++;
                 continue;
-            } else if (Tokenizer::isSpace(ch)) {
+            } else if (ParseUtil::isSpace(ch)) {
                 uint32_t spaceEndIndex = i + 1;
 
                 for (; spaceEndIndex < context->length; spaceEndIndex++) {
-                    if (!Tokenizer::isSpace(context->chars[spaceEndIndex])) {
+                    if (!ParseUtil::isSpace(context->chars[spaceEndIndex])) {
                         break;
                     }
                 }

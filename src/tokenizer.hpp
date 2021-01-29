@@ -19,7 +19,7 @@
 
 using letterCheckerType = bool (*)(int, char);
 
-struct Tokenizer {
+struct ParseUtil {
 
     template<class T>
     static inline int detectOne(const T &tokenizer, const utf8byte *chars, utf8byte ch, int i) {
@@ -54,9 +54,24 @@ struct Tokenizer {
 
     static inline int
     matchFirstWithTrim(const std::string &&class_text, const std::string &&target) {
-        return Tokenizer::matchFirstWithTrim(class_text.c_str(), target.c_str(), 0);
+        return ParseUtil::matchFirstWithTrim(class_text.c_str(), target.c_str(), 0);
     };
 
+
+    static inline bool matchWord(const utf8byte *text, int text_length, const char *word, int word_length, int start) {
+        if (start + word_length <= text_length) { // determine word has enough length
+            for (int i = 0; i < word_length; i++) {
+                if (text[start + i] != word[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+     
 
     // EXPECT_EQ(0, Tokenizer::matchFirstWithTrim("class A{}", "class"));
     static int matchFirstWithTrim(const utf8byte *chars, const char *target, int start) {

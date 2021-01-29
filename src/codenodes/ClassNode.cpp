@@ -148,10 +148,10 @@ namespace smart {
         static constexpr unsigned int size_of_class = sizeof(class_chars) - 1;
 
         if ('c' == ch) {
-            auto idx = Tokenizer::matchFirstWithTrim(context->chars, class_chars, start);
+            auto idx = ParseUtil::matchFirstWithTrim(context->chars, class_chars, start);
             if (idx > -1) {
                 if (idx + size_of_class < context->length
-                    && Tokenizer::isSpace(context->chars[idx + size_of_class])
+                    && ParseUtil::isSpace(context->chars[idx + size_of_class])
                         ) {
 
                     int returnPos = idx + size_of_class;

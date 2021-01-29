@@ -162,7 +162,7 @@ namespace smart {
 
         int letterStart = startsWithDQuote ? start + 1 : start;
         for (uint_fast32_t i = letterStart; i < context->length; i++) {
-            if (Tokenizer::isIdentifierLetter(context->chars[i])) {
+            if (ParseUtil::isIdentifierLetter(context->chars[i])) {
                 found_count++;
             }
             else if (startsWithDQuote) {

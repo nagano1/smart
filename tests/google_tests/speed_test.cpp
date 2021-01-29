@@ -23,7 +23,7 @@ public:
 
 TEST(SpeedTest, memory_order_relaxed_is_fast) {
 
-    EXPECT_EQ(true, Tokenizer::isIdentifierLetter('a'));
+    EXPECT_EQ(true, ParseUtil::isIdentifierLetter('a'));
 
 
     auto start = std::chrono::high_resolution_clock::now().time_since_epoch();

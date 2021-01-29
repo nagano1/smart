@@ -23,7 +23,7 @@ namespace smart {
         +--------------------------+
         |                          |
         |                          |
-        |      BoolNode            |       
+        |      BoolNode            |
         |                          |
         |                          |
         +--------------------------+
@@ -52,16 +52,15 @@ namespace smart {
         int length = 0;
 
         if ('t' == ch) {
-            auto idx = Tokenizer::matchFirstWithTrim(context->chars, true_chars, start);
-            if (idx > -1) {
+            if (ParseUtil::matchWord(context->chars, context->length, true_chars, sizeof(true_chars) - 1, start)) {
                 hit = true;
                 boolValue = true;
                 length = sizeof(true_chars) - 1;
             }
         }
         else if ('f' == ch) {
-            auto idx = Tokenizer::matchFirstWithTrim(context->chars, false_chars, start);
-            if (idx > -1) {
+            if (ParseUtil::matchWord(context->chars, context->length, false_chars, sizeof(false_chars) - 1, start)
+                ) {
                 hit = true;
                 length = sizeof(false_chars) - 1;
             }
@@ -70,7 +69,7 @@ namespace smart {
 
         if (hit) {
             if (start + length == context->length // allowed to be the last char of the file
-                || Tokenizer::isNonIdentifierChar(context->chars[start + length])) { // otherwise, 
+                || ParseUtil::isNonIdentifierChar(context->chars[start + length])) { // otherwise, 
 
                 //context->scanEnd = true;
                 auto *boolNode = Alloc::newBoolNode(context, parent);
@@ -91,7 +90,7 @@ namespace smart {
         return -1;
     };
 
-    
+
     static constexpr const char boolNodeTypeText[] = "<bool>";
     static const node_vtable _Bool_VTable = CREATE_VTABLE(BoolNodeStruct, selfTextLength2,
         selfText2, appendToLine2, boolNodeTypeText);
@@ -135,7 +134,7 @@ namespace smart {
     int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context) {
         unsigned int found_count = 0;
         for (uint_fast32_t i = start; i < context->length; i++) {
-            if (!Tokenizer::isNumberLetter(context->chars[i])) {
+            if (!ParseUtil::isNumberLetter(context->chars[i])) {
                 break;
             }
             found_count++;

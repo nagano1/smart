@@ -36,8 +36,8 @@ TEST(parser_test, JsonParseTest) {
     testJson(text);
 
 
-    // empty json object
-    testJson(const_cast<char *>(u8R"({})"));
+
+    testJson("{}");    // empty json object
 
 
     // nested json object
@@ -767,35 +767,71 @@ ENDTEST
  */
 
 
-    TEST(parser_test, Tokenizer) {
-
-    EXPECT_EQ(true, Tokenizer::isIdentifierLetter('a'));
-
-    Tokenizer::letterCheck(&func);
 
 
 
-    EXPECT_EQ(true, Tokenizer::isIdentifierLetter('a'));
-    EXPECT_EQ(true, Tokenizer::isIdentifierLetter(std::string{ u8"😂" }.c_str()[0]));
-    EXPECT_EQ(false, Tokenizer::isIdentifierLetter('\n'));
+
+    TEST(parser_test, ParseUtil) {
+
+    EXPECT_EQ(true, ParseUtil::isIdentifierLetter('a'));
+
+    ParseUtil::letterCheck(&func);
 
 
-    EXPECT_EQ(0, Tokenizer::matchFirstWithTrim("class A{}", "class"));
 
-    EXPECT_EQ(-1, Tokenizer::matchFirstWithTrim("", "class"));
-    EXPECT_EQ(-1, Tokenizer::matchFirstWithTrim("", ""));
+    EXPECT_EQ(true, ParseUtil::isIdentifierLetter('a'));
+    EXPECT_EQ(true, ParseUtil::isIdentifierLetter(std::string{ u8"😂" }.c_str()[0]));
+    EXPECT_EQ(false, ParseUtil::isIdentifierLetter('\n'));
+
+
+    EXPECT_EQ(0, ParseUtil::matchFirstWithTrim("class A{}", "class"));
+
+    EXPECT_EQ(-1, ParseUtil::matchFirstWithTrim("", "class"));
+    EXPECT_EQ(-1, ParseUtil::matchFirstWithTrim("", ""));
 
     {
         std::string class_text(u8"     \tclassauto * 😂日本語=10234;");
-        int index = Tokenizer::matchFirstWithTrim(class_text.c_str(), "class", 0);
+        int index = ParseUtil::matchFirstWithTrim(class_text.c_str(), "class", 0);
         EXPECT_EQ(index, 6);
     }
 
 
     {
         std::string class_text(u8"😂classauto;");
-        int index = Tokenizer::matchFirstWithTrim(class_text.c_str(), "class", 0);
+        int index = ParseUtil::matchFirstWithTrim(class_text.c_str(), "class", 0);
         EXPECT_EQ(index, -1);
+    }
+
+
+    // matchWord
+    {
+        std::string class_text(u8"class");
+        EXPECT_EQ(class_text.length(), 5);
+        auto result = ParseUtil::matchWord(class_text.c_str(), class_text.length(), "class", 5, 0);
+        EXPECT_EQ(result, true);
+    }
+
+    {
+        std::string class_text(u8" class");
+        auto result = ParseUtil::matchWord(class_text.c_str(), class_text.length(), "class", 5, 0);
+        EXPECT_EQ(result, false);
+    }
+
+    {
+        std::string class_text(u8"abcclass");
+        auto result = ParseUtil::matchWord(class_text.c_str(), class_text.length(), "class", 5, 3);
+        EXPECT_EQ(result, true);
+    }
+    {
+        std::string class_text(u8"classauto;");
+        auto result = ParseUtil::matchWord(class_text.c_str(), class_text.length(), "class", 5, 0);
+        EXPECT_EQ(result, true);
+    }
+
+    {
+        std::string text(u8"ab");
+        auto result = ParseUtil::matchWord(text.c_str(), text.length(), "abcdefg", 5, 0);
+        EXPECT_EQ(result, false);
     }
 
 }
