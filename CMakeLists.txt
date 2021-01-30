@@ -24,7 +24,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 
 project(main)
 
-include_directories(src)
+#include_directories(src)
 
 
 #enable_testing()
