@@ -21,8 +21,11 @@
 #include <cstdint>
 #include <ctime>
 #include <emmintrin.h>
+#include "LSPMain.hpp"
 
 
 int main(int argc, char **argv) {
+        LSPManager::LSP_main();
+
 	return 0;
 }
