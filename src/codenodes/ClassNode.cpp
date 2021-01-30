@@ -20,7 +20,7 @@
 namespace smart {
 
     using InnerNodeStruct = struct {
-        NODE_HEADER
+        NODE_HEADER;
     };
 
     struct ClassNodeStruct::Impl {

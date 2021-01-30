@@ -85,11 +85,12 @@ namespace smart {
         size_t nameLength;
     };
 
-    using NameNodeStruct = struct {
+    using StringLiteralNodeStruct = struct {
         NODE_HEADER;
-
         char *name;
         size_t nameLength;
+        char *text;
+        size_t textLength;
     };
 
     using BoolNodeStruct = struct {
