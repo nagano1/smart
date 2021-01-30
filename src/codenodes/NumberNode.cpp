@@ -19,6 +19,18 @@
 
 namespace smart {
 
+
+
+
+    int Tokenizers::nullTokenizer(TokenizerParams_parent_ch_start_context) {
+        static constexpr const char null_chars[] = "null";
+
+        return Tokenizers::WordTokenizer(TokenizerParams_pass, 'n', null_chars);
+    }
+
+
+
+
     /*
         +--------------------------+
         |                          |
@@ -43,7 +55,6 @@ namespace smart {
 
 
     int Tokenizers::boolTokenizer(TokenizerParams_parent_ch_start_context) {
-
         static constexpr const char true_chars[] = "true";
         static constexpr const char false_chars[] = "false";
 

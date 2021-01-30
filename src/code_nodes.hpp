@@ -25,7 +25,7 @@ namespace smart {
     struct CodeLine;
 
 
-    #define NODE_HEADER \
+#define NODE_HEADER \
         const struct node_vtable *vtable; \
         _NodeBase *parentNode; \
         _NodeBase *nextNode; \
@@ -36,10 +36,10 @@ namespace smart {
         char prev_char; \
 
 
-    #define TEXT_MEMCPY(dst, src, len) \
+#define TEXT_MEMCPY(dst, src, len) \
         memcpy((dst), (src), (len))
 
-    #define INIT_NODE(node, context, parent, argvtable) \
+#define INIT_NODE(node, context, parent, argvtable) \
         (node)->vtable = (argvtable); \
         (node)->prev_char = '\0'; \
         (node)->context = (context); \
@@ -59,17 +59,17 @@ namespace smart {
     using SimpleTextNodeStruct = struct _SimpleTextNodeStruct {
         NODE_HEADER
 
-        utf8byte *text;
+            utf8byte *text;
         uint_fast32_t textLength;
     };
 
     using SpaceNodeStruct = SimpleTextNodeStruct;
-    using ErrorNodeStruct = SimpleTextNodeStruct;
+    using NullNodeStruct = SimpleTextNodeStruct;
 
     using LineBreakNodeStruct = struct _LineBreakNodeStruct {
         NODE_HEADER
 
-        utf8byte text[3]; // "\r\n" or "\n" or "\r" plus "\0"
+            utf8byte text[3]; // "\r\n" or "\n" or "\r" plus "\0"
         _LineBreakNodeStruct *nextLineBreakNode = nullptr;
     };
 
@@ -81,28 +81,23 @@ namespace smart {
     using NameNodeStruct = struct {
         NODE_HEADER
 
-        char *name;
+            char *name;
         size_t nameLength;
     };
 
     using BoolNodeStruct = struct {
         NODE_HEADER
 
-        char *text;
+            char *text;
         size_t textLength;
         bool boolValue;
     };
 
-    using NullNodeStruct = struct {
-        NODE_HEADER
-        char *text;
-        size_t textLength;
-    };
 
     using NumberNodeStruct = struct {
         NODE_HEADER
 
-        char *text;
+            char *text;
         size_t textLength;
         int num;
         int unit;
@@ -111,28 +106,28 @@ namespace smart {
     using SymbolStruct = struct {
         NODE_HEADER
 
-        bool isEnabled;
+            bool isEnabled;
         utf8byte symbol[2];
     };
 
-//    using ClassBodyStruct = struct {
-//        NODE_HEADER
-//
-//        bool isChecked;
-//        utf8byte body[2];
-//        // expressionNodes;
-//        SymbolStruct endBodyNode;
-//
-//        NodeBase *firstChildNode;
-//        NodeBase *lastChildNode;
-//    };
+    //    using ClassBodyStruct = struct {
+    //        NODE_HEADER
+    //
+    //        bool isChecked;
+    //        utf8byte body[2];
+    //        // expressionNodes;
+    //        SymbolStruct endBodyNode;
+    //
+    //        NodeBase *firstChildNode;
+    //        NodeBase *lastChildNode;
+    //    };
 
 
 
     using ClassNodeStruct = struct {
         NODE_HEADER
 
-        NameNodeStruct nameNode;
+            NameNodeStruct nameNode;
 
         struct Impl;
         struct Impl *sub;
@@ -151,7 +146,7 @@ namespace smart {
     using FuncBodyStruct = struct {
         NODE_HEADER
 
-        bool isChecked;
+            bool isChecked;
         utf8byte body[2];
         // expressionNodes;
         SymbolStruct endBodyNode;
@@ -160,7 +155,7 @@ namespace smart {
     using FuncNodeStruct = struct {
         NODE_HEADER
 
-        NameNodeStruct nameNode;
+            NameNodeStruct nameNode;
         FuncBodyStruct bodyNode;
     };
 
@@ -170,7 +165,7 @@ namespace smart {
     using JsonKeyValueItemStruct = struct {
         NODE_HEADER
 
-        utf8byte body[2];
+            utf8byte body[2];
 
         NameNodeStruct *keyNode;
 
@@ -187,7 +182,7 @@ namespace smart {
     using JsonObjectStruct = struct {
         NODE_HEADER
 
-        int parsePhase;
+            int parsePhase;
 
         utf8byte body[2]; // '{'
         SymbolStruct endBodyNode;
@@ -204,7 +199,7 @@ namespace smart {
     using DocumentStruct = struct _documentStruct {
         NODE_HEADER
 
-        DocumentType documentType;
+            DocumentType documentType;
         char *fileName;
         EndOfFileNodeStruct endOfFile;
 
@@ -212,7 +207,7 @@ namespace smart {
         //LineBreakNodeStruct *lastLineBreakNode;
         //NodeBase *lastErrorNode;
 
-        int nodeCount{0};
+        int nodeCount{ 0 };
 
         CodeLine *firstCodeLine;
         int lineCount;
@@ -249,7 +244,7 @@ namespace smart {
      * Syntax error is allowed only once
      */
     using SyntaxErrorInfo = struct _errorInfo {
-        bool hasError{false};
+        bool hasError{ false };
 
         int startLine;
         int endLine;
@@ -271,13 +266,13 @@ namespace smart {
         SyntaxErrorInfo syntaxErrorInfo;
         bool has_cancel_request{ false };
 
-        void (*actionCreator)(void *node1, void *node2, int actionRequest);
+        void(*actionCreator)(void *node1, void *node2, int actionRequest);
 
 
         LineBreakNodeStruct *remainedLineBreakNode;
         SpaceNodeStruct *remainedSpaceNode;
 
-        NodeBufferList<SpaceNodeStruct> spaceBufferList;
+        NodeBufferList<SimpleTextNodeStruct> spaceBufferList;
         NodeBufferList<CodeLine> codeLineBufferList;
         NodeBufferList<LineBreakNodeStruct> lineBreakBufferList;
         CharBuffer<char> charBuffer;
@@ -292,6 +287,10 @@ namespace smart {
         }
 
         SpaceNodeStruct *mallocSpaceNode() {
+            return spaceBufferList.newNode();
+        }
+
+        NullNodeStruct *mallocNullNode() {
             return spaceBufferList.newNode();
         }
     };
@@ -310,17 +309,17 @@ namespace smart {
     struct Cast {
         template<typename T>
         static inline T downcast(NodeBase *node) {
-            return (T) node;
+            return (T)node;
         }
 
         template<typename T>
         static inline NodeBase *upcast(T *node) {
-            return (NodeBase *) node;
+            return (NodeBase *)node;
         }
     };
 
 
-    #define VTABLE_DEF(T) \
+#define VTABLE_DEF(T) \
         int (*selfTextLength)(T *self); \
         const utf8byte *(*selfText)(T *self); \
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
@@ -348,14 +347,14 @@ namespace smart {
 
     template<typename T>
     static int vtable_type_check(
-            decltype(std::declval<vtableT<T>>().selfTextLength) f1,
-            decltype(std::declval<vtableT<T>>().selfText) f2,
+        decltype(std::declval<vtableT<T>>().selfTextLength) f1,
+        decltype(std::declval<vtableT<T>>().selfText) f2,
         decltype(std::declval<vtableT<T>>().appendToLine) f3
     ) {
         return 0;
     }
 
-    #define CREATE_VTABLE(T, f1, f2, f3, f4) \
+#define CREATE_VTABLE(T, f1, f2, f3, f4) \
         node_vtable { \
             reinterpret_cast<selfTextLengthFunction> (f1) \
             , reinterpret_cast<selfTextFunction> (f2) \
@@ -368,19 +367,20 @@ namespace smart {
 
     struct VTables {
         static const node_vtable
-                *DocumentVTable,
-                *ClassVTable,
-                *JsonObjectVTable,
-                *JsonKeyValueItemVTable,
-                *ClassBodyVTable,
-                *NameVTable,
-                *NumberVTable,
-                *BoolVTable,
-                *SymbolVTable,
-                *EndOfFileVTable,
-                *SimpleTextVTable,
-                *SpaceVTable,
-                *LineBreakVTable;
+            *DocumentVTable,
+            *ClassVTable,
+            *JsonObjectVTable,
+            *JsonKeyValueItemVTable,
+            *ClassBodyVTable,
+            *NameVTable,
+            *NumberVTable,
+            *BoolVTable,
+            *SymbolVTable,
+            *EndOfFileVTable,
+            *SimpleTextVTable,
+            *NullVTable,
+            *SpaceVTable,
+            *LineBreakVTable;
     };
 
 
@@ -398,7 +398,8 @@ namespace smart {
         static inline const utf8byte *selfText(void *node) {
             if (node == nullptr) {
                 return "";
-            } else {
+            }
+            else {
                 auto *nodeBase = Cast::upcast(node);
                 return nodeBase->vtable->selfText(nodeBase);
             };
@@ -441,62 +442,38 @@ namespace smart {
             this->nextLine = nullptr;
             this->prev = nullptr;
 
-//            context->actionCreator(Cast::upcast(doc), 1);
+            //            context->actionCreator(Cast::upcast(doc), 1);
 
         }
 
         CodeLine *appendNode(void *node) {
             if (firstNode == nullptr) {
-                firstNode = (NodeBase *) node;
+                firstNode = (NodeBase *)node;
             }
 
             if (lastNode != nullptr) {
-                lastNode->nextNodeInLine = (NodeBase *) node;
+                lastNode->nextNodeInLine = (NodeBase *)node;
             }
 
-            lastNode = (NodeBase *) node;
+            lastNode = (NodeBase *)node;
 
             return this;
         }
 
         CodeLine *addPrevLineBreakNode(void *node) {
             CodeLine *currentCodeLine = this;
-            currentCodeLine = VTableCall::appendToLine(((NodeBase *) node)->prevLineBreakNode,
-                                                       currentCodeLine);
-            currentCodeLine = VTableCall::appendToLine(((NodeBase *) node)->prevSpaceNode,
-                                                       currentCodeLine);
+            currentCodeLine = VTableCall::appendToLine(((NodeBase *)node)->prevLineBreakNode,
+                currentCodeLine);
+            currentCodeLine = VTableCall::appendToLine(((NodeBase *)node)->prevSpaceNode,
+                currentCodeLine);
             return currentCodeLine;
         }
 
     };
 
 
-    /**
-     * Function Types and vtable for node structures
-     */
-    #define TokenizerParams_parent_ch_start_context \
-        NodeBase *parent, utf8byte ch, int start, ParseContext *context
-
-    #define TokenizerParams_pass parent, ch, start, context
-
-    using TokenizerFunction = int (*)(TokenizerParams_parent_ch_start_context);
 
 
-    struct Tokenizers {
-        static int nameTokenizer(TokenizerParams_parent_ch_start_context);
-        static int numberTokenizer(TokenizerParams_parent_ch_start_context);
-        static int boolTokenizer(TokenizerParams_parent_ch_start_context);
-
-        static int classTokenizer(TokenizerParams_parent_ch_start_context);
-
-        //static int classBodyTokenizer(TokenizerParams_parent_ch_start_context);
-
-        static int jsonObjectTokenizer(TokenizerParams_parent_ch_start_context);
-
-        static int jsonObjectNameTokenizer(TokenizerParams_parent_ch_start_context);
-
-        static int jsonValueTokenizer(TokenizerParams_parent_ch_start_context);
-    };
 
     /**
      * Node Changed Event
@@ -524,7 +501,7 @@ namespace smart {
         static void initNameNode(NameNodeStruct *name, ParseContext *context, NodeBase *parentNode);
 
         static void initSymbolNode(SymbolStruct *self, ParseContext *context, void *parentNode,
-                                   utf8byte letter);
+            utf8byte letter);
     };
 
     struct Alloc {
@@ -538,11 +515,12 @@ namespace smart {
         static SimpleTextNodeStruct *newSimpleTextNode(ParseContext *context, NodeBase *parentNode);
 
         static SpaceNodeStruct *newSpaceNode(ParseContext *context, NodeBase *parentNode);
+        static NullNodeStruct *newNullNode(ParseContext *context, NodeBase *parentNode);
 
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
 
         static JsonKeyValueItemStruct *
-        newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
+            newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
 
         static void deleteClassNode(NodeBase *node);
 
@@ -556,8 +534,8 @@ namespace smart {
 
 
         static DocumentStruct *newDocument(
-                DocumentType docType,
-                void (*actionCreator)(void *node1, void *node2, int actionRequest)
+            DocumentType docType,
+            void(*actionCreator)(void *node1, void *node2, int actionRequest)
         );
 
         static void deleteDocument(DocumentStruct *doc);
@@ -566,28 +544,89 @@ namespace smart {
 
 
     /**
+ * Function Types and vtable for node structures
+ */
+#define TokenizerParams_parent_ch_start_context \
+        NodeBase *parent, utf8byte ch, int start, ParseContext *context
+
+#define TokenizerParams_pass parent, ch, start, context
+
+    using TokenizerFunction = int(*)(TokenizerParams_parent_ch_start_context);
+
+
+    struct Tokenizers {
+        static int nameTokenizer(TokenizerParams_parent_ch_start_context);
+        static int numberTokenizer(TokenizerParams_parent_ch_start_context);
+        static int nullTokenizer(TokenizerParams_parent_ch_start_context);
+
+        static int boolTokenizer(TokenizerParams_parent_ch_start_context);
+
+        static int classTokenizer(TokenizerParams_parent_ch_start_context);
+
+        //static int classBodyTokenizer(TokenizerParams_parent_ch_start_context);
+
+        static int jsonObjectTokenizer(TokenizerParams_parent_ch_start_context);
+
+        static int jsonObjectNameTokenizer(TokenizerParams_parent_ch_start_context);
+
+        static int jsonValueTokenizer(TokenizerParams_parent_ch_start_context);
+
+
+        // SimpleTextNodeStruct
+        template<typename TYPE, std::size_t SIZE>
+        static inline int WordTokenizer(TokenizerParams_parent_ch_start_context, char capitalLetter, const TYPE(&word)[SIZE]) {
+            if (capitalLetter == ch) {
+                if (ParseUtil::matchWord(context->chars, context->length, word, SIZE -1, start)) {
+                    int length = sizeof(word) - 1;
+
+                    if (start + length == context->length // allowed to be the last char of the file
+                        || ParseUtil::isNonIdentifierChar(context->chars[start + length])) { // otherwise,
+
+                        //context->scanEnd = true;
+                        auto *boolNode = Alloc::newSpaceNode(context, parent);
+
+                        boolNode->text = context->charBuffer.newChars(length + 1);
+                        boolNode->textLength = length;
+
+                        TEXT_MEMCPY(boolNode->text, context->chars + start, length);
+                        boolNode->text[length] = '\0';
+
+                        context->codeNode = Cast::upcast(boolNode);
+                        return start + length;
+                    }
+                }
+            } 
+
+            return -1;
+
+        }
+    };
+
+
+
+    /**
      * Implements common scanning and parsing method
      */
     struct Scanner {
         static int scan_for_root(
-                void *parentNode,
-                TokenizerFunction tokenizer,
-                int start,
-                ParseContext *context,
-                bool root
+            void *parentNode,
+            TokenizerFunction tokenizer,
+            int start,
+            ParseContext *context,
+            bool root
         );
 
         static int scan(
-                void *parentNode,
-                TokenizerFunction tokenizer,
-                int start,
-                ParseContext *context
+            void *parentNode,
+            TokenizerFunction tokenizer,
+            int start,
+            ParseContext *context
         );
 
         static int scanErrorNodeUntilSpace(
-                void *parentNode,
-                int start,
-                ParseContext *context
+            void *parentNode,
+            int start,
+            ParseContext *context
         );
     };
 }
@@ -614,17 +653,17 @@ struct RequestMessage : Message {
     /**
      * The request id.
      */
-    //std::string id; // id: number | std::string;
+     //std::string id; // id: number | std::string;
 
-    /**
-     * The method to be invoked.
-     */
-    //std::string method; // method: string;
+     /**
+      * The method to be invoked.
+      */
+      //std::string method; // method: string;
 
-    /**
-     * The method's params.
-     */
-    //std::vector<std::string> params; //params?: array | object;
+      /**
+       * The method's params.
+       */
+       //std::vector<std::string> params; //params?: array | object;
 
 };
 

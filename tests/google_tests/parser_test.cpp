@@ -26,7 +26,7 @@ TEST(parser_test, JsonParseTest) {
         text = const_cast<char *>(u8R"({
         "aowowo" : 
 
-    21249,"jiofw" : true
+    21249,"jiofw" : null
 
 })");
         testJson(text);

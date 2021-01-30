@@ -29,9 +29,7 @@ namespace smart {
     }
 
     static CodeLine *appendToLine(SimpleTextNodeStruct *self, CodeLine *currentCodeLine) {
-        //addPrevLineBreakNode(node, currentCodeLine);
-        currentCodeLine->appendNode(self);
-        return currentCodeLine;
+        return currentCodeLine->addPrevLineBreakNode(self)->appendNode(self);
     };
 
     static constexpr const char simpleTextTypeText[] = "<SimpleText>";
@@ -42,6 +40,7 @@ namespace smart {
                                                                   appendToLine, simpleTextTypeText);
     const struct node_vtable *VTables::SimpleTextVTable = &_SIMPLE_TEXT_VTABLE;
     const struct node_vtable *VTables::SpaceVTable = &_SIMPLE_TEXT_VTABLE;
+    const struct node_vtable *VTables::NullVTable = &_SIMPLE_TEXT_VTABLE;
 
 
     SimpleTextNodeStruct *
@@ -60,5 +59,13 @@ namespace smart {
 
         INIT_NODE(node, context, parentNode, VTables::SpaceVTable);
         return spaceNode;
+    }
+
+    NullNodeStruct *Alloc::newNullNode(ParseContext *context, NodeBase *parentNode) {
+        auto *nullNode = context->mallocSpaceNode();
+        auto *node = Cast::upcast(nullNode);
+
+        INIT_NODE(node, context, parentNode, VTables::NullVTable);
+        return nullNode;
     }
 }
