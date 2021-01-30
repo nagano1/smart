@@ -20,9 +20,6 @@
     <ClCompile Include="..\..\src\thread_pool.cpp">
       <Filter>library</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\tests\testlib_impl.cpp">
-      <Filter>tests</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\codenodes\code_nodes.cpp">
       <Filter>library</Filter>
     </ClCompile>
@@ -72,8 +69,29 @@
     <ClCompile Include="..\..\src\codenodes\NumberNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
-    <ClCompile Include="..\..\src\codenodes\*.cpp" />
-    <ClCompile Include="..\..\src\codenodes\*.cpp" />
+    <ClCompile Include="..\..\src\codenodes\code_nodes.cpp" />
+    <ClCompile Include="..\..\src\codenodes\Document.cpp" />
+    <ClCompile Include="..\..\src\codenodes\EndOfFileNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\FuncNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\JsonObjectStruct.cpp" />
+    <ClCompile Include="..\..\src\codenodes\LineBreak.cpp" />
+    <ClCompile Include="..\..\src\codenodes\NameNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\NumberNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\code_nodes.cpp" />
+    <ClCompile Include="..\..\src\codenodes\Document.cpp" />
+    <ClCompile Include="..\..\src\codenodes\EndOfFileNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\FuncNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\JsonArrayNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\JsonObjectStruct.cpp" />
+    <ClCompile Include="..\..\src\codenodes\LineBreak.cpp" />
+    <ClCompile Include="..\..\src\codenodes\NameNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\NumberNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\*.cpp" />
     <ClCompile Include="..\..\src\codenodes\*.cpp" />
     <ClCompile Include="..\..\src\codenodes\*.cpp" />
@@ -91,12 +109,13 @@
     <ClCompile Include="..\..\src\codenodes\NameNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
-    <ClCompile Include="..\..\tests\*.cpp" />
     <ClCompile Include="..\..\tests\google_tests\cplusplus_test.cpp" />
     <ClCompile Include="..\..\tests\google_tests\parser_test.cpp" />
     <ClCompile Include="..\..\tests\google_tests\speed_test.cpp" />
     <ClCompile Include="..\..\tests\test.cpp" />
     <ClCompile Include="..\..\src\codenodes\NumberNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\JsonArrayNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

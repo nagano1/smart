@@ -119,7 +119,7 @@ namespace smart {
 
 
 
-    // -------------------- Implements ClassNode Allocator --------------------- //
+    // -------------------- Implements JsonObjectStruct --------------------- //
 
     JsonObjectStruct *Alloc::newJsonObject(ParseContext *context, NodeBase *parentNode) {
         auto *jsonObjectNode = simpleMalloc<JsonObjectStruct>();
@@ -194,7 +194,6 @@ namespace smart {
 
         return -1;
     }
-
 
 
 
@@ -367,7 +366,15 @@ namespace smart {
             return result;
         }
 
+        if (-1 < (result = Tokenizers::jsonArrayTokenizer(TokenizerParams_pass))) {
+            return result;
+        }
+
         if (-1 < (result = Tokenizers::nullTokenizer(TokenizerParams_pass))) {
+            return result;
+        }
+
+        if (-1 < (result = Tokenizers::stringLiteralTokenizer(TokenizerParams_pass))) {
             return result;
         }
 

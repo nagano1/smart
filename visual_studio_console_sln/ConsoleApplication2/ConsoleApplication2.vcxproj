@@ -167,11 +167,13 @@
     <ClCompile Include="..\..\src\codenodes\Document.cpp" />
     <ClCompile Include="..\..\src\codenodes\EndOfFileNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\FuncNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\JsonArrayNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\JsonObjectStruct.cpp" />
     <ClCompile Include="..\..\src\codenodes\LineBreak.cpp" />
     <ClCompile Include="..\..\src\codenodes\NameNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\NumberNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
     <ClCompile Include="..\..\src\LSP_server\LSPMain.cpp" />
     <ClCompile Include="..\..\src\thread_pool.cpp" />

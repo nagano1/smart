@@ -87,10 +87,10 @@ namespace smart {
 
     using StringLiteralNodeStruct = struct {
         NODE_HEADER;
-        char *name;
-        size_t nameLength;
         char *text;
         size_t textLength;
+        char *strValue;
+        char *strValueLength;
     };
 
     using BoolNodeStruct = struct {
@@ -173,7 +173,7 @@ namespace smart {
     using JsonKeyValueItemStruct = struct {
         NODE_HEADER;
 
-        utf8byte body[2];
+        //utf8byte body[2];
 
         NameNodeStruct *keyNode;
 
@@ -186,7 +186,7 @@ namespace smart {
     };
 
 
-    // --------- Json Syntax --------- //
+    // --------- Json Object --------- //
     using JsonObjectStruct = struct {
         NODE_HEADER;
 
@@ -196,6 +196,28 @@ namespace smart {
         SymbolStruct endBodyNode;
         JsonKeyValueItemStruct *firstKeyValueItem;
         JsonKeyValueItemStruct *lastKeyValueItem;
+    };
+
+    // --------- Json Array Item --------- //
+    using JsonArrayItemStruct = struct {
+        NODE_HEADER;
+
+        NodeBase *valueNode;
+        SymbolStruct follwingComma;
+        bool hasComma;
+    };
+
+
+    // --------- Json Array --------- //
+    using JsonArrayStruct = struct {
+        NODE_HEADER;
+
+        int parsePhase;
+
+        utf8byte body[2]; // '{'
+        SymbolStruct endBodyNode;
+        JsonArrayItemStruct *firstItem;
+        JsonArrayItemStruct *lastItem;
     };
 
 
@@ -378,9 +400,13 @@ namespace smart {
             *DocumentVTable,
             *ClassVTable,
             *JsonObjectVTable,
+            *JsonArrayVTable,
             *JsonKeyValueItemVTable,
+            *JsonArrayItemVTable,
+
             *ClassBodyVTable,
             *NameVTable,
+            *StringLiteralVTable,
             *NumberVTable,
             *BoolVTable,
             *SymbolVTable,
@@ -507,6 +533,7 @@ namespace smart {
 
     struct Init {
         static void initNameNode(NameNodeStruct *name, ParseContext *context, NodeBase *parentNode);
+        static void initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context, NodeBase *parentNode);
 
         static void initSymbolNode(SymbolStruct *self, ParseContext *context, void *parentNode,
             utf8byte letter);
@@ -537,8 +564,11 @@ namespace smart {
         static void deleteFuncNode(NodeBase *node);
 
         static JsonObjectStruct *newJsonObject(ParseContext *context, NodeBase *parentNode);
+        static JsonArrayStruct *newJsonArray(ParseContext *context, NodeBase *parentNode);
+        static JsonArrayItemStruct *newJsonArrayItem(ParseContext *context, NodeBase *parentNode);
 
         static void deleteJsonObject(NodeBase *node);
+        static void deleteJsonArray(NodeBase *node);
 
 
         static DocumentStruct *newDocument(
@@ -566,6 +596,7 @@ namespace smart {
         static int nameTokenizer(TokenizerParams_parent_ch_start_context);
         static int numberTokenizer(TokenizerParams_parent_ch_start_context);
         static int nullTokenizer(TokenizerParams_parent_ch_start_context);
+        static int stringLiteralTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int boolTokenizer(TokenizerParams_parent_ch_start_context);
 
@@ -574,6 +605,7 @@ namespace smart {
         //static int classBodyTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int jsonObjectTokenizer(TokenizerParams_parent_ch_start_context);
+        static int jsonArrayTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int jsonObjectNameTokenizer(TokenizerParams_parent_ch_start_context);
 
