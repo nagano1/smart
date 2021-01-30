@@ -359,8 +359,7 @@ namespace smart {
             return result;
         }
 
-        result = Tokenizers::boolTokenizer(TokenizerParams_pass);
-        if (result > -1) {
+        if (-1 < (result = Tokenizers::boolTokenizer(TokenizerParams_pass))) {
             return result;
         }
 

@@ -52,13 +52,12 @@ namespace smart {
 
 
     int Tokenizers::boolTokenizer(TokenizerParams_parent_ch_start_context) {
-        int result_true = Tokenizers::WordTokenizer(TokenizerParams_pass, 't', "true");
-        int result_false = Tokenizers::WordTokenizer(TokenizerParams_pass, 'f', "false");
+        int truePos = Tokenizers::WordTokenizer(TokenizerParams_pass, 't', "true");
+        int result = truePos < 0 ? Tokenizers::WordTokenizer(TokenizerParams_pass, 'f', "false") : truePos;
 
-        int result = result_true > -1 ? result_true : result_false;
         if (result > -1) {
             auto *boolNode = Cast::downcast<BoolNodeStruct*>(context->codeNode);
-            boolNode->boolValue = result_true > -1;
+            boolNode->boolValue = truePos > -1;
             return result;
         }
 
