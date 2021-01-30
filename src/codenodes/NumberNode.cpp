@@ -59,7 +59,7 @@ namespace smart {
 
         bool hit = false;
         bool boolValue = false;
-        int length = 0;
+        size_t length = 0;
 
         if ('t' == ch) {
             if (ParseUtil::matchWord(context->chars, context->length, true_chars, sizeof(true_chars) - 1, start)) {
