@@ -24,7 +24,6 @@ namespace smart {
 
     int Tokenizers::nullTokenizer(TokenizerParams_parent_ch_start_context) {
         static constexpr const char null_chars[] = "null";
-
         return Tokenizers::WordTokenizer(TokenizerParams_pass, 'n', null_chars);
     }
 
