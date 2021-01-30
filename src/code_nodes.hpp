@@ -598,7 +598,6 @@ namespace smart {
             } 
 
             return -1;
-
         }
     };
 
