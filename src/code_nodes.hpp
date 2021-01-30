@@ -59,7 +59,7 @@ namespace smart {
     using SimpleTextNodeStruct = struct _SimpleTextNodeStruct {
         NODE_HEADER
 
-            utf8byte *text;
+        utf8byte *text;
         uint_fast32_t textLength;
     };
 

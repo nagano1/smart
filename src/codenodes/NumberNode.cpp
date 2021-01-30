@@ -20,8 +20,6 @@
 namespace smart {
 
 
-
-
     int Tokenizers::nullTokenizer(TokenizerParams_parent_ch_start_context) {
         static constexpr const char null_chars[] = "null";
         return Tokenizers::WordTokenizer(TokenizerParams_pass, 'n', null_chars);
@@ -56,44 +54,14 @@ namespace smart {
     int Tokenizers::boolTokenizer(TokenizerParams_parent_ch_start_context) {
         static constexpr const char true_chars[] = "true";
         static constexpr const char false_chars[] = "false";
+        int result_true = Tokenizers::WordTokenizer(TokenizerParams_pass, 't', true_chars);
+        int result_false = Tokenizers::WordTokenizer(TokenizerParams_pass, 'f', false_chars);
 
-        bool hit = false;
-        bool boolValue = false;
-        size_t length = 0;
-
-        if ('t' == ch) {
-            if (ParseUtil::matchWord(context->chars, context->length, true_chars, sizeof(true_chars) - 1, start)) {
-                hit = true;
-                boolValue = true;
-                length = sizeof(true_chars) - 1;
-            }
-        }
-        else if ('f' == ch) {
-            if (ParseUtil::matchWord(context->chars, context->length, false_chars, sizeof(false_chars) - 1, start)
-                ) {
-                hit = true;
-                length = sizeof(false_chars) - 1;
-            }
-        }
-
-
-        if (hit) {
-            if (start + length == context->length // allowed to be the last char of the file
-                || ParseUtil::isNonIdentifierChar(context->chars[start + length])) { // otherwise, 
-
-                //context->scanEnd = true;
-                auto *boolNode = Alloc::newBoolNode(context, parent);
-
-                boolNode->text = context->charBuffer.newChars(length + 1);
-                boolNode->textLength = length;
-                boolNode->boolValue = boolValue;
-
-                TEXT_MEMCPY(boolNode->text, context->chars + start, length);
-                boolNode->text[length] = '\0';
-
-                context->codeNode = Cast::upcast(boolNode);
-                return start + length;
-            }
+        int result = result_true > -1 ? result_true : result_false;
+        if (result > -1) {
+            auto *boolNode = Cast::downcast< BoolNodeStruct*>(context->codeNode);
+            boolNode->boolValue = result_true > -1;
+            return result;
         }
 
         return -1;
