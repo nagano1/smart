@@ -26,14 +26,14 @@ namespace smart {
 
 
 #define NODE_HEADER \
-        const struct node_vtable *vtable; \
-        _NodeBase *parentNode; \
-        _NodeBase *nextNode; \
-        _NodeBase *nextNodeInLine; \
-        struct _SimpleTextNodeStruct *prevSpaceNode; \
-        struct _LineBreakNodeStruct *prevLineBreakNode; \
-        ParseContext *context; \
-        char prev_char; \
+    const struct node_vtable *vtable; \
+    _NodeBase *parentNode; \
+    _NodeBase *nextNode; \
+    _NodeBase *nextNodeInLine; \
+    struct _SimpleTextNodeStruct *prevSpaceNode; \
+    struct _LineBreakNodeStruct *prevLineBreakNode; \
+    ParseContext *context; \
+    char prev_char 
 
 
 #define TEXT_MEMCPY(dst, src, len) \
@@ -52,12 +52,12 @@ namespace smart {
     //(node)->nextErrorNode = nullptr;
 
     using NodeBase = struct _NodeBase {
-        NODE_HEADER
+        NODE_HEADER;
     };
 
 
     using SimpleTextNodeStruct = struct _SimpleTextNodeStruct {
-        NODE_HEADER
+        NODE_HEADER;
 
         utf8byte *text;
         uint_fast32_t textLength;
@@ -67,46 +67,53 @@ namespace smart {
     using NullNodeStruct = SimpleTextNodeStruct;
 
     using LineBreakNodeStruct = struct _LineBreakNodeStruct {
-        NODE_HEADER
+        NODE_HEADER;
 
-            utf8byte text[3]; // "\r\n" or "\n" or "\r" plus "\0"
+        utf8byte text[3]; // "\r\n" or "\n" or "\r" plus "\0"
         _LineBreakNodeStruct *nextLineBreakNode = nullptr;
     };
 
     using EndOfFileNodeStruct = struct {
-        NODE_HEADER
+        NODE_HEADER;
     };
 
 
     using NameNodeStruct = struct {
-        NODE_HEADER
+        NODE_HEADER;
 
-            char *name;
+        char *name;
+        size_t nameLength;
+    };
+
+    using NameNodeStruct = struct {
+        NODE_HEADER;
+
+        char *name;
         size_t nameLength;
     };
 
     using BoolNodeStruct = struct {
-        NODE_HEADER
+        NODE_HEADER;
 
-            char *text;
+        char *text;
         size_t textLength;
         bool boolValue;
     };
 
 
     using NumberNodeStruct = struct {
-        NODE_HEADER
+        NODE_HEADER;
 
-            char *text;
+        char *text;
         size_t textLength;
         int num;
         int unit;
     };
 
     using SymbolStruct = struct {
-        NODE_HEADER
+        NODE_HEADER;
 
-            bool isEnabled;
+        bool isEnabled;
         utf8byte symbol[2];
     };
 
@@ -125,9 +132,9 @@ namespace smart {
 
 
     using ClassNodeStruct = struct {
-        NODE_HEADER
+        NODE_HEADER;
 
-            NameNodeStruct nameNode;
+        NameNodeStruct nameNode;
 
         struct Impl;
         struct Impl *sub;
@@ -144,18 +151,18 @@ namespace smart {
     };
 
     using FuncBodyStruct = struct {
-        NODE_HEADER
+        NODE_HEADER;
 
-            bool isChecked;
+        bool isChecked;
         utf8byte body[2];
         // expressionNodes;
         SymbolStruct endBodyNode;
     };
 
     using FuncNodeStruct = struct {
-        NODE_HEADER
+        NODE_HEADER;
 
-            NameNodeStruct nameNode;
+        NameNodeStruct nameNode;
         FuncBodyStruct bodyNode;
     };
 
@@ -163,9 +170,9 @@ namespace smart {
 
     // --------- Json Key/Value --------- //
     using JsonKeyValueItemStruct = struct {
-        NODE_HEADER
+        NODE_HEADER;
 
-            utf8byte body[2];
+        utf8byte body[2];
 
         NameNodeStruct *keyNode;
 
@@ -180,9 +187,9 @@ namespace smart {
 
     // --------- Json Syntax --------- //
     using JsonObjectStruct = struct {
-        NODE_HEADER
+        NODE_HEADER;
 
-            int parsePhase;
+        int parsePhase;
 
         utf8byte body[2]; // '{'
         SymbolStruct endBodyNode;
@@ -197,9 +204,9 @@ namespace smart {
     };
 
     using DocumentStruct = struct _documentStruct {
-        NODE_HEADER
+        NODE_HEADER;
 
-            DocumentType documentType;
+        DocumentType documentType;
         char *fileName;
         EndOfFileNodeStruct endOfFile;
 
@@ -595,7 +602,7 @@ namespace smart {
                         return start + length;
                     }
                 }
-            } 
+            }
 
             return -1;
         }
