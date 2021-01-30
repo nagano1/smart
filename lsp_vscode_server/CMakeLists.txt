@@ -1,6 +1,12 @@
 set(BINARY ${CMAKE_PROJECT_NAME}_lsp)
 
-file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
+
+file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false
+    *.h
+    ../src/codenodes/*.cpp
+    ../src/LSP_server/*.cpp
+    *.cpp
+)
 
 set(SOURCES ${TEST_SOURCES})
 
