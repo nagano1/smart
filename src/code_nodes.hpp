@@ -61,9 +61,6 @@ namespace smart {
 
         utf8byte *text;
         uint_fast32_t textLength;
-
-        utf8byte *reasonText;
-        uint_fast32_t reasonTextLength;
     };
 
     using SpaceNodeStruct = SimpleTextNodeStruct;
@@ -94,6 +91,12 @@ namespace smart {
         char *text;
         size_t textLength;
         bool boolValue;
+    };
+
+    using NullNodeStruct = struct {
+        NODE_HEADER
+        char *text;
+        size_t textLength;
     };
 
     using NumberNodeStruct = struct {

@@ -83,7 +83,6 @@ namespace smart {
 
                 context->codeNode = Cast::upcast(boolNode);
                 return start + length;
-
             }
         }
 
@@ -103,9 +102,19 @@ namespace smart {
         node->text = nullptr;
         node->textLength = 0;
         node->boolValue = false;
-
         return node;
     }
+
+
+
+
+
+
+
+
+
+
+
 
 
     //    +--------------------------+
