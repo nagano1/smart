@@ -576,7 +576,7 @@ namespace smart {
         template<typename TYPE, std::size_t SIZE>
         static inline int WordTokenizer(TokenizerParams_parent_ch_start_context, char capitalLetter, const TYPE(&word)[SIZE]) {
             if (capitalLetter == ch) {
-                int length = sizeof(word) - 1;
+                size_t length = sizeof(word) - 1;
                 if (ParseUtil::matchWord(context->chars, context->length, word, length, start)) {
 
                     if (start + length == context->length // allowed to be the last char of the file
