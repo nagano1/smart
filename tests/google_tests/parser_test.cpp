@@ -28,7 +28,7 @@ TEST(parser_test, JsonParseTest) {
         "jiofw" : null,
             "text" : "ftest"
             , "ijofw": [2134
-                        ,
+                  	    ,
                             "test", true,
                         null,
                         {"fwefw": [true]}
