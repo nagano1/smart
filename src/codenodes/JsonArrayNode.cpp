@@ -81,7 +81,7 @@ namespace smart {
 
 
 
-    // --------------------- Defines JsonObjectStruct VTable ---------------------- /
+    // --------------------- Defines JsonArrayStruct VTable ---------------------- /
     static int selfTextLength(JsonArrayStruct *self) {
         return 1;
     }
@@ -111,8 +111,8 @@ namespace smart {
 
 
     static const node_vtable _VTable = CREATE_VTABLE(JsonArrayStruct,
-                                                               selfTextLength, selfText,
-                                                               appendToLine, _typeName);
+        selfTextLength, selfText,
+        appendToLine, _typeName);
     const struct node_vtable *VTables::JsonArrayVTable = &_VTable;
 
 
@@ -126,23 +126,23 @@ namespace smart {
 
 
 
-    // -------------------- Implements JsonObjectStruct --------------------- //
+    // -------------------- Implements JsonArrayStruct --------------------- //
 
     JsonArrayStruct *Alloc::newJsonArray(ParseContext *context, NodeBase *parentNode) {
-        auto *jsonObjectNode = simpleMalloc<JsonArrayStruct>();
-        INIT_NODE(jsonObjectNode, context, parentNode, VTables::JsonArrayVTable);
-        jsonObjectNode->firstItem= nullptr;
-        jsonObjectNode->lastItem = nullptr;
-        jsonObjectNode->parsePhase = phase::EXPECT_VALUE;
+        auto *jsonArrayNode = simpleMalloc<JsonArrayStruct>();
+        INIT_NODE(jsonArrayNode, context, parentNode, VTables::JsonArrayVTable);
+        jsonArrayNode->firstItem = nullptr;
+        jsonArrayNode->lastItem = nullptr;
+        jsonArrayNode->parsePhase = phase::EXPECT_VALUE;
 
-        INIT_NODE(&jsonObjectNode->endBodyNode,
-                  context,
-                  Cast::upcast(jsonObjectNode),
-                  VTables::SymbolVTable);
-        jsonObjectNode->endBodyNode.symbol[0] = ']';
-        jsonObjectNode->endBodyNode.symbol[1] = '\0';
+        INIT_NODE(&jsonArrayNode->endBodyNode,
+            context,
+            Cast::upcast(jsonArrayNode),
+            VTables::SymbolVTable);
+        jsonArrayNode->endBodyNode.symbol[0] = ']';
+        jsonArrayNode->endBodyNode.symbol[1] = '\0';
 
-        return jsonObjectNode;
+        return jsonArrayNode;
     }
 
 
@@ -158,30 +158,18 @@ namespace smart {
     }
 
 
-    static void appendRootNode(JsonObjectStruct *doc, JsonKeyValueItemStruct *node) {
-        if (doc->firstKeyValueItem == nullptr) {
-            doc->firstKeyValueItem = node;
-        }
-        if (doc->lastKeyValueItem != nullptr) {
-            doc->lastKeyValueItem->nextNode = (NodeBase *) node;
-        }
-        doc->lastKeyValueItem = node;
-    }
-
-
 
     static int internal_JsonArrayTokenizer(TokenizerParams_parent_ch_start_context);
 
-    // --------------------- Implements JsonObject Parser ----------------------
-    //  TODO: Add supports for new syntax like  @<MutableDict>{ awef:"fjiowe", test:true }
+    // --------------------- Implements JsonArray Parser ----------------------
     int Tokenizers::jsonArrayTokenizer(TokenizerParams_parent_ch_start_context) {
         if (ch == '[') {
             int returnPosition = start + 1;
             auto *jsonArray = Alloc::newJsonArray(context, parent);
             int result = Scanner::scan(jsonArray,
-                                        internal_JsonArrayTokenizer,
-                                       returnPosition,
-                                       context);
+                internal_JsonArrayTokenizer,
+                returnPosition,
+                context);
 
             if (result > -1) {
                 context->codeNode = Cast::upcast(jsonArray);
@@ -203,12 +191,12 @@ namespace smart {
 
 
 
-    JsonArrayItemStruct *Alloc::newJsonArrayItem (ParseContext *context, NodeBase *parentNode) {
+    JsonArrayItemStruct *Alloc::newJsonArrayItem(ParseContext *context, NodeBase *parentNode) {
         auto *keyValueItem = simpleMalloc<JsonArrayItemStruct>();
 
         INIT_NODE(keyValueItem, context, parentNode, &_JsonArrayItemStructVTable)
 
-        Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
+            Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
 
         keyValueItem->hasComma = false;
         keyValueItem->valueNode = nullptr;
@@ -216,32 +204,13 @@ namespace smart {
         return keyValueItem;
     }
 
-        // object name
-        // var val = {
-        //   name : "valuevar"
-        //   v2: true
-        //   watashi: (234 + 512
-        //             - 512 * 2)
-        //   gauge: true || false
-        //   var32324: awfe.fwfw()
-        //                 .awfe()
-        // }
-        // aaawef = awe.fwe()
-        //             .func()
-        //             + 234123
-        //             + 1234
-        // (-1243).afwef; test();
-        // aweff = 2342
-
-
     int internal_JsonArrayTokenizer(TokenizerParams_parent_ch_start_context) {
+        auto *jsonArray = Cast::downcast<JsonArrayStruct *>(parent);
 
-        auto *jsonObject = Cast::downcast<JsonArrayStruct *>(parent);
-
-        if (jsonObject->parsePhase == phase::EXPECT_VALUE) {
+        if (jsonArray->parsePhase == phase::EXPECT_VALUE) {
             if (ch == ']') {
                 context->scanEnd = true;
-                context->codeNode = Cast::upcast(&jsonObject->endBodyNode);
+                context->codeNode = Cast::upcast(&jsonArray->endBodyNode);
                 return start + 1;
             }
 
@@ -251,36 +220,34 @@ namespace smart {
 
                 nextItem->valueNode = context->codeNode;
 
-                if (jsonObject->firstItem == nullptr) {
-                    jsonObject->firstItem = nextItem;
+                if (jsonArray->firstItem == nullptr) {
+                    jsonArray->firstItem = nextItem;
                 }
                 else {
-                    jsonObject->lastItem ->nextNode = Cast::upcast(nextItem);
+                    jsonArray->lastItem->nextNode = Cast::upcast(nextItem);
                 }
-                jsonObject->lastItem = nextItem;
+                jsonArray->lastItem = nextItem;
 
 
-
-
-                jsonObject->parsePhase = phase::COMMA;
+                jsonArray->parsePhase = phase::COMMA;
                 context->scanEnd = false;
                 return result;
             }
             return -1;
         }
 
-        auto *currentKeyValueItem = jsonObject->lastItem;
+        auto *currentKeyValueItem = jsonArray->lastItem;
 
-        if (jsonObject->parsePhase == phase::COMMA) {
+        if (jsonArray->parsePhase == phase::COMMA) {
             if (ch == ',') { // try to find ',' which leads to next key-value
                 currentKeyValueItem->hasComma = true;
                 context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
-                jsonObject->parsePhase = phase::EXPECT_VALUE;
+                jsonArray->parsePhase = phase::EXPECT_VALUE;
                 return start + 1;
             }
             else if (ch == ']') {
                 context->scanEnd = true;
-                context->codeNode = Cast::upcast(&jsonObject->endBodyNode);
+                context->codeNode = Cast::upcast(&jsonArray->endBodyNode);
                 return start + 1;
             }
             return -1;

@@ -61,20 +61,105 @@ namespace smart {
     static constexpr const char class_chars[] = "<JsonKeyValueItem>";
 
     static const node_vtable _JsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
-                                                                             selfTextLength2,
-                                                                             selfText_JsonKeyValueItemStruct,
-                                                                             appendToLine2, class_chars);
+        selfTextLength2,
+        selfText_JsonKeyValueItemStruct,
+        appendToLine2, class_chars);
 
     const struct node_vtable *VTables::JsonKeyValueItemVTable = &_JsonObjectKeyValueStructVTable;
 
 
 
 
+    // -----------------------------------------------------------------------------------
+    //
+    //                              JsonObjectKeyNodeStruct
+    //
+    // -----------------------------------------------------------------------------------
+    static CodeLine *appendToLine3(JsonObjectKeyNodeStruct *self, CodeLine *currentCodeLine) {
+        return currentCodeLine->addPrevLineBreakNode(self)->appendNode(self);
+    };
+
+
+    static const utf8byte *selfText3(JsonObjectKeyNodeStruct *self) {
+        return self->text;
+    }
+
+    static int selfTextLength3(JsonObjectKeyNodeStruct *self) {
+        return self->textLength;
+    }
+
+    static const node_vtable _JsonObjectKeyStructVTable = CREATE_VTABLE(JsonObjectKeyNodeStruct,
+        selfTextLength3, selfText3, appendToLine3, "<JsonObjectKeyNodeStruct>");
+
+    JsonObjectKeyNodeStruct *Alloc::newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode) {
+        auto *jsonKey = simpleMalloc<JsonObjectKeyNodeStruct>();
+        INIT_NODE(jsonKey, context, parentNode, &_JsonObjectKeyStructVTable);
+
+        jsonKey->text = nullptr;
+        jsonKey->nameLength = jsonKey->textLength = 0;
+        jsonKey->namePos = 0;
+        return jsonKey;
+    }
+
+    int Tokenizers::jsonObjectNameTokenizer(TokenizerParams_parent_ch_start_context) {
+        unsigned int found_count = 0;
+
+        // starts with "
+        bool startsWithDQuote = false;
+        if (context->chars[start] == '"') {
+            startsWithDQuote = true;
+            found_count++;
+        }
+
+        int letterStart = startsWithDQuote ? start + 1 : start;
+        for (uint_fast32_t i = letterStart; i < context->length; i++) {
+            if (ParseUtil::isIdentifierLetter(context->chars[i])) {
+                found_count++;
+            }
+            else if (startsWithDQuote) {
+                found_count++;
+
+                if (context->chars[i] == '"') {
+                    break;
+                }
+            }
+            else {
+                break;
+            }
+        }
+
+        if (found_count > 0) {
+            auto *keyNode = Alloc::newJsonObjectKeyNode(context, parent);
+            context->codeNode = Cast::upcast(keyNode);
+
+            keyNode->namePos = 1;
+            keyNode->nameLength = found_count - 2;
+            {
+                keyNode->text = context->charBuffer.newChars(found_count + 1);
+                keyNode->textLength = found_count;
+
+                memcpy(keyNode->text, context->chars + start, found_count);
+                keyNode->text[found_count] = '\0';
+            }
+            return start + found_count;
+        }
+
+        return -1;
+    }
+
+
+    const struct node_vtable *VTables::JsonObjectKeyVTable = &_JsonObjectKeyStructVTable;
 
 
 
 
-    // --------------------- Defines JsonObjectStruct VTable ---------------------- /
+
+
+    // -----------------------------------------------------------------------------------
+    //
+    //                              JsonObjectStruct
+    //
+    // -----------------------------------------------------------------------------------
     static int selfTextLength(JsonObjectStruct *self) {
         return 1;
     }
@@ -104,22 +189,12 @@ namespace smart {
 
 
     static const node_vtable _JsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,
-                                                               selfTextLength, selfText,
-                                                               appendToLine, _typeName);
+        selfTextLength, selfText,
+        appendToLine, _typeName);
     const struct node_vtable *VTables::JsonObjectVTable = &_JsonObjectVTable;
 
 
-
-
-
-
-
-
-
-
-
-
-    // -------------------- Implements JsonObjectStruct --------------------- //
+ 
 
     JsonObjectStruct *Alloc::newJsonObject(ParseContext *context, NodeBase *parentNode) {
         auto *jsonObjectNode = simpleMalloc<JsonObjectStruct>();
@@ -129,9 +204,9 @@ namespace smart {
         jsonObjectNode->parsePhase = phase::EXPECT_NAME;
 
         INIT_NODE(&jsonObjectNode->endBodyNode,
-                  context,
-                  Cast::upcast(jsonObjectNode),
-                  VTables::SymbolVTable);
+            context,
+            Cast::upcast(jsonObjectNode),
+            VTables::SymbolVTable);
         jsonObjectNode->endBodyNode.symbol[0] = '}';
         jsonObjectNode->endBodyNode.symbol[1] = '\0';
 
@@ -150,50 +225,9 @@ namespace smart {
         free(classNode);
     }
 
-    int Tokenizers::jsonObjectNameTokenizer(TokenizerParams_parent_ch_start_context) {
-        unsigned int found_count = 0;
-        
-        // starts with "
-        bool startsWithDQuote = false;
-        if (context->chars[start] == '"') {
-            startsWithDQuote = true;
-            found_count++;
-        }
 
-        int letterStart = startsWithDQuote ? start + 1 : start;
-        for (uint_fast32_t i = letterStart; i < context->length; i++) {
-            if (ParseUtil::isIdentifierLetter(context->chars[i])) {
-                found_count++;
-            }
-            else if (startsWithDQuote) {
-                found_count++;
 
-                if (context->chars[i] == '"') {
-                    break;
-                }
-            } else {
-                break;
-            }
-        }
 
-        if (found_count > 0) {
-            auto *nameNode = simpleMalloc<NameNodeStruct>();
-            Init::initNameNode(nameNode, context, parent);
-
-            //auto *nameNode = Cast::downcast<NameNodeStruct *>(parent);
-
-            context->codeNode = Cast::upcast(nameNode);
-            nameNode->name = context->charBuffer.newChars(found_count + 1);
-            nameNode->nameLength = found_count;
-
-            memcpy(nameNode->name, context->chars + start, found_count);
-            nameNode->name[found_count] = '\0';
-
-            return start + found_count;
-        }
-
-        return -1;
-    }
 
 
 
@@ -202,7 +236,7 @@ namespace smart {
             doc->firstKeyValueItem = node;
         }
         if (doc->lastKeyValueItem != nullptr) {
-            doc->lastKeyValueItem->nextNode = (NodeBase *) node;
+            doc->lastKeyValueItem->nextNode = (NodeBase *)node;
         }
         doc->lastKeyValueItem = node;
     }
@@ -218,9 +252,9 @@ namespace smart {
             int returnPosition = start + 1;
             auto *jsonObject = Alloc::newJsonObject(context, parent);
             int result = Scanner::scan(jsonObject,
-                                       internal_JsonObjectTokenizer,
-                                       returnPosition,
-                                       context);
+                internal_JsonObjectTokenizer,
+                returnPosition,
+                context);
 
             if (result > -1) {
                 context->codeNode = Cast::upcast(jsonObject);
@@ -247,7 +281,7 @@ namespace smart {
 
         INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable)
 
-        Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
+            Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
 
         keyValueItem->hasComma = false;
@@ -258,22 +292,22 @@ namespace smart {
         return keyValueItem;
     }
 
-        // object name
-        // var val = {
-        //   name : "valuevar"
-        //   v2: true
-        //   watashi: (234 + 512
-        //             - 512 * 2)
-        //   gauge: true || false
-        //   var32324: awfe.fwfw()
-        //                 .awfe()
-        // }
-        // aaawef = awe.fwe()
-        //             .func()
-        //             + 234123
-        //             + 1234
-        // (-1243).afwef; test();
-        // aweff = 2342
+    // object name
+    // var val = {
+    //   name : "valuevar"
+    //   v2: true
+    //   watashi: (234 + 512
+    //             - 512 * 2)
+    //   gauge: true || false
+    //   var32324: awfe.fwfw()
+    //                 .awfe()
+    // }
+    // aaawef = awe.fwe()
+    //             .func()
+    //             + 234123
+    //             + 1234
+    // (-1243).afwef; test();
+    // aweff = 2342
 
 
     int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
@@ -293,7 +327,7 @@ namespace smart {
 
                 JsonKeyValueItemStruct *nextItem = Alloc::newJsonKeyValueItemNode(context, parent);
 
-                nextItem->keyNode = Cast::downcast<NameNodeStruct*>(context->codeNode);
+                nextItem->keyNode = Cast::downcast<JsonObjectKeyNodeStruct*>(context->codeNode);
 
                 if (jsonObject->firstKeyValueItem == nullptr) {
                     jsonObject->firstKeyValueItem = nextItem;

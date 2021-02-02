@@ -85,6 +85,8 @@ namespace smart {
         size_t nameLength;
     };
 
+    
+
     using StringLiteralNodeStruct = struct {
         NODE_HEADER;
         char *text;
@@ -168,6 +170,15 @@ namespace smart {
     };
 
 
+    using JsonObjectKeyNodeStruct = struct {
+        NODE_HEADER;
+
+        char *text;
+        size_t textLength;
+
+        int namePos;
+        size_t nameLength;
+    };
 
     // --------- Json Key/Value --------- //
     using JsonKeyValueItemStruct = struct {
@@ -175,7 +186,7 @@ namespace smart {
 
         //utf8byte body[2];
 
-        NameNodeStruct *keyNode;
+        JsonObjectKeyNodeStruct *keyNode;
 
         NodeBase *valueNode;
 
@@ -184,6 +195,8 @@ namespace smart {
         SymbolStruct follwingComma;
         bool hasComma;
     };
+
+
 
 
     // --------- Json Object --------- //
@@ -399,10 +412,12 @@ namespace smart {
         static const node_vtable
             *DocumentVTable,
             *ClassVTable,
+
             *JsonObjectVTable,
             *JsonArrayVTable,
             *JsonKeyValueItemVTable,
             *JsonArrayItemVTable,
+            *JsonObjectKeyVTable,
 
             *ClassBodyVTable,
             *NameVTable,
@@ -522,6 +537,8 @@ namespace smart {
     struct DocumentUtils {
         static void parseText(DocumentStruct *docStruct, const utf8byte *text, size_t length);
 
+        static void generateHashTables(DocumentStruct *doc);
+
         static utf8byte *getTextFromTree(DocumentStruct *docStruct);
         static utf8byte *getTypeTextFromTree(DocumentStruct *docStruct);
 
@@ -566,6 +583,8 @@ namespace smart {
         static JsonObjectStruct *newJsonObject(ParseContext *context, NodeBase *parentNode);
         static JsonArrayStruct *newJsonArray(ParseContext *context, NodeBase *parentNode);
         static JsonArrayItemStruct *newJsonArrayItem(ParseContext *context, NodeBase *parentNode);
+        static JsonObjectKeyNodeStruct *newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode);
+
 
         static void deleteJsonObject(NodeBase *node);
         static void deleteJsonArray(NodeBase *node);

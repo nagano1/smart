@@ -79,6 +79,23 @@ void LSPManager::nextRequest(char *chars, size_t length) {
     fprintf(stderr, "req: \n%s", chars);
     fflush(stderr);
 
+
+    auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
+    DocumentUtils::parseText(document, chars, length);
+    //char *typeText = DocumentUtils::getTypeTextFromTree(document);
+    //    if (typeText != nullptr) {
+            //EXPECT_EQ(std::string{ typeText }, std::string{ "fjow" });
+        //}
+
+    char *treeText = DocumentUtils::getTextFromTree(document);
+    if (std::string{ chars } == std::string{ treeText }) {
+        fprintf(stderr, "same \n");
+        fflush(stderr);
+    } else {
+        fprintf(stderr, "different \n");
+        fflush(stderr);
+    }
+
     /*
     export const None = 0;
     export const Full = 1;

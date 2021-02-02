@@ -232,6 +232,26 @@ namespace smart {
     }
 
 
+    void DocumentUtils::generateHashTables(DocumentStruct *doc) {
+        auto *line = doc->firstCodeLine;
+        while (line) {
+            auto *node = line->firstNode;
+            while (node) {
+                if (node->vtable == VTables::JsonObjectVTable) {
+                    auto *jsonObject = Cast::downcast<JsonObjectStruct*>(node);
+                    
+                    auto *keyItem = jsonObject->firstKeyValueItem;
+
+                }
+                   
+                node = node->nextNodeInLine;
+            }
+
+            line = line->nextLine;
+        }
+    }
+
+
 
     utf8byte *DocumentUtils::getTextFromTree(DocumentStruct *docStruct) {
         // get size of chars

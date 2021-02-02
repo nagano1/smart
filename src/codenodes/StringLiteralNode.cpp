@@ -66,8 +66,6 @@ namespace smart {
             auto *nameNode = simpleMalloc<StringLiteralNodeStruct>();
             Init::initStringLiteralNode(nameNode, context, parent);
 
-            //auto *nameNode = Cast::downcast<NameNodeStruct *>(parent);
-
             context->codeNode = Cast::upcast(nameNode);
             nameNode->text = context->charBuffer.newChars(found_count + 1);
             nameNode->textLength = found_count;
