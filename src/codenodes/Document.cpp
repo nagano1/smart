@@ -343,6 +343,11 @@ namespace smart {
             appendRootNode(doc, context->codeNode);
             return result;
         }
+        if (-1 < (result = Tokenizers::jsonArrayTokenizer(parent, ch, start, context))) {
+            auto *doc = Cast::downcast<DocumentStruct *>(parent);
+            appendRootNode(doc, context->codeNode);
+            return result;
+        }
 
         return -1;
     };

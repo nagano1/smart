@@ -19,6 +19,15 @@
 
 namespace smart {
 
+    /*
+        +--------------------------+
+        |                          |
+        |                          |
+        |      nullTokenizer       |
+        |                          |
+        |                          |
+        +--------------------------+
+    */
 
     int Tokenizers::nullTokenizer(TokenizerParams_parent_ch_start_context) {
         static constexpr const char null_chars[] = "null";

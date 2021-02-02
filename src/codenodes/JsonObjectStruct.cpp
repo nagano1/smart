@@ -327,15 +327,13 @@ namespace smart {
 
             int result;
             if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(parent, ch, start, context))) {
-
                 JsonKeyValueItemStruct *nextItem = Alloc::newJsonKeyValueItemNode(context, parent);
 
                 nextItem->keyNode = Cast::downcast<JsonObjectKeyNodeStruct*>(context->codeNode);
 
                 if (jsonObject->firstKeyValueItem == nullptr) {
                     jsonObject->firstKeyValueItem = nextItem;
-                }
-                else {
+                } else {
                     jsonObject->lastKeyValueItem->nextNode = Cast::upcast(nextItem);
                 }
                 jsonObject->lastKeyValueItem = nextItem;
@@ -347,6 +345,8 @@ namespace smart {
         }
 
         auto *currentKeyValueItem = jsonObject->lastKeyValueItem;
+        assert(currentKeyValueItem != nullptr);
+
         if (jsonObject->parsePhase == phase::DELIMETER) {
             if (ch == ':') { // delimeter
                 context->codeNode = Cast::upcast(&currentKeyValueItem->delimeter);
@@ -362,7 +362,7 @@ namespace smart {
             if (-1 < (result = Tokenizers::jsonValueTokenizer(Cast::upcast(currentKeyValueItem), ch, start, context))) {
                 currentKeyValueItem->valueNode = context->codeNode;
                 jsonObject->parsePhase = phase::COMMA;
-                context->scanEnd = false;
+                //context->scanEnd = false;
                 return result;
             }
             return -1;

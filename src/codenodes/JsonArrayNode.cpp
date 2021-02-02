@@ -28,8 +28,11 @@ namespace smart {
 
 
 
-    // --------------------- Defines JsonKeyValueItemStruct VTable ---------------------- /
-
+    // -----------------------------------------------------------------------------------
+    //
+    //                              JsonArrayItemStruct
+    //
+    // -----------------------------------------------------------------------------------
     static CodeLine *appendToLine2(JsonArrayItemStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
 
@@ -56,12 +59,10 @@ namespace smart {
     }
 
 
-    static constexpr const char class_chars2[] = "<JsonArrayItem>";
-
     static const node_vtable _JsonArrayItemStructVTable = CREATE_VTABLE(JsonArrayItemStruct,
         selfTextLength2,
         selfText_JsonKeyValueItemStruct,
-        appendToLine2, class_chars2);
+        appendToLine2, "<JsonArrayItem>");
 
     const struct node_vtable *VTables::JsonArrayItemVTable = &_JsonArrayItemStructVTable;
 
@@ -81,7 +82,11 @@ namespace smart {
 
 
 
-    // --------------------- Defines JsonArrayStruct VTable ---------------------- /
+    // -----------------------------------------------------------------------------------
+    //
+    //                              JsonArrayStruct
+    //
+    // -----------------------------------------------------------------------------------
     static int selfTextLength(JsonArrayStruct *self) {
         return 1;
     }
@@ -94,18 +99,14 @@ namespace smart {
 
     static CodeLine *appendToLine(JsonArrayStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
-
         currentCodeLine->appendNode(self);
-
 
         JsonArrayItemStruct *item = self->firstItem;
         while (item != nullptr) {
             currentCodeLine = VTableCall::appendToLine(item, currentCodeLine);
             item = Cast::downcast<JsonArrayItemStruct*>(item->nextNode);
         }
-
-        currentCodeLine = VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
-        return currentCodeLine;
+        return VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
     };
 
 
@@ -120,13 +121,6 @@ namespace smart {
 
 
 
-
-
-
-
-
-
-    // -------------------- Implements JsonArrayStruct --------------------- //
 
     JsonArrayStruct *Alloc::newJsonArray(ParseContext *context, NodeBase *parentNode) {
         auto *jsonArrayNode = simpleMalloc<JsonArrayStruct>();
@@ -161,7 +155,6 @@ namespace smart {
 
     static int internal_JsonArrayTokenizer(TokenizerParams_parent_ch_start_context);
 
-    // --------------------- Implements JsonArray Parser ----------------------
     int Tokenizers::jsonArrayTokenizer(TokenizerParams_parent_ch_start_context) {
         if (ch == '[') {
             int returnPosition = start + 1;
@@ -187,10 +180,6 @@ namespace smart {
 
 
 
-
-
-
-
     JsonArrayItemStruct *Alloc::newJsonArrayItem(ParseContext *context, NodeBase *parentNode) {
         auto *keyValueItem = simpleMalloc<JsonArrayItemStruct>();
 
@@ -203,6 +192,8 @@ namespace smart {
 
         return keyValueItem;
     }
+
+
 
     int internal_JsonArrayTokenizer(TokenizerParams_parent_ch_start_context) {
         auto *jsonArray = Cast::downcast<JsonArrayStruct *>(parent);
