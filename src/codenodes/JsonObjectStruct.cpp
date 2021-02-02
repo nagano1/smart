@@ -62,6 +62,8 @@ namespace smart {
     }
 
 
+
+
     static constexpr const char class_chars[] = "<JsonKeyValueItem>";
 
     static const node_vtable _JsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
@@ -72,6 +74,23 @@ namespace smart {
     const struct node_vtable *VTables::JsonKeyValueItemVTable = &_JsonObjectKeyValueStructVTable;
 
 
+
+
+    JsonKeyValueItemStruct *Alloc::newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode) {
+        auto *keyValueItem = simpleMalloc<JsonKeyValueItemStruct>();
+
+        INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable)
+
+            Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
+        Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
+
+        keyValueItem->hasComma = false;
+
+        keyValueItem->keyNode = nullptr;
+        keyValueItem->valueNode = nullptr;
+
+        return keyValueItem;
+    }
 
 
     // -----------------------------------------------------------------------------------
@@ -273,27 +292,6 @@ namespace smart {
 
 
 
-
-
-
-
-
-
-    JsonKeyValueItemStruct *Alloc::newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode) {
-        auto *keyValueItem = simpleMalloc<JsonKeyValueItemStruct>();
-
-        INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable)
-
-            Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
-        Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
-
-        keyValueItem->hasComma = false;
-
-        keyValueItem->keyNode = nullptr;
-        keyValueItem->valueNode = nullptr;
-
-        return keyValueItem;
-    }
 
     // object name
     // var val = {

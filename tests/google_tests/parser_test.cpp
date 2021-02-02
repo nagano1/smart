@@ -63,10 +63,7 @@ TEST(parser_test, JsonParseTest) {
     testJson("[298341,12432134, true, false, \"fwo\", null]");
 
     testJson(u8R"({"empty_array" :
-    [
-421,true, "ijofwe", null,false
-
-    ]})");
+    [421,true, "ijofwe", null,false]})");
 
     // nested json object
     text = const_cast<char *>(u8R"({"jfoiw": { "fjioew"  :   { "jfiow": true } 
