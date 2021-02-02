@@ -54,11 +54,11 @@ namespace smart {
 
 
     static const utf8byte *selfText_JsonKeyValueItemStruct(JsonKeyValueItemStruct *self) {
-        return "";//self->keyNode.name;// "b:9";
+        return "";
     }
 
     static int selfTextLength2(JsonKeyValueItemStruct *self) {
-        return 0;// self->keyNode.nameLength;// 3;
+        return 0;
     }
 
 
