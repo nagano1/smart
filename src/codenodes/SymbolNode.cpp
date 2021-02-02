@@ -20,9 +20,7 @@
 namespace smart {
 
     static CodeLine *appendToLine(SymbolStruct *self, CodeLine *currentCodeLine) {
-        currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
-        currentCodeLine->appendNode(self);
-        return currentCodeLine;
+        return currentCodeLine->addPrevLineBreakNode(self)->appendNode(self);
     };
 
     static const utf8byte *self_text(SymbolStruct *self) {
@@ -35,14 +33,13 @@ namespace smart {
 
     static constexpr const char SymbolTypeText[] = "<Symbol>";
 
-    static const node_vtable _nameVTable = CREATE_VTABLE(SymbolStruct ,selfTextLength,
-                                                       self_text,
-                                                       appendToLine, SymbolTypeText);
+    static const node_vtable _nameVTable = CREATE_VTABLE(SymbolStruct, selfTextLength,
+                                                    self_text, appendToLine, SymbolTypeText);
     const node_vtable *VTables::SymbolVTable = &_nameVTable;
 
 
     void Init::initSymbolNode(SymbolStruct *node, ParseContext *context, void *parentNode,
-                              utf8byte letter) {
+        utf8byte letter) {
         INIT_NODE(node, context, parentNode, VTables::SymbolVTable);
         node->isEnabled = false;
         node->symbol[0] = letter;
