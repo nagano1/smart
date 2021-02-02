@@ -25,7 +25,11 @@ namespace smart {
         COMMA = 3
     };
 
-    // --------------------- Defines JsonKeyValueItemStruct VTable ---------------------- /
+    // -----------------------------------------------------------------------------------
+    //
+    //                              JsonKeyValueItemStruct
+    //
+    // -----------------------------------------------------------------------------------
 
     static CodeLine *appendToLine2(JsonKeyValueItemStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
@@ -189,12 +193,11 @@ namespace smart {
 
 
     static const node_vtable _JsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,
-        selfTextLength, selfText,
-        appendToLine, _typeName);
+        selfTextLength, selfText, appendToLine, _typeName);
     const struct node_vtable *VTables::JsonObjectVTable = &_JsonObjectVTable;
 
 
- 
+
 
     JsonObjectStruct *Alloc::newJsonObject(ParseContext *context, NodeBase *parentNode) {
         auto *jsonObjectNode = simpleMalloc<JsonObjectStruct>();

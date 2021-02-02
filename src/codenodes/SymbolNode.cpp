@@ -26,8 +26,7 @@ namespace smart {
     };
 
     static const utf8byte *self_text(SymbolStruct *self) {
-        auto *node = self;
-        return node->symbol;
+        return self->symbol;
     };
 
     static int selfTextLength(SymbolStruct *self) {
