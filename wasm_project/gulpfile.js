@@ -76,11 +76,16 @@ class MainClass {
     }
 
     async compileAll() {
-        await Promise.all([
-            this.cppDepA.compileAll(),
-            this.cppDepB.compileAll(),
-            this.libDep.compileAll()
-        ]);
+        try {
+            await Promise.all([
+                this.cppDepA.compileAll(),
+                this.cppDepB.compileAll(),
+                this.libDep.compileAll()
+            ]);
+        }catch(e) {
+            process.exitCode(3124) ;
+        }
+        
     }
 
     async watch() {

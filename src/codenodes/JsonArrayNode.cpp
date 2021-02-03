@@ -18,7 +18,7 @@
 
 namespace smart {
 
-    enum phase {
+    static enum phase {
         EXPECT_VALUE = 0,
         COMMA = 3
     };
