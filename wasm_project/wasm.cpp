@@ -164,7 +164,7 @@ class kaw{
         //int_vec.push_back(2);
         // print_num((uintptr_t)&int_vec);
 
-        print("{\"isTestResult\":true, \"ok\": true}");
+        print("{\"isTestResult\":true, \"ok\": false}");
 
         if (34 == 34)
         {
