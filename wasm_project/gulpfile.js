@@ -553,7 +553,7 @@ async function doExecAsync(str) {
                 setTimeout(function(){
                     process.exit(1);
                     process.exitCode(3124);
-                },500);
+                },3500);
                 console.log(stderr)
                 resolve(null)
                 //reject(stderr)
