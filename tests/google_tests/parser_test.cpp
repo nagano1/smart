@@ -603,16 +603,29 @@ ENDTEST
 
 TEST(parser_test, aaHashMap) {
 
-    HashMap *hashMap = simpleMalloc<HashMap>();
-    hashMap->init();
-    hashMap->put("jfiow", Cast::upcast(simpleMalloc<DocumentStruct>()));
-    auto *node = hashMap->get("jfiow");
-    EXPECT_EQ(node != nullptr, true);
-    {
-        auto *node = hashMap->get("empty");
-        EXPECT_TRUE(node != nullptr);
 
+    for (int i = 0; i < 100; i++) {
+        HashMap *hashMap = simpleMalloc<HashMap>();
+        hashMap->init();
+        hashMap->put("firstAA", Cast::upcast(simpleMalloc<DocumentStruct>()));
+        hashMap->put("secondBB", Cast::upcast(simpleMalloc<DocumentStruct>()));
+        hashMap->put("jfiow", Cast::upcast(simpleMalloc<DocumentStruct>()));
+        hashMap->put("jfiow", Cast::upcast(simpleMalloc<DocumentStruct>()));
+
+        auto *node = hashMap->get("firstAA");
+        EXPECT_EQ(node != nullptr, true);
+
+        node = hashMap->get("jfiow");
+        EXPECT_EQ(node != nullptr, true);
+        {
+            auto *node = hashMap->get("empty");
+            EXPECT_EQ(node, nullptr);
+
+        }
+
+        free(hashMap);
     }
+    
 }
 
 ENDTEST

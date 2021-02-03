@@ -234,15 +234,20 @@ namespace smart {
                 return;
             }
 
-            while (hashNode->next) {
-                hashNode = hashNode->next;
-
+            while (true) {
                 // find same key
-                if (strcmp(hashNode->key, key)) {
+                if (0 == strcmp(hashNode->key, key)) {
                     hashNode->nodeBase = val;
                     return;
                 }
+
+                if (hashNode->next == nullptr) {
+                    break;
+                }
+                hashNode = hashNode->next;
             }
+
+
             auto *newHashNode = simpleMalloc<HashNode>();
             newHashNode->key = key;
             newHashNode->nodeBase = val;
