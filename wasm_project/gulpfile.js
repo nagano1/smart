@@ -547,10 +547,16 @@ async function doExecAsync(str) {
             if (error) {
                 console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA");
                 for(var i in error) {
+                    console.log(i);
                     console.log(error[i]);
                 }
-                //resolve(null)
-                reject(stderr)
+                setTimeout(function(){
+                    process.exit(1);
+                    process.exitCode(3124);
+                },500);
+                console.log(stderr)
+                resolve(null)
+                //reject(stderr)
             } else {
                 resolve(stdout)
             }
