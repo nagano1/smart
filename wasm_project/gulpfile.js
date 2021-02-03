@@ -550,13 +550,15 @@ async function doExecAsync(str) {
                     console.log(i);
                     console.log(error[i]);
                 }
+                /*
                 setTimeout(function(){
                     process.exit(1234);
                     process.exitCode(3124);
                 },3500);
+                */
                 console.log(stderr)
-                resolve(null)
-                //reject(stderr)
+                //resolve(null)
+                reject(stderr)
             } else {
                 resolve(stdout)
             }
