@@ -83,7 +83,7 @@ class MainClass {
                 this.libDep.compileAll()
             ]);
         }catch(e) {
-            process.exit(1);
+            //process.exit(1);
             process.exitCode(3124);
         }
         
