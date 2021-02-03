@@ -429,22 +429,22 @@ async function prepareCommands() {
     }
 
     preparePromise = new Promise(async (resolve, reject)=>{
-        let compiler = await doExecAsync("which clang++-10");
+        let compiler = await doExecAsync("which clang++-10", true);
         if (compiler) {
             clangCompiler = compiler;
-        } else if (compiler = await doExecAsync("which clang++-9")) {
+        } else if (compiler = await doExecAsync("which clang++-9", true)) {
             clangCompiler = compiler;
-        } else if (compiler = await doExecAsync("clang++ --help")) {
+        } else if (compiler = await doExecAsync("clang++ --help", true)) {
             clangCompiler = "clang++"; // this is for windows on github actions
         }
 
 
-        let linker = await doExecAsync("which wasm-ld-10");
+        let linker = await doExecAsync("which wasm-ld-10", true);
         if (linker) {
             wasmLinker = linker;
-        } else if (linker = await doExecAsync("which wasm-ld-9")) {
+        } else if (linker = await doExecAsync("which wasm-ld-9", true)) {
             wasmLinker = linker;
-        } else if (linker = await doExecAsync("wasm-ld --help")) {
+        } else if (linker = await doExecAsync("wasm-ld --help", true)) {
             wasmLinker = "wasm-ld";
         }
 
@@ -541,7 +541,7 @@ function doExec(str, cb) {
     })
 }
 
-async function doExecAsync(str) {
+async function doExecAsync(str, hideError=false) {
     return new Promise((resolve, reject) => {
         child = exec(line(str), (error, stdout, stderr) => {
             if (error) {
@@ -557,8 +557,11 @@ async function doExecAsync(str) {
                 },3500);
                 */
                 console.log(stderr)
-                //resolve(null)
-                reject(stderr)
+                if (hideError){ 
+                    resolve(null)
+                } else {
+                    reject(stderr)
+                }
             } else {
                 resolve(stdout)
             }
