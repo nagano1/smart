@@ -190,7 +190,9 @@ namespace smart {
     }
 
 
-    static void appendRootNode(JsonArrayStruct *arr, JsonArrayItemStruct *arrayItem) {
+    static inline void appendRootNode(JsonArrayStruct *arr, JsonArrayItemStruct *arrayItem) {
+        assert(arr != nullptr && arrayItem != nullptr);
+
         if (arr->firstItem == nullptr) {
             arr->firstItem = arrayItem;
         }
