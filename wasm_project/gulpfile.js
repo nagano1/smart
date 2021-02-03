@@ -545,7 +545,7 @@ async function doExecAsync(str) {
     return new Promise((resolve, reject) => {
         child = exec(line(str), (error, stdout, stderr) => {
             if (error) {
-                console.log(stderr);
+                console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA");
                 //resolve(null)
                 reject(stderr)
             } else {
