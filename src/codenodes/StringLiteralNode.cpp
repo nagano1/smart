@@ -63,15 +63,15 @@ namespace smart {
         }
 
         if (found_count > 0) {
-            auto *nameNode = simpleMalloc<StringLiteralNodeStruct>();
-            Init::initStringLiteralNode(nameNode, context, parent);
+            auto *strLiteralNode = simpleMalloc<StringLiteralNodeStruct>();
+            Init::initStringLiteralNode(strLiteralNode, context, parent);
 
-            context->codeNode = Cast::upcast(nameNode);
-            nameNode->text = context->charBuffer.newChars(found_count + 1);
-            nameNode->textLength = found_count;
+            context->codeNode = Cast::upcast(strLiteralNode);
+            strLiteralNode->text = context->charBuffer.newChars(found_count + 1);
+            strLiteralNode->textLength = found_count;
 
-            memcpy(nameNode->text, context->chars + start, found_count);
-            nameNode->text[found_count] = '\0';
+            memcpy(strLiteralNode->text, context->chars + start, found_count);
+            strLiteralNode->text[found_count] = '\0';
 
             return start + found_count;
         }

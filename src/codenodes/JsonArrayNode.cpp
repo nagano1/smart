@@ -129,12 +129,7 @@ namespace smart {
         jsonArrayNode->lastItem = nullptr;
         jsonArrayNode->parsePhase = phase::EXPECT_VALUE;
 
-        INIT_NODE(&jsonArrayNode->endBodyNode,
-            context,
-            Cast::upcast(jsonArrayNode),
-            VTables::SymbolVTable);
-        jsonArrayNode->endBodyNode.symbol[0] = ']';
-        jsonArrayNode->endBodyNode.symbol[1] = '\0';
+        Init::initSymbolNode(&jsonArrayNode->endBodyNode, context, Cast::upcast(jsonArrayNode), ']');
 
         return jsonArrayNode;
     }

@@ -81,7 +81,7 @@ namespace smart {
 
         INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable)
 
-            Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
+        Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
 
         keyValueItem->hasComma = false;
@@ -225,12 +225,7 @@ namespace smart {
         jsonObjectNode->lastKeyValueItem = nullptr;
         jsonObjectNode->parsePhase = phase::EXPECT_NAME;
 
-        INIT_NODE(&jsonObjectNode->endBodyNode,
-            context,
-            Cast::upcast(jsonObjectNode),
-            VTables::SymbolVTable);
-        jsonObjectNode->endBodyNode.symbol[0] = '}';
-        jsonObjectNode->endBodyNode.symbol[1] = '\0';
+        Init::initSymbolNode(&jsonObjectNode->endBodyNode, context, jsonObjectNode, '}');
 
         return jsonObjectNode;
     }
@@ -331,7 +326,8 @@ namespace smart {
 
                 if (jsonObject->firstKeyValueItem == nullptr) {
                     jsonObject->firstKeyValueItem = nextItem;
-                } else {
+                }
+                else {
                     jsonObject->lastKeyValueItem->nextNode = Cast::upcast(nextItem);
                 }
                 jsonObject->lastKeyValueItem = nextItem;
