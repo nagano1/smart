@@ -48,6 +48,7 @@ namespace smart {
         (node)->nextNodeInLine = nullptr; \
         (node)->prevSpaceNode = nullptr; \
         (node)->prevLineBreakNode = nullptr; \
+        32\
 
     //(node)->nextErrorNode = nullptr;
 

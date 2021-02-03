@@ -79,7 +79,7 @@ namespace smart {
     JsonKeyValueItemStruct *Alloc::newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode) {
         auto *keyValueItem = simpleMalloc<JsonKeyValueItemStruct>();
 
-        INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable)
+        INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable);
 
         Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');

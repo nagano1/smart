@@ -87,12 +87,13 @@ namespace smart {
     //                              JsonArrayStruct
     //
     // -----------------------------------------------------------------------------------
-    static int selfTextLength(JsonArrayStruct *self) {
-        return 1;
-    }
 
     static const utf8byte *selfText(JsonArrayStruct *node) {
         return "[";
+    }
+
+    static int selfTextLength(JsonArrayStruct *self) {
+        return 1;
     }
 
     static constexpr const char _typeName[] = "<JsonArray>";
@@ -178,9 +179,9 @@ namespace smart {
     JsonArrayItemStruct *Alloc::newJsonArrayItem(ParseContext *context, NodeBase *parentNode) {
         auto *keyValueItem = simpleMalloc<JsonArrayItemStruct>();
 
-        INIT_NODE(keyValueItem, context, parentNode, &_JsonArrayItemStructVTable)
+        INIT_NODE(keyValueItem, context, parentNode, &_JsonArrayItemStructVTable);
 
-            Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
+        Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
 
         keyValueItem->hasComma = false;
         keyValueItem->valueNode = nullptr;
@@ -189,34 +190,38 @@ namespace smart {
     }
 
 
+    static void appendRootNode(JsonArrayStruct *arr, JsonArrayItemStruct *arrayItem) {
+        if (arr->firstItem == nullptr) {
+            arr->firstItem = arrayItem;
+        }
+        if (arr->lastItem != nullptr) {
+            arr->lastItem->nextNode = Cast::upcast(arrayItem);
+        }
+        arr->lastItem = arrayItem;
+    }
+
+
 
     int internal_JsonArrayTokenizer(TokenizerParams_parent_ch_start_context) {
         auto *jsonArray = Cast::downcast<JsonArrayStruct *>(parent);
 
-        if (jsonArray->parsePhase == phase::EXPECT_VALUE) {
-            if (ch == ']') {
-                context->scanEnd = true;
-                context->codeNode = Cast::upcast(&jsonArray->endBodyNode);
-                return start + 1;
-            }
+        if (ch == ']') {
+            context->scanEnd = true;
+            context->codeNode = Cast::upcast(&jsonArray->endBodyNode);
+            return start + 1;
+        }
 
+        if (jsonArray->parsePhase == phase::EXPECT_VALUE) {
             int result;
             if (-1 < (result = Tokenizers::jsonValueTokenizer(parent, ch, start, context))) {
                 auto *nextItem = Alloc::newJsonArrayItem(context, parent);
 
                 nextItem->valueNode = context->codeNode;
 
-                if (jsonArray->firstItem == nullptr) {
-                    jsonArray->firstItem = nextItem;
-                }
-                else {
-                    jsonArray->lastItem->nextNode = Cast::upcast(nextItem);
-                }
-                jsonArray->lastItem = nextItem;
-
+                appendRootNode(jsonArray, nextItem);
 
                 jsonArray->parsePhase = phase::COMMA;
-                context->scanEnd = false;
+                //context->scanEnd = false;
                 return result;
             }
             return -1;
@@ -229,11 +234,6 @@ namespace smart {
                 currentKeyValueItem->hasComma = true;
                 context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
                 jsonArray->parsePhase = phase::EXPECT_VALUE;
-                return start + 1;
-            }
-            else if (ch == ']') {
-                context->scanEnd = true;
-                context->codeNode = Cast::upcast(&jsonArray->endBodyNode);
                 return start + 1;
             }
             return -1;
