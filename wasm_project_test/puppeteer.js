@@ -20,6 +20,7 @@ function slp(milliseconds) {
     const page = await browser.newPage();
 
     let okOnce = false
+    let allOk = true;
 
     page.on('console',
         async msg => {
@@ -31,6 +32,7 @@ function slp(milliseconds) {
                         console.log("ok:");
                         okOnce = true;
                     } else {
+                        allOk = false;
                         await process.exit(240);
                     }
                 }
@@ -58,6 +60,11 @@ function slp(milliseconds) {
         if (okOnce) {
             break;
         }
+    }
+
+    if (allOk == false) {
+        console.error("allOk error");
+        await process.exit(9000);
     }
 
     if (!okOnce) {
