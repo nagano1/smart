@@ -601,6 +601,22 @@ class jips {
 ENDTEST
 
 
+TEST(parser_test, aaHashMap) {
+
+    HashMap *hashMap = simpleMalloc<HashMap>();
+    hashMap->init();
+    hashMap->put("jfiow", Cast::upcast(simpleMalloc<DocumentStruct>()));
+    auto *node = hashMap->get("jfiow");
+    EXPECT_EQ(node != nullptr, true);
+    {
+        auto *node = hashMap->get("empty");
+        EXPECT_TRUE(node != nullptr);
+
+    }
+}
+
+ENDTEST
+
 
 TEST(parser_test, charBuffer) {
     auto start = std::chrono::high_resolution_clock::now().time_since_epoch();

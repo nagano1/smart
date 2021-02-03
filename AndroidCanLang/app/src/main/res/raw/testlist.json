@@ -113,6 +113,13 @@
 	},
 	{
 		"testcasename": "parser_test",
+		"testname": "aaHashMap",
+		"filepath": "tests/google_tests/parser_test.cpp",
+		"filename": "parser_test.cpp",
+		"body": "TEST(parser_test, aaHashMap) {\n\n    HashMap *hashMap = simpleMalloc<HashMap>();\n    hashMap->init();\n    hashMap->put(\"jfiow\", Cast::upcast(simpleMalloc<DocumentStruct>()));\n    auto *node = hashMap->get(\"jfiow\");\n    EXPECT_EQ(node != nullptr, true);\n    {\n        auto *node = hashMap->get(\"empty\");\n        EXPECT_TRUE(node != nullptr);\n\n    }\n}\n\n"
+	},
+	{
+		"testcasename": "parser_test",
 		"testname": "charBuffer",
 		"filepath": "tests/google_tests/parser_test.cpp",
 		"filename": "parser_test.cpp",

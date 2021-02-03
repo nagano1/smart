@@ -82,6 +82,8 @@ void LSPManager::nextRequest(char *chars, size_t length) {
 
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, chars, length);
+    DocumentUtils::generateHashTables(document);
+
     //char *typeText = DocumentUtils::getTypeTextFromTree(document);
     //    if (typeText != nullptr) {
             //EXPECT_EQ(std::string{ typeText }, std::string{ "fjow" });
@@ -89,7 +91,7 @@ void LSPManager::nextRequest(char *chars, size_t length) {
 
     char *treeText = DocumentUtils::getTextFromTree(document);
     if (std::string{ chars } == std::string{ treeText }) {
-        fprintf(stderr, "same \n");
+        fprintf(stderr, "same\n");
         fflush(stderr);
     } else {
         fprintf(stderr, "different \n");

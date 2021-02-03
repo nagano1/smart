@@ -198,6 +198,83 @@ namespace smart {
     };
 
 
+    #define SIZE_TABLE 1024
+    #define hashnode_RANDOM 91231024
+    struct HashNode {
+        HashNode *next;
+        char *key;
+        NodeBase* nodeBase;
+    };
+
+    static int hash(char *key) {
+        int sum = 0;
+        int i = 0;
+
+        while (key[i] != '\0') {
+            sum += key[i];
+            i++;
+        }
+
+        return sum % SIZE_TABLE;
+    }
+
+    static struct HashMap {
+        /*
+         *
+         */
+        HashNode* entries[SIZE_TABLE];
+        void put(char * key, NodeBase* val) {
+            HashNode* hashNode = this->entries[hash(key)];
+            if (hashNode == nullptr || hashNode->key == nullptr) {
+                auto *newHashNode = simpleMalloc<HashNode>();
+                this->entries[hash(key)] = newHashNode;
+
+                newHashNode->key = key;
+                newHashNode->nodeBase = val;
+                return;
+            }
+
+            while (hashNode->next) {
+                hashNode = hashNode->next;
+
+                // find same key
+                if (strcmp(hashNode->key, key)) {
+                    hashNode->nodeBase = val;
+                    return;
+                }
+            }
+            auto *newHashNode = simpleMalloc<HashNode>();
+            newHashNode->key = key;
+            newHashNode->nodeBase = val;
+
+            hashNode->next = newHashNode;
+
+        }
+
+        void init() {
+            memset(this->entries, 0, sizeof(this->entries));
+        }
+
+        bool has(char * key) {
+            return this->entries[hash(key)]->key != nullptr;
+        }
+
+        void deleteKey(char * key) {
+
+        }
+        NodeBase* get(char * key) {
+            if (this->entries[hash(key)] != nullptr) {
+                auto * hashNode = this->entries[hash(key)];
+                while (hashNode) {
+                    if (0 == strcmp(hashNode->key, key)) {
+                        return hashNode->nodeBase;
+                    }
+                    hashNode = hashNode->next;
+                }
+            }
+            return nullptr;
+        }
+    };
 
 
     // --------- Json Object --------- //
@@ -210,6 +287,7 @@ namespace smart {
         SymbolStruct endBodyNode;
         JsonKeyValueItemStruct *firstKeyValueItem;
         JsonKeyValueItemStruct *lastKeyValueItem;
+        HashMap *hashMap;
     };
 
     // --------- Json Array Item --------- //
