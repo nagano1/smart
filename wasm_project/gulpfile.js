@@ -83,7 +83,8 @@ class MainClass {
                 this.libDep.compileAll()
             ]);
         }catch(e) {
-            process.exitCode(3124) ;
+            process.exit(1);
+            process.exitCode(3124);
         }
         
     }
@@ -544,8 +545,8 @@ async function doExecAsync(str) {
     return new Promise((resolve, reject) => {
         child = exec(line(str), (error, stdout, stderr) => {
             if (error) {
-                resolve(null)
-                //reject(stderr)
+                //resolve(null)
+                reject(stderr)
             } else {
                 resolve(stdout)
             }
