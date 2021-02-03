@@ -557,8 +557,8 @@ async function doExecAsync(str) {
                 },3500);
                 */
                 console.log(stderr)
-                resolve(null)
-                //reject(stderr)
+                //resolve(null)
+                reject(stderr)
             } else {
                 resolve(stdout)
             }
