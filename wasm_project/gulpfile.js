@@ -546,6 +546,9 @@ async function doExecAsync(str) {
         child = exec(line(str), (error, stdout, stderr) => {
             if (error) {
                 console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA");
+                for(var i in error) {
+                    console.log(error[i]);
+                }
                 //resolve(null)
                 reject(stderr)
             } else {
