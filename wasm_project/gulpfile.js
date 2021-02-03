@@ -551,7 +551,7 @@ async function doExecAsync(str) {
                     console.log(error[i]);
                 }
                 setTimeout(function(){
-                    process.exit(1);
+                    process.exit(1234);
                     process.exitCode(3124);
                 },3500);
                 console.log(stderr)
