@@ -218,7 +218,7 @@ namespace smart {
         return sum % SIZE_TABLE;
     }
 
-    static struct HashMap {
+    struct HashMap {
         /*
          *
          */
