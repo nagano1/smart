@@ -181,6 +181,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\code_nodes.hpp" />
+    <ClInclude Include="..\..\src\common.hpp" />
     <ClInclude Include="..\..\src\parse_util.hpp" />
     <ClInclude Include="..\..\src\thread_pool.hpp" />
   </ItemGroup>
