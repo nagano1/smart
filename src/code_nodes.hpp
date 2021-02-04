@@ -221,7 +221,7 @@ SymbolStruct endBodyNode;
         /*
          *
          */
-        HashNode* entries[SIZE_TABLE+1];
+        HashNode* entries[SIZE_TABLE];
         CharBuffer<char> charBuffer;
 
 
@@ -290,7 +290,11 @@ SymbolStruct endBodyNode;
 
         void init() {
             charBuffer.init();
-            memset(this->entries, 0, sizeof(this->entries));
+
+            for (int i = 0; i < SIZE_TABLE; i++) {
+                this->entries[i] = nullptr;
+            }
+            //memset(this->entries, 0, sizeof(this->entries));
         }
 
         bool has(char * key, int keyLength) {
