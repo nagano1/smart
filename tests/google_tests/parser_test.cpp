@@ -25,16 +25,14 @@ TEST(parser_test, JsonParseTest) {
     
 
     {
-        char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized"}
+        char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized
 )");
         auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
         DocumentUtils::parseText(document, text, strlen(text));
-        /*
+        
         EXPECT_EQ(document->context->syntaxErrorInfo.hasError, true);
         EXPECT_EQ(document->context->syntaxErrorInfo.errorCode, 21390);
         EXPECT_EQ(std::string{ document->context->syntaxErrorInfo.reason }, std::string{ "no end quote" });
-        */
-
     }
 
     /*
@@ -101,8 +99,8 @@ static void testJson(const char* codeText) {
             //EXPECT_EQ(std::string{ typeText }, std::string{ "fjow" });
         //}
 
-    //DocumentUtils::generateHashTables(document);
     char *treeText = DocumentUtils::getTextFromTree(document);
+//    DocumentUtils::generateHashTables(document);
     /*
     auto *jsonObject = DocumentUtils::generateHashTables(document);
     if (jsonObject) {

@@ -104,10 +104,10 @@ struct CharBuffer {
 
 
 
-    NodeType *newChars(int length) {
+    NodeType *newChars(int charLen) {
 
-        //auto sizeOfBuffer = sizeof(CharBuffer<NodeType>*);
-        //auto length = charLen + sizeOfBuffer;
+        auto sizeOfBuffer = sizeof(CharBuffer<NodeType>*);
+        auto length = charLen + sizeOfBuffer;
 
         if (spaceNodeIndex + length < CHAR_BUFFER_SIZE) {
 
@@ -130,14 +130,14 @@ struct CharBuffer {
         }
         currentBufferList->itemCount++;
         NodeType *node = currentBufferList->list + spaceNodeIndex;
-        node[charLen - 1] = '\0';
+        node[charLen + sizeOfBuffer - 1] = '\0';
 
-        //auto **address  = (CharBuffer<NodeType> **)(node);
-        //*address = currentBufferList;
+        auto **address  = (CharBuffer<NodeType> **)(node);
+        *address = currentBufferList;
 
         spaceNodeIndex += length;
 
-        return node;// +sizeOfBuffer;
+        return node + sizeOfBuffer;
     }
 
 };
