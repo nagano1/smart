@@ -199,7 +199,7 @@ SymbolStruct endBodyNode;
     };
 
 
-#define SIZE_TABLE 1024
+#define SIZE_TABLE 1224
 #define hashnode_RANDOM 91231024
     struct HashNode {
         HashNode *next;
