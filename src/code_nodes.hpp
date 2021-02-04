@@ -199,8 +199,8 @@ SymbolStruct endBodyNode;
     };
 
 
-#define SIZE_TABLE 1024
-#define hashnode_RANDOM 91231024
+    #define SIZE_TABLE 1024
+
     struct HashNode {
         HashNode *next;
         char *key;
@@ -218,12 +218,9 @@ SymbolStruct endBodyNode;
     }
 
     struct HashMap {
-        /*
-         *
-         */
+
         HashNode* entries[SIZE_TABLE];
         CharBuffer<char> charBuffer;
-
 
         template<std::size_t SIZE>
         void put2(const char(&f4)[SIZE], NodeBase* val) {
@@ -231,11 +228,7 @@ SymbolStruct endBodyNode;
         }
 
         void put(char * keyA, int keyLength, NodeBase* val) {
-            char *keyB = charBuffer.newChars(keyLength + 1);
-            for (int i = 0; i < keyLength; i++) {
-                keyB[i] = keyA[i];
-            }
-            keyB[keyLength] = '\0';
+            
 
             auto hashInt = hash(keyA, keyLength);
             HashNode* hashNode = this->entries[hashInt];
@@ -245,6 +238,11 @@ SymbolStruct endBodyNode;
                 newHashNode->next = nullptr;
                 this->entries[hashInt] = newHashNode;
 
+
+                char *keyB = charBuffer.newChars(keyLength + 1);
+                for (int i = 0; i < keyLength; i++) {
+                    keyB[i] = keyA[i];
+                }
                 newHashNode->key = keyB;
                 newHashNode->keyLength = keyLength;
                 newHashNode->nodeBase = val;
@@ -279,6 +277,10 @@ SymbolStruct endBodyNode;
 
 
             auto *newHashNode = simpleMalloc<HashNode>();
+            char *keyB = charBuffer.newChars(keyLength + 1);
+            for (int i = 0; i < keyLength; i++) {
+                keyB[i] = keyA[i];
+            }
             newHashNode->key = keyB;
             newHashNode->keyLength = keyLength;
             newHashNode->nodeBase = val;
