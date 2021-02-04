@@ -238,7 +238,7 @@ SymbolStruct endBodyNode;
             keyB[keyLength] = '\0';
 
             auto hashInt = hash(keyA, keyLength);
-            HashNode* hashNode = nullptr;// this->entries[hashInt];
+            HashNode* hashNode = this->entries[hashInt];
 
             if (hashNode == nullptr) {// || hashNode->key == nullptr) {
                 auto *newHashNode = simpleMalloc<HashNode>();
@@ -294,7 +294,6 @@ SymbolStruct endBodyNode;
             for (int i = 0; i < SIZE_TABLE; i++) {
                 this->entries[i] = nullptr;
             }
-            //memset(this->entries, 0, sizeof(this->entries));
         }
 
         bool has(char * key, int keyLength) {
