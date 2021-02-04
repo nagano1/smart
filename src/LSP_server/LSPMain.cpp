@@ -84,7 +84,7 @@ void LSPManager::nextRequest(char *chars, size_t length) {
 
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, chars, length);
-    //DocumentUtils::generateHashTables(document);
+    DocumentUtils::generateHashTables(document);
 
     //char *typeText = DocumentUtils::getTypeTextFromTree(document);
     //    if (typeText != nullptr) {
@@ -97,7 +97,6 @@ void LSPManager::nextRequest(char *chars, size_t length) {
     auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
     fprintf(stderr, "item2: %d", rootJson);
 
-    /*
     if (rootJson) {
         auto *item = rootJson->hashMap->get2("method");
         auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
@@ -105,7 +104,6 @@ void LSPManager::nextRequest(char *chars, size_t length) {
             fprintf(stderr, "jsonrpc: %s", strNode->text);
         }
     }
-    */
 
 
     if (std::string{ chars } == std::string{ treeText }) {
