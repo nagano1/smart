@@ -87,6 +87,7 @@ struct CharBuffer {
     }
 
     void tryDelete(NodeType *chars) {
+        /*
         auto * currentBufferList = *((CharBuffer<char> **)(chars - sizeof(CharBuffer<char> *)));
         currentBufferList->itemCount--;
         auto * next = currentBufferList->next;
@@ -98,6 +99,7 @@ struct CharBuffer {
         else {
 
         }
+        */
 
         
     }
