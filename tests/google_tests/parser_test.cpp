@@ -100,7 +100,7 @@ static void testJson(const char* codeText) {
         //}
 
     char *treeText = DocumentUtils::getTextFromTree(document);
-//    DocumentUtils::generateHashTables(document);
+    DocumentUtils::generateHashTables(document);
     /*
     auto *jsonObject = DocumentUtils::generateHashTables(document);
     if (jsonObject) {
