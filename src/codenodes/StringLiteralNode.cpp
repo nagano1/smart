@@ -41,6 +41,7 @@ namespace smart {
 
         // starts with "
         bool startsWithDQuote = false;
+        bool endsWithDQuote = false;
         if (context->chars[start] == '"') {
             startsWithDQuote = true;
             found_count++;
@@ -55,11 +56,21 @@ namespace smart {
                 found_count++;
 
                 if (context->chars[i] == '"') {
+                    endsWithDQuote = true;
                     break;
                 }
             } else {
                 break;
             }
+        }
+
+        if (startsWithDQuote && !endsWithDQuote) {
+            context->syntaxErrorInfo.hasError = true;
+            context->syntaxErrorInfo.charPosition = start;
+            context->syntaxErrorInfo.reason = (char*)"no end quote";
+            context->syntaxErrorInfo.errorCode = 21390;
+
+            return -1;
         }
 
         if (found_count > 0) {
@@ -95,15 +106,4 @@ namespace smart {
         name->strValue = nullptr;
         name->strValueLength = 0;
     }
-
-    /*
-    Not used
-    NameNodeStruct *Allocator::newNameNode(ParseContext *context, NodeBase *parentNode) {
-        auto *node = (NameNodeStruct *) malloc(sizeof(NameNodeStruct));
-        INIT_NODE(node, context, VTables::NameVTable);
-        node->parentNode = parentNode;
-        return node;
-    }
-    */
-
 }

@@ -206,13 +206,10 @@ namespace smart {
         NodeBase* nodeBase;
     };
 
-    static int hash(char *key) {
+    static int hash(char *key, int keyLength) {
         int sum = 0;
-        int i = 0;
-
-        while (key[i] != '\0') {
+        for (int i = 0;i < keyLength; i++) {
             sum += key[i];
-            i++;
         }
 
         return sum % SIZE_TABLE;
@@ -225,21 +222,35 @@ namespace smart {
         HashNode* entries[SIZE_TABLE];
         CharBuffer<char> charBuffer;
 
-        void put(char * key, NodeBase* val) {
 
-            HashNode* hashNode = this->entries[hash(key)];
-            if (hashNode == nullptr || hashNode->key == nullptr) {
+        template<std::size_t SIZE>
+        void put2(const char(&f4)[SIZE], NodeBase* val) {
+            return this->put((char*)f4, SIZE, val);
+        }
+
+        void put(char * keyA, int keyLength, NodeBase* val) {
+            char *keyB = charBuffer.newChars(keyLength + 1);
+            for (int i = 0; i < keyLength; i++) {
+                keyB[i] = keyA[i];
+            }
+            assert(keyB[keyLength] == '\0');
+            keyB[keyLength] = '\0';
+
+            auto hashInt = hash(keyA, keyLength);
+            HashNode* hashNode = this->entries[hashInt];
+            if (hashNode == nullptr){// || hashNode->key == nullptr) {
                 auto *newHashNode = simpleMalloc<HashNode>();
-                this->entries[hash(key)] = newHashNode;
+                newHashNode->next = nullptr;
+                this->entries[hashInt] = newHashNode;
 
-                newHashNode->key = key;
+                newHashNode->key = keyB;
                 newHashNode->nodeBase = val;
                 return;
             }
 
             while (true) {
                 // find same key
-                if (0 == strcmp(hashNode->key, key)) {
+                if (0 == strcmp(hashNode->key, keyA)) {
                     hashNode->nodeBase = val;
                     return;
                 }
@@ -252,29 +263,38 @@ namespace smart {
 
 
             auto *newHashNode = simpleMalloc<HashNode>();
-            newHashNode->key = key;
+            newHashNode->key = keyB;
             newHashNode->nodeBase = val;
+            newHashNode->next = nullptr;
 
             hashNode->next = newHashNode;
 
         }
 
         void init() {
+            charBuffer.init();
             memset(this->entries, 0, sizeof(this->entries));
         }
 
-        bool has(char * key) {
-            return this->entries[hash(key)]->key != nullptr;
+        bool has(char * key, int keyLength) {
+            return this->entries[hash(key, keyLength)]->key != nullptr;
         }
 
-        void deleteKey(char * key) {
-            if (this->entries[hash(key)] != nullptr) {
-                free(this->entries[hash(key)]);
+        void deleteKey(char * key, int keyLength) {
+            if (this->entries[hash(key, keyLength)] != nullptr) {
+                free(this->entries[hash(key, keyLength)]);
             }
         }
-        NodeBase* get(char * key) {
-            if (this->entries[hash(key)] != nullptr) {
-                auto * hashNode = this->entries[hash(key)];
+
+        template<std::size_t SIZE>
+        NodeBase* get2(const char(&f4)[SIZE]) {
+            return this->get((char*)f4, SIZE);
+        }
+
+        NodeBase* get(char * key, int keyLength) {
+            auto keyInt = hash(key, keyLength);
+            if (this->entries[keyInt] != nullptr) {
+                auto * hashNode = this->entries[keyInt];
                 while (hashNode) {
                     if (0 == strcmp(hashNode->key, key)) {
                         return hashNode->nodeBase;
@@ -378,14 +398,18 @@ namespace smart {
     using SyntaxErrorInfo = struct _errorInfo {
         bool hasError{ false };
 
+        int errorCode = 100;
+        char *reason;
+
+        int charPosition;
+
         int startLine;
         int endLine;
 
         int startCharacter;
         int endCharacter;
 
-        int errorCode = 100;
-        char *reason;
+
     };
 
     struct ParseContext {
@@ -627,7 +651,7 @@ namespace smart {
     struct DocumentUtils {
         static void parseText(DocumentStruct *docStruct, const utf8byte *text, size_t length);
 
-        static void generateHashTables(DocumentStruct *doc);
+        static JsonObjectStruct* generateHashTables(DocumentStruct *doc);
 
         static utf8byte *getTextFromTree(DocumentStruct *docStruct);
         static utf8byte *getTypeTextFromTree(DocumentStruct *docStruct);

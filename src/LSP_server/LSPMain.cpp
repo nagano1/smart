@@ -50,10 +50,11 @@ void LSPManager::LSP_main() {
                 if (c1 == '\n') {
                     if (lineBreak) break;
                     lineBreak = true;
-                } else lineBreak = false;
+                }
+                else lineBreak = false;
             }
 
-            auto *chars = (char *) malloc(n + 1);
+            auto *chars = (char *)malloc(n + 1);
 
             auto rsize = fread(chars, 1, n, stdin);
             if (rsize > 0) {
@@ -62,7 +63,8 @@ void LSPManager::LSP_main() {
             }
 
             free(chars);
-        } else {
+        }
+        else {
             fprintf(stderr, "FAILED!!!\n");
             fflush(stderr);
             char stop = getchar();
@@ -90,12 +92,25 @@ void LSPManager::nextRequest(char *chars, size_t length) {
         //}
 
     char *treeText = DocumentUtils::getTextFromTree(document);
+
+    //auto *jsonObject = DocumentUtils::generateHashTables(document);
+    auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
+    fprintf(stderr, "item2: %d", rootJson);
+
+    if (rootJson) {
+        auto *item = rootJson->hashMap->get2("method");
+        auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
+        if (0 == strcmp(strNode->strValue, "[initialized]")) {
+            fprintf(stderr, "jsonrpc: %s", strNode->text);
+        }
+    }
+
+
     if (std::string{ chars } == std::string{ treeText }) {
-        fprintf(stderr, "same\n");
-        fflush(stderr);
-    } else {
-        fprintf(stderr, "different \n");
-        fflush(stderr);
+        fprintf(stderr, "same\n"); fflush(stderr);
+    }
+    else {
+        fprintf(stderr, "different \n"); fflush(stderr);
     }
 
     /*

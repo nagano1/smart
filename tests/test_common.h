@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <iostream>
 #include <string>
@@ -117,7 +117,7 @@ constexpr OS_TYPE os_type = OS_TYPE::UNIX;
 #ifdef NO_SPEED_TEST
 constexpr bool speed_test = false;
 #else
-constexpr bool speed_test = true;
+constexpr bool speed_test = false;
 #endif
 
 #ifdef __ANDROID__

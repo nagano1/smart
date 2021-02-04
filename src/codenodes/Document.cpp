@@ -231,17 +231,25 @@ namespace smart {
         return text;
     }
 
+    JsonObjectStruct* DocumentUtils::generateHashTables(DocumentStruct *doc) {
 
-    void DocumentUtils::generateHashTables(DocumentStruct *doc) {
+        JsonObjectStruct* retJson = nullptr;
         auto *line = doc->firstCodeLine;
         while (line) {
             auto *node = line->firstNode;
             while (node) {
                 if (node->vtable == VTables::JsonObjectVTable) {
                     auto *jsonObject = Cast::downcast<JsonObjectStruct*>(node);
-                    
-                    auto *keyItem = jsonObject->firstKeyValueItem;
+                    retJson = jsonObject;
 
+                    auto *keyItem = jsonObject->firstKeyValueItem;
+                    while (keyItem) {
+                        auto *keyNode = keyItem->keyNode;
+                        jsonObject->hashMap->put(keyNode->text+keyNode->namePos, keyNode->nameLength, 
+                            keyItem->valueNode);
+
+                        keyItem = Cast::downcast<JsonKeyValueItemStruct *>( keyItem->nextNode);
+                    }
                 }
                    
                 node = node->nextNodeInLine;
@@ -249,6 +257,8 @@ namespace smart {
 
             line = line->nextLine;
         }
+
+        return retJson;
     }
 
 

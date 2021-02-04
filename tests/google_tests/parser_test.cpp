@@ -25,9 +25,14 @@ TEST(parser_test, JsonParseTest) {
     
 
     {
-        char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized", "params" : {}}
+        char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized
 )");
-        testJson(text);
+        auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
+        DocumentUtils::parseText(document, text, strlen(text));
+        
+        EXPECT_EQ(document->context->syntaxErrorInfo.hasError, true);
+        EXPECT_EQ(document->context->syntaxErrorInfo.errorCode, 21390);
+        EXPECT_EQ(std::string{ document->context->syntaxErrorInfo.reason }, std::string{ "no end quote" });
     }
 
 
@@ -94,6 +99,12 @@ static void testJson(const char* codeText) {
         //}
 
     char *treeText = DocumentUtils::getTextFromTree(document);
+    DocumentUtils::generateHashTables(document);
+    auto *jsonObject = DocumentUtils::generateHashTables(document);
+    if (jsonObject) {
+        auto *item = jsonObject->hashMap->get2("aowfowo");
+        printf("item - %d", item);
+    }
     //if (treeText != nullptr) {
         //Allocator::deleteDocument(document);
         // EXPECT_EQ(std::string(treeText), "\n{b:18}\n");
@@ -603,22 +614,24 @@ ENDTEST
 
 TEST(parser_test, aaHashMap) {
 
-
     for (int i = 0; i < 100; i++) {
         HashMap *hashMap = simpleMalloc<HashMap>();
         hashMap->init();
-        hashMap->put("firstAA", Cast::upcast(simpleMalloc<DocumentStruct>()));
-        hashMap->put("secondBB", Cast::upcast(simpleMalloc<DocumentStruct>()));
-        hashMap->put("jfiow", Cast::upcast(simpleMalloc<DocumentStruct>()));
-        hashMap->put("jfiow", Cast::upcast(simpleMalloc<DocumentStruct>()));
+        auto *first = Cast::upcast(simpleMalloc<DocumentStruct>());
+        const char key[] = "firstAA";
+        hashMap->put2(key, first);
+        hashMap->put2(key, first);
+        hashMap->put("secondBB",sizeof("secondBB")-1, Cast::upcast(simpleMalloc<DocumentStruct>()));
+        hashMap->put2("jfiow", Cast::upcast(simpleMalloc<DocumentStruct>()));
+        hashMap->put("jfiow", sizeof("jfiow")-1, Cast::upcast(simpleMalloc<DocumentStruct>()));
 
-        auto *node = hashMap->get("firstAA");
-        EXPECT_EQ(node != nullptr, true);
+        auto *node = hashMap->get2("firstAA");
+        EXPECT_EQ(node, first);
 
-        node = hashMap->get("jfiow");
+        node = hashMap->get("jfiow", sizeof("jfiow")-1);
         EXPECT_EQ(node != nullptr, true);
         {
-            auto *node = hashMap->get("empty");
+            auto *node = hashMap->get("empty", sizeof("empty")-1);
             EXPECT_EQ(node, nullptr);
 
         }
@@ -650,6 +663,8 @@ TEST(parser_test, charBuffer) {
 
             EXPECT_EQ('\0', *(chars + 254));
             EXPECT_EQ(charBuffer2.currentBufferList, *((CharBuffer<char> **)(chars - sizeof(CharBuffer<char> *))));
+            
+            charBuffer2.tryDelete(chars);
         }
         
         {
@@ -658,6 +673,7 @@ TEST(parser_test, charBuffer) {
 
             EXPECT_EQ('\0', *(chars + size - 1));
             EXPECT_EQ(charBuffer2.currentBufferList, *((CharBuffer<char> **)(chars - sizeof(CharBuffer<char> *))));
+            charBuffer2.tryDelete(chars);
 
         }
     }

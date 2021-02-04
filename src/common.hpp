@@ -78,12 +78,31 @@ struct CharBuffer {
     CharBuffer<NodeType> *currentBufferList = nullptr;
     int spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
     int itemCount = 0;
+    bool isLast = true;
 
     void init() {
         spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
         firstBufferList = nullptr;
         currentBufferList = nullptr;
     }
+
+    void tryDelete(NodeType *chars) {
+        auto * currentBufferList = *((CharBuffer<char> **)(chars - sizeof(CharBuffer<char> *)));
+        currentBufferList->itemCount--;
+        auto * next = currentBufferList->next;
+        if (next) {
+            if (next->itemCount == 0 && next->isLast == false) {
+                // can delete & free
+            }
+        }
+        else {
+
+        }
+
+        
+    }
+
+
 
     NodeType *newChars(int charLen) {
 
@@ -104,13 +123,14 @@ struct CharBuffer {
                 newList->list = (NodeType *) malloc(sizeof(NodeType) * assign_size);
                 newList->next = nullptr;
                 currentBufferList->next = newList;
+                currentBufferList->isLast = false;
                 currentBufferList = newList;
             }
             spaceNodeIndex = 0;
         }
         currentBufferList->itemCount++;
-        NodeType *node = currentBufferList->list + spaceNodeIndex + sizeOfBuffer;
-        node[charLen - 1] = '\0';
+        NodeType *node = currentBufferList->list + spaceNodeIndex;
+        node[charLen + sizeOfBuffer - 1] = '\0';
 
         auto **address  = (CharBuffer<NodeType> **)(node);
         *address = currentBufferList;

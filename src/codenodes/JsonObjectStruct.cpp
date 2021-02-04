@@ -225,6 +225,9 @@ namespace smart {
         jsonObjectNode->lastKeyValueItem = nullptr;
         jsonObjectNode->parsePhase = phase::EXPECT_NAME;
 
+        jsonObjectNode->hashMap = simpleMalloc<HashMap>();
+        jsonObjectNode->hashMap->init();
+
         Init::initSymbolNode(&jsonObjectNode->endBodyNode, context, jsonObjectNode, '}');
 
         return jsonObjectNode;

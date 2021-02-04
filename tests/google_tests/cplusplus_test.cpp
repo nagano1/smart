@@ -450,6 +450,7 @@ bool stopped2 = false;
 // measure time of waking up slept threads
 //
 TEST(concept, wakeup_test) {
+
     constexpr int sleeping_thread_size = 2;
 
     static unsigned long long wakeups[sleeping_thread_size];

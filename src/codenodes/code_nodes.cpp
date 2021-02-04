@@ -125,7 +125,7 @@ namespace smart {
             afterLineBreak = false;
 
             if (context->syntaxErrorInfo.hasError) {
-                //return -1;
+                return -1;
             }
 
             if (result > -1) {
