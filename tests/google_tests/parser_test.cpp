@@ -100,12 +100,15 @@ static void testJson(const char* codeText) {
         //}
 
     char *treeText = DocumentUtils::getTextFromTree(document);
+    /*
     DocumentUtils::generateHashTables(document);
     auto *jsonObject = DocumentUtils::generateHashTables(document);
     if (jsonObject) {
         auto *item = jsonObject->hashMap->get2("aowfowo");
         printf("item - %d", item);
     }
+    */
+
     //if (treeText != nullptr) {
         //Allocator::deleteDocument(document);
         // EXPECT_EQ(std::string(treeText), "\n{b:18}\n");
