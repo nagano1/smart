@@ -636,13 +636,32 @@ TEST(parser_test, charBuffer) {
     uint64_t loopCount = 100 * 1000LLU;
 
     CharBuffer<char> charBuffer;
-    charBuffer.firstBufferList = nullptr;
-    charBuffer.currentBufferList = nullptr;
-    charBuffer.spaceNodeIndex = INT16_MAX;
+    charBuffer.init();
     
     
     auto *chars = charBuffer.newChars(255);
     EXPECT_EQ(charBuffer.firstBufferList, charBuffer.currentBufferList);
+
+    {
+        CharBuffer<char> charBuffer2;
+        charBuffer2.init();
+        {
+            auto *chars = charBuffer2.newChars(255);
+
+            EXPECT_EQ('\0', *(chars + 254));
+            EXPECT_EQ(charBuffer2.currentBufferList, *((CharBuffer<char> **)(chars - sizeof(CharBuffer<char> *))));
+        }
+        
+        {
+            int size = 355;
+            auto *chars = charBuffer2.newChars(size);
+
+            EXPECT_EQ('\0', *(chars + size - 1));
+            EXPECT_EQ(charBuffer2.currentBufferList, *((CharBuffer<char> **)(chars - sizeof(CharBuffer<char> *))));
+
+        }
+    }
+
 
     auto *chars2 = charBuffer.newChars(1);
     EXPECT_NE(charBuffer.firstBufferList, charBuffer.currentBufferList);

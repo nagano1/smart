@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <iostream>
 #include <string>
@@ -77,6 +77,7 @@ struct CharBuffer {
     CharBuffer<NodeType> *firstBufferList = nullptr;
     CharBuffer<NodeType> *currentBufferList = nullptr;
     int spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
+    int itemCount = 0;
 
     void init() {
         spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
@@ -84,12 +85,17 @@ struct CharBuffer {
         currentBufferList = nullptr;
     }
 
-    NodeType *newChars(int length) {
+    NodeType *newChars(int charLen) {
+
+        auto sizeOfBuffer = sizeof(CharBuffer<NodeType>*);
+        auto length = charLen + sizeOfBuffer;
+
         if (spaceNodeIndex + length < CHAR_BUFFER_SIZE) {
 
         } else {
             int assign_size = CHAR_BUFFER_SIZE < length ? length : CHAR_BUFFER_SIZE;
             if (firstBufferList == nullptr) {
+
                 firstBufferList = currentBufferList = simpleMalloc<CharBuffer<NodeType>>();
                 firstBufferList->list = (NodeType *) malloc(sizeof(NodeType) * assign_size);
                 firstBufferList->next = nullptr;
@@ -102,11 +108,16 @@ struct CharBuffer {
             }
             spaceNodeIndex = 0;
         }
-        NodeType *node = currentBufferList->list + spaceNodeIndex;
-        node[length - 1] = '\0';
+        currentBufferList->itemCount++;
+        NodeType *node = currentBufferList->list + spaceNodeIndex + sizeOfBuffer;
+        node[charLen - 1] = '\0';
+
+        auto **address  = (CharBuffer<NodeType> **)(node);
+        *address = currentBufferList;
+
         spaceNodeIndex += length;
 
-        return node;
+        return node + sizeOfBuffer;
     }
 
 };

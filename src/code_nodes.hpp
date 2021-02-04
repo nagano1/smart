@@ -223,7 +223,10 @@ namespace smart {
          *
          */
         HashNode* entries[SIZE_TABLE];
+        CharBuffer<char> charBuffer;
+
         void put(char * key, NodeBase* val) {
+
             HashNode* hashNode = this->entries[hash(key)];
             if (hashNode == nullptr || hashNode->key == nullptr) {
                 auto *newHashNode = simpleMalloc<HashNode>();
@@ -265,7 +268,9 @@ namespace smart {
         }
 
         void deleteKey(char * key) {
-
+            if (this->entries[hash(key)] != nullptr) {
+                free(this->entries[hash(key)]);
+            }
         }
         NodeBase* get(char * key) {
             if (this->entries[hash(key)] != nullptr) {
