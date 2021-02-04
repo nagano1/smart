@@ -214,7 +214,7 @@ SymbolStruct endBodyNode;
             sum += key[i];
         }
 
-        return sum % (SIZE_TABLE-1);
+        return sum % (SIZE_TABLE);
     }
 
     struct HashMap {
