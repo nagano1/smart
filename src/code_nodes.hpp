@@ -231,6 +231,12 @@ SymbolStruct endBodyNode;
             
 
             auto hashInt = hash(keyA, keyLength);
+            if (hashInt > 1023) {
+                hashInt = 321;
+            }
+            else if (hashInt < 3) {
+                hashInt = 5;
+            }
             HashNode* hashNode = this->entries[hashInt];
 
             if (hashNode == nullptr) {// || hashNode->key == nullptr) {
