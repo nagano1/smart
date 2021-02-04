@@ -92,8 +92,9 @@ namespace smart {
         NODE_HEADER;
         char *text;
         size_t textLength;
+
         char *strValue;
-        char *strValueLength;
+        size_t strValueLength;
     };
 
     using BoolNodeStruct = struct {
