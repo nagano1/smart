@@ -25,7 +25,7 @@ TEST(parser_test, JsonParseTest) {
     
 
     {
-        char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized
+        char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized"
 )");
         auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
         DocumentUtils::parseText(document, text, strlen(text));
