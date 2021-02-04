@@ -221,7 +221,7 @@ SymbolStruct endBodyNode;
         /*
          *
          */
-        HashNode* entries[SIZE_TABLE];
+        HashNode* entries[SIZE_TABLE+1];
         CharBuffer<char> charBuffer;
 
 
@@ -231,8 +231,6 @@ SymbolStruct endBodyNode;
         }
 
         void put(char * keyA, int keyLength, NodeBase* val) {
-            if (true) return;
-
             char *keyB = charBuffer.newChars(keyLength + 1);
             for (int i = 0; i < keyLength; i++) {
                 keyB[i] = keyA[i];
@@ -241,10 +239,6 @@ SymbolStruct endBodyNode;
 
             auto hashInt = hash(keyA, keyLength);
             HashNode* hashNode = this->entries[hashInt];
-            if (hashNode == nullptr) {
-                return;
-            }
-            /*
 
             if (hashNode == nullptr) {// || hashNode->key == nullptr) {
                 auto *newHashNode = simpleMalloc<HashNode>();
@@ -282,7 +276,6 @@ SymbolStruct endBodyNode;
                 }
                 hashNode = hashNode->next;
             }
-            */
 
 
             auto *newHashNode = simpleMalloc<HashNode>();
