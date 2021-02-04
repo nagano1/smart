@@ -238,8 +238,12 @@ SymbolStruct endBodyNode;
             keyB[keyLength] = '\0';
 
             auto hashInt = hash(keyA, keyLength);
-            /*
             HashNode* hashNode = this->entries[hashInt];
+            if (hashNode == nullptr) {
+                return;
+            }
+            /*
+
             if (hashNode == nullptr) {// || hashNode->key == nullptr) {
                 auto *newHashNode = simpleMalloc<HashNode>();
                 newHashNode->next = nullptr;
