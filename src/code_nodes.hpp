@@ -156,12 +156,12 @@ namespace smart {
     };
 
     using FuncBodyStruct = struct {
-        NODE_HEADER;
+NODE_HEADER;
 
-        bool isChecked;
-        utf8byte body[2];
-        // expressionNodes;
-        SymbolStruct endBodyNode;
+bool isChecked;
+utf8byte body[2];
+// expressionNodes;
+SymbolStruct endBodyNode;
     };
 
     using FuncNodeStruct = struct {
@@ -199,17 +199,18 @@ namespace smart {
     };
 
 
-    #define SIZE_TABLE 1024
-    #define hashnode_RANDOM 91231024
+#define SIZE_TABLE 1024
+#define hashnode_RANDOM 91231024
     struct HashNode {
         HashNode *next;
         char *key;
+        int keyLength;
         NodeBase* nodeBase;
     };
 
     static int hash(char *key, int keyLength) {
         int sum = 0;
-        for (int i = 0;i < keyLength; i++) {
+        for (int i = 0; i < keyLength; i++) {
             sum += key[i];
         }
 
@@ -239,19 +240,33 @@ namespace smart {
 
             auto hashInt = hash(keyA, keyLength);
             HashNode* hashNode = this->entries[hashInt];
-            if (hashNode == nullptr){// || hashNode->key == nullptr) {
+            if (hashNode == nullptr) {// || hashNode->key == nullptr) {
                 auto *newHashNode = simpleMalloc<HashNode>();
                 newHashNode->next = nullptr;
                 this->entries[hashInt] = newHashNode;
 
                 newHashNode->key = keyB;
+                newHashNode->keyLength = keyLength;
                 newHashNode->nodeBase = val;
                 return;
             }
 
             while (true) {
                 // find same key
-                if (0 == strcmp(hashNode->key, keyA)) {
+                bool sameKey = true;
+                if (hashNode->keyLength == keyLength) {
+                    for (int i = 0; i < keyLength; i++) {
+                        if (hashNode->key[i] != keyA[i]) {
+                            sameKey = false;
+                            break;
+                        }
+                    }
+                }
+                else {
+                    sameKey = false;
+                }
+                
+                if (sameKey) {
                     hashNode->nodeBase = val;
                     return;
                 }
@@ -265,6 +280,7 @@ namespace smart {
 
             auto *newHashNode = simpleMalloc<HashNode>();
             newHashNode->key = keyB;
+            newHashNode->keyLength = keyLength;
             newHashNode->nodeBase = val;
             newHashNode->next = nullptr;
 
