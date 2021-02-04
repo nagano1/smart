@@ -234,7 +234,7 @@ namespace smart {
             for (int i = 0; i < keyLength; i++) {
                 keyB[i] = keyA[i];
             }
-            assert(keyB[keyLength] == '\0');
+            //assert(keyB[keyLength] == '\0');
             keyB[keyLength] = '\0';
 
             auto hashInt = hash(keyA, keyLength);

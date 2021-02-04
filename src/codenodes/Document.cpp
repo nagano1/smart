@@ -245,8 +245,8 @@ namespace smart {
                     auto *keyItem = jsonObject->firstKeyValueItem;
                     while (keyItem) {
                         auto *keyNode = keyItem->keyNode;
-                        //jsonObject->hashMap->put(keyNode->text+keyNode->namePos, keyNode->nameLength, 
-//                            keyItem->valueNode);
+                        jsonObject->hashMap->put(keyNode->text+keyNode->namePos, keyNode->nameLength, 
+                            keyItem->valueNode);
 
                         keyItem = Cast::downcast<JsonKeyValueItemStruct *>( keyItem->nextNode);
                     }
