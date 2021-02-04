@@ -99,9 +99,9 @@ static void testJson(const char* codeText) {
             //EXPECT_EQ(std::string{ typeText }, std::string{ "fjow" });
         //}
 
+    DocumentUtils::generateHashTables(document);
     char *treeText = DocumentUtils::getTextFromTree(document);
     /*
-    DocumentUtils::generateHashTables(document);
     auto *jsonObject = DocumentUtils::generateHashTables(document);
     if (jsonObject) {
         auto *item = jsonObject->hashMap->get2("aowfowo");
