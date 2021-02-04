@@ -199,7 +199,7 @@ SymbolStruct endBodyNode;
     };
 
 
-    #define SIZE_TABLE 10240
+    #define SIZE_TABLE 1024
 
     struct HashNode {
         HashNode *next;
