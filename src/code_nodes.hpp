@@ -283,7 +283,6 @@ SymbolStruct endBodyNode;
             newHashNode->keyLength = keyLength;
             newHashNode->nodeBase = val;
             newHashNode->next = nullptr;
-            this->entries[hashInt] = newHashNode;
 
 
             hashNode->next = newHashNode;
