@@ -240,7 +240,7 @@ SymbolStruct endBodyNode;
             auto hashInt = hash(keyA, keyLength);
             HashNode* hashNode = this->entries[hashInt];
 
-            if (hashNode == nullptr || hashNode->key == nullptr) {
+            if (hashNode == nullptr) {// || hashNode->key == nullptr) {
                 auto *newHashNode = simpleMalloc<HashNode>();
                 newHashNode->next = nullptr;
                 this->entries[hashInt] = newHashNode;
