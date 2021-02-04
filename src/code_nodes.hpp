@@ -231,6 +231,8 @@ SymbolStruct endBodyNode;
         }
 
         void put(char * keyA, int keyLength, NodeBase* val) {
+            if (true) return;
+
             char *keyB = charBuffer.newChars(keyLength + 1);
             for (int i = 0; i < keyLength; i++) {
                 keyB[i] = keyA[i];
