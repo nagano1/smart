@@ -35,10 +35,12 @@ TEST(parser_test, JsonParseTest) {
         EXPECT_EQ(std::string{ document->context->syntaxErrorInfo.reason }, std::string{ "no end quote" });
     }
 
+    /*
     {
         char *text = const_cast<char *>(u8R"({"jsonrpc":"2.0", "method" : "textDocument/didOpen", "params" : {"textDocument":{"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt", "languageId" : "plaintext", "version" : 1, "text" : "AAA\r\n\r\n\r\n\r\nBBB\r\nCCC\r\nAAA\r\nBBB"}}})");
         testJson(text);
     }
+    */
 
 
     {
