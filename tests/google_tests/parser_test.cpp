@@ -631,8 +631,8 @@ TEST(parser_test, aaHashMap) {
     }
 
     {
-        auto hashKey = HashMap::calc_hash2( "N01234ABCFWE");
-        auto hashKey2 = HashMap::calc_hash2("N01234CFAWEE");
+        auto hashKey = HashMap::calc_hash2( "N01");
+        auto hashKey2 = HashMap::calc_hash2("N01234C");
         EXPECT_NE(hashKey, hashKey2);
     }
 
@@ -644,7 +644,7 @@ TEST(parser_test, aaHashMap) {
         const char key[] = "firstAA";
         hashMap->put2(key, first);
         hashMap->put2(key, first);
-        hashMap->put("secondBB",sizeof("secondBB")-1, Cast::upcast(simpleMalloc<DocumentStruct>()));
+        hashMap->put("secondBB", sizeof("secondBB")-1, Cast::upcast(simpleMalloc<DocumentStruct>()));
         hashMap->put2("jfiow", Cast::upcast(simpleMalloc<DocumentStruct>()));
         hashMap->put("jfiow", sizeof("jfiow")-1, Cast::upcast(simpleMalloc<DocumentStruct>()));
 
