@@ -185,11 +185,6 @@
     <ClInclude Include="..\..\src\parse_util.hpp" />
     <ClInclude Include="..\..\src\thread_pool.hpp" />
   </ItemGroup>
-  <ItemGroup>
-    <MASM Include="Native.asm">
-      <FileType>Document</FileType>
-    </MASM>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
