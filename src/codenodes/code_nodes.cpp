@@ -109,10 +109,10 @@ namespace smart {
 
         //memset(this->entries, 0, sizeof(this->entries));
         for (int i = 0; i < HashNode_TABLE_SIZE; i++) {
-            this->entries[i] = nullptr;
+            this->entries[i] = NULL;
         }
         for (int i = 0; i < HashNode_TABLE_SIZE; i++) {
-            if (this->entries[i] == nullptr) {
+            if (this->entries[i] != NULL) {
                 throw 3;
             }
         }
