@@ -289,29 +289,6 @@ namespace smart {
         NodeBase *lastRootNode;
     };
 
-    /*
-    struct TextBuffer {
-    private:
-        // bufferMode == 1: has Next Buffer
-        utf8byte *allBuffer;
-        int allBufferLength;
-
-    public:
-        int bufferMode = 0;
-        int bufferOffset;
-        int currentBufferLength;
-        utf8byte *currentBuffer;
-        bool (*nextBufferGetter)(TextBuffer *textBuffer);
-
-        bool waitNextTextBuffer() {
-            if (this->bufferMode == 0) {
-                return false;
-            } else {
-            }
-            return true;
-        };
-    };
-    */
 
     /**
      * Syntax error is allowed only once
@@ -329,8 +306,6 @@ namespace smart {
 
         int startCharacter;
         int endCharacter;
-
-
     };
 
     struct ParseContext {
@@ -597,7 +572,6 @@ namespace smart {
 
 
         static LineBreakNodeStruct *newLineBreakNode(ParseContext *context, NodeBase *parentNode);
-        //static ErrorNodeStruct *newErrorNode(ParseContext *context, NodeBase *parentNode);
 
         static SimpleTextNodeStruct *newSimpleTextNode(ParseContext *context, NodeBase *parentNode);
 
@@ -606,8 +580,6 @@ namespace smart {
 
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
 
-        static JsonKeyValueItemStruct *
-            newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
 
         static void deleteClassNode(NodeBase *node);
 
@@ -616,9 +588,10 @@ namespace smart {
         static void deleteFuncNode(NodeBase *node);
 
         static JsonObjectStruct *newJsonObject(ParseContext *context, NodeBase *parentNode);
+        static JsonObjectKeyNodeStruct *newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode);
+        static JsonKeyValueItemStruct *newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
         static JsonArrayStruct *newJsonArray(ParseContext *context, NodeBase *parentNode);
         static JsonArrayItemStruct *newJsonArrayItem(ParseContext *context, NodeBase *parentNode);
-        static JsonObjectKeyNodeStruct *newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode);
 
 
         static void deleteJsonObject(NodeBase *node);
