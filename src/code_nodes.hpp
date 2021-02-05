@@ -210,14 +210,9 @@ SymbolStruct endBodyNode;
 
     static int hash(char *key, int keyLength) {
         int sum = 0;
-        printf(":%s:", key);
-
         for (int i = 0; i < keyLength; i++) {
-            printf(",%d", key[i]);
-            fflush(stdout);
             sum += key[i] < 0 ? -key[i] : key[i];
         }
-
         return sum % SIZE_TABLE;
     }
 
