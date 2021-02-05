@@ -21,9 +21,12 @@ namespace smart {
 
 
     static int hash(char *key, int keyLength) {
-        int sum = 0;
-        for (int i = 0; i < keyLength; i++) {
-            sum += key[i] < 0 ? -key[i] : key[i];
+        int sum = keyLength;
+        for (int i = 0; i < keyLength && i < HashNode_TABLE_SIZE; i++) {
+            sum += (i+1) * (key[i] < 0 ? -key[i] : key[i]);
+        }
+        for (int i = keyLength-1,j=0; i > 0 && j < HashNode_TABLE_SIZE ; i--,j++) {
+            sum += (i + 1) * (key[i] < 0 ? -key[i] : key[i]);
         }
         return sum % HashNode_TABLE_SIZE;
     }

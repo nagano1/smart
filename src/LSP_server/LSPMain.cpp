@@ -96,12 +96,11 @@ void LSPManager::nextRequest(char *chars, size_t length) {
     //auto *jsonObject = DocumentUtils::generateHashTables(document);
     auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
     fprintf(stderr, "item2: %d", rootJson);
-
     if (rootJson) {
         auto *item = rootJson->hashMap->get2("method");
         auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
-        if (0 == strcmp(strNode->strValue, "[initialized]")) {
-            fprintf(stderr, "jsonrpc: %s", strNode->text);
+        if (0 == strcmp(strNode->text, "\"initialized\"")) {
+            fprintf(stderr, "initialized: %s", strNode->text);
         }
     }
 

@@ -276,10 +276,6 @@ namespace smart {
         char *fileName;
         EndOfFileNodeStruct endOfFile;
 
-        //SpaceNodeStruct *lastSpaceNode;
-        //LineBreakNodeStruct *lastLineBreakNode;
-        //NodeBase *lastErrorNode;
-
         int nodeCount{ 0 };
 
         CodeLine *firstCodeLine;
@@ -421,7 +417,19 @@ namespace smart {
     struct VTables {
         static const node_vtable
             *DocumentVTable,
+
             *ClassVTable,
+            *ClassBodyVTable,
+
+            *NameVTable,
+            *StringLiteralVTable,
+            *NumberVTable,
+            *BoolVTable,
+            *SymbolVTable,
+            *SimpleTextVTable,
+            *NullVTable,
+            *SpaceVTable,
+            *LineBreakVTable,
 
             *JsonObjectVTable,
             *JsonArrayVTable,
@@ -429,17 +437,7 @@ namespace smart {
             *JsonArrayItemVTable,
             *JsonObjectKeyVTable,
 
-            *ClassBodyVTable,
-            *NameVTable,
-            *StringLiteralVTable,
-            *NumberVTable,
-            *BoolVTable,
-            *SymbolVTable,
-            *EndOfFileVTable,
-            *SimpleTextVTable,
-            *NullVTable,
-            *SpaceVTable,
-            *LineBreakVTable;
+            *EndOfFileVTable;
     };
 
 
