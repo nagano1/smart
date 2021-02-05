@@ -211,7 +211,7 @@ SymbolStruct endBodyNode;
     static int hash(char *key, int keyLength) {
         int sum = 0;
         for (int i = 0; i < keyLength; i++) {
-            sum += key[i];
+            sum += key[i] < 0 ? -key[i] : key[i];
         }
 
         return sum % (SIZE_TABLE);
@@ -231,9 +231,6 @@ SymbolStruct endBodyNode;
             
 
             auto hashInt = hash(keyA, keyLength);
-            if (hashInt < 0) {
-                hashInt = 5;
-            }
             HashNode* hashNode = this->entries[hashInt];
 
             if (hashNode == nullptr) {// || hashNode->key == nullptr) {
