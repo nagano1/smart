@@ -206,7 +206,7 @@ namespace smart {
     };
 
     struct HashMap {
-        HashNode* entries[HashNode_TABLE_SIZE] = {};
+        HashNode** entries;// [HashNode_TABLE_SIZE] = {};
         CharBuffer<char> charBuffer;
 
         void init();
