@@ -219,7 +219,7 @@ SymbolStruct endBodyNode;
 
     struct HashMap {
 
-        HashNode* entries[SIZE_TABLE+1];
+        HashNode* entries[SIZE_TABLE];
         CharBuffer<char> charBuffer;
 
         template<std::size_t SIZE>
@@ -231,7 +231,9 @@ SymbolStruct endBodyNode;
             
 
             auto hashInt = hash(keyA, keyLength);
-
+            if (hashInt < 1) {
+                hashInt = 5;
+            }
             HashNode* hashNode = this->entries[hashInt];
 
             if (hashNode == nullptr) {// || hashNode->key == nullptr) {
