@@ -106,7 +106,7 @@ namespace smart {
 
     void HashMap::init() {
         charBuffer.init();
-        this->entries = (HashNode**)malloc(sizeof(HashNode*)*HashNode_TABLE_SIZE);
+        this->entries = (HashNode**)malloc(sizeof(HashNode*)*(HashNode_TABLE_SIZE+1));
         /*
         memset(this->entries, 0, sizeof(this->entries));
         
@@ -123,7 +123,7 @@ namespace smart {
         }
         for (int i = 0; i < HashNode_TABLE_SIZE; i++) {
             if (this->entries[i] != nullptr) {
-                //throw 3;
+                throw 3;
             }
         }
     }
