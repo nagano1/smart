@@ -636,7 +636,6 @@ TEST(parser_test, aaHashMap) {
         EXPECT_NE(hashKey, hashKey2);
     }
 
-    EXPECT_EQ(true, false);
 
     for (int i = 0; i < 100; i++) {
         HashMap *hashMap = simpleMalloc<HashMap>();
