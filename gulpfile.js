@@ -28,7 +28,7 @@ gulp.task("show", async function (cb) {
 
 // watch and generate a test info json file
 gulp.task("watchtest", async function (cb) {
-    await promise;
+    await promise;1
 
     collectTestList();
 

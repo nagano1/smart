@@ -84,7 +84,6 @@ void LSPManager::nextRequest(char *chars, size_t length) {
 
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, chars, length);
-    DocumentUtils::generateHashTables(document);
 
     //char *typeText = DocumentUtils::getTypeTextFromTree(document);
     //    if (typeText != nullptr) {
@@ -92,15 +91,22 @@ void LSPManager::nextRequest(char *chars, size_t length) {
         //}
 
     char *treeText = DocumentUtils::getTextFromTree(document);
+    DocumentUtils::generateHashTables(document);
 
     //auto *jsonObject = DocumentUtils::generateHashTables(document);
     auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
-    fprintf(stderr, "item2: %d", rootJson);
+    //fprintf(stderr, "type: %s", rootJson->vtable->typeChars);
+    //fflush(stderr);
+
+    //fprintf(stderr, "item2: %d", rootJson);
     if (rootJson) {
         auto *item = rootJson->hashMap->get2("method");
-        auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
-        if (0 == strcmp(strNode->text, "\"initialized\"")) {
-            fprintf(stderr, "initialized: %s", strNode->text);
+        if (item) {
+            auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
+            //if (strNode->textLength > 0 && 0 == strcmp(strNode->text, "\"initialized\"")) {
+                fprintf(stderr, "method: %s", strNode->text);
+                fflush(stderr);
+            //}
         }
     }
 

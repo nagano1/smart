@@ -213,7 +213,7 @@ namespace smart {
 
         template<std::size_t SIZE>
         static int calc_hash2(const char(&f4)[SIZE]) {
-            return HashMap::calc_hash((char*)f4, SIZE);
+            return HashMap::calc_hash((char*)f4, SIZE-1);
         }
 
         static int calc_hash(char *key, int keyLength);
@@ -224,11 +224,11 @@ namespace smart {
 
         template<std::size_t SIZE>
         NodeBase* get2(const char(&f4)[SIZE]) {
-            return this->get((char*)f4, SIZE);
+            return this->get((char*)f4, SIZE-1);
         }
         template<std::size_t SIZE>
         void put2(const char(&f4)[SIZE], NodeBase* val) {
-            return this->put((char*)f4, SIZE, val);
+            return this->put((char*)f4, SIZE-1, val);
         }
     };
 
