@@ -24,22 +24,21 @@ namespace smart {
     struct ParseContext;
     struct CodeLine;
 
+    #define NODE_HEADER \
+        const struct node_vtable *vtable; \
+        _NodeBase *parentNode; \
+        _NodeBase *nextNode; \
+        _NodeBase *nextNodeInLine; \
+        struct _SimpleTextNodeStruct *prevSpaceNode; \
+        struct _LineBreakNodeStruct *prevLineBreakNode; \
+        ParseContext *context; \
+        char prev_char 
 
-#define NODE_HEADER \
-    const struct node_vtable *vtable; \
-    _NodeBase *parentNode; \
-    _NodeBase *nextNode; \
-    _NodeBase *nextNodeInLine; \
-    struct _SimpleTextNodeStruct *prevSpaceNode; \
-    struct _LineBreakNodeStruct *prevLineBreakNode; \
-    ParseContext *context; \
-    char prev_char 
 
-
-#define TEXT_MEMCPY(dst, src, len) \
+    #define TEXT_MEMCPY(dst, src, len) \
         memcpy((dst), (src), (len))
 
-#define INIT_NODE(node, context, parent, argvtable) \
+    #define INIT_NODE(node, context, parent, argvtable) \
         (node)->vtable = (argvtable); \
         (node)->prev_char = '\0'; \
         (node)->context = (context); \
@@ -156,12 +155,13 @@ namespace smart {
     };
 
     using FuncBodyStruct = struct {
-NODE_HEADER;
+        NODE_HEADER;
 
-bool isChecked;
-utf8byte body[2];
-// expressionNodes;
-SymbolStruct endBodyNode;
+        bool isChecked;
+        utf8byte body[2];
+
+        // expressionNodes;
+        SymbolStruct endBodyNode;
     };
 
     using FuncNodeStruct = struct {
@@ -182,11 +182,8 @@ SymbolStruct endBodyNode;
         size_t nameLength;
     };
 
-    // --------- Json Key/Value --------- //
     using JsonKeyValueItemStruct = struct {
         NODE_HEADER;
-
-        //utf8byte body[2];
 
         JsonObjectKeyNodeStruct *keyNode;
 
@@ -199,7 +196,7 @@ SymbolStruct endBodyNode;
     };
 
 
-    #define SIZE_TABLE 1024
+    #define HashNode_TABLE_SIZE 1024
 
     struct HashNode {
         HashNode *next;
@@ -208,125 +205,27 @@ SymbolStruct endBodyNode;
         NodeBase* nodeBase;
     };
 
-    static int hash(char *key, int keyLength) {
-        int sum = 0;
-        for (int i = 0; i < keyLength; i++) {
-            sum += key[i] < 0 ? -key[i] : key[i];
-        }
-        return sum % SIZE_TABLE;
-    }
-
     struct HashMap {
-
-        HashNode* entries[SIZE_TABLE];
+        HashNode* entries[HashNode_TABLE_SIZE];
         CharBuffer<char> charBuffer;
 
-        template<std::size_t SIZE>
-        void put2(const char(&f4)[SIZE], NodeBase* val) {
-            return this->put((char*)f4, SIZE, val);
-        }
+        void init();
 
-        void put(char * keyA, int keyLength, NodeBase* val) {
-            
-
-            auto hashInt = hash(keyA, keyLength);
-            HashNode* hashNode = this->entries[hashInt];
-
-            if (hashNode == nullptr) {// || hashNode->key == nullptr) {
-                auto *newHashNode = simpleMalloc<HashNode>();
-                newHashNode->next = nullptr;
-                this->entries[hashInt] = newHashNode;
-
-
-                char *keyB = charBuffer.newChars(keyLength + 1);
-                for (int i = 0; i < keyLength; i++) {
-                    keyB[i] = keyA[i];
-                }
-                newHashNode->key = keyB;
-                newHashNode->keyLength = keyLength;
-                newHashNode->nodeBase = val;
-                return;
-            }
-
-            while (true) {
-                // find same key
-                bool sameKey = true;
-                if (hashNode->keyLength == keyLength) {
-                    for (int i = 0; i < keyLength; i++) {
-                        if (hashNode->key[i] != keyA[i]) {
-                            sameKey = false;
-                            break;
-                        }
-                    }
-                }
-                else {
-                    sameKey = false;
-                }
-                
-                if (sameKey) {
-                    hashNode->nodeBase = val;
-                    return;
-                }
-
-                if (hashNode->next == nullptr) {
-                    break;
-                }
-                hashNode = hashNode->next;
-            }
-
-
-            auto *newHashNode = simpleMalloc<HashNode>();
-            char *keyB = charBuffer.newChars(keyLength + 1);
-            for (int i = 0; i < keyLength; i++) {
-                keyB[i] = keyA[i];
-            }
-            newHashNode->key = keyB;
-            newHashNode->keyLength = keyLength;
-            newHashNode->nodeBase = val;
-            newHashNode->next = nullptr;
-
-
-            hashNode->next = newHashNode;
-
-        }
-
-        void init() {
-            charBuffer.init();
-
-            for (int i = 0; i < SIZE_TABLE; i++) {
-                this->entries[i] = nullptr;
-            }
-        }
-
-        bool has(char * key, int keyLength) {
-            return this->entries[hash(key, keyLength)]->key != nullptr;
-        }
-
-        void deleteKey(char * key, int keyLength) {
-            if (this->entries[hash(key, keyLength)] != nullptr) {
-                free(this->entries[hash(key, keyLength)]);
-            }
-        }
+        void put(char * keyA, int keyLength, NodeBase* val);
+        NodeBase* get(char * key, int keyLength);
+        bool has(char * key, int keyLength);
+        void deleteKey(char * key, int keyLength);
 
         template<std::size_t SIZE>
         NodeBase* get2(const char(&f4)[SIZE]) {
             return this->get((char*)f4, SIZE);
         }
-
-        NodeBase* get(char * key, int keyLength) {
-            auto keyInt = hash(key, keyLength);
-            if (this->entries[keyInt] != nullptr) {
-                auto * hashNode = this->entries[keyInt];
-                while (hashNode) {
-                    if (0 == strcmp(hashNode->key, key)) {
-                        return hashNode->nodeBase;
-                    }
-                    hashNode = hashNode->next;
-                }
-            }
-            return nullptr;
+        template<std::size_t SIZE>
+        void put2(const char(&f4)[SIZE], NodeBase* val) {
+            return this->put((char*)f4, SIZE, val);
         }
     };
+
 
 
     // --------- Json Object --------- //

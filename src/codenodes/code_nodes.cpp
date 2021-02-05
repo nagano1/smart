@@ -19,19 +19,125 @@
 
 namespace smart {
 
+
+    static int hash(char *key, int keyLength) {
+        int sum = 0;
+        for (int i = 0; i < keyLength; i++) {
+            sum += key[i] < 0 ? -key[i] : key[i];
+        }
+        return sum % HashNode_TABLE_SIZE;
+    }
+
+    void HashMap::put(char * keyA, int keyLength, NodeBase* val) {
+
+        auto hashInt = hash(keyA, keyLength);
+        HashNode* hashNode = this->entries[hashInt];
+
+        if (hashNode == nullptr) {// || hashNode->key == nullptr) {
+            auto *newHashNode = simpleMalloc<HashNode>();
+            newHashNode->next = nullptr;
+            this->entries[hashInt] = newHashNode;
+
+
+            char *keyB = charBuffer.newChars(keyLength + 1);
+            for (int i = 0; i < keyLength; i++) {
+                keyB[i] = keyA[i];
+            }
+            newHashNode->key = keyB;
+            newHashNode->keyLength = keyLength;
+            newHashNode->nodeBase = val;
+            return;
+        }
+
+        while (true) {
+            // find same key
+            bool sameKey = true;
+            if (hashNode->keyLength == keyLength) {
+                for (int i = 0; i < keyLength; i++) {
+                    if (hashNode->key[i] != keyA[i]) {
+                        sameKey = false;
+                        break;
+                    }
+                }
+            }
+            else {
+                sameKey = false;
+            }
+
+            if (sameKey) {
+                hashNode->nodeBase = val;
+                return;
+            }
+
+            if (hashNode->next == nullptr) {
+                break;
+            }
+            hashNode = hashNode->next;
+        }
+
+
+        auto *newHashNode = simpleMalloc<HashNode>();
+        char *keyB = charBuffer.newChars(keyLength + 1);
+        for (int i = 0; i < keyLength; i++) {
+            keyB[i] = keyA[i];
+        }
+        newHashNode->key = keyB;
+        newHashNode->keyLength = keyLength;
+        newHashNode->nodeBase = val;
+        newHashNode->next = nullptr;
+
+        hashNode->next = newHashNode;
+    }
+
+
+    void HashMap::init() {
+        charBuffer.init();
+
+        for (int i = 0; i < HashNode_TABLE_SIZE; i++) {
+            this->entries[i] = nullptr;
+        }
+    }
+
+    bool HashMap::has(char * key, int keyLength) {
+        return this->entries[hash(key, keyLength)]->key != nullptr;
+    }
+
+    void HashMap::deleteKey(char * key, int keyLength) {
+        if (this->entries[hash(key, keyLength)] != nullptr) {
+            free(this->entries[hash(key, keyLength)]);
+        }
+    }
+
+    NodeBase* HashMap::get(char * key, int keyLength) {
+        auto keyInt = hash(key, keyLength);
+        if (this->entries[keyInt] != nullptr) {
+            auto * hashNode = this->entries[keyInt];
+            while (hashNode) {
+                if (0 == strcmp(hashNode->key, key)) {
+                    return hashNode->nodeBase;
+                }
+                hashNode = hashNode->next;
+            }
+        }
+        return nullptr;
+    }
+
+
+
+
     int Scanner::scanErrorNodeUntilSpace(
-            void *parentNode,
-            int start,
-            ParseContext *context
+        void *parentNode,
+        int start,
+        ParseContext *context
     ) {
         return 3;
     }
 
 
     int Scanner::scan(void *parentNode,
-                      TokenizerFunction tokenizer,
-                      int start,
-                      ParseContext *context
+        TokenizerFunction tokenizer,
+        int start,
+        ParseContext *context
     ) {
         return Scanner::scan_for_root(parentNode, tokenizer, start, context, false);
     }
@@ -49,7 +155,7 @@ namespace smart {
 
 
     static SpaceNodeStruct *
-    genSpaceNode(ParseContext *context, void *parentNode, int start, int end) {
+        genSpaceNode(ParseContext *context, void *parentNode, int start, int end) {
 
         auto *prevSpaceNode = Alloc::newSpaceNode(context, Cast::upcast(parentNode));
         prevSpaceNode->text = context->charBuffer.newChars(end - start + 1);
@@ -61,10 +167,10 @@ namespace smart {
 
 
     int Scanner::scan_for_root(void *parentNode,
-                               TokenizerFunction tokenizer,
-                               int start,
-                               ParseContext *context,
-                               bool root
+        TokenizerFunction tokenizer,
+        int start,
+        ParseContext *context,
+        bool root
     ) {
         LineBreakNodeStruct *prevLineBreak = nullptr;
         LineBreakNodeStruct *lastLineBreak = nullptr;
@@ -85,25 +191,27 @@ namespace smart {
             if (ParseUtil::isBreakLine(ch)) {
                 afterLineBreak = true;
                 auto *newLineBreak
-                        = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
+                    = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
 
                 if (prevLineBreak == nullptr) {
                     lastLineBreak = prevLineBreak = newLineBreak;
-                } else {
+                }
+                else {
                     lastLineBreak->nextLineBreakNode = newLineBreak;
                     lastLineBreak = newLineBreak;
                 }
 
-                if (whitespace_startpos != -1 && (uint32_t) whitespace_startpos < i) {
+                if (whitespace_startpos != -1 && (uint32_t)whitespace_startpos < i) {
                     lastLineBreak->prevSpaceNode = genSpaceNode(context,
-                                                                parentNode,
-                                                                whitespace_startpos, i);
+                        parentNode,
+                        whitespace_startpos, i);
                     whitespace_startpos = -1;
                 }
 
                 i++;
                 continue;
-            } else if (ParseUtil::isSpace(ch)) {
+            }
+            else if (ParseUtil::isSpace(ch)) {
                 uint32_t spaceEndIndex = i + 1;
 
                 for (; spaceEndIndex < context->length; spaceEndIndex++) {
@@ -138,9 +246,10 @@ namespace smart {
                     if (context->chars[whitespace_startpos] == ' '
                         && i - whitespace_startpos == 1) {
                         context->codeNode->prev_char = ' ';
-                    } else {
+                    }
+                    else {
                         context->codeNode->prevSpaceNode = genSpaceNode(context, parentNode,
-                                                                        whitespace_startpos, i);
+                            whitespace_startpos, i);
                     }
 
                     whitespace_startpos = -1;
@@ -173,11 +282,12 @@ namespace smart {
 
         if (root) {
             context->remainedLineBreakNode = prevLineBreak;
-            if (whitespace_startpos > -1 && (uint32_t) whitespace_startpos < context->length) {
+            if (whitespace_startpos > -1 && (uint32_t)whitespace_startpos < context->length) {
                 context->remainedSpaceNode = genSpaceNode(context, parentNode,
-                                                          whitespace_startpos, context->length);
+                    whitespace_startpos, context->length);
             }
-        } else {
+        }
+        else {
             if (prevLineBreak) {
                 //delete prevLineBreak;
             }
