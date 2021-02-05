@@ -619,15 +619,21 @@ ENDTEST
 
 TEST(parser_test, aaHashMap) {
     {
+        char a = -122;
+        unsigned char b = a;
+        EXPECT_NE((int)a, (int)b);
+    }
+
+    {
         auto hashKey = HashMap::calc_hash2("ak");
         auto hashKey2 = HashMap::calc_hash2("ka");
         EXPECT_NE(hashKey, hashKey2);
     }
 
     {
-        auto hashKey = HashMap::calc_hash2("01234");
-        auto hashKey2 = HashMap::calc_hash2("12345");
-        EXPECT_EQ(hashKey, hashKey2);
+        auto hashKey = HashMap::calc_hash2( "N01234ABCFWE");
+        auto hashKey2 = HashMap::calc_hash2("N01234CFAWEE");
+        EXPECT_NE(hashKey, hashKey2);
     }
 
     EXPECT_EQ(true, false);
