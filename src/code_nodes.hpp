@@ -231,7 +231,7 @@ SymbolStruct endBodyNode;
             
 
             auto hashInt = hash(keyA, keyLength);
-            if (hashInt < 1) {
+            if (hashInt < 0) {
                 hashInt = 5;
             }
             HashNode* hashNode = this->entries[hashInt];
