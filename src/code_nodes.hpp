@@ -211,10 +211,11 @@ SymbolStruct endBodyNode;
     static int hash(char *key, int keyLength) {
         int sum = 0;
         for (int i = 0; i < keyLength; i++) {
+            printf(",%d", key[i]);
             sum += key[i] < 0 ? -key[i] : key[i];
         }
 
-        return sum % (SIZE_TABLE);
+        return sum % SIZE_TABLE;
     }
 
     struct HashMap {
