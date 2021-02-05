@@ -112,8 +112,8 @@ namespace smart {
             this->entries[i] = nullptr;
         }
         for (int i = 0; i < HashNode_TABLE_SIZE; i++) {
-            if (this->entries[i] != nullptr) {
-                //throw 3;
+            if (this->entries[i] == nullptr) {
+                throw 3;
             }
         }
 
