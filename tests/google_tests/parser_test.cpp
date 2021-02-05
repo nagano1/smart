@@ -642,19 +642,20 @@ TEST(parser_test, aaHashMap) {
         hashMap->init();
         auto *first = Cast::upcast(simpleMalloc<DocumentStruct>());
         const char key[] = "firstAA";
-        hashMap->put2(key, first);
-        hashMap->put2(key, first);
-        hashMap->put("secondBB", sizeof("secondBB")-1, Cast::upcast(simpleMalloc<DocumentStruct>()));
+        hashMap->put2(key, Cast::upcast(simpleMalloc<DocumentStruct>()));
+        hashMap->put2(key, first); // replace
+
+        hashMap->put2("secondBB", Cast::upcast(simpleMalloc<DocumentStruct>()));
         hashMap->put2("jfiow", Cast::upcast(simpleMalloc<DocumentStruct>()));
         hashMap->put("jfiow", sizeof("jfiow")-1, Cast::upcast(simpleMalloc<DocumentStruct>()));
 
         auto *node = hashMap->get2("firstAA");
         EXPECT_EQ(node, first);
 
-        node = hashMap->get("jfiow", sizeof("jfiow")-1);
+        node = hashMap->get2("jfiow");
         EXPECT_EQ(node != nullptr, true);
         {
-            auto *node = hashMap->get("empty", sizeof("empty")-1);
+            auto *node = hashMap->get2("empty");
             EXPECT_EQ(node, nullptr);
 
         }

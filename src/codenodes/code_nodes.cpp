@@ -107,8 +107,11 @@ namespace smart {
     void HashMap::init() {
         charBuffer.init();
 
+        memset(this->entries, 0, sizeof(this->entries));
         for (int i = 0; i < HashNode_TABLE_SIZE; i++) {
-            this->entries[i] = nullptr;
+            if (this->entries[i] != nullptr) {
+                throw 3;
+            }
         }
     }
 
