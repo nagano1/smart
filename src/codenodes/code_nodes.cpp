@@ -118,7 +118,11 @@ namespace smart {
                 throw 3;
             }
         }
-
+        for (int i = 0; i < HashNode_TABLE_SIZE; i++) {
+            if (this->entries[i] != nullptr) {
+                throw 3;
+            }
+        }
     }
 
     bool HashMap::has(char * key, int keyLength) {
