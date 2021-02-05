@@ -11,11 +11,11 @@ jobs:
     strategy:
       matrix:
         config:
-          # - {
-          #     os: ubuntu-latest,
-          #     addpath: '',
-          #     sudo: ' sudo ',
-          #   }
+          - {
+              os: ubuntu-latest,
+              addpath: '',
+              sudo: ' sudo ',
+            }
           - {
               os: macos-latest,
               sudo: ' sudo ',
