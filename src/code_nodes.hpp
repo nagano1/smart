@@ -211,6 +211,12 @@ namespace smart {
 
         void init();
 
+        template<std::size_t SIZE>
+        static int calc_hash2(const char(&f4)[SIZE]) {
+            return HashMap::calc_hash((char*)f4, SIZE);
+        }
+
+        static int calc_hash(char *key, int keyLength);
         void put(char * keyA, int keyLength, NodeBase* val);
         NodeBase* get(char * key, int keyLength);
         bool has(char * key, int keyLength);

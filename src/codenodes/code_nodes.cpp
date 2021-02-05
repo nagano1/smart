@@ -20,20 +20,31 @@
 namespace smart {
 
 
-    static int hash(char *key, int keyLength) {
-        int sum = keyLength;
-        for (int i = 0; i < keyLength && i < HashNode_TABLE_SIZE; i++) {
-            sum += (i+1) * (key[i] < 0 ? -key[i] : key[i]);
+    int HashMap::calc_hash(char *key, int keyLength) {
+        unsigned int sum = keyLength;
+        int border = HashNode_TABLE_SIZE;
+
+        int salt = 0; // prevent same result from only order different of letters
+        for (int i = 0; i < keyLength && i < border; i++) {
+            unsigned char unsignedValue = key[i];// < 0 ? -key[i] : key[i]);
+            sum += unsignedValue;
+            salt += i % 2 == 0 ? unsignedValue * i : -unsignedValue * i;
         }
-        for (int i = keyLength-1,j=0; i > 0 && j < HashNode_TABLE_SIZE ; i--,j++) {
-            sum += (i + 1) * (key[i] < 0 ? -key[i] : key[i]);
+
+        for (int i = keyLength-1,j=0; i >= border && j < HashNode_TABLE_SIZE ; i--,j++) {
+            unsigned char unsignedValue = key[i];// (key[i] < 0 ? -key[i] : key[i]);
+            sum += unsignedValue;
+            salt += j % 2 == 0 ? unsignedValue * j : -unsignedValue * j;
         }
-        return sum % HashNode_TABLE_SIZE;
+        if (salt < 0) {
+            salt = -(salt);
+        }
+        return (sum + salt) % HashNode_TABLE_SIZE;
     }
 
     void HashMap::put(char * keyA, int keyLength, NodeBase* val) {
 
-        auto hashInt = hash(keyA, keyLength);
+        auto hashInt = calc_hash(keyA, keyLength);
         HashNode* hashNode = this->entries[hashInt];
 
         if (hashNode == nullptr) {// || hashNode->key == nullptr) {
@@ -102,17 +113,17 @@ namespace smart {
     }
 
     bool HashMap::has(char * key, int keyLength) {
-        return this->entries[hash(key, keyLength)]->key != nullptr;
+        return this->entries[calc_hash(key, keyLength)]->key != nullptr;
     }
 
     void HashMap::deleteKey(char * key, int keyLength) {
-        if (this->entries[hash(key, keyLength)] != nullptr) {
-            free(this->entries[hash(key, keyLength)]);
+        if (this->entries[calc_hash(key, keyLength)] != nullptr) {
+            free(this->entries[calc_hash(key, keyLength)]);
         }
     }
 
     NodeBase* HashMap::get(char * key, int keyLength) {
-        auto keyInt = hash(key, keyLength);
+        auto keyInt = calc_hash(key, keyLength);
         if (this->entries[keyInt] != nullptr) {
             auto * hashNode = this->entries[keyInt];
             while (hashNode) {

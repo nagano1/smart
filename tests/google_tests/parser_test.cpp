@@ -618,6 +618,19 @@ ENDTEST
 
 
 TEST(parser_test, aaHashMap) {
+    {
+        auto hashKey = HashMap::calc_hash2("ak");
+        auto hashKey2 = HashMap::calc_hash2("ka");
+        EXPECT_NE(hashKey, hashKey2);
+    }
+
+    {
+        auto hashKey = HashMap::calc_hash2("01234");
+        auto hashKey2 = HashMap::calc_hash2("12345");
+        EXPECT_EQ(hashKey, hashKey2);
+    }
+
+    EXPECT_EQ(true, false);
 
     for (int i = 0; i < 100; i++) {
         HashMap *hashMap = simpleMalloc<HashMap>();
