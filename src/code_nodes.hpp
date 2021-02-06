@@ -207,16 +207,19 @@ namespace smart {
 
     struct HashMap {
         HashNode** entries;// [HashNode_TABLE_SIZE] = {};
+        size_t entries_length;
         CharBuffer<char> charBuffer;
 
         void init();
 
         template<std::size_t SIZE>
-        static int calc_hash2(const char(&f4)[SIZE]) {
-            return HashMap::calc_hash((char*)f4, SIZE-1);
+        static int calc_hash2(const char(&f4)[SIZE], size_t max) {
+            return HashMap::calc_hash((char*)f4, SIZE-1, max);
         }
-
-        static int calc_hash(char *key, int keyLength);
+        int calc_hash0(char *key, int keyLength) {
+            return HashMap::calc_hash(key, keyLength, this->entries_length);
+        }
+        static int calc_hash(char *key, int keyLength, size_t max);
         void put(char * keyA, int keyLength, NodeBase* val);
         NodeBase* get(char * key, int keyLength);
         bool has(char * key, int keyLength);

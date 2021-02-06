@@ -625,14 +625,14 @@ TEST(parser_test, aaHashMap) {
     }
 
     {
-        auto hashKey = HashMap::calc_hash2("ak");
-        auto hashKey2 = HashMap::calc_hash2("ka");
+        auto hashKey = HashMap::calc_hash2("ak", 10000);
+        auto hashKey2 = HashMap::calc_hash2("ka", 10000);
         EXPECT_NE(hashKey, hashKey2);
     }
 
     {
-        auto hashKey = HashMap::calc_hash2( "N01");
-        auto hashKey2 = HashMap::calc_hash2("N01234C");
+        auto hashKey = HashMap::calc_hash2( "N01", 10000);
+        auto hashKey2 = HashMap::calc_hash2("N01234C", 10000);
         EXPECT_NE(hashKey, hashKey2);
     }
 
