@@ -65,22 +65,18 @@ namespace smart {
 
         while (true) {
             // find same key
-            bool sameKey = true;
             if (hashNode->keyLength == keyLength) {
+                bool sameKey = true;
                 for (int i = 0; i < keyLength; i++) {
                     if (hashNode->key[i] != keyA[i]) {
                         sameKey = false;
                         break;
                     }
                 }
-            }
-            else {
-                sameKey = false;
-            }
-
-            if (sameKey) {
-                hashNode->nodeBase = val;
-                return;
+                if (sameKey) {
+                    hashNode->nodeBase = val;
+                    return;
+                }
             }
 
             if (hashNode->next == nullptr) {
@@ -129,9 +125,20 @@ namespace smart {
         if (this->entries[keyInt] != nullptr) {
             auto * hashNode = this->entries[keyInt];
             while (hashNode) {
-                if (0 == strcmp(hashNode->key, key)) {
-                    return hashNode->nodeBase;
+                if (hashNode->keyLength == keyLength) {
+                    bool sameKey = true;
+                    for (int i = 0; i < keyLength; i++) {
+                        if (hashNode->key[i] != key[i]) {
+                            sameKey = false;
+                            break;
+                        }
+                    }
+
+                    if (sameKey) {
+                        return hashNode->nodeBase;
+                    }
                 }
+                
                 hashNode = hashNode->next;
             }
         }
