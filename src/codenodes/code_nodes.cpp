@@ -106,7 +106,7 @@ namespace smart {
         this->entries_length = HashNode_TABLE_SIZE;
 
         memset(this->entries, 0, sizeof(HashNode*)*this->entries_length);
-        for (int i = 0; i < this->entries_length; i++) {
+        for (unsigned int i = 0; i < this->entries_length; i++) {
             this->entries[i] = nullptr;
         }
     }
