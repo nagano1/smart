@@ -196,7 +196,7 @@ namespace smart {
     };
 
 
-    #define HashNode_TABLE_SIZE 1024
+    #define HashNode_TABLE_SIZE 104
 
     struct HashNode {
         HashNode *next;

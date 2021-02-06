@@ -126,6 +126,7 @@ namespace smart {
                 throw 3;
             }
         }
+
     }
 
     bool HashMap::has(char * key, int keyLength) {
