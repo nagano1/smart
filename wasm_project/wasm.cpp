@@ -95,17 +95,6 @@ extern "C"
 
     int calling(int p)
     {
-
-        char *entries[256];
-        for (int i = 0; i < 256; i++) {
-            entries[i] = nullptr;
-        }
-        for (int i = 0; i < 256; i++) {
-            if (entries[i] != nullptr) {
-                throw 3;
-            }
-        }
-
         print("{\"isTestResult\":true, \"ok\": true}");
         print("then, what got there?");
         void *a = malloc(3);
