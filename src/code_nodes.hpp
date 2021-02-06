@@ -35,9 +35,7 @@ namespace smart {
         char prev_char 
 
 
-    #define TEXT_MEMCPY(dst, src, len) \
-        memcpy((dst), (src), (len))
-
+    
     #define INIT_NODE(node, context, parent, argvtable) \
         (node)->vtable = (argvtable); \
         (node)->prev_char = '\0'; \
@@ -49,7 +47,8 @@ namespace smart {
         (node)->prevLineBreakNode = nullptr; \
         32\
 
-    //(node)->nextErrorNode = nullptr;
+    #define TEXT_MEMCPY(dst, src, len) \
+        memcpy((dst), (src), (len))
 
     using NodeBase = struct _NodeBase {
         NODE_HEADER;
@@ -538,9 +537,6 @@ namespace smart {
     };
 
 
-
-
-
     /**
      * Node Changed Event
      */
@@ -553,14 +549,11 @@ namespace smart {
 
     struct DocumentUtils {
         static void parseText(DocumentStruct *docStruct, const utf8byte *text, size_t length);
-
         static JsonObjectStruct* generateHashTables(DocumentStruct *doc);
 
         static utf8byte *getTextFromTree(DocumentStruct *docStruct);
         static utf8byte *getTypeTextFromTree(DocumentStruct *docStruct);
-
         static utf8byte *getTextFromLine(CodeLine *line);
-
         static utf8byte *getTextFromNode(NodeBase *line);
     };
 
@@ -569,29 +562,21 @@ namespace smart {
         static void initNameNode(NameNodeStruct *name, ParseContext *context, NodeBase *parentNode);
         static void initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context, NodeBase *parentNode);
 
-        static void initSymbolNode(SymbolStruct *self, ParseContext *context, void *parentNode,
-            utf8byte letter);
+        static void initSymbolNode(SymbolStruct *self, ParseContext *context, void *parent, utf8byte letter);
     };
 
     struct Alloc {
         static NumberNodeStruct *newNumberNode(ParseContext *context, NodeBase *parentNode);
         static BoolNodeStruct *newBoolNode(ParseContext *context, NodeBase *parentNode);
-
-
         static LineBreakNodeStruct *newLineBreakNode(ParseContext *context, NodeBase *parentNode);
-
         static SimpleTextNodeStruct *newSimpleTextNode(ParseContext *context, NodeBase *parentNode);
-
         static SpaceNodeStruct *newSpaceNode(ParseContext *context, NodeBase *parentNode);
         static NullNodeStruct *newNullNode(ParseContext *context, NodeBase *parentNode);
 
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
-
-
         static void deleteClassNode(NodeBase *node);
 
         static ClassNodeStruct *newFuncNode(ParseContext *context, NodeBase *parentNode);
-
         static void deleteFuncNode(NodeBase *node);
 
         static JsonObjectStruct *newJsonObject(ParseContext *context, NodeBase *parentNode);
@@ -599,8 +584,6 @@ namespace smart {
         static JsonKeyValueItemStruct *newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
         static JsonArrayStruct *newJsonArray(ParseContext *context, NodeBase *parentNode);
         static JsonArrayItemStruct *newJsonArrayItem(ParseContext *context, NodeBase *parentNode);
-
-
         static void deleteJsonObject(NodeBase *node);
         static void deleteJsonArray(NodeBase *node);
 
@@ -616,33 +599,27 @@ namespace smart {
 
 
     /**
- * Function Types and vtable for node structures
- */
-#define TokenizerParams_parent_ch_start_context \
+     * Function Types and vtable for node structures
+     */
+    #define TokenizerParams_parent_ch_start_context \
         NodeBase *parent, utf8byte ch, int start, ParseContext *context
 
-#define TokenizerParams_pass parent, ch, start, context
+    #define TokenizerParams_pass parent, ch, start, context
 
     using TokenizerFunction = int(*)(TokenizerParams_parent_ch_start_context);
-
 
     struct Tokenizers {
         static int nameTokenizer(TokenizerParams_parent_ch_start_context);
         static int numberTokenizer(TokenizerParams_parent_ch_start_context);
         static int nullTokenizer(TokenizerParams_parent_ch_start_context);
         static int stringLiteralTokenizer(TokenizerParams_parent_ch_start_context);
-
         static int boolTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int classTokenizer(TokenizerParams_parent_ch_start_context);
 
-        //static int classBodyTokenizer(TokenizerParams_parent_ch_start_context);
-
         static int jsonObjectTokenizer(TokenizerParams_parent_ch_start_context);
         static int jsonArrayTokenizer(TokenizerParams_parent_ch_start_context);
-
         static int jsonObjectNameTokenizer(TokenizerParams_parent_ch_start_context);
-
         static int jsonValueTokenizer(TokenizerParams_parent_ch_start_context);
 
 
@@ -703,6 +680,8 @@ namespace smart {
         );
     };
 }
+
+
 
 /**
  *

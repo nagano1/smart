@@ -657,7 +657,6 @@ TEST(parser_test, aaHashMap) {
         {
             auto *node = hashMap->get2("empty");
             EXPECT_EQ(node, nullptr);
-
         }
 
         free(hashMap);
