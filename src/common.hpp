@@ -130,9 +130,9 @@ struct CharBuffer {
         }
         currentBufferList->itemCount++;
         NodeType *node = currentBufferList->list + spaceNodeIndex;
-        node[charLen + sizeOfBuffer - 1] = '\0';
+        node[sizeOfBuffer + charLen - 1] = '\0';
 
-        auto **address  = (CharBuffer<NodeType> **)(node);
+        auto **address  = (CharBuffer<NodeType> **)node;
         *address = currentBufferList;
 
         spaceNodeIndex += length;

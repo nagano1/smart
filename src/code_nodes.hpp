@@ -375,7 +375,7 @@ namespace smart {
     };
 
 
-#define VTABLE_DEF(T) \
+    #define VTABLE_DEF(T) \
         int (*selfTextLength)(T *self); \
         const utf8byte *(*selfText)(T *self); \
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
@@ -507,8 +507,7 @@ namespace smart {
             this->nextLine = nullptr;
             this->prev = nullptr;
 
-            //            context->actionCreator(Cast::upcast(doc), 1);
-
+            // context->actionCreator(Cast::upcast(doc), 1);
         }
 
         CodeLine *appendNode(void *node) {
