@@ -104,7 +104,7 @@ namespace smart {
         charBuffer.init();
         this->entries = (HashNode**)malloc(sizeof(HashNode*)*(HashNode_TABLE_SIZE));
 
-        memset(this->entries, 0, sizeof(this->entries));
+        //memset(this->entries, 0, sizeof(this->entries));
         for (int i = 0; i < HashNode_TABLE_SIZE; i++) {
             this->entries[i] = nullptr;
         }
