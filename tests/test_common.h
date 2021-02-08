@@ -120,6 +120,12 @@ constexpr bool speed_test = false;
 constexpr bool speed_test = true;
 #endif
 
+#ifdef CMAKE_TEST
+constexpr bool managed_cmake_test = true;
+#else
+constexpr bool managed_cmake_test = false;
+#endif
+
 #ifdef __ANDROID__
 
 constexpr bool ARM = true;

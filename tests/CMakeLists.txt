@@ -16,6 +16,9 @@ if(DEFINED DOOR32)
     set_target_properties(${BINARY} PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
 endif()
 
+
+add_definitions("-DCMAKE_TEST=1")
+
 if(NO_SPEED_TEST EQUAL 1)
     add_definitions("-DNO_SPEED_TEST=1")
 else()

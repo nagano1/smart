@@ -1085,6 +1085,12 @@ TEST(concept, add_consume_test) {
 
 
     std::cout << one_op_nanosec << ": nanosec-----------------------------";
+
+    if (managed_cmake_test == false) {
+        EXPECT_EQ(32, 0);
+
+    }
+
 }
 
 ENDTEST
