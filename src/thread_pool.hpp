@@ -94,8 +94,8 @@ public:
 };
 
 
-constexpr int thread_queue_size = 6;
-constexpr int threads_size = 6;
+constexpr int thread_queue_size = 4;
+constexpr int threads_size = 4;
 
 class ThreadPool;
 
