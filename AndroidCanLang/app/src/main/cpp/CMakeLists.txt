@@ -26,7 +26,7 @@ set( tests_src_dir ../../../../../tests/google_tests )
 
 include_directories(${lib_src_dir})
 
-
+add_definitions("-DCMAKE_TEST=1")
 
 file(GLOB code_nodes_files "${lib_src_dir}/codenodes/*.cpp")
 

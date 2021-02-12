@@ -428,6 +428,10 @@ TEST(cplusplus_test, ThreadQueue) {
     //std::cout << "\nconflict2 = " << conflict2 << "\n";
 
     //_getchar_nolock();
+
+    if (managed_cmake_test == false) {
+        EXPECT_EQ("", "Fail to see log");
+    }
 }
 
 ENDTEST
@@ -879,19 +883,33 @@ TEST(concept, add_consume_test) {
 
                 constexpr int k = 3;
                 item->value0 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value1 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value2 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value3 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value4 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value5 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value6 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value7 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value8 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value9 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value10 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value11 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value12 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value13 = k + 8;
+                std::atomic_thread_fence(std::memory_order_release);
                 item->value14 = k + 8;
 
                 std::atomic_thread_fence(std::memory_order_release);
@@ -1087,10 +1105,8 @@ TEST(concept, add_consume_test) {
     std::cout << one_op_nanosec << ": nanosec-----------------------------";
 
     if (managed_cmake_test == false) {
-        EXPECT_EQ(32, 0);
-
+        EXPECT_EQ("", "Fail to see log");
     }
-
 }
 
 ENDTEST
