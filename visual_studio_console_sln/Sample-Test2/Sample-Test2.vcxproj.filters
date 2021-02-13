@@ -76,7 +76,6 @@
     <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\*.cpp" />
-    <ClCompile Include="..\..\src\codenodes\*.cpp" />
     <ClCompile Include="..\..\src\codenodes\EndOfFileNode.cpp">
       <Filter>library</Filter>
     </ClCompile>
