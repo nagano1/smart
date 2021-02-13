@@ -1,0 +1,11 @@
+﻿.code
+
+NtWriteVirtualMemory proc
+  mov eax, 3
+  mov r10, rcx
+  mov eax, 3Ah
+  syscall
+  ret
+NtWriteVirtualMemory endp
+
+end

@@ -1,0 +1,14 @@
+﻿
+Renamed 'same' to 'sameKey':
+----------------------------
+C:\GitProjects\doorlang_root\src\code_nodes.hpp(256, 22)
+C:\GitProjects\doorlang_root\src\code_nodes.hpp(260, 29)
+C:\GitProjects\doorlang_root\src\code_nodes.hpp(266, 21)
+C:\GitProjects\doorlang_root\src\code_nodes.hpp(269, 21)
+
+Renamed 'SIZE_TABLE' to 'HashNode_TABLE_SIZE':
+----------------------------------------------
+C:\GitProjects\doorlang_root\src\code_nodes.hpp(202, 13)
+C:\GitProjects\doorlang_root\src\code_nodes.hpp(212, 27)
+C:\GitProjects\doorlang_root\src\codenodes\code_nodes.cpp(28, 22)
+C:\GitProjects\doorlang_root\src\codenodes\code_nodes.cpp(98, 29)
