@@ -37,7 +37,7 @@ cmake --build . --config Release
 tests\Release\main_tst.exe
 
 ## for Visual Studio 2019
-the sln file is configured for VS2017. Required to install below components to build with VS2019. 
+the sln file is configured for VS2017 currently. Required to install below components to build with VS2019. 
 - MSVC v141 - VS 2017 C++ x64/x86 build tools
 - Windows 10 SDK (10.0.17134.0)
 
