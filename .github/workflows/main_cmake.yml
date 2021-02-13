@@ -33,7 +33,7 @@ jobs:
               bin: './src/main_run',
               testbin: './tests/main_tst',
               lspbin: './lsp_vscode_server/main_lsp',
-              prescript: 'export CXX=clang++',
+              prescript: 'cat /proc/cpuinfo; export CXX=clang++',
               cmakeConfig: ' -D NODOOR32=1 ',
               cmakeBuildConfig: '',
               cp: 'cp',
