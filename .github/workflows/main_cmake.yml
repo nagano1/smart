@@ -75,12 +75,13 @@ jobs:
           ${{ matrix.config.lspbin }}
 
       - name: Copy artifact
+        shell: bash
         run: |
           cd build;
           mkdir -p deb/${{ matrix.config.os }};
-          ${{ matrix.config.cp }} ${{ matrix.config.bin }} deb/${{ matrix.config.os }}
-          ${{ matrix.config.cp }} ${{ matrix.config.testbin }} deb/${{ matrix.config.os }}
-          ${{ matrix.config.cp }} ${{ matrix.config.lspbin }} deb/${{ matrix.config.os }}
+          cp ${{ matrix.config.bin }} deb/${{ matrix.config.os }}
+          cp ${{ matrix.config.testbin }} deb/${{ matrix.config.os }}
+          cp ${{ matrix.config.lspbin }} deb/${{ matrix.config.os }}
        
 
       - uses: actions/upload-artifact@v2
