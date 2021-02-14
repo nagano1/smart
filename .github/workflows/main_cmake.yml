@@ -4,8 +4,6 @@ on: [push]
 
 jobs:
   mybuild:
-    #runs-on: ubuntu-latest
-    #runs-on: macos-latest
     name: ${{ matrix.config.os }}
     runs-on: ${{ matrix.config.os }}
     strategy:
