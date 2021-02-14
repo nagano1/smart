@@ -14,7 +14,7 @@ jobs:
               bin: 'src/Release/main_run.exe',
               testbin: 'tests/Release/main_tst.exe',
               lspbin: 'lsp_vscode_server/Release/main_lsp.exe',
-              cmakeConfig: '', #'-A Win32 -T v142,host=x64',
+              cmakeConfig: '-A Win32 -T v142,host=x64',
               cmakeBuildConfig: '--config Release',
               runPuppeteer: '',
               prescript: 'chcp 65001',
