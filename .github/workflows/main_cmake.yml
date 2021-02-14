@@ -75,7 +75,6 @@ jobs:
           ${{ matrix.config.lspbin }}
 
       - name: Copy artifact
-        shell: bash
         run: |
           cd build;
           mkdir -p deb/${{ matrix.config.os }};
