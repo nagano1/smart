@@ -11,8 +11,6 @@ jobs:
         config:
           - {
               os: windows-latest,
-              windows: true,
-              unix: false,
               bin: 'src/Release/main_run.exe',
               testbin: 'tests/Release/main_tst.exe',
               lspbin: 'lsp_vscode_server/Release/main_lsp.exe',
@@ -24,9 +22,6 @@ jobs:
               sudo: '  ',
             }
           - {
-              ubuntu: true,
-              unix: true,
-              windows: false,
               os: ubuntu-latest,
               bin: './src/main_run',
               testbin: './tests/main_tst',
@@ -39,9 +34,6 @@ jobs:
             }
 
           - {
-              mac: true,
-              unix: true,
-              windows: false,
               os: macos-latest,
               bin: "./src/main_run",
               runPuppeteer: '',
