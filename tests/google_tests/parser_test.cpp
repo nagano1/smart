@@ -36,6 +36,36 @@ TEST(parser_test, JsonParseTest) {
         EXPECT_EQ(std::string{ document->context->syntaxErrorInfo.reason }, std::string{ "no end quote" });
     }
 
+
+    {
+        char *text = const_cast<char *>(u8R"(
+{
+    "awfe": {
+"jsonrpc":"2.0"
+    }
+}
+)");
+
+        char *autoIndentedText = const_cast<char *>(u8R"(
+{
+    "jsonrpc":"2.0",
+}
+)");
+        auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
+        DocumentUtils::parseText(document, text, strlen(text));
+        DocumentUtils::formatIndent(document);
+
+
+        char *treeText = DocumentUtils::getTextFromTree(document);
+        //DocumentUtils::generateHashTables(document);
+        std::cout << std::string{ treeText };
+        EXPECT_EQ(std::string{ treeText }, std::string{ autoIndentedText });
+    }
+
+
+
+
+
     /*
     {
         char *text = const_cast<char *>(u8R"({"jsonrpc":"2.0", "method" : "textDocument/didOpen", "params" : {"textDocument":{"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt", "languageId" : "plaintext", "version" : 1, "text" : "AAA\r\n\r\n\r\n\r\nBBB\r\nCCC\r\nAAA\r\nBBB"}}})");
@@ -44,10 +74,12 @@ TEST(parser_test, JsonParseTest) {
     */
 
 
+    // follow indent rule
     {
-        text = const_cast<char *>(u8R"({
+        text = const_cast<char *>(u8R"(
+{
         "aowowo" :    21249,
-        "jio fw" : null,
+"jio fw" : null,
             "text" : "日本語"
             , "ijofw": [2134
                   	    ,

@@ -37,3 +37,47 @@ auto clangPath = when {
     };
 
 func(24, lmd (x,k) -> {return x*k;})
+
+
+func()
+=let result
+=var test
+
+
+abfewf(abc, {
+    a:1234
+})
+
+abfewf(abc, 
+    {
+        a: mine(
+            3241,
+            52423
+        )
+})
+
+abfewf(
+    abc, 
+    {
+        a: 1234
+        b: true
+        c: false
+    }
+)
+
+abfewf(
+    abc, 
+    {
+        nameoijfaoea: [
+            "foiwjofw"
+            "fijawojeowia"
+        ]
+    }
+)
+
+abfewf(abc, { nameoijfaoea: [
+    "foiwjofw"
+    "fiejawojeowia"
+    true
+    false
+]})

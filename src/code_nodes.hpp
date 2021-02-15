@@ -29,6 +29,7 @@ namespace smart {
         _NodeBase *parentNode; \
         _NodeBase *nextNode; \
         _NodeBase *nextNodeInLine; \
+        int indentType; \
         struct _SimpleTextNodeStruct *prevSpaceNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
         ParseContext *context; \
@@ -494,7 +495,6 @@ namespace smart {
 
 
     struct CodeLine {
-
         CodeLine *nextLine;
         CodeLine *prev;
         NodeBase *firstNode;
@@ -549,6 +549,9 @@ namespace smart {
     struct DocumentUtils {
         static void parseText(DocumentStruct *docStruct, const utf8byte *text, size_t length);
         static JsonObjectStruct* generateHashTables(DocumentStruct *doc);
+
+        static void  assignIndents(DocumentStruct *docStruct);
+        static void  formatIndent(DocumentStruct *docStruct);
 
         static utf8byte *getTextFromTree(DocumentStruct *docStruct);
         static utf8byte *getTypeTextFromTree(DocumentStruct *docStruct);

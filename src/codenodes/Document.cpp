@@ -39,10 +39,9 @@ namespace smart {
     };
 
 
-
     static constexpr const char DocumentTypeText[] = "<Document>";
 
-    static const node_vtable _Document = CREATE_VTABLE(DocumentStruct,selfTextLength, selfText,
+    static const node_vtable _Document = CREATE_VTABLE(DocumentStruct, selfTextLength, selfText,
                                                        appendToLine, DocumentTypeText);
 
     const node_vtable *VTables::DocumentVTable = &_Document;
@@ -185,7 +184,7 @@ namespace smart {
         }
 
         // malloc and copy text
-        auto *text = (char *)malloc(sizeof(char) * totalCount + 1);
+        auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
         text[totalCount] = '\0';
         {
             auto *line = docStruct->firstCodeLine;
@@ -219,8 +218,6 @@ namespace smart {
                     }
 
 
-
-
                     node = node->nextNodeInLine;
                 }
 
@@ -231,27 +228,28 @@ namespace smart {
         return text;
     }
 
-    JsonObjectStruct* DocumentUtils::generateHashTables(DocumentStruct *doc) {
+    JsonObjectStruct *DocumentUtils::generateHashTables(DocumentStruct *doc) {
 
-        JsonObjectStruct* retJson = nullptr;
+        JsonObjectStruct *retJson = nullptr;
         auto *line = doc->firstCodeLine;
         while (line) {
             auto *node = line->firstNode;
             while (node) {
                 if (node->vtable == VTables::JsonObjectVTable) {
-                    auto *jsonObject = Cast::downcast<JsonObjectStruct*>(node);
+                    auto *jsonObject = Cast::downcast<JsonObjectStruct *>(node);
                     retJson = jsonObject;
 
                     auto *keyItem = jsonObject->firstKeyValueItem;
                     while (keyItem) {
                         auto *keyNode = keyItem->keyNode;
-                        jsonObject->hashMap->put(keyNode->text+keyNode->namePos, keyNode->nameLength, 
-                            keyItem->valueNode);
+                        jsonObject->hashMap->put(keyNode->text + keyNode->namePos,
+                                                 keyNode->nameLength,
+                                                 keyItem->valueNode);
 
-                        keyItem = Cast::downcast<JsonKeyValueItemStruct *>( keyItem->nextNode);
+                        keyItem = Cast::downcast<JsonKeyValueItemStruct *>(keyItem->nextNode);
                     }
                 }
-                   
+
                 node = node->nextNodeInLine;
             }
 
@@ -261,6 +259,33 @@ namespace smart {
         return retJson;
     }
 
+
+
+    void DocumentUtils::formatIndent(DocumentStruct *doc) {
+        auto *line = doc->firstCodeLine;
+        while (line) {
+            auto *node = line->firstNode;
+            if (node->vtable == VTables::SpaceVTable) {
+                auto *space = Cast::downcast<SpaceNodeStruct *>(node);
+                line->indent = space->textLength;
+            }
+            line = line->nextLine;
+        }
+    }
+
+
+
+    void DocumentUtils::assignIndents(DocumentStruct *docStruct) {
+        auto *line = docStruct->firstCodeLine;
+        while (line) {
+            auto *node = line->firstNode;
+            if (node->vtable == VTables::SpaceVTable) {
+                auto *space = Cast::downcast<SpaceNodeStruct *>(node);
+                line->indent = space->textLength;
+            }
+            line = line->nextLine;
+        }
+    }
 
 
     utf8byte *DocumentUtils::getTextFromTree(DocumentStruct *docStruct) {
@@ -291,7 +316,8 @@ namespace smart {
         auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
         text[totalCount] = '\0';
         {
-            auto *line = docStruct->firstCodeLine;
+            smart:
+            CodeLine *line = docStruct->firstCodeLine;
             size_t currentOffset = 0;
             while (line) {
                 auto *node = line->firstNode;
@@ -410,6 +436,8 @@ namespace smart {
         docStruct->firstCodeLine->init(context);
 
         VTableCall::appendToLine(docStruct, docStruct->firstCodeLine);
+
+        DocumentUtils::assignIndents(docStruct);
 
         callAllLineEvent(docStruct, docStruct->firstCodeLine, context);
 
