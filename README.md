@@ -52,8 +52,8 @@ abfewf(abc, {
     c: 3241
 })
 
-abfewf(abc,{
-    
+abfewf(abc,
+    {
         a: mine(
             3241
             52423
