@@ -333,7 +333,6 @@ namespace smart {
         auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
         text[totalCount] = '\0';
         {
-            smart:
             CodeLine *line = docStruct->firstCodeLine;
             size_t currentOffset = 0;
             while (line) {
