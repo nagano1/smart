@@ -228,47 +228,6 @@ namespace smart {
         return text;
     }
 
-    /**
-     *
-     */
-    static void performFormatSelectionOperation(
-            DocumentStruct *doc, NodeBase *startNode, NodeBase *endNode
-    ) {
-        auto *line = doc->firstCodeLine;
-        while (line) {
-            auto *node = line->firstNode;
-            if (node->vtable == VTables::SpaceVTable) {
-                auto *space = Cast::downcast<SpaceNodeStruct *>(node);
-                line->indent = space->textLength;
-            }
-            line = line->nextLine;
-        }
-    }
-
-
-    OperationResult *DocumentUtils::performCodingOperation(
-            Operations op,
-            DocumentStruct *doc,
-            NodeBase *startNode, NodeBase *endNode
-    ) {
-
-        if (startNode == nullptr) {
-            return nullptr;
-        }
-
-        switch (op) {
-            case Operations::IndentSelection: {
-                performFormatSelectionOperation(doc, startNode, endNode);
-                break;
-            }
-
-            default:
-                break;
-        }
-
-
-        return nullptr;
-    }
 
 
     JsonObjectStruct *DocumentUtils::generateHashTables(DocumentStruct *doc) {
@@ -302,30 +261,6 @@ namespace smart {
         return retJson;
     }
 
-
-    void DocumentUtils::formatIndent(DocumentStruct *doc) {
-
-        DocumentUtils::performCodingOperation(
-                Operations::IndentSelection,
-                doc,
-                doc->firstRootNode,
-                Cast::upcast(&doc->endOfFile)
-        );
-
-        /*
-
-        auto *line = doc->firstCodeLine;
-        while (line) {
-            auto *node = line->firstNode;
-            if (node->vtable == VTables::SpaceVTable) {
-                auto *space = Cast::downcast<SpaceNodeStruct *>(node);
-                line->indent = space->textLength;
-            }
-            line = line->nextLine;
-        }
-
-        */
-    }
 
 
     void DocumentUtils::assignIndents(DocumentStruct *doc) {

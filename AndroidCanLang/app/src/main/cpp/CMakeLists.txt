@@ -31,6 +31,7 @@ add_definitions("-DCMAKE_TEST=1")
 file(GLOB code_nodes_files "${lib_src_dir}/codenodes/*.cpp")
 
 
+
 add_library( # Sets the name of the library.
         native-lib
 
@@ -40,7 +41,6 @@ add_library( # Sets the name of the library.
 
         # Provides a relative path to your source file(s).
         ./native-lib.cpp
-
 
         ${lib_src_dir}/thread_pool.cpp
 

@@ -543,7 +543,10 @@ namespace smart {
         CreateLine,
     };
 
-    enum Operations {
+    /**
+     * Defines Managed Coding Operations
+     */
+    enum CodingOperations {
         IndentSelection,
         breakLine ,
         deletion ,
@@ -560,7 +563,7 @@ namespace smart {
 
 
         static OperationResult *performCodingOperation(
-            Operations op,DocumentStruct *doc,NodeBase *startNode,NodeBase *endNode
+                CodingOperations op, DocumentStruct *doc, NodeBase *startNode, NodeBase *endNode
         );
 
         static void assignIndents(DocumentStruct *doc);

@@ -166,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\codenodes\ClassNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\code_nodes.cpp" />
+    <ClCompile Include="..\..\src\codenodes\coding_operations.cpp" />
     <ClCompile Include="..\..\src\codenodes\Document.cpp" />
     <ClCompile Include="..\..\src\codenodes\EndOfFileNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\FuncNode.cpp" />

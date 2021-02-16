@@ -71,7 +71,6 @@ TEST(parser_test, JsonParseTest) {
 
     /*
      *   Document::PerformOperation
-     */
     {
         char *text = const_cast<char *>(u8R"(
 {
@@ -93,7 +92,7 @@ TEST(parser_test, JsonParseTest) {
         auto *item = rootJson->firstKeyValueItem->keyNode;
         if (item) {
             EXPECT_EQ(item->vtable, VTables::JsonObjectKeyVTable);
-            DocumentUtils::performCodingOperation(Operations::IndentSelection, document,
+            DocumentUtils::performCodingOperation(CodingOperations::IndentSelection, document,
                                                   Cast::upcast(item), nullptr);
         }
 
@@ -101,6 +100,7 @@ TEST(parser_test, JsonParseTest) {
         EXPECT_EQ(std::string{ treeText }, std::string{ autoIndentedText });
     }
 
+     */
 
 
 
