@@ -14,7 +14,7 @@
 
 namespace smart {
 
-    
+
     /**
      *
      */
@@ -33,8 +33,6 @@ namespace smart {
     }
 
 
-
-
     OperationResult *DocumentUtils::performCodingOperation(
             CodingOperations op,
             DocumentStruct *doc,
@@ -46,15 +44,17 @@ namespace smart {
         }
 
         when(op) {
-            wfor(CodingOperations::IndentSelection, performFormatSelectionOperation(doc, startNode, endNode));
-            wfor(CodingOperations::deletion, performFormatSelectionOperation(doc, startNode, endNode));
-            wfor(CodingOperations::breakLine, performFormatSelectionOperation(doc, startNode, endNode));
+            wfor(CodingOperations::IndentSelection,
+                 performFormatSelectionOperation(doc, startNode, endNode));
+            wfor(CodingOperations::Deletion,
+                 performFormatSelectionOperation(doc, startNode, endNode));
+            wfor(CodingOperations::BreakLine,
+                 performFormatSelectionOperation(doc, startNode, endNode));
         }
 
         return nullptr;
     }
 
-     
 
     void DocumentUtils::formatIndent(DocumentStruct *doc) {
 
@@ -78,5 +78,5 @@ namespace smart {
         }
         */
     }
-     
+
 }

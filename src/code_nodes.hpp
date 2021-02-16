@@ -548,8 +548,8 @@ namespace smart {
      */
     enum CodingOperations {
         IndentSelection,
-        breakLine ,
-        deletion ,
+        BreakLine ,
+        Deletion ,
     };
 
     struct OperationResult {
