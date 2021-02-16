@@ -33,10 +33,9 @@ namespace smart {
         struct _SimpleTextNodeStruct *prevSpaceNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
         ParseContext *context; \
-        char prev_char 
+        char prev_char
 
 
-    
     #define INIT_NODE(node, context, parent, argvtable) \
         (node)->vtable = (argvtable); \
         (node)->prev_char = '\0'; \
@@ -85,7 +84,7 @@ namespace smart {
         size_t nameLength;
     };
 
-    
+
 
     using StringLiteralNodeStruct = struct {
         NODE_HEADER;
@@ -202,11 +201,11 @@ namespace smart {
         HashNode *next;
         char *key;
         int keyLength;
-        NodeBase* nodeBase;
+        NodeBase *nodeBase;
     };
 
     struct HashMap {
-        HashNode** entries;// [HashNode_TABLE_SIZE] = {};
+        HashNode **entries;// [HashNode_TABLE_SIZE] = {};
         size_t entries_length;
         CharBuffer<char> charBuffer;
 
@@ -214,24 +213,24 @@ namespace smart {
 
         template<std::size_t SIZE>
         static int calc_hash2(const char(&f4)[SIZE], size_t max) {
-            return HashMap::calc_hash((char*)f4, SIZE-1, max);
+            return HashMap::calc_hash((char *) f4, SIZE - 1, max);
         }
         int calc_hash0(char *key, int keyLength) {
             return HashMap::calc_hash(key, keyLength, this->entries_length);
         }
         static int calc_hash(char *key, int keyLength, size_t max);
-        void put(char * keyA, int keyLength, NodeBase* val);
-        NodeBase* get(char * key, int keyLength);
-        bool has(char * key, int keyLength);
-        void deleteKey(char * key, int keyLength);
+        void put(char *keyA, int keyLength, NodeBase *val);
+        NodeBase *get(char *key, int keyLength);
+        bool has(char *key, int keyLength);
+        void deleteKey(char *key, int keyLength);
 
         template<std::size_t SIZE>
-        NodeBase* get2(const char(&f4)[SIZE]) {
-            return this->get((char*)f4, SIZE-1);
+        NodeBase *get2(const char(&f4)[SIZE]) {
+            return this->get((char *) f4, SIZE - 1);
         }
         template<std::size_t SIZE>
-        void put2(const char(&f4)[SIZE], NodeBase* val) {
-            return this->put((char*)f4, SIZE-1, val);
+        void put2(const char(&f4)[SIZE], NodeBase *val) {
+            return this->put((char *) f4, SIZE - 1, val);
         }
     };
 
@@ -285,7 +284,7 @@ namespace smart {
         char *fileName;
         EndOfFileNodeStruct endOfFile;
 
-        int nodeCount{ 0 };
+        int nodeCount{0};
 
         CodeLine *firstCodeLine;
         int lineCount;
@@ -299,7 +298,7 @@ namespace smart {
      * Syntax error is allowed only once
      */
     using SyntaxErrorInfo = struct _errorInfo {
-        bool hasError{ false };
+        bool hasError{false};
 
         int errorCode = 100;
         char *reason;
@@ -321,9 +320,9 @@ namespace smart {
         int former_start;
         utf8byte *chars;
         SyntaxErrorInfo syntaxErrorInfo;
-        bool has_cancel_request{ false };
+        bool has_cancel_request{false};
 
-        void(*actionCreator)(void *node1, void *node2, int actionRequest);
+        void (*actionCreator)(void *node1, void *node2, int actionRequest);
 
 
         LineBreakNodeStruct *remainedLineBreakNode;
@@ -366,12 +365,12 @@ namespace smart {
     struct Cast {
         template<typename T>
         static inline T downcast(NodeBase *node) {
-            return (T)node;
+            return (T) node;
         }
 
         template<typename T>
         static inline NodeBase *upcast(T *node) {
-            return (NodeBase *)node;
+            return (NodeBase *) node;
         }
     };
 
@@ -404,10 +403,10 @@ namespace smart {
 
     template<typename T, std::size_t SIZE>
     static int vtable_type_check(
-        decltype(std::declval<vtableT<T>>().selfTextLength) f1,
-        decltype(std::declval<vtableT<T>>().selfText) f2,
-        decltype(std::declval<vtableT<T>>().appendToLine) f3,
-        const char(&f4)[SIZE]
+            decltype(std::declval<vtableT<T>>().selfTextLength) f1,
+            decltype(std::declval<vtableT<T>>().selfText) f2,
+            decltype(std::declval<vtableT<T>>().appendToLine) f3,
+            const char(&f4)[SIZE]
     ) {
         return 0;
     }
@@ -425,28 +424,28 @@ namespace smart {
 
     struct VTables {
         static const node_vtable
-            *DocumentVTable,
+                *DocumentVTable,
 
-            *ClassVTable,
-            *ClassBodyVTable,
+                *ClassVTable,
+                *ClassBodyVTable,
 
-            *NameVTable,
-            *StringLiteralVTable,
-            *NumberVTable,
-            *BoolVTable,
-            *SymbolVTable,
-            *SimpleTextVTable,
-            *NullVTable,
-            *SpaceVTable,
-            *LineBreakVTable,
+                *NameVTable,
+                *StringLiteralVTable,
+                *NumberVTable,
+                *BoolVTable,
+                *SymbolVTable,
+                *SimpleTextVTable,
+                *NullVTable,
+                *SpaceVTable,
+                *LineBreakVTable,
 
-            *JsonObjectVTable,
-            *JsonArrayVTable,
-            *JsonKeyValueItemVTable,
-            *JsonArrayItemVTable,
-            *JsonObjectKeyVTable,
+                *JsonObjectVTable,
+                *JsonArrayVTable,
+                *JsonKeyValueItemVTable,
+                *JsonArrayItemVTable,
+                *JsonObjectKeyVTable,
 
-            *EndOfFileVTable;
+                *EndOfFileVTable;
     };
 
 
@@ -464,8 +463,7 @@ namespace smart {
         static inline const utf8byte *selfText(void *node) {
             if (node == nullptr) {
                 return "";
-            }
-            else {
+            } else {
                 auto *nodeBase = Cast::upcast(node);
                 return nodeBase->vtable->selfText(nodeBase);
             };
@@ -481,8 +479,7 @@ namespace smart {
         static inline const utf8byte *typeText(void *node) {
             if (node == nullptr) {
                 return "";
-            }
-            else {
+            } else {
                 auto *nodeBase = Cast::upcast(node);
                 return nodeBase->vtable->typeChars;
             };
@@ -512,24 +509,24 @@ namespace smart {
 
         CodeLine *appendNode(void *node) {
             if (firstNode == nullptr) {
-                firstNode = (NodeBase *)node;
+                firstNode = (NodeBase *) node;
             }
 
             if (lastNode != nullptr) {
-                lastNode->nextNodeInLine = (NodeBase *)node;
+                lastNode->nextNodeInLine = (NodeBase *) node;
             }
 
-            lastNode = (NodeBase *)node;
+            lastNode = (NodeBase *) node;
 
             return this;
         }
 
         CodeLine *addPrevLineBreakNode(void *node) {
             CodeLine *currentCodeLine = this;
-            currentCodeLine = VTableCall::appendToLine(((NodeBase *)node)->prevLineBreakNode,
-                currentCodeLine);
-            currentCodeLine = VTableCall::appendToLine(((NodeBase *)node)->prevSpaceNode,
-                currentCodeLine);
+            currentCodeLine = VTableCall::appendToLine(((NodeBase *) node)->prevLineBreakNode,
+                                                       currentCodeLine);
+            currentCodeLine = VTableCall::appendToLine(((NodeBase *) node)->prevSpaceNode,
+                                                       currentCodeLine);
             return currentCodeLine;
         }
 
@@ -546,12 +543,23 @@ namespace smart {
         CreateLine,
     };
 
+    enum OperationType {
+        breakLine ,
+        deletion ,
+    };
+
+
     struct DocumentUtils {
         static void parseText(DocumentStruct *docStruct, const utf8byte *text, size_t length);
-        static JsonObjectStruct* generateHashTables(DocumentStruct *doc);
+        static JsonObjectStruct *generateHashTables(DocumentStruct *doc);
 
-        static void  assignIndents(DocumentStruct *docStruct);
-        static void  formatIndent(DocumentStruct *docStruct);
+
+        static void performOperation(DocumentStruct *docStruct,
+                                     NodeBase *startNode, NodeBase *endNode, OperationType op);
+
+
+        static void assignIndents(DocumentStruct *docStruct);
+        static void formatIndent(DocumentStruct *docStruct);
 
         static utf8byte *getTextFromTree(DocumentStruct *docStruct);
         static utf8byte *getTypeTextFromTree(DocumentStruct *docStruct);
@@ -562,9 +570,11 @@ namespace smart {
 
     struct Init {
         static void initNameNode(NameNodeStruct *name, ParseContext *context, NodeBase *parentNode);
-        static void initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context, NodeBase *parentNode);
+        static void initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context,
+                                          NodeBase *parentNode);
 
-        static void initSymbolNode(SymbolStruct *self, ParseContext *context, void *parent, utf8byte letter);
+        static void
+        initSymbolNode(SymbolStruct *self, ParseContext *context, void *parent, utf8byte letter);
     };
 
     struct Alloc {
@@ -582,8 +592,10 @@ namespace smart {
         static void deleteFuncNode(NodeBase *node);
 
         static JsonObjectStruct *newJsonObject(ParseContext *context, NodeBase *parentNode);
-        static JsonObjectKeyNodeStruct *newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode);
-        static JsonKeyValueItemStruct *newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
+        static JsonObjectKeyNodeStruct *
+        newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode);
+        static JsonKeyValueItemStruct *
+        newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
         static JsonArrayStruct *newJsonArray(ParseContext *context, NodeBase *parentNode);
         static JsonArrayItemStruct *newJsonArrayItem(ParseContext *context, NodeBase *parentNode);
         static void deleteJsonObject(NodeBase *node);
@@ -591,8 +603,8 @@ namespace smart {
 
 
         static DocumentStruct *newDocument(
-            DocumentType docType,
-            void(*actionCreator)(void *node1, void *node2, int actionRequest)
+                DocumentType docType,
+                void(*actionCreator)(void *node1, void *node2, int actionRequest)
         );
 
         static void deleteDocument(DocumentStruct *doc);
@@ -608,7 +620,7 @@ namespace smart {
 
     #define TokenizerParams_pass parent, ch, start, context
 
-    using TokenizerFunction = int(*)(TokenizerParams_parent_ch_start_context);
+    using TokenizerFunction = int (*)(TokenizerParams_parent_ch_start_context);
 
     struct Tokenizers {
         static int nameTokenizer(TokenizerParams_parent_ch_start_context);
@@ -627,13 +639,15 @@ namespace smart {
 
         // SimpleTextNodeStruct
         template<typename TYPE, std::size_t SIZE>
-        static inline int WordTokenizer(TokenizerParams_parent_ch_start_context, char capitalLetter, const TYPE(&word)[SIZE]) {
+        static inline int WordTokenizer(TokenizerParams_parent_ch_start_context, char capitalLetter,
+                                        const TYPE(&word)[SIZE]) {
             if (capitalLetter == ch) {
                 size_t length = sizeof(word) - 1;
                 if (ParseUtil::matchWord(context->chars, context->length, word, length, start)) {
 
                     if (start + length == context->length // allowed to be the last char of the file
-                        || ParseUtil::isNonIdentifierChar(context->chars[start + length])) { // otherwise,
+                        || ParseUtil::isNonIdentifierChar(
+                            context->chars[start + length])) { // otherwise,
 
                         //context->scanEnd = true;
                         auto *boolNode = Alloc::newSpaceNode(context, parent);
@@ -655,34 +669,32 @@ namespace smart {
     };
 
 
-
     /**
      * Implements common scanning and parsing method
      */
     struct Scanner {
         static int scan_for_root(
-            void *parentNode,
-            TokenizerFunction tokenizer,
-            int start,
-            ParseContext *context,
-            bool root
+                void *parentNode,
+                TokenizerFunction tokenizer,
+                int start,
+                ParseContext *context,
+                bool root
         );
 
         static int scan(
-            void *parentNode,
-            TokenizerFunction tokenizer,
-            int start,
-            ParseContext *context
+                void *parentNode,
+                TokenizerFunction tokenizer,
+                int start,
+                ParseContext *context
         );
 
         static int scanErrorNodeUntilSpace(
-            void *parentNode,
-            int start,
-            ParseContext *context
+                void *parentNode,
+                int start,
+                ParseContext *context
         );
     };
 }
-
 
 
 /**
@@ -707,17 +719,17 @@ struct RequestMessage : Message {
     /**
      * The request id.
      */
-     //std::string id; // id: number | std::string;
+    //std::string id; // id: number | std::string;
 
-     /**
-      * The method to be invoked.
-      */
-      //std::string method; // method: string;
+    /**
+     * The method to be invoked.
+     */
+    //std::string method; // method: string;
 
-      /**
-       * The method's params.
-       */
-       //std::vector<std::string> params; //params?: array | object;
+    /**
+     * The method's params.
+     */
+    //std::vector<std::string> params; //params?: array | object;
 
 };
 

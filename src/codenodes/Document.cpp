@@ -228,6 +228,25 @@ namespace smart {
         return text;
     }
 
+
+
+    void DocumentUtils::performOperation(
+            DocumentStruct *docStruct,
+            NodeBase *startNode,
+            NodeBase *endNode,
+            OperationType op) {
+
+        if (startNode == nullptr) {
+            return;
+        }
+
+        if (startNode == endNode) {
+
+        }
+
+
+    }
+
     JsonObjectStruct *DocumentUtils::generateHashTables(DocumentStruct *doc) {
 
         JsonObjectStruct *retJson = nullptr;
@@ -260,7 +279,6 @@ namespace smart {
     }
 
 
-
     void DocumentUtils::formatIndent(DocumentStruct *doc) {
         auto *line = doc->firstCodeLine;
         while (line) {
@@ -272,7 +290,6 @@ namespace smart {
             line = line->nextLine;
         }
     }
-
 
 
     void DocumentUtils::assignIndents(DocumentStruct *docStruct) {

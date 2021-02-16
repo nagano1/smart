@@ -48,7 +48,8 @@ func()
 
 
 abfewf(abc, {
-    a:1234
+    a: 1234
+    c: 3241
 })
 
 abfewf(abc,
