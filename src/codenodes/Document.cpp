@@ -229,22 +229,21 @@ namespace smart {
     }
 
 
-
-    void DocumentUtils::performOperation(
+    OperationResult *DocumentUtils::performOperation(
             DocumentStruct *docStruct,
             NodeBase *startNode,
             NodeBase *endNode,
             OperationType op) {
 
         if (startNode == nullptr) {
-            return;
+            return nullptr;
         }
 
         if (startNode == endNode) {
 
         }
 
-
+        return nullptr;
     }
 
     JsonObjectStruct *DocumentUtils::generateHashTables(DocumentStruct *doc) {

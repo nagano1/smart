@@ -548,13 +548,17 @@ namespace smart {
         deletion ,
     };
 
+    struct OperationResult {
+
+    };
+
 
     struct DocumentUtils {
         static void parseText(DocumentStruct *docStruct, const utf8byte *text, size_t length);
         static JsonObjectStruct *generateHashTables(DocumentStruct *doc);
 
 
-        static void performOperation(DocumentStruct *docStruct,
+        static OperationResult *performOperation(DocumentStruct *docStruct,
                                      NodeBase *startNode, NodeBase *endNode, OperationType op);
 
 
