@@ -53,7 +53,7 @@ namespace smart {
     // --------------------- Implements Document functions ----------------------
     DocumentStruct *Alloc::newDocument(
             DocumentType docType,
-            void (*actionCreator)(void *node1, void *node2, int actionRequest)
+            void(*actionCreator)(void *node1, void *node2, int actionRequest)
     ) {
         auto *doc = simpleMalloc<DocumentStruct>();
         auto *context = simpleMalloc<ParseContext>();
@@ -70,8 +70,8 @@ namespace smart {
         context->actionCreator(Cast::upcast(doc), nullptr,
                                EventType::CreateDocument); // create document
 
-        //doc->lastLineBreakNode = nullptr;
-        //doc->lastSpaceNode = nullptr;
+//doc->lastLineBreakNode = nullptr;
+//doc->lastSpaceNode = nullptr;
 
         doc->firstCodeLine = nullptr;
         doc->nodeCount = 0;
@@ -84,17 +84,17 @@ namespace smart {
         return doc;
     }
 
-/*
-    static inline void deleteLineNodes(CodeLine *line) {
-        //assert(line != nullptr);
-        if (line) {
-            if (line->nextLine) {
-                deleteLineNodes(line->nextLine);
+    /*
+        static inline void deleteLineNodes(CodeLine *line) {
+            //assert(line != nullptr);
+            if (line) {
+                if (line->nextLine) {
+                    deleteLineNodes(line->nextLine);
+                }
+                free(line);
             }
-            free(line);
         }
-    }
- */
+     */
 
     void Alloc::deleteDocument(DocumentStruct *doc) {
         auto *node = doc->firstRootNode;
@@ -228,23 +228,48 @@ namespace smart {
         return text;
     }
 
+    /**
+     *
+     */
+    static void performFormatSelectionOperation(
+            DocumentStruct *doc, NodeBase *startNode, NodeBase *endNode
+    ) {
+        auto *line = doc->firstCodeLine;
+        while (line) {
+            auto *node = line->firstNode;
+            if (node->vtable == VTables::SpaceVTable) {
+                auto *space = Cast::downcast<SpaceNodeStruct *>(node);
+                line->indent = space->textLength;
+            }
+            line = line->nextLine;
+        }
+    }
 
-    OperationResult *DocumentUtils::performOperation(
-        DocumentStruct *doc,
-        NodeBase *startNode, NodeBase *endNode,
-        OperationType op
+
+    OperationResult *DocumentUtils::performCodingOperation(
+            Operations op,
+            DocumentStruct *doc,
+            NodeBase *startNode, NodeBase *endNode
     ) {
 
         if (startNode == nullptr) {
             return nullptr;
         }
 
-        if (startNode == endNode) {
+        switch (op) {
+            case Operations::IndentSelection: {
+                performFormatSelectionOperation(doc, startNode, endNode);
+                break;
+            }
 
+            default:
+                break;
         }
+
 
         return nullptr;
     }
+
 
     JsonObjectStruct *DocumentUtils::generateHashTables(DocumentStruct *doc) {
 
@@ -279,6 +304,16 @@ namespace smart {
 
 
     void DocumentUtils::formatIndent(DocumentStruct *doc) {
+
+        DocumentUtils::performCodingOperation(
+                Operations::IndentSelection,
+                doc,
+                doc->firstRootNode,
+                Cast::upcast(&doc->endOfFile)
+        );
+
+        /*
+
         auto *line = doc->firstCodeLine;
         while (line) {
             auto *node = line->firstNode;
@@ -288,6 +323,8 @@ namespace smart {
             }
             line = line->nextLine;
         }
+
+        */
     }
 
 

@@ -14,6 +14,13 @@
 using namespace smart;
 
 
+TEST(parser_test, PerformOperation) {
+
+
+
+}
+
+
 static void testJson(const char* codeText);
 TEST(parser_test, JsonParseTest) {
 
@@ -23,27 +30,52 @@ TEST(parser_test, JsonParseTest) {
 )");
     testJson(text);
 
-    
+
 
     {
         char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized
 )");
         auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
         DocumentUtils::parseText(document, text, strlen(text));
-        
+
+
         EXPECT_EQ(document->context->syntaxErrorInfo.hasError, true);
         EXPECT_EQ(document->context->syntaxErrorInfo.errorCode, 21390);
         EXPECT_EQ(std::string{ document->context->syntaxErrorInfo.reason }, std::string{ "no end quote" });
     }
 
 
+
+    {
+        char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized"})");
+        auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
+        DocumentUtils::parseText(document, text, strlen(text));
+        auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
+        EXPECT_NE(rootJson, nullptr);
+
+        DocumentUtils::generateHashTables(document);
+        auto *item = rootJson->hashMap->get2("method");
+
+        EXPECT_NE(item, nullptr);
+        EXPECT_EQ(item->vtable, VTables::StringLiteralVTable);
+
+        auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
+        EXPECT_EQ(std::string{ strNode->text }, std::string{ "\"initialized\"" });
+    }
+
+
+
+
+
+
+
     /*
+     *   Document::PerformOperation
+     */
     {
         char *text = const_cast<char *>(u8R"(
 {
-    "awfe": {
 "jsonrpc":"2.0"
-    }
 }
 )");
 
@@ -54,16 +86,21 @@ TEST(parser_test, JsonParseTest) {
 )");
         auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
         DocumentUtils::parseText(document, text, strlen(text));
-        DocumentUtils::formatIndent(document);
+        DocumentUtils::generateHashTables(document);
 
+        auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
+
+        auto *item = rootJson->firstKeyValueItem->keyNode;
+        if (item) {
+            EXPECT_EQ(item->vtable, VTables::JsonObjectKeyVTable);
+            DocumentUtils::performCodingOperation(Operations::IndentSelection, document,
+                                                  Cast::upcast(item), nullptr);
+        }
 
         char *treeText = DocumentUtils::getTextFromTree(document);
-        //DocumentUtils::generateHashTables(document);
-        std::cout << std::string{ treeText };
         EXPECT_EQ(std::string{ treeText }, std::string{ autoIndentedText });
     }
-    */
-    
+
 
 
 
@@ -255,7 +292,7 @@ int utf16_length(const char *utf8_chars, unsigned int byte_len) {
     int length = 0;
 
     while (pos < byte_len) {
-        auto idx = (unsigned char) utf8_chars[pos];
+        auto idx = (unsigned char)utf8_chars[pos];
         int bytes = utf8BytesTable[idx];
         pos += bytes;
         length += bytes > 3 ? 2 : 1;
@@ -665,7 +702,7 @@ TEST(parser_test, aaHashMap) {
     }
 
     {
-        auto hashKey = HashMap::calc_hash2( "N01", 10000);
+        auto hashKey = HashMap::calc_hash2("N01", 10000);
         auto hashKey2 = HashMap::calc_hash2("N01234C", 10000);
         EXPECT_NE(hashKey, hashKey2);
     }
@@ -681,7 +718,7 @@ TEST(parser_test, aaHashMap) {
 
         hashMap->put2("secondBB", Cast::upcast(simpleMalloc<DocumentStruct>()));
         hashMap->put2("jfiow", Cast::upcast(simpleMalloc<DocumentStruct>()));
-        hashMap->put("jfiow", sizeof("jfiow")-1, Cast::upcast(simpleMalloc<DocumentStruct>()));
+        hashMap->put("jfiow", sizeof("jfiow") - 1, Cast::upcast(simpleMalloc<DocumentStruct>()));
 
         auto *node = hashMap->get2("firstAA");
         EXPECT_EQ(node, first);
@@ -695,7 +732,7 @@ TEST(parser_test, aaHashMap) {
 
         free(hashMap);
     }
-    
+
 }
 
 ENDTEST
@@ -707,8 +744,8 @@ TEST(parser_test, charBuffer) {
 
     CharBuffer<char> charBuffer;
     charBuffer.init();
-    
-    
+
+
     auto *chars = charBuffer.newChars(255);
     EXPECT_EQ(charBuffer.firstBufferList, charBuffer.currentBufferList);
 
@@ -720,10 +757,10 @@ TEST(parser_test, charBuffer) {
 
             EXPECT_EQ('\0', *(chars + 254));
             EXPECT_EQ(charBuffer2.currentBufferList, *((CharBuffer<char> **)(chars - sizeof(CharBuffer<char> *))));
-            
+
             charBuffer2.tryDelete(chars);
         }
-        
+
         {
             int size = 355;
             auto *chars = charBuffer2.newChars(size);
@@ -775,7 +812,7 @@ class AABC  {  }
 
     const char *chars = text.c_str();
     auto *document = Alloc::newDocument(
-                           DocumentType::CodeDocument, nullptr);
+        DocumentType::CodeDocument, nullptr);
 
     DocumentUtils::parseText(document, chars, text.size());
 

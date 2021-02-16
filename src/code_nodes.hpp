@@ -543,7 +543,8 @@ namespace smart {
         CreateLine,
     };
 
-    enum OperationType {
+    enum Operations {
+        IndentSelection,
         breakLine ,
         deletion ,
     };
@@ -558,13 +559,9 @@ namespace smart {
         static JsonObjectStruct *generateHashTables(DocumentStruct *doc);
 
 
-        static OperationResult *performOperation(
-            DocumentStruct *doc,
-            NodeBase *startNode,
-            NodeBase *endNode, 
-            OperationType op
+        static OperationResult *performCodingOperation(
+            Operations op,DocumentStruct *doc,NodeBase *startNode,NodeBase *endNode
         );
-
 
         static void assignIndents(DocumentStruct *doc);
         static void formatIndent(DocumentStruct *doc);
