@@ -159,11 +159,11 @@ namespace smart {
         return text;
     }
 
-    utf8byte *DocumentUtils::getTypeTextFromTree(DocumentStruct *docStruct) {
+    utf8byte *DocumentUtils::getTypeTextFromTree(DocumentStruct *doc) {
         // get size of chars
         int totalCount = 0;
         {
-            auto *line = docStruct->firstCodeLine;
+            auto *line = doc->firstCodeLine;
             while (line) {
                 auto *node = line->firstNode;
                 while (node) {
@@ -187,7 +187,7 @@ namespace smart {
         auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
         text[totalCount] = '\0';
         {
-            auto *line = docStruct->firstCodeLine;
+            auto *line = doc->firstCodeLine;
             size_t currentOffset = 0;
             while (line) {
                 auto *node = line->firstNode;
@@ -230,10 +230,10 @@ namespace smart {
 
 
     OperationResult *DocumentUtils::performOperation(
-            DocumentStruct *docStruct,
-            NodeBase *startNode,
-            NodeBase *endNode,
-            OperationType op) {
+        DocumentStruct *doc,
+        NodeBase *startNode, NodeBase *endNode,
+        OperationType op
+    ) {
 
         if (startNode == nullptr) {
             return nullptr;
@@ -291,8 +291,8 @@ namespace smart {
     }
 
 
-    void DocumentUtils::assignIndents(DocumentStruct *docStruct) {
-        auto *line = docStruct->firstCodeLine;
+    void DocumentUtils::assignIndents(DocumentStruct *doc) {
+        auto *line = doc->firstCodeLine;
         while (line) {
             auto *node = line->firstNode;
             if (node->vtable == VTables::SpaceVTable) {
@@ -304,11 +304,11 @@ namespace smart {
     }
 
 
-    utf8byte *DocumentUtils::getTextFromTree(DocumentStruct *docStruct) {
+    utf8byte *DocumentUtils::getTextFromTree(DocumentStruct *doc) {
         // get size of chars
         int totalCount = 0;
         {
-            auto *line = docStruct->firstCodeLine;
+            auto *line = doc->firstCodeLine;
             while (line) {
                 auto *node = line->firstNode;
                 while (node) {
@@ -332,7 +332,7 @@ namespace smart {
         auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
         text[totalCount] = '\0';
         {
-            CodeLine *line = docStruct->firstCodeLine;
+            CodeLine *line = doc->firstCodeLine;
             size_t currentOffset = 0;
             while (line) {
                 auto *node = line->firstNode;

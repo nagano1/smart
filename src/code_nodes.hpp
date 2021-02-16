@@ -558,15 +558,19 @@ namespace smart {
         static JsonObjectStruct *generateHashTables(DocumentStruct *doc);
 
 
-        static OperationResult *performOperation(DocumentStruct *docStruct,
-                                     NodeBase *startNode, NodeBase *endNode, OperationType op);
+        static OperationResult *performOperation(
+            DocumentStruct *doc,
+            NodeBase *startNode,
+            NodeBase *endNode, 
+            OperationType op
+        );
 
 
-        static void assignIndents(DocumentStruct *docStruct);
-        static void formatIndent(DocumentStruct *docStruct);
+        static void assignIndents(DocumentStruct *doc);
+        static void formatIndent(DocumentStruct *doc);
 
-        static utf8byte *getTextFromTree(DocumentStruct *docStruct);
-        static utf8byte *getTypeTextFromTree(DocumentStruct *docStruct);
+        static utf8byte *getTextFromTree(DocumentStruct *doc);
+        static utf8byte *getTypeTextFromTree(DocumentStruct *doc);
         static utf8byte *getTextFromLine(CodeLine *line);
         static utf8byte *getTextFromNode(NodeBase *line);
     };

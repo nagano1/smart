@@ -37,7 +37,6 @@ TEST(parser_test, JsonParseTest) {
     }
 
 
-    /*
     {
         char *text = const_cast<char *>(u8R"(
 {
@@ -62,7 +61,7 @@ TEST(parser_test, JsonParseTest) {
         std::cout << std::string{ treeText };
         EXPECT_EQ(std::string{ treeText }, std::string{ autoIndentedText });
     }
-    */
+
 
 
 
