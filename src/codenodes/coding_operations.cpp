@@ -48,6 +48,7 @@ namespace smart {
         when(op) {
             wfor(CodingOperations::IndentSelection, performFormatSelectionOperation(doc, startNode, endNode));
             wfor(CodingOperations::deletion, performFormatSelectionOperation(doc, startNode, endNode));
+            wfor(CodingOperations::breakLine, performFormatSelectionOperation(doc, startNode, endNode));
         }
 
         return nullptr;
