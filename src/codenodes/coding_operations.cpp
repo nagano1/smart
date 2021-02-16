@@ -33,10 +33,7 @@ namespace smart {
     }
 
 
-#define when(op) switch(op) 
-#define wfor(val, handler) case val: {\
-    (handler); break; \
-    } \
+
 
     OperationResult *DocumentUtils::performCodingOperation(
             CodingOperations op,

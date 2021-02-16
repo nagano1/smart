@@ -34,6 +34,12 @@ constexpr static int BUFFER_SIZE = 64; //25
 #endif
 #define assert(expression)  \
 
+
+#define when(op) switch(op) 
+#define wfor(val, handler) case val: {\
+    (handler); break; \
+    }; break; \
+
 template<class T>
 static inline T *simpleMalloc() {
     return (T *) malloc(sizeof(T));
