@@ -93,8 +93,8 @@ namespace smart {
 
         classNode->startFound = false;
 
-        Init::initSymbolNode(&classNode->bodyStartNode, context, classNode, '{');
-        Init::initSymbolNode(&classNode->endBodyNode, context, classNode, '}');
+        Init::initSymbolNode(&classNode->bodyStartNode, context, parentNode, '{');
+        Init::initSymbolNode(&classNode->endBodyNode, context, parentNode, '}');
 
         return classNode;
     }

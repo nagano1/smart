@@ -520,6 +520,29 @@ namespace smart {
             // context->actionCreator(Cast::upcast(doc), 1);
         }
 
+        CodeLine *insertNode(NodeBase *node, NodeBase *prev) {
+            if (firstNode == nullptr) {
+                assert(prev == nullptr);
+                firstNode = node;
+                lastNode = node;
+            } else {
+                if (prev != nullptr) { // insert it after prev
+                    node->nextNodeInLine = prev->nextNodeInLine;
+                    prev->nextNodeInLine = node;
+                    if (prev == lastNode) {
+                        lastNode = (NodeBase *) node;
+                    }
+                } else { // insert into top
+                    (node)->nextNodeInLine = firstNode;
+                    firstNode = node;
+                }
+            }
+
+            ((NodeBase *)node)->line = this;
+
+            return this;
+        }
+
         CodeLine *appendNode(void *node) {
             if (firstNode == nullptr) {
                 firstNode = (NodeBase *) node;
@@ -572,14 +595,17 @@ namespace smart {
 
 
     struct DocumentUtils {
+
+        static OperationResult *performCodingOperation(
+                CodingOperations op, DocumentStruct *doc,
+                NodeBase *startNode, NodeBase *endNode
+        );
+
         static void parseText(DocumentStruct *docStruct, const utf8byte *text, size_t length);
         static JsonObjectStruct *generateHashTables(DocumentStruct *doc);
 
 
-        static OperationResult *performCodingOperation(
-                CodingOperations op, DocumentStruct *doc, NodeBase *startNode, NodeBase *endNode
-        );
-
+        
         static void assignIndents(DocumentStruct *doc);
         static void formatIndent(DocumentStruct *doc);
 

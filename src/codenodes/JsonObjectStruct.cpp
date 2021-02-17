@@ -228,7 +228,7 @@ namespace smart {
         jsonObjectNode->hashMap = simpleMalloc<HashMap>();
         jsonObjectNode->hashMap->init();
 
-        Init::initSymbolNode(&jsonObjectNode->endBodyNode, context, jsonObjectNode, '}');
+        Init::initSymbolNode(&jsonObjectNode->endBodyNode, context, parentNode, '}');
 
         return jsonObjectNode;
     }

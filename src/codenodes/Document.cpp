@@ -271,6 +271,9 @@ namespace smart {
                 auto *space = Cast::downcast<SpaceNodeStruct *>(node);
                 line->indent = space->textLength;
             }
+            else {
+                line->indent = 0;
+            }
             line = line->nextLine;
         }
     }

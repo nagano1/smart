@@ -87,6 +87,24 @@ void LSPManager::nextRequest(char *chars, size_t length) {
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, chars, length);
 
+    /*
+    auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
+        DocumentUtils::parseText(document, text, strlen(text));
+        DocumentUtils::performCodingOperation(
+            CodingOperations::IndentSelection
+            , document, Cast::upcast(document->firstRootNode), Cast::upcast(&document->endOfFile)
+        );
+
+
+        char *treeText = DocumentUtils::getTextFromTree(document);
+        EXPECT_EQ(std::string{ treeText }, std::string{ autoIndentedText });
+    */
+
+
+    /*
+    {"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt","languageId":"plaintext","version":1,"text":"AAA\r\n\r\nBBB\r\nCCC\r\nAAA\r\nBBB\r\n\r\nCCC\r\nDDD\r\nEEE\r\nCCC"}}}
+    */
+
     //char *typeText = DocumentUtils::getTypeTextFromTree(document);
     //    if (typeText != nullptr) {
             //EXPECT_EQ(std::string{ typeText }, std::string{ "fjow" });
@@ -105,11 +123,24 @@ void LSPManager::nextRequest(char *chars, size_t length) {
         auto *item = rootJson->hashMap->get2("method");
         if (item) {
             auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
-            //if (strNode->textLength > 0 && 0 == strcmp(strNode->text, "\"initialized\"")) {
+            auto *method = strNode->text;
+
+            if (strNode->textLength > 0 && 0 == strcmp(strNode->text, "\"textDocument/didOpen\"")) {
+
                 fprintf(stderr, "method: %s", strNode->text);
                 fflush(stderr);
-            //}
+
+
+                auto *item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
+                auto *item3 = Cast::downcast<JsonObjectStruct*>(item2->hashMap->get2("textDocument"));
+                auto *item4 = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("text"));
+                fprintf(stderr, "text: %s", item4->text);
+                fflush(stderr);
+
+            }
         }
+
+
     }
 
 

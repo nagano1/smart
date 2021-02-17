@@ -25,7 +25,7 @@ namespace smart {
 
      */
 
-    static NodeBase* findIndentChangingPointParent(NodeBase *node) {
+    static NodeBase *findIndentChangingPointParent(NodeBase *node) {
         node = node->parentNode;
         while (node != nullptr) {
             if (node->vtable->is_indent_change_point_parent) {
@@ -36,37 +36,85 @@ namespace smart {
         return nullptr;
     }
 
+    static NodeBase *findFirstElementNode(CodeLine *line) {
+        auto * node = line->firstNode;
+        while (node) {
+            if (node->vtable == VTables::SpaceVTable ||
+            node->vtable == VTables::LineBreakVTable) {
 
-    static void performIndentSelectionOperation(
-            DocumentStruct *doc, NodeBase *startNode, NodeBase *endNode
-    ) {
-
-        assert(startNode != nullptr);
-        assert(startNode->parentNode != nullptr);
-
-
-        NodeBase* pointParnet = findIndentChangingPointParent(startNode);
-
-        /*
-        auto *line = doc->firstCodeLine;
-        while (line) {
-            auto *node = line->firstNode;
-            if (node->vtable == VTables::SpaceVTable) {
-                auto *space = Cast::downcast<SpaceNodeStruct *>(node);
-                line->indent = space->textLength;
+                node = node->nextNodeInLine;
+                continue;
             }
-            line = line->nextLine;
-        }
-        */
 
+            return node;
+        }
+
+        return nullptr;
     }
 
 
-    OperationResult *DocumentUtils::performCodingOperation(
-            CodingOperations op,
-            DocumentStruct *doc,
-            NodeBase *startNode, NodeBase *endNode
+    static void indentFormatLine(CodeLine * line) {
+
+
+        auto *startNode = findFirstElementNode(line);
+        if (startNode) {
+            assert(startNode->parentNode != nullptr);
+
+            auto *context = startNode->context;
+            NodeBase *pointParent = findIndentChangingPointParent(startNode);
+            if (pointParent != nullptr) {
+                auto *parentLine = pointParent->line;
+                if (parentLine != nullptr && parentLine != startNode->line) {
+                    auto parentIndent = parentLine->indent;
+                    NodeBase *element = findFirstElementNode(startNode->line);
+                    if (element != nullptr) {
+                        SpaceNodeStruct *space;
+                        if (element->prevSpaceNode) {
+                            space = element->prevSpaceNode;
+                        } else {
+                            space = Alloc::newSpaceNode(context, element);
+                            element->prev_char = '\0';
+                            element->prevSpaceNode = space;
+                            element->line->insertNode(Cast::upcast(space), nullptr);
+                        }
+
+                        line->indent = parentIndent + 4;
+
+                        space->textLength = parentIndent + 4;
+                        space->text = context->charBuffer.newChars(parentIndent + 4 + 1);
+                        for (int i = 0; i < parentIndent + 4; i++) {
+                            space->text[i] = ' ';
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // IndentSelection operation will not add a line
+    static void performIndentSelectionOperation(
+            DocumentStruct *doc, NodeBase *startNode, NodeBase *endNode
     ) {
+        assert(startNode != nullptr);
+        auto *line = startNode->line;
+        while (line) {
+            indentFormatLine(line);
+
+            if (endNode == nullptr) {
+                break;
+            }
+
+            if (line == endNode->line) {
+                break;
+            }
+            line = line->nextLine;
+        }
+    }
+
+    OperationResult *DocumentUtils::performCodingOperation(
+            CodingOperations op, DocumentStruct *doc,
+            NodeBase *startNode, NodeBase *endNode) {
+
         if (startNode == nullptr) {
             return nullptr;
         }
@@ -93,18 +141,18 @@ namespace smart {
                 Cast::upcast(&doc->endOfFile)
         );
 
-        /*
-
         auto *line = doc->firstCodeLine;
         while (line) {
             auto *node = line->firstNode;
-            if (node->vtable == VTables::SpaceVTable) {
-                auto *space = Cast::downcast<SpaceNodeStruct *>(node);
-                line->indent = space->textLength;
+
+            auto *firstElement = findFirstElementNode(line);
+            if (firstElement) {
+
             }
+
+
             line = line->nextLine;
         }
-        */
     }
 
 }
