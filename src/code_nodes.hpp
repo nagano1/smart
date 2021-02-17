@@ -18,7 +18,16 @@
 #include "common.hpp"
 
 //using utf8byte = char;
-
+/*
+ *
+ * aewffweoif
+ *     <int>
+ *     () {
+ *
+ * }
+ *
+ *
+ */
 namespace smart {
 
     struct ParseContext;
@@ -29,6 +38,8 @@ namespace smart {
         _NodeBase *parentNode; \
         _NodeBase *nextNode; \
         _NodeBase *nextNodeInLine; \
+        CodeLine *line; \
+        bool is_indent_change_point_parent; \
         int indentType; \
         struct _SimpleTextNodeStruct *prevSpaceNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
@@ -41,6 +52,8 @@ namespace smart {
         (node)->prev_char = '\0'; \
         (node)->context = (context); \
         (node)->parentNode = (NodeBase*)(parent); \
+        (node)->line = nullptr; \
+        (node)->is_indent_change_point_parent = false; \
         (node)->nextNode = nullptr; \
         (node)->nextNodeInLine = nullptr; \
         (node)->prevSpaceNode = nullptr; \
@@ -517,6 +530,7 @@ namespace smart {
             }
 
             lastNode = (NodeBase *) node;
+            ((NodeBase *)node)->line = this;
 
             return this;
         }

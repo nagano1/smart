@@ -13,14 +13,31 @@
 #include "code_nodes.hpp"
 
 namespace smart {
+    // perform Indentation just to follow the indent rule
+    /*
+{
+"jsonrpc":"2.0"
+}
+    |
+{
+    "jsonrpc":"2.0"
+}
 
-
-    /**
-     *
      */
-    static void performFormatSelectionOperation(
+    static void performIndentSelectionOperation(
             DocumentStruct *doc, NodeBase *startNode, NodeBase *endNode
     ) {
+
+        assert(startNode != nullptr);
+        assert(startNode->parentNode != nullptr);
+
+
+
+        if (startNode->parentNode != nullptr) {
+            auto *parentNode = startNode->parentNode;
+            parentNode->line;
+        }
+
         auto *line = doc->firstCodeLine;
         while (line) {
             auto *node = line->firstNode;
@@ -38,18 +55,17 @@ namespace smart {
             DocumentStruct *doc,
             NodeBase *startNode, NodeBase *endNode
     ) {
-
         if (startNode == nullptr) {
             return nullptr;
         }
 
         when(op) {
             wfor(CodingOperations::IndentSelection,
-                 performFormatSelectionOperation(doc, startNode, endNode));
+                 performIndentSelectionOperation(doc, startNode, endNode))
             wfor(CodingOperations::Deletion,
-                 performFormatSelectionOperation(doc, startNode, endNode));
+                 performIndentSelectionOperation(doc, startNode, endNode));
             wfor(CodingOperations::BreakLine,
-                 performFormatSelectionOperation(doc, startNode, endNode));
+                 performIndentSelectionOperation(doc, startNode, endNode));
         }
 
         return nullptr;
