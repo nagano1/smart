@@ -39,7 +39,6 @@ namespace smart {
         _NodeBase *nextNode; \
         _NodeBase *nextNodeInLine; \
         CodeLine *line; \
-        bool is_indent_change_point_parent; \
         int indentType; \
         struct _SimpleTextNodeStruct *prevSpaceNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
@@ -53,7 +52,6 @@ namespace smart {
         (node)->context = (context); \
         (node)->parentNode = (NodeBase*)(parent); \
         (node)->line = nullptr; \
-        (node)->is_indent_change_point_parent = false; \
         (node)->nextNode = nullptr; \
         (node)->nextNodeInLine = nullptr; \
         (node)->prevSpaceNode = nullptr; \
@@ -394,7 +392,7 @@ namespace smart {
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
         const char *typeChars; \
         int typeCharsLength; \
-
+        bool is_indent_change_point_parent; \
 
 
     /**
@@ -419,20 +417,22 @@ namespace smart {
             decltype(std::declval<vtableT<T>>().selfTextLength) f1,
             decltype(std::declval<vtableT<T>>().selfText) f2,
             decltype(std::declval<vtableT<T>>().appendToLine) f3,
-            const char(&f4)[SIZE]
+            const char(&f4)[SIZE],
+            bool is_indent_change_point_parent
     ) {
         return 0;
     }
 
-#define CREATE_VTABLE(T, f1, f2, f3, f4) \
+#define CREATE_VTABLE(T, f1, f2, f3, f4, f5) \
         node_vtable { \
             reinterpret_cast<selfTextLengthFunction> (f1) \
             , reinterpret_cast<selfTextFunction> (f2) \
             , reinterpret_cast<appendToLineFunction> (f3) \
             , (const char *)(f4) \
             , (sizeof(f4)-1) \
+            , (f5) \
         } \
-        ;static const int check_result_##T = vtable_type_check<T>(f1,f2,f3,f4)
+        ;static const int check_result_##T = vtable_type_check<T>(f1,f2,f3,f4,f5)
     // static_assert(std::is_same<F2, decltype(std::declval<vtableT<T>>().selfText)>::value, "");
 
     struct VTables {

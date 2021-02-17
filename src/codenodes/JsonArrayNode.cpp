@@ -62,7 +62,7 @@ namespace smart {
     static const node_vtable _JsonArrayItemVTable = CREATE_VTABLE(JsonArrayItemStruct,
         selfTextLength2,
         selfText_JsonKeyValueItemStruct,
-        appendToLine2, "<JsonArrayItem>");
+        appendToLine2, "<JsonArrayItem>", false);
 
     const struct node_vtable *VTables::JsonArrayItemVTable = &_JsonArrayItemVTable;
 
@@ -114,7 +114,7 @@ namespace smart {
 
     static const node_vtable _VTable = CREATE_VTABLE(JsonArrayStruct,
         selfTextLength, selfText,
-        appendToLine, _typeName);
+        appendToLine, _typeName, true);
     const struct node_vtable *VTables::JsonArrayVTable = &_VTable;
 
 

@@ -64,11 +64,18 @@ namespace smart {
 
     static constexpr const char classTypeText[] = "<Class>";
 
+    /*
+     * class A {
+     *
+     *
+     * }
+     */
     static const node_vtable _ClassVTable = CREATE_VTABLE(ClassNodeStruct,
                                                           selfTextLength,
                                                           selfText,
                                                           appendToLine,
-                                                          classTypeText
+                                                          classTypeText,
+                                                          true
     );
     const struct node_vtable *VTables::ClassVTable = &_ClassVTable;
 

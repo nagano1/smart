@@ -41,7 +41,7 @@ namespace smart {
     static const node_vtable _endOfDocVTable = CREATE_VTABLE(EndOfFileNodeStruct,
                                                              selfTextLength,
                                                              selfText,
-                                                             appendToLine, endOfFileTypeText);
+                                                             appendToLine, endOfFileTypeText, false);
 
     const node_vtable *VTables::EndOfFileVTable = &_endOfDocVTable;
 }

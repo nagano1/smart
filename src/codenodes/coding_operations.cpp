@@ -18,12 +18,25 @@ namespace smart {
 {
 "jsonrpc":"2.0"
 }
-    |
+    ---------------------------
 {
     "jsonrpc":"2.0"
 }
 
      */
+
+    static NodeBase* findIndentChangingPointParent(NodeBase *node) {
+        node = node->parentNode;
+        while (node != nullptr) {
+            if (node->vtable->is_indent_change_point_parent) {
+                return node;
+            }
+            node = node->parentNode;
+        }
+        return nullptr;
+    }
+
+
     static void performIndentSelectionOperation(
             DocumentStruct *doc, NodeBase *startNode, NodeBase *endNode
     ) {
@@ -32,12 +45,9 @@ namespace smart {
         assert(startNode->parentNode != nullptr);
 
 
+        NodeBase* pointParnet = findIndentChangingPointParent(startNode);
 
-        if (startNode->parentNode != nullptr) {
-            auto *parentNode = startNode->parentNode;
-            parentNode->line;
-        }
-
+        /*
         auto *line = doc->firstCodeLine;
         while (line) {
             auto *node = line->firstNode;
@@ -47,6 +57,8 @@ namespace smart {
             }
             line = line->nextLine;
         }
+        */
+
     }
 
 

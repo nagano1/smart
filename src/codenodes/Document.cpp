@@ -42,7 +42,7 @@ namespace smart {
     static constexpr const char DocumentTypeText[] = "<Document>";
 
     static const node_vtable _Document = CREATE_VTABLE(DocumentStruct, selfTextLength, selfText,
-                                                       appendToLine, DocumentTypeText);
+                                                       appendToLine, DocumentTypeText, true);
 
     const node_vtable *VTables::DocumentVTable = &_Document;
 
