@@ -83,10 +83,8 @@ void LSPManager::LSP_main() {
 
 
 void LSPManager::nextRequest(char *chars, size_t length) {
-
     fprintf(stderr, "req: \n%s", chars);
     fflush(stderr);
-
 
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, chars, length);
@@ -138,11 +136,8 @@ void LSPManager::nextRequest(char *chars, size_t length) {
                 auto *item4 = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("text"));
                 fprintf(stderr, "text: %s", item4->text);
                 fflush(stderr);
-
             }
         }
-
-
     }
 
 

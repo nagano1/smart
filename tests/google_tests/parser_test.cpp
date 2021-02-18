@@ -14,15 +14,13 @@
 using namespace smart;
 
 
-TEST(parser_test, PerformOperation) {
-
-
-
+TEST(ParserTest_, PerformOperation) {
+    EXPECT_EQ(true, true);
 }
-
+ENDTEST
 
 static void testJson(const char* codeText);
-TEST(parser_test, JsonParseTest) {
+TEST(ParserTest_, JsonParseTest) {
 
     // preserve spaces and line-breaks
     char *text = const_cast<char *>(u8R"(
@@ -94,6 +92,8 @@ TEST(parser_test, JsonParseTest) {
 )");
         auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
         DocumentUtils::parseText(document, text, strlen(text));
+        EXPECT_EQ(document->context->syntaxErrorInfo.hasError, false);
+
         DocumentUtils::generateHashTables(document);
         
         auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
@@ -244,7 +244,7 @@ ENDTEST
  test of iterating chars over utf8 text
  Point here is just whether you can distinguish ascii code from others even if it contains a wide char like emoji
 */
-TEST(parser_test, char_iteration) {
+TEST(ParserTest_, char_iteration) {
 
     std::string wstr{ u8"auto * 😂日本語たち=10234;" };
     std::string wstr2{ "class TestClass{ }" };
@@ -348,7 +348,7 @@ int utf16_length(const char *utf8_chars, unsigned int byte_len) {
 }
 
 
-TEST(parser_test, utf16Length) {
+TEST(ParserTest_, utf16Length) {
 
     // Table 3-8.  Use of U+FFFD in UTF-8 Conversion
     // http://www.unicode.org/versions/Unicode6.1.0/ch03.pdf
@@ -566,7 +566,7 @@ ENDTEST
 */
 
 
-TEST(parser_test, JustScanLetters) {
+TEST(ParserTest_, JustScanLetters) {
 
     auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
     uint64_t loopCount = 100 * 1000LLU;
@@ -681,7 +681,7 @@ ENDTEST
 */
 
 
-TEST(parser_test, parser_benchmark) {
+TEST(ParserTest_, parser_benchmark) {
 
 
     auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
@@ -735,7 +735,7 @@ class jips {
 ENDTEST
 
 
-TEST(parser_test, aaHashMap) {
+TEST(ParserTest_, aaHashMap) {
     {
         char a = -122;
         unsigned char b = a;
@@ -785,7 +785,7 @@ TEST(parser_test, aaHashMap) {
 ENDTEST
 
 
-TEST(parser_test, charBuffer) {
+TEST(ParserTest_, charBuffer) {
     auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
     uint64_t loopCount = 100 * 1000LLU;
 
@@ -834,7 +834,7 @@ TEST(parser_test, charBuffer) {
 ENDTEST
 
 
-TEST(parser_test, CodeNode) {
+TEST(ParserTest_, CodeNode) {
     std::string text = "   class           A   {    }   ";
     /*
     std::string text = u8R"(
@@ -875,7 +875,7 @@ ENDTEST
 
 
 
-TEST(parser_test, ErrorNodeTest_class) {
+TEST(ParserTest_, ErrorNodeTest_class) {
     std::string text = u8R"(
 class A {
     class B {
@@ -905,7 +905,7 @@ ENDTEST
 
 
 
-TEST(parser_test, ErrorNodeTest) {
+TEST(ParserTest_, ErrorNodeTest) {
     return;
     //std::string text = "   class           A   {    }   ";
     std::string text = u8R"(
@@ -1001,7 +1001,7 @@ ENDTEST
 
 
 
-    TEST(parser_test, ParseUtil) {
+TEST(ParserTest_, ParseUtil) {
 
     EXPECT_EQ(true, ParseUtil::isIdentifierLetter('a'));
 

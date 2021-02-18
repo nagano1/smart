@@ -60,9 +60,6 @@
 
 
 
-
-
-
 using NodeIndexInteger = unsigned long long;
 
 class TestUtil {
