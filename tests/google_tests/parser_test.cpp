@@ -69,10 +69,9 @@ TEST(parser_test, JsonParseTest) {
 
 
 
-    /*
+    /**
      *   DocumentUtils::performCodingOperation
      */
-
     {
         char *text = const_cast<char *>(u8R"(
 {

@@ -34,6 +34,10 @@ Content-Length: 200
 {"jsonrpc":"2.0","method":"initialized","params":{}}
  */
 
+
+
+
+
 void LSPManager::LSP_main() {
     LSPManager lspManager;
 
@@ -113,7 +117,6 @@ void LSPManager::nextRequest(char *chars, size_t length) {
     char *treeText = DocumentUtils::getTextFromTree(document);
     DocumentUtils::generateHashTables(document);
 
-    //auto *jsonObject = DocumentUtils::generateHashTables(document);
     auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
     //fprintf(stderr, "type: %s", rootJson->vtable->typeChars);
     //fflush(stderr);
@@ -129,7 +132,6 @@ void LSPManager::nextRequest(char *chars, size_t length) {
 
                 fprintf(stderr, "method: %s", strNode->text);
                 fflush(stderr);
-
 
                 auto *item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
                 auto *item3 = Cast::downcast<JsonObjectStruct*>(item2->hashMap->get2("textDocument"));
@@ -157,18 +159,39 @@ void LSPManager::nextRequest(char *chars, size_t length) {
     export const Incremental = 2;
     */
 
-    const char *responseMessage = u8R"(Content-Length: 231
+    /*
+    export declare namespace DiagnosticSeverity {
+    const Error : 1;
+    const Warning : 2;
+    const Information : 3;
+    const Hint : 4;
+    }
+
+    let diagnosic: Diagnostic = {
+        severity: DiagnosticSeverity.Warning,
+        range: {
+            start: textDocument.positionAt(m.index),
+            end: textDocument.positionAt(m.index + m[0].length)
+        },
+        message: `${m[0]} is all uppercase.`,
+        source: 'ex'
+    };
+
+
+    */
+    const char *reqMessage = u8R"(Content-Length: 231
 
 {
     "jsonrpc": "2.0",
-    "id" : "0",
-    "result" : {
-        "capabilities": {
-            "textDocumentSync": {
-                "openClose": true,
-                "change" : 1
+    "method" : "textDocument/publishDiagnostics",
+    "params" : {
+        "uri": "",
+        "diagnostics": [
+            {
+
+
             }
-        }
+        ]
     }
 }
 
@@ -177,6 +200,28 @@ void LSPManager::nextRequest(char *chars, size_t length) {
 
 
 
+
+
+
+)";
+
+
+    const char *body = u8R"(
+{
+    "jsonrpc": "2.0",
+    "id" : "0",
+    "result" : {
+    "capabilities": {
+        "textDocumentSync": {
+            "openClose": true,
+                "change" : 1
+        }
+    }
+}
+)";
+
+
+    const char *responseMessage = u8R"(Content-Length: 231
 
 
 
