@@ -94,6 +94,7 @@
     <ClCompile Include="..\..\src\codenodes\NumberNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\JsonArrayNode.cpp" />
+    <ClCompile Include="..\..\tests\google_tests\coding_operation_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

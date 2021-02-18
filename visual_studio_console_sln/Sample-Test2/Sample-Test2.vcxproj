@@ -43,6 +43,7 @@
     <IncludePath>$(SolutionDir)\..\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\tests\google_tests\coding_operation_tests.cpp" />
     <ClCompile Include="..\..\tests\test.cpp" />
     <ClCompile Include="..\..\tests\google_tests\cplusplus_test.cpp" />
     <ClCompile Include="..\..\tests\google_tests\parser_test.cpp" />

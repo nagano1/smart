@@ -14,12 +14,10 @@
 using namespace smart;
 
 
-TEST(ParserTest_, PerformOperation) {
-    EXPECT_EQ(true, true);
-}
-ENDTEST
+
 
 static void testJson(const char* codeText);
+
 TEST(ParserTest_, JsonParseTest) {
 
     // preserve spaces and line-breaks
@@ -28,14 +26,11 @@ TEST(ParserTest_, JsonParseTest) {
 )");
     testJson(text);
 
-
-
     {
         char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized
 )");
         auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
         DocumentUtils::parseText(document, text, strlen(text));
-
 
         EXPECT_EQ(document->context->syntaxErrorInfo.hasError, true);
         EXPECT_EQ(document->context->syntaxErrorInfo.errorCode, 21390);
@@ -65,90 +60,6 @@ TEST(ParserTest_, JsonParseTest) {
 
 
 
-
-
-    /**
-     *   DocumentUtils::performCodingOperation
-     */
-    {
-        char *text = const_cast<char *>(u8R"(
-{
-"jsonrpc":"2.0",
-                    "jsonrpc2":"2.0",
-                                        "jsonrpc3": {
-"a":"日本語"
-}
-}
-)");
-
-        char *autoIndentedText = const_cast<char *>(u8R"(
-{
-    "jsonrpc":"2.0",
-    "jsonrpc2":"2.0",
-    "jsonrpc3": {
-        "a":"日本語"
-    }
-}
-)");
-        auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
-        DocumentUtils::parseText(document, text, strlen(text));
-        EXPECT_EQ(document->context->syntaxErrorInfo.hasError, false);
-
-        DocumentUtils::generateHashTables(document);
-        
-        auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
-        auto *item = rootJson->firstKeyValueItem->keyNode;
-        if (item) {
-            EXPECT_EQ(item->vtable, VTables::JsonObjectKeyVTable);
-            DocumentUtils::performCodingOperation(
-                CodingOperations::IndentSelection
-                , document, Cast::upcast(document->firstRootNode), Cast::upcast(&document->endOfFile));
-        }
-
-
-        char *treeText = DocumentUtils::getTextFromTree(document);
-        EXPECT_EQ(std::string{ treeText }, std::string{ autoIndentedText });
-    }
-
-
-
-
-
-    /*
-     *   DocumentUtils::performCodingOperation
-     */
-
-    {
-        char *text = const_cast<char *>(u8R"(
-class A
-{
-class B
-{
-
-}
-}
-)");
-
-        char *autoIndentedText = const_cast<char *>(u8R"(
-class A
-{
-    class B
-    {
-
-    }
-}
-)");
-        auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
-        DocumentUtils::parseText(document, text, strlen(text));
-        DocumentUtils::performCodingOperation(
-            CodingOperations::IndentSelection
-            , document, Cast::upcast(document->firstRootNode), Cast::upcast(&document->endOfFile)
-        );
-
-
-        char *treeText = DocumentUtils::getTextFromTree(document);
-        EXPECT_EQ(std::string{ treeText }, std::string{ autoIndentedText });
-    }
 
 
 
