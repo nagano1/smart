@@ -117,13 +117,13 @@ constexpr OS_TYPE os_type = OS_TYPE::UNIX;
 #ifdef NO_SPEED_TEST
 constexpr bool speed_test = false;
 #else
-constexpr bool speed_test = true;
+constexpr bool speed_test = false; // true
 #endif
 
 #ifdef CMAKE_TEST
 constexpr bool managed_cmake_test = true;
 #else
-constexpr bool managed_cmake_test = false;
+constexpr bool managed_cmake_test = true; // false // or visual studio embedded tests
 #endif
 
 #ifdef __ANDROID__

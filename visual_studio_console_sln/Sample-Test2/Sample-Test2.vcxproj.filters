@@ -64,6 +64,7 @@
     <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\code_nodes.cpp" />
+    <ClCompile Include="..\..\src\codenodes\coding_operations.cpp" />
     <ClCompile Include="..\..\src\codenodes\Document.cpp" />
     <ClCompile Include="..\..\src\codenodes\EndOfFileNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\FuncNode.cpp" />
@@ -75,7 +76,6 @@
     <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
-    <ClCompile Include="..\..\src\codenodes\*.cpp" />
     <ClCompile Include="..\..\src\codenodes\EndOfFileNode.cpp">
       <Filter>library</Filter>
     </ClCompile>
@@ -97,5 +97,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\tests\test_common.h" />
   </ItemGroup>
 </Project>
