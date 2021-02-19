@@ -136,7 +136,6 @@ void LSPManager::nextRequest(char *chars, size_t length) {
 
                 fprintf(stderr, "[%s]", responseMessage.c_str()); fflush(stderr);
 
-
                 fprintf(stdout, "%s", responseMessage.c_str());
                 fflush(stdout);
                 return;
@@ -147,13 +146,12 @@ void LSPManager::nextRequest(char *chars, size_t length) {
                 auto *item4 = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("uri"));
 
                 const char body[] = u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt","diagnostics": [{"severity": 1,"range": { "start": { "character": 1, "line": 2 }, "end": { "character": 2, "line": 3 } },"message": "awefawf","source": "ex"}]}})";
-                std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(body)) + std::string{ "\n\n" }+std::string{ body };
+                std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(body)) + "\n\n" +std::string{ body };
 
                 fprintf(stdout, "%s", responseMessage.c_str());
                 fflush(stdout);
 
                 return;
-
             }
         }
     }

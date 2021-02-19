@@ -81,7 +81,7 @@ namespace smart {
     const node_vtable *VTables::BoolVTable = &_Bool_VTable;
 
     BoolNodeStruct* Alloc::newBoolNode(ParseContext *context, NodeBase *parentNode) {
-        auto *node = (BoolNodeStruct *)malloc(sizeof(BoolNodeStruct));
+        auto *node = simpleMalloc<BoolNodeStruct>();
         INIT_NODE(node, context, parentNode, VTables::BoolVTable);
         node->text = nullptr;
         node->textLength = 0;

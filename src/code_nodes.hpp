@@ -593,6 +593,10 @@ namespace smart {
 
     };
 
+    struct JsonUtils {
+        static void put(JsonObjectStruct *json, utf8byte *key, size_t keyLength, NodeBase* node);
+    };
+
 
     struct DocumentUtils {
 
@@ -656,8 +660,9 @@ namespace smart {
         );
 
         static void deleteDocument(DocumentStruct *doc);
-
     };
+
+
 
 
     /**
