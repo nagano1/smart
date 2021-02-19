@@ -29,9 +29,9 @@ using namespace smart;
 int main(int argc, char **argv) {
 
 
-for (int i = 0; i < 20000; i++) 
+for (int i = 0; i < 200*1000; i++) 
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(8));
+        std::this_thread::sleep_for(std::chrono::milliseconds(3));
 
 
         auto *text = const_cast<char *>(u8R"(
