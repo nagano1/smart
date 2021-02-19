@@ -33,6 +33,7 @@ include_directories(src)
 
 add_subdirectory(src)
 add_subdirectory(tests)
+add_subdirectory(tests/long_running)
 add_subdirectory(lsp_vscode_server)
 add_subdirectory(lib/googletest)
 
