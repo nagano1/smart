@@ -126,16 +126,34 @@ void LSPManager::nextRequest(char *chars, size_t length) {
             auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
             auto *method = strNode->text;
 
+            fprintf(stderr, "here: [%s]", strNode->text);
+            fflush(stderr);
+
+            if (strNode->textLength > 0 && 0 == strcmp(strNode->text, "\"initialize\"")) {
+                const char body[] = u8R"({"jsonrpc": "2.0","id" : "0","result" : {"capabilities": {"textDocumentSync": 2,"completionProvider": { "resolveProvider": true }}}})";
+
+                std::string responseMessage = std::string{ "Content-Length: " } +std::to_string( + strlen(body)) + std::string{ "\n\n" }+std::string{ body };
+
+                fprintf(stderr, "[%s]", responseMessage.c_str()); fflush(stderr);
+
+
+                fprintf(stdout, "%s", responseMessage.c_str());
+                fflush(stdout);
+                return;
+            }
             if (strNode->textLength > 0 && 0 == strcmp(strNode->text, "\"textDocument/didOpen\"")) {
-
-                fprintf(stderr, "method: %s", strNode->text);
-                fflush(stderr);
-
                 auto *item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
                 auto *item3 = Cast::downcast<JsonObjectStruct*>(item2->hashMap->get2("textDocument"));
-                auto *item4 = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("text"));
-                fprintf(stderr, "text: %s", item4->text);
-                fflush(stderr);
+                auto *item4 = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("uri"));
+
+                const char body[] = u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt","diagnostics": [{"severity": 1,"range": { "start": { "character": 1, "line": 2 }, "end": { "character": 2, "line": 3 } },"message": "awefawf","source": "ex"}]}})";
+                std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(body)) + std::string{ "\n\n" }+std::string{ body };
+
+                fprintf(stdout, "%s", responseMessage.c_str());
+                fflush(stdout);
+
+                return;
+
             }
         }
     }
@@ -174,58 +192,10 @@ void LSPManager::nextRequest(char *chars, size_t length) {
 
 
     */
-    const char *reqMessage = u8R"(Content-Length: 231
-
-{
-    "jsonrpc": "2.0",
-    "method" : "textDocument/publishDiagnostics",
-    "params" : {
-        "uri": "",
-        "diagnostics": [
-            {
-
-
-            }
-        ]
-    }
-}
 
 
 
-
-
-
-
-
-
-)";
-
-
-    const char *body = u8R"(
-{
-    "jsonrpc": "2.0",
-    "id" : "0",
-    "result" : {
-    "capabilities": {
-        "textDocumentSync": {
-            "openClose": true,
-                "change" : 1
-        }
-    }
-}
-)";
-
-
-    const char *responseMessage = u8R"(Content-Length: 231
-
-
-
-)";
-
-
-    puts(responseMessage);
-    fflush(stdout);
-
+    
 }
 
 

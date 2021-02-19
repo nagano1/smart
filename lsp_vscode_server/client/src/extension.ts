@@ -13,52 +13,17 @@ import { statSync } from 'fs';
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
-    // The server is implemented in node
-
-    let serverModule = context.asAbsolutePath(
-        path.join('server', 'out', 'server.js')
-    );
-    
-    // The debug options for the server
-    // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
-    let debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
-
-    // If the extension is launched in debug mode then the debug server options are used
-    // Otherwise the run options are used
-	/*
-	let serverOptions: ServerOptions = {
-		run: { module: serverModule, transport: TransportKind.ipc },
-		debug: {
-			module: serverModule,
-			transport: TransportKind.ipc,
-			options: debugOptions
-		}
-	};
-	*/
-
-    let serverPath = context.asAbsolutePath(
-        path.join("server", "out", "server.js")
-    )
-
-    // let serverOptions: ServerOptions = {
-    //     command: "node",
-    //     args: [serverPath],
-    // }
-
     /*
     let consoleApp = context.asAbsolutePath(
         path.join("server", "out", "ConsoleApplication2.exe")
     )
-*/
+    */
     let consoleApp = require('path').resolve(__dirname, '../../../')+ "/visual_studio_console_sln\\x64\\Release\\ConsoleApplication2.exe";
     //consoleApp = __dirname + "/ConsoleApplication2.exe";
 
-    //ConsoleApplication2.exe
     let serverOptions: ServerOptions = {
         command: consoleApp,
-        args: [serverPath],
     }
-
 
     // Options to control the language client
     let clientOptions: LanguageClientOptions = {
