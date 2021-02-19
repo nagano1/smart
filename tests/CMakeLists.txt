@@ -5,8 +5,8 @@ file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false
         ../src/thread_pool.cpp
         google_tests/*.h
         google_tests/*.cpp
-        test.cpp
-        test.h
+        ./test.cpp
+        ./test.h
         )
 
 set(SOURCES ${TEST_SOURCES})
