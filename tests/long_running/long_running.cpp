@@ -53,6 +53,8 @@ for (int i = 0; i < 20000; i++)
         if (document->context->syntaxErrorInfo.errorCode ==  21390) {
 
         }
+        Alloc::deleteDocument(document);
+
     }
 
 

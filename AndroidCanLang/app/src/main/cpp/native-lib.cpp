@@ -168,10 +168,6 @@ namespace doorlangtest {
             }
 
             int a = 5;
-
-
-
-
             //#pragma omp for reduction(+:sum)
 
         }
