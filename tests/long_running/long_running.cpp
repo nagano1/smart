@@ -21,7 +21,25 @@
 #include <ctime>
 #include <emmintrin.h>
 
+#include "code_nodes.hpp"
+#include "parse_util.hpp"
+
+using namespace smart;
+
 int main(int argc, char **argv) {
-    printf("G");
+
+
+    {
+        char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized
+)");
+        auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
+        DocumentUtils::parseText(document, text, strlen(text));
+
+        if (document->context->syntaxErrorInfo.errorCode ==  21390) {
+
+        }
+    }
+
+
 	return 0;
 }
