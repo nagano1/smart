@@ -14,7 +14,7 @@ jobs:
               bin: 'src/Release/main_run.exe',
               testbin: 'tests/Release/main_tst.exe',
               lspbin: 'lsp_vscode_server/Release/main_lsp.exe',
-              longrunning_bin: 'tests/Release/main_tst_long_running.exe',
+              longrunning_bin: 'tests/long_running/Release/main_tst_long_running.exe',
               cmakeConfig: '-A Win32 -T v142,host=x64',
               cmakeBuildConfig: '--config Release',
               runPuppeteer: '',
