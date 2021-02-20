@@ -9,7 +9,6 @@
 #include <array>
 #include <algorithm>
 
-
 #include <cstdlib>
 #include <cassert>
 #include <cstdio>
@@ -27,25 +26,30 @@
 
 using namespace smart;
 
-struct S {
+struct S
+{
     int a;
 };
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 
     srand((unsigned int)time(NULL));
 
-for (int i = 0; i < 200*1000; i++)  {
+    for (int i = 0; i < 8000 * 1000; i++)
+    {
 
-    int max  = rand() % 10000;
+        int max = rand() % 10000;
 
-    for (int j = 0; j < max; j++)  {
+        for (int j = 0; j < max; j++)
+        {
             MallocBuffer charBuffer3;
-            charBuffer3.init();;
-            int len  = rand() % 1000;
+            charBuffer3.init();
+            
+            int len = rand() % 1000;
 
             int size = 355;
-            auto *chars = charBuffer3.newChars<S>(sizeof(S)*len);
+            auto *chars = charBuffer3.newChars<S>(sizeof(S) * len);
             chars->a = 5;
 
             auto *chars2 = charBuffer3.newChars<S>(sizeof(S));
@@ -54,12 +58,10 @@ for (int i = 0; i < 200*1000; i++)  {
             charBuffer3.tryDelete(chars);
 
             charBuffer3.freeAll();
-
-
+        }
     }
-}
 
-/*
+    /*
 for (int i = 0; i < 200*1000; i++) 
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(3));
@@ -89,5 +91,5 @@ for (int i = 0; i < 200*1000; i++)
     }
 */
 
-	return 0;
+    return 0;
 }
