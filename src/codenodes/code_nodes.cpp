@@ -102,7 +102,6 @@ namespace smart {
 
     void HashMap::init(ParseContext *context) {
         this->context = context;
-        //charBuffer.init();
         this->entries = (HashNode**)context->newMemArray<HashNode>(HashNode_TABLE_SIZE);
         this->entries_length = HashNode_TABLE_SIZE;
 
