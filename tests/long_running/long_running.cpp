@@ -33,31 +33,31 @@ struct S
 
 int main(int argc, char **argv)
 {
+    // long running test
     srand((unsigned int)time(NULL));
-        for (int i = 0; i < 8000 * 1000; i++) {
-            unsigned int max = 1 + rand() % 1;
+    for (int i = 0; i < 8000 * 1000; i++) {
+        unsigned int max = 1 + rand() % 1000;
 
-            MallocBuffer *charBuffer3 = (MallocBuffer*)malloc(sizeof(MallocBuffer));
-            charBuffer3->init();
+        MallocBuffer *charBuffer3 = (MallocBuffer *)malloc(sizeof(MallocBuffer));
+        charBuffer3->init();
 
-            for (int j = 0; j < max; j++) {
-                unsigned int len = 1 + rand() % 100;
+        for (int j = 0; j < max; j++)
+        {
+            unsigned int len = 1 + rand() % 100;
 
-                int size = 355;
-                auto *chars = charBuffer3->newChars<S>(len);
-                chars->a = 5;
+            int size = 355;
+            auto *chars = charBuffer3->newChars<S>(len);
+            chars->a = 5;
 
-                auto *chars2 = charBuffer3->newChars<S>(1);
-                chars2->a = 2;
+            auto *chars2 = charBuffer3->newChars<S>(1);
+            chars2->a = 2;
 
-                charBuffer3->tryDelete(chars);
-                charBuffer3->tryDelete(chars2);
-
-            }
-            charBuffer3->freeAll();
-            free(charBuffer3);
+            charBuffer3->tryDelete(chars);
+            charBuffer3->tryDelete(chars2);
         }
-
+        charBuffer3->freeAll();
+        free(charBuffer3);
+    }
 
     /*
 for (int i = 0; i < 200*1000; i++) 
