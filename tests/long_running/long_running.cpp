@@ -1,6 +1,7 @@
 ﻿#include "long_running.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 #include <string>
 #include <mutex>
@@ -26,11 +27,39 @@
 
 using namespace smart;
 
+struct S {
+    int a;
+};
+
 int main(int argc, char **argv) {
 
-    srand(timeSeed());
+    srand((unsigned int)time(NULL));
+
+for (int i = 0; i < 200*1000; i++)  {
+
+    int max  = rand() % 10000;
+
+    for (int j = 0; j < max; j++)  {
+            MallocBuffer charBuffer3;
+            charBuffer3.init();;
+            int len  = rand() % 1000;
+
+            int size = 355;
+            auto *chars = charBuffer3.newChars<S>(sizeof(S)*len);
+            chars->a = 5;
+
+            auto *chars2 = charBuffer3.newChars<S>(sizeof(S));
+            chars2->a = 2;
+
+            charBuffer3.tryDelete(chars);
+
+            charBuffer3.freeAll();
 
 
+    }
+}
+
+/*
 for (int i = 0; i < 200*1000; i++) 
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(3));
@@ -58,7 +87,7 @@ for (int i = 0; i < 200*1000; i++)
         Alloc::deleteDocument(document);
 
     }
-
+*/
 
 	return 0;
 }
