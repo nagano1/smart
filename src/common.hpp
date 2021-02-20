@@ -244,7 +244,7 @@ struct MallocBuffer {
         MallocBuffer *bufferList = this->firstBufferList;
 
         while (bufferList) {
-            //free(bufferList->list);
+            free(bufferList->list);
 
             bufferList = bufferList->next;
         }
