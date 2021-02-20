@@ -34,25 +34,30 @@ struct S
 int main(int argc, char **argv)
 {
     srand((unsigned int)time(NULL));
-    for (int i = 0; i < 8000 * 1000; i++) {
-        int max = rand() % 10000;
-        for (int j = 0; j < max; j++) {
-            MallocBuffer charBuffer3;
-            charBuffer3.init();
-            
-            int len = rand() % 1000;
-            int size = 355;
-            auto *chars = charBuffer3.newChars<S>(sizeof(S) * len);
-            chars->a = 5;
+        for (int i = 0; i < 8000 * 1000; i++) {
+            unsigned int max = 1 + rand() % 1;
 
-            auto *chars2 = charBuffer3.newChars<S>(sizeof(S));
-            chars2->a = 2;
+            MallocBuffer *charBuffer3 = (MallocBuffer*)malloc(sizeof(MallocBuffer));
+            charBuffer3->init();
 
-            //charBuffer3.tryDelete(chars);
+            for (int j = 0; j < max; j++) {
+                unsigned int len = 1 + rand() % 100;
 
-            //charBuffer3.freeAll();
+                int size = 355;
+                auto *chars = charBuffer3->newChars<S>(len);
+                chars->a = 5;
+
+                auto *chars2 = charBuffer3->newChars<S>(1);
+                chars2->a = 2;
+
+                charBuffer3->tryDelete(chars);
+                charBuffer3->tryDelete(chars2);
+
+            }
+            charBuffer3->freeAll();
+            free(charBuffer3);
         }
-    }
+
 
     /*
 for (int i = 0; i < 200*1000; i++) 

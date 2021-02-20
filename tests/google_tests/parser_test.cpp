@@ -732,24 +732,35 @@ TEST(ParserTest_, charBuffer) {
 
         }
 
-        {
-            MallocBuffer charBuffer3;
-            charBuffer3.init();;
-            int size = 355;
-            auto *chars = charBuffer3.newChars<S>(sizeof(S));
-            chars->a = 5;
+        srand((unsigned int)time(NULL));
+        for (int i = 0; i < 8000 * 100; i++) {
+            unsigned int max = 1 + rand() % 1;
 
-            auto *chars2 = charBuffer3.newChars<S>(sizeof(S));
-            chars2->a = 2;
-            EXPECT_EQ(chars->a, 5);
-            EXPECT_EQ(chars2->a, 2);
+            MallocBuffer *charBuffer3 = (MallocBuffer*)malloc(sizeof(MallocBuffer));
+            charBuffer3->init();
 
-            EXPECT_EQ(charBuffer3.currentBufferList, *((MallocBuffer **)(chars - sizeof(MallocBuffer *))));
-            charBuffer3.tryDelete(chars);
+            for (int j = 0; j < max; j++) {
+                unsigned int len = 1 + rand() % 100;
 
+                int size = 355;
+                auto *chars = charBuffer3->newChars<S>(len);
+                chars->a = 5;
 
+                auto *chars2 = charBuffer3->newChars<S>(1);
+                chars2->a = 2;
+                EXPECT_EQ(chars->a, 5);
+                EXPECT_EQ(chars2->a, 2);
 
+                EXPECT_EQ(charBuffer3->currentBufferList, *((MallocBuffer **)((sm_byte*)chars2 - sizeof(MallocBuffer *))));
+
+                charBuffer3->tryDelete(chars);
+                charBuffer3->tryDelete(chars2);
+
+            }
+            charBuffer3->freeAll();
+            free(charBuffer3);
         }
+
     }
 
 

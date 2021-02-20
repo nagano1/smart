@@ -20,6 +20,7 @@
 using utf8byte = char;
 using utf8chars = const utf8byte *;
 
+using sm_byte = char;
 
 #ifdef __x86_64__
 // do x64 stuff
@@ -227,7 +228,7 @@ struct MallocBuffer {
 
     MallocBuffer *firstBufferList = nullptr;
     MallocBuffer *currentBufferList = nullptr;
-    int spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
+    unsigned int spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
     int itemCount = 0;
     bool isLast = true;
 
@@ -235,44 +236,45 @@ struct MallocBuffer {
         spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
         firstBufferList = nullptr;
         currentBufferList = nullptr;
+        itemCount = 0;
+        isLast = true;
     }
 
     void freeAll() {
-        MallocBuffer *bufferList = firstBufferList;
+        MallocBuffer *bufferList = this->firstBufferList;
 
         while (bufferList) {
-            free(bufferList->list);
+            //free(bufferList->list);
+
             bufferList = bufferList->next;
         }
     }
 
     template<typename NodeType>
     void tryDelete(NodeType *chars) {
-        auto * currentBufferList = *((MallocBuffer **)(chars - sizeof(MallocBuffer*)));
+        auto * currentBufferList = *((MallocBuffer **)((sm_byte*)chars - sizeof(MallocBuffer*)));
         currentBufferList->itemCount--;
-        auto * next = currentBufferList->next;
+        auto *next = currentBufferList->next;
         if (next) {
             if (next->itemCount == 0 && next->isLast == false) {
                 // can delete & free
             }
         }
-        else {
-
-        }
     }
 
 
     template<typename NodeType>
-    NodeType *newChars(size_t len) {
-        size_t charLen = len;// sizeof(NodeType);
+    NodeType *newChars(unsigned int count) {
+        size_t charLen = sizeof(NodeType) * count;
         auto sizeOfBuffer = sizeof(MallocBuffer*);
         auto length = charLen + sizeOfBuffer;
+
+        unsigned int assign_size = CHAR_BUFFER_SIZE < length ? length : CHAR_BUFFER_SIZE;
 
         if (spaceNodeIndex + length < CHAR_BUFFER_SIZE) {
 
         }
         else {
-            int assign_size = CHAR_BUFFER_SIZE < length ? length : CHAR_BUFFER_SIZE;
             if (firstBufferList == nullptr) {
 
                 firstBufferList = currentBufferList = simpleMalloc<MallocBuffer>();
@@ -290,15 +292,14 @@ struct MallocBuffer {
             spaceNodeIndex = 0;
         }
         currentBufferList->itemCount++;
-        NodeType *node = (NodeType*)((char*)(currentBufferList->list) + spaceNodeIndex);
-//        node[sizeOfBuffer + charLen - 1] = '\0';
+        NodeType *node = (NodeType*)((sm_byte*)(currentBufferList->list) + spaceNodeIndex);
 
         auto **address = (MallocBuffer **)node;
         *address = currentBufferList;
 
-        spaceNodeIndex += length;
+        this->spaceNodeIndex += length;// assign_size;
 
-        return node + sizeOfBuffer;
+        return (NodeType*)((sm_byte*)node + sizeOfBuffer);
     }
 
 };
