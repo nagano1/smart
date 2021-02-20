@@ -692,7 +692,7 @@ TEST(ParserTest_, aaHashMap) {
             EXPECT_EQ(node, nullptr);
         }
 
-        free(hashMap);
+        //free(hashMap);
     }
 
 }
