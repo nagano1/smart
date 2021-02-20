@@ -160,7 +160,7 @@ namespace smart {
 
 
     NumberNodeStruct *Alloc::newNumberNode(ParseContext *context, NodeBase *parentNode) {
-        auto *node = (NumberNodeStruct *)malloc(sizeof(NumberNodeStruct));
+        auto *node = context->newMem<NumberNodeStruct>();
         INIT_NODE(node, context, parentNode, VTables::NumberVTable);
         node->text = nullptr;
         node->textLength = 0;
