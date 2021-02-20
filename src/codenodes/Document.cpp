@@ -76,10 +76,13 @@ namespace smart {
         doc->firstCodeLine = nullptr;
         doc->nodeCount = 0;
 
+        context->mallocBuffer.init();
+        /*
         context->spaceBufferList.init();
         context->lineBreakBufferList.init();
         context->charBuffer.init();
         context->codeLineBufferList.init();
+         */
 
         return doc;
     }

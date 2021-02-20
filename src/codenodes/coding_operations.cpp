@@ -81,7 +81,7 @@ namespace smart {
                         line->indent = parentIndent + 4;
 
                         space->textLength = parentIndent + 4;
-                        space->text = context->charBuffer.newChars(parentIndent + 4 + 1);
+                        space->text = context->mallocBuffer.newMem<char>(parentIndent + 4 + 1);
                         for (int i = 0; i < parentIndent + 4; i++) {
                             space->text[i] = ' ';
                         }

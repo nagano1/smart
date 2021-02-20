@@ -218,9 +218,10 @@ namespace smart {
     struct HashMap {
         HashNode **entries;// [HashNode_TABLE_SIZE] = {};
         size_t entries_length;
-        CharBuffer<char> charBuffer;
+        ParseContext* context;
+        //MallocBuffer charBuffer;
 
-        void init();
+        void init(ParseContext *context);
 
         template<std::size_t SIZE>
         static int calc_hash2(const char(&f4)[SIZE], size_t max) {
@@ -339,36 +340,48 @@ namespace smart {
         LineBreakNodeStruct *remainedLineBreakNode;
         SpaceNodeStruct *remainedSpaceNode;
 
+        MallocBuffer mallocBuffer;
+        /*
         NodeBufferList<SimpleTextNodeStruct> spaceBufferList;
         NodeBufferList<CodeLine> codeLineBufferList;
         NodeBufferList<LineBreakNodeStruct> lineBreakBufferList;
         CharBuffer<char> charBuffer;
+         */
 
 
         LineBreakNodeStruct *mallocLineBreakNode() {
+            return mallocBuffer.newMem<LineBreakNodeStruct>(1);
+            /*
             return lineBreakBufferList.newNode();
+             */
         }
 
         CodeLine *mallocCodeLine() {
-            return codeLineBufferList.newNode();
+            return mallocBuffer.newMem<CodeLine>(1);
+
+            //return codeLineBufferList.newNode();
         }
 
         SpaceNodeStruct *mallocSpaceNode() {
-            return spaceBufferList.newNode();
+            return mallocBuffer.newMem<SimpleTextNodeStruct>(1);
+            //return spaceBufferList.newNode();
         }
 
         NullNodeStruct *mallocNullNode() {
-            return spaceBufferList.newNode();
+            return mallocBuffer.newMem<SimpleTextNodeStruct>(1);
+            //return spaceBufferList.newNode();
         }
     };
 
 
     static inline void deleteContext(ParseContext *context) {
+        context->mallocBuffer.freeAll();
+        /*
         deleteNodeBufferList(context->lineBreakBufferList.firstBufferList);
         deleteNodeBufferList(context->codeLineBufferList.firstBufferList);
         deleteNodeBufferList(context->spaceBufferList.firstBufferList);
         deleteCharBuffer(context->charBuffer.firstBufferList);
-
+*/
         free(context);
     }
 
@@ -705,7 +718,7 @@ namespace smart {
                         //context->scanEnd = true;
                         auto *boolNode = Alloc::newSpaceNode(context, parent);
 
-                        boolNode->text = context->charBuffer.newChars(length + 1);
+                        boolNode->text = context->mallocBuffer.newMem<char>(length+1);// context->charBuffer.newChars(length + 1);
                         boolNode->textLength = length;
 
                         TEXT_MEMCPY(boolNode->text, context->chars + start, length);

@@ -665,10 +665,15 @@ TEST(ParserTest_, aaHashMap) {
         EXPECT_NE(hashKey, hashKey2);
     }
 
+    ParseContext *context = (ParseContext *)malloc(sizeof(ParseContext));
+    context->mallocBuffer.init();
 
     for (int i = 0; i < 100; i++) {
+
+
         HashMap *hashMap = simpleMalloc<HashMap>();
-        hashMap->init();
+        hashMap->init(context);
+
         auto *first = Cast::upcast(simpleMalloc<DocumentStruct>());
         const char key[] = "firstAA";
         hashMap->put2(key, Cast::upcast(simpleMalloc<DocumentStruct>()));
@@ -702,11 +707,6 @@ struct S {
 TEST(ParserTest_, charBuffer) {
     auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
     uint64_t loopCount = 100 * 1000LLU;
-
-    CharBuffer<char> charBuffer;
-    charBuffer.init();
-
-
 
     {
         srand((unsigned int)time(NULL));

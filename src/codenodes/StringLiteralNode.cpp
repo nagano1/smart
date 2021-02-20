@@ -78,7 +78,9 @@ namespace smart {
             Init::initStringLiteralNode(strLiteralNode, context, parent);
 
             context->codeNode = Cast::upcast(strLiteralNode);
-            strLiteralNode->text = context->charBuffer.newChars(found_count + 1);
+            strLiteralNode->text = //context->charBuffer.newChars(found_count + 1);
+                        context->mallocBuffer.newMem<char>(found_count+1);// context->charBuffer.newChars(length + 1);
+
             strLiteralNode->textLength = found_count;
 
             memcpy(strLiteralNode->text, context->chars + start, found_count);

@@ -73,7 +73,7 @@ inline void console_log(const char *str) {
 
 #endif
 
-
+/*
 template<typename NodeType>
 struct CharBuffer {
     static constexpr int CHAR_BUFFER_SIZE = 255;
@@ -218,7 +218,7 @@ void deleteNodeBufferList(NodeBufferList<NodeType> *bufferList) {
     }
 }
 
-
+*/
 
 struct MallocBuffer {
     static constexpr int CHAR_BUFFER_SIZE = 255;
@@ -252,8 +252,8 @@ struct MallocBuffer {
         }
     }
 
-    template<typename NodeType>
-    void tryDelete(NodeType *chars) {
+    template<typename Type>
+    void tryDelete(Type *chars) {
         auto * currentBufferList = *((MallocBuffer **)((sm_byte*)chars - sizeof(MallocBuffer*)));
         currentBufferList->itemCount--;
         auto *next = currentBufferList->next;
@@ -265,9 +265,9 @@ struct MallocBuffer {
     }
 
 
-    template<typename NodeType>
-    NodeType *newMem(unsigned int count) {
-        size_t charLen = sizeof(NodeType) * count;
+    template<typename Type>
+    Type *newMem(unsigned int count) {
+        size_t charLen = sizeof(Type) * count;
         auto sizeOfBuffer = sizeof(MallocBuffer*);
         auto length = charLen + sizeOfBuffer;
 
@@ -294,14 +294,14 @@ struct MallocBuffer {
             spaceNodeIndex = 0;
         }
         currentBufferList->itemCount++;
-        NodeType *node = (NodeType*)((sm_byte*)(currentBufferList->list) + spaceNodeIndex);
+        Type *node = (Type*)((sm_byte*)(currentBufferList->list) + spaceNodeIndex);
 
         auto **address = (MallocBuffer **)node;
         *address = currentBufferList;
 
         this->spaceNodeIndex += length;
 
-        return (NodeType*)((sm_byte*)node + sizeOfBuffer);
+        return (Type*)((sm_byte*)node + sizeOfBuffer);
     }
 
 };

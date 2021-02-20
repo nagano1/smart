@@ -53,7 +53,7 @@ namespace smart {
             this->entries[hashInt] = newHashNode;
 
 
-            char *keyB = charBuffer.newChars(keyLength + 1);
+            char *keyB = context->mallocBuffer.newMem<char>(keyLength + 1);
             for (int i = 0; i < keyLength; i++) {
                 keyB[i] = keyA[i];
             }
@@ -87,7 +87,7 @@ namespace smart {
 
 
         auto *newHashNode = simpleMalloc<HashNode>();
-        char *keyB = charBuffer.newChars(keyLength + 1);
+        char *keyB =  context->mallocBuffer.newMem<char>(keyLength + 1);
         for (int i = 0; i < keyLength; i++) {
             keyB[i] = keyA[i];
         }
@@ -100,8 +100,9 @@ namespace smart {
     }
 
 
-    void HashMap::init() {
-        charBuffer.init();
+    void HashMap::init(ParseContext *context) {
+        this->context = context;
+        //charBuffer.init();
         this->entries = (HashNode**)malloc(sizeof(HashNode*)*(HashNode_TABLE_SIZE));
         this->entries_length = HashNode_TABLE_SIZE;
 
@@ -182,7 +183,7 @@ namespace smart {
         genSpaceNode(ParseContext *context, void *parentNode, int start, int end) {
 
         auto *prevSpaceNode = Alloc::newSpaceNode(context, Cast::upcast(parentNode));
-        prevSpaceNode->text = context->charBuffer.newChars(end - start + 1);
+        prevSpaceNode->text =  context->mallocBuffer.newMem<char>(end - start + 1);
         memcpy(prevSpaceNode->text, context->chars + start, (end - start));
         prevSpaceNode->textLength = end - start;
 

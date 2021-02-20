@@ -158,7 +158,7 @@ namespace smart {
             keyNode->namePos = 1;
             keyNode->nameLength = found_count - 2;
             {
-                keyNode->text = context->charBuffer.newChars(found_count + 1);
+                keyNode->text = context->mallocBuffer.newMem<char>(found_count + 1);
                 keyNode->textLength = found_count;
 
                 memcpy(keyNode->text, context->chars + start, found_count);
@@ -220,7 +220,7 @@ namespace smart {
         jsonObjectNode->parsePhase = phase::EXPECT_NAME;
 
         jsonObjectNode->hashMap = simpleMalloc<HashMap>();
-        jsonObjectNode->hashMap->init();
+        jsonObjectNode->hashMap->init(context);
 
         Init::initSymbolNode(&jsonObjectNode->endBodyNode, context, parentNode, '}');
 
