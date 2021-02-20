@@ -48,7 +48,7 @@ namespace smart {
         HashNode* hashNode = this->entries[hashInt];
 
         if (hashNode == nullptr) {// || hashNode->key == nullptr) {
-            auto *newHashNode = simpleMalloc<HashNode>();
+            auto *newHashNode = context->newMem<HashNode>();
             newHashNode->next = nullptr;
             this->entries[hashInt] = newHashNode;
 
@@ -86,8 +86,8 @@ namespace smart {
         }
 
 
-        auto *newHashNode = simpleMalloc<HashNode>();
-        char *keyB =  context->mallocBuffer.newMem<char>(keyLength + 1);
+        auto *newHashNode = context->newMem<HashNode>();
+        char *keyB =  context->newMemArray<char>(keyLength + 1);
         for (int i = 0; i < keyLength; i++) {
             keyB[i] = keyA[i];
         }

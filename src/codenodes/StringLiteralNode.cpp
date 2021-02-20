@@ -74,7 +74,7 @@ namespace smart {
         }
 
         if (found_count > 0) {
-            auto *strLiteralNode = simpleMalloc<StringLiteralNodeStruct>();
+            auto *strLiteralNode = context->newMem<StringLiteralNodeStruct>();
             Init::initStringLiteralNode(strLiteralNode, context, parent);
 
             context->codeNode = Cast::upcast(strLiteralNode);

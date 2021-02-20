@@ -82,7 +82,7 @@ namespace smart {
 
     // -------------------- Implements ClassNode Allocator --------------------- //
     ClassNodeStruct *Alloc::newClassNode(ParseContext *context, NodeBase *parentNode) {
-        auto *classNode = simpleMalloc<ClassNodeStruct>();
+        auto *classNode = context->newMem<ClassNodeStruct>();
         //classNode->sub = simpleMalloc<ClassNodeStruct::Impl>();
 
         INIT_NODE(classNode, context, parentNode, &_ClassVTable);
@@ -107,7 +107,7 @@ namespace smart {
             //classNode->nameNode.name = nullptr;
         }
 
-        free(classNode);
+        //free(classNode);
     }
 
 

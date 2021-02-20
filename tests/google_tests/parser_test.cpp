@@ -670,18 +670,17 @@ TEST(ParserTest_, aaHashMap) {
 
     for (int i = 0; i < 100; i++) {
 
-
-        HashMap *hashMap = simpleMalloc<HashMap>();
+        HashMap *hashMap = context->newMem<HashMap>();
         hashMap->init(context);
 
-        auto *first = Cast::upcast(simpleMalloc<DocumentStruct>());
+        auto *first = Cast::upcast(context->newMem<DocumentStruct>());
         const char key[] = "firstAA";
-        hashMap->put2(key, Cast::upcast(simpleMalloc<DocumentStruct>()));
+        hashMap->put2(key, Cast::upcast(context->newMem<DocumentStruct>()));
         hashMap->put2(key, first); // replace
 
-        hashMap->put2("secondBB", Cast::upcast(simpleMalloc<DocumentStruct>()));
-        hashMap->put2("jfiow", Cast::upcast(simpleMalloc<DocumentStruct>()));
-        hashMap->put("jfiow", sizeof("jfiow") - 1, Cast::upcast(simpleMalloc<DocumentStruct>()));
+        hashMap->put2("secondBB", Cast::upcast(context->newMem<DocumentStruct>()));
+        hashMap->put2("jfiow", Cast::upcast(context->newMem<DocumentStruct>()));
+        hashMap->put("jfiow", sizeof("jfiow") - 1, Cast::upcast(context->newMem<DocumentStruct>()));
 
         auto *node = hashMap->get2("firstAA");
         EXPECT_EQ(node, first);

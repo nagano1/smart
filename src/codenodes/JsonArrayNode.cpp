@@ -124,7 +124,7 @@ namespace smart {
 
 
     JsonArrayStruct *Alloc::newJsonArray(ParseContext *context, NodeBase *parentNode) {
-        auto *jsonArrayNode = simpleMalloc<JsonArrayStruct>();
+        auto *jsonArrayNode = context->newMem<JsonArrayStruct>();
         INIT_NODE(jsonArrayNode, context, parentNode, VTables::JsonArrayVTable);
         jsonArrayNode->firstItem = nullptr;
         jsonArrayNode->lastItem = nullptr;
@@ -177,7 +177,7 @@ namespace smart {
 
 
     JsonArrayItemStruct *Alloc::newJsonArrayItem(ParseContext *context, NodeBase *parentNode) {
-        auto *keyValueItem = simpleMalloc<JsonArrayItemStruct>();
+        auto *keyValueItem = context->newMem<JsonArrayItemStruct>();
 
         INIT_NODE(keyValueItem, context, parentNode, &_JsonArrayItemVTable);
 

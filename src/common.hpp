@@ -42,9 +42,10 @@ constexpr static int BUFFER_SIZE = 64; //25
     } \
 
 template<class T>
-static inline T *simpleMalloc() {
+static inline T *simpleMalloc2() {
     return (T *) malloc(sizeof(T));
 }
+
 
 #ifdef __ANDROID__
 
@@ -132,12 +133,12 @@ struct MallocBuffer {
             unsigned int assign_size = CHAR_BUFFER_SIZE < length ? length : CHAR_BUFFER_SIZE;
             if (firstBufferList == nullptr) {
 
-                firstBufferList = currentBufferList = simpleMalloc<MallocBuffer>();
+                firstBufferList = currentBufferList = (MallocBuffer*)malloc(sizeof(MallocBuffer));
                 firstBufferList->list = (void *)malloc(assign_size);
                 firstBufferList->next = nullptr;
             }
             else {
-                auto *newList = simpleMalloc<MallocBuffer>();
+                auto *newList = (MallocBuffer*)malloc(sizeof(MallocBuffer));
                 newList->list = (void *)malloc(assign_size);
                 newList->next = nullptr;
                 currentBufferList->next = newList;

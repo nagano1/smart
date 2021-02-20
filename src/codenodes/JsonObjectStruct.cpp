@@ -75,7 +75,7 @@ namespace smart {
 
     JsonKeyValueItemStruct *
     Alloc::newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode) {
-        auto *keyValueItem = simpleMalloc<JsonKeyValueItemStruct>();
+        auto *keyValueItem = context->newMem<JsonKeyValueItemStruct>();
 
         INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable);
 
@@ -117,7 +117,7 @@ namespace smart {
 
     JsonObjectKeyNodeStruct *
     Alloc::newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode) {
-        auto *jsonKey = simpleMalloc<JsonObjectKeyNodeStruct>();
+        auto *jsonKey = context->newMem<JsonObjectKeyNodeStruct>();
         INIT_NODE(jsonKey, context, parentNode, &_JsonObjectKeyStructVTable);
 
         jsonKey->text = nullptr;
@@ -213,13 +213,13 @@ namespace smart {
 
 
     JsonObjectStruct *Alloc::newJsonObject(ParseContext *context, NodeBase *parentNode) {
-        auto *jsonObjectNode = simpleMalloc<JsonObjectStruct>();
+        auto *jsonObjectNode = context->newMem<JsonObjectStruct>();
         INIT_NODE(jsonObjectNode, context, parentNode, VTables::JsonObjectVTable);
         jsonObjectNode->firstKeyValueItem = nullptr;
         jsonObjectNode->lastKeyValueItem = nullptr;
         jsonObjectNode->parsePhase = phase::EXPECT_NAME;
 
-        jsonObjectNode->hashMap = simpleMalloc<HashMap>();
+        jsonObjectNode->hashMap = context->newMem<HashMap>();
         jsonObjectNode->hashMap->init(context);
 
         Init::initSymbolNode(&jsonObjectNode->endBodyNode, context, parentNode, '}');

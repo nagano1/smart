@@ -55,8 +55,8 @@ namespace smart {
             DocumentType docType,
             void(*actionCreator)(void *node1, void *node2, int actionRequest)
     ) {
-        auto *doc = simpleMalloc<DocumentStruct>();
-        auto *context = simpleMalloc<ParseContext>();
+        auto *context = simpleMalloc2<ParseContext>();
+        auto *doc = simpleMalloc2<DocumentStruct>();
 
         context->actionCreator = actionCreator != nullptr ? actionCreator : &staticActionCreator;
 

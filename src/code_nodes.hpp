@@ -348,6 +348,16 @@ namespace smart {
         CharBuffer<char> charBuffer;
          */
 
+        template<typename T>
+        T* newMem() {
+            return (T*)mallocBuffer.newMem<T>(1);
+        }
+
+        template<typename T>
+        T* newMemArray(int len) {
+            return (T*)mallocBuffer.newMem<T>(len);
+        }
+
 
         LineBreakNodeStruct *mallocLineBreakNode() {
             return mallocBuffer.newMem<LineBreakNodeStruct>(1);
