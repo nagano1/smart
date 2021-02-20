@@ -37,7 +37,7 @@ namespace smart {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
         currentCodeLine->appendNode(self);
 
-        auto *newNextLine = lineBreakNode->context->mallocCodeLine();//simpleMalloc<CodeLine>();
+        auto *newNextLine = lineBreakNode->context->newCodeLine();//simpleMalloc<CodeLine>();
         newNextLine->init(lineBreakNode->context);
 
         currentCodeLine->nextLine = newNextLine;
@@ -49,7 +49,7 @@ namespace smart {
             currentCodeLine = currentCodeLine->addPrevLineBreakNode((next));
             currentCodeLine->appendNode(Cast::upcast(next));
 
-            auto *newNextLine = lineBreakNode->context->mallocCodeLine();
+            auto *newNextLine = lineBreakNode->context->newCodeLine();
             newNextLine->init(lineBreakNode->context);
 
             currentCodeLine->nextLine = newNextLine;
@@ -70,7 +70,7 @@ namespace smart {
     const node_vtable *VTables::LineBreakVTable = &_LineBreakVTable;
 
     LineBreakNodeStruct *Alloc::newLineBreakNode(ParseContext *context, NodeBase *parentNode) {
-        auto *lineNode = context->mallocLineBreakNode();
+        auto *lineNode = context->newLineBreakNode();
         auto *node = Cast::upcast(lineNode);
 
         INIT_NODE(node, context, parentNode, VTables::LineBreakVTable);

@@ -76,7 +76,7 @@ namespace smart {
         doc->firstCodeLine = nullptr;
         doc->nodeCount = 0;
 
-        context->mallocBuffer.init();
+        context->memBuffer.init();
         /*
         context->spaceBufferList.init();
         context->lineBreakBufferList.init();
@@ -118,7 +118,7 @@ namespace smart {
         int len = VTableCall::selfTextLength(node);
         int prev_char = node->prev_char != '\0' ? 1 : 0;
 
-        auto *text = (char *) malloc(sizeof(char) * len + 1 + prev_char);
+        auto *text = (char *) node->context->newMemArray<char>(len + 1 + prev_char);
         text[len + prev_char] = '\0';
 
         int offset = 0;
@@ -136,16 +136,17 @@ namespace smart {
     }
 
     utf8byte *DocumentUtils::getTextFromLine(CodeLine *line) {
+        return nullptr;
+        /*
         int totalCount = 0;
-        {
             auto *node = line->firstNode;
             while (node) {
                 int len = VTableCall::selfTextLength(node);
                 totalCount += len;
                 node = node->nextNodeInLine;
             }
-        }
-        auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
+
+        auto *text = (char *)line->context->newMemArray<char>(totalCount+ 1);
         text[totalCount] = '\0';
         {
             auto *node = line->firstNode;
@@ -160,6 +161,8 @@ namespace smart {
             }
         }
         return text;
+        */
+
     }
 
     utf8byte *DocumentUtils::getTypeTextFromTree(DocumentStruct *doc) {
@@ -219,7 +222,6 @@ namespace smart {
                         currentOffset += len;
 
                     }
-
 
                     node = node->nextNodeInLine;
                 }
@@ -425,7 +427,7 @@ namespace smart {
         docStruct->lastRootNode->prevSpaceNode = context->remainedSpaceNode;
         docStruct->lastRootNode->prevLineBreakNode = context->remainedLineBreakNode;
 
-        docStruct->firstCodeLine = context->mallocCodeLine();// simpleMalloc<CodeLine>();
+        docStruct->firstCodeLine = context->newCodeLine();// simpleMalloc<CodeLine>();
         docStruct->firstCodeLine->init(context);
 
         VTableCall::appendToLine(docStruct, docStruct->firstCodeLine);

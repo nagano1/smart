@@ -53,7 +53,7 @@ namespace smart {
             this->entries[hashInt] = newHashNode;
 
 
-            char *keyB = context->mallocBuffer.newMem<char>(keyLength + 1);
+            char *keyB = context->memBuffer.newMem<char>(keyLength + 1);
             for (int i = 0; i < keyLength; i++) {
                 keyB[i] = keyA[i];
             }
@@ -183,7 +183,7 @@ namespace smart {
         genSpaceNode(ParseContext *context, void *parentNode, int start, int end) {
 
         auto *prevSpaceNode = Alloc::newSpaceNode(context, Cast::upcast(parentNode));
-        prevSpaceNode->text =  context->mallocBuffer.newMem<char>(end - start + 1);
+        prevSpaceNode->text =  context->memBuffer.newMem<char>(end - start + 1);
         memcpy(prevSpaceNode->text, context->chars + start, (end - start));
         prevSpaceNode->textLength = end - start;
 

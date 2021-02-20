@@ -79,7 +79,7 @@ namespace smart {
 
             context->codeNode = Cast::upcast(strLiteralNode);
             strLiteralNode->text = //context->charBuffer.newChars(found_count + 1);
-                        context->mallocBuffer.newMem<char>(found_count+1);// context->charBuffer.newChars(length + 1);
+                        context->memBuffer.newMem<char>(found_count + 1);// context->charBuffer.newChars(length + 1);
 
             strLiteralNode->textLength = found_count;
 

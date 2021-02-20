@@ -74,14 +74,14 @@ inline void console_log(const char *str) {
 
 #endif
 
-struct MallocBuffer {
+struct MemBuffer {
     static constexpr int CHAR_BUFFER_SIZE = 255;
     void *list = nullptr;//[500];
-    MallocBuffer *next = nullptr;
+    MemBuffer *next = nullptr;
 
 
-    MallocBuffer *firstBufferList = nullptr;
-    MallocBuffer *currentBufferList = nullptr;
+    MemBuffer *firstBufferList = nullptr;
+    MemBuffer *currentBufferList = nullptr;
     unsigned int spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
     int itemCount = 0;
     bool isLast = true;
@@ -95,7 +95,7 @@ struct MallocBuffer {
     }
 
     void freeAll() {
-        MallocBuffer *bufferList = this->firstBufferList;
+        MemBuffer *bufferList = this->firstBufferList;
 
         while (bufferList) {
             free(bufferList->list);
@@ -108,7 +108,7 @@ struct MallocBuffer {
 
     template<typename Type>
     void tryDelete(Type *chars) {
-        auto * currentBufferList = *((MallocBuffer **)((sm_byte*)chars - sizeof(MallocBuffer*)));
+        auto * currentBufferList = *((MemBuffer **)((sm_byte*)chars - sizeof(MemBuffer*)));
         currentBufferList->itemCount--;
         auto *next = currentBufferList->next;
         if (next) {
@@ -122,7 +122,7 @@ struct MallocBuffer {
     template<typename Type>
     Type *newMem(unsigned int count) {
         size_t charLen = sizeof(Type) * count;
-        auto sizeOfBuffer = sizeof(MallocBuffer*);
+        auto sizeOfBuffer = sizeof(MemBuffer*);
         auto length = charLen + sizeOfBuffer;
 
 
@@ -133,12 +133,12 @@ struct MallocBuffer {
             unsigned int assign_size = CHAR_BUFFER_SIZE < length ? length : CHAR_BUFFER_SIZE;
             if (firstBufferList == nullptr) {
 
-                firstBufferList = currentBufferList = (MallocBuffer*)malloc(sizeof(MallocBuffer));
+                firstBufferList = currentBufferList = (MemBuffer*)malloc(sizeof(MemBuffer));
                 firstBufferList->list = (void *)malloc(assign_size);
                 firstBufferList->next = nullptr;
             }
             else {
-                auto *newList = (MallocBuffer*)malloc(sizeof(MallocBuffer));
+                auto *newList = (MemBuffer*)malloc(sizeof(MemBuffer));
                 newList->list = (void *)malloc(assign_size);
                 newList->next = nullptr;
                 currentBufferList->next = newList;
@@ -150,7 +150,7 @@ struct MallocBuffer {
         currentBufferList->itemCount++;
         Type *node = (Type*)((sm_byte*)(currentBufferList->list) + spaceNodeIndex);
 
-        auto **address = (MallocBuffer **)node;
+        auto **address = (MemBuffer **)node;
         *address = currentBufferList;
 
         this->spaceNodeIndex += length;

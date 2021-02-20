@@ -158,7 +158,7 @@ namespace smart {
             keyNode->namePos = 1;
             keyNode->nameLength = found_count - 2;
             {
-                keyNode->text = context->mallocBuffer.newMem<char>(found_count + 1);
+                keyNode->text = context->memBuffer.newMem<char>(found_count + 1);
                 keyNode->textLength = found_count;
 
                 memcpy(keyNode->text, context->chars + start, found_count);

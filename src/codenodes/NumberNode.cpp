@@ -138,7 +138,7 @@ namespace smart {
             auto *numberNode = Alloc::newNumberNode(context, parent);
 
             context->codeNode = Cast::upcast(numberNode);
-            numberNode->text = context->mallocBuffer.newMem<char>(found_count + 1);
+            numberNode->text = context->memBuffer.newMem<char>(found_count + 1);
             numberNode->textLength = found_count;
 
             TEXT_MEMCPY(numberNode->text, context->chars + start, found_count);

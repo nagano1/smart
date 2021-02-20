@@ -57,7 +57,7 @@ namespace smart {
 
             //auto *nameNode = Allocator::newNameNode(context, parent);
             context->codeNode = Cast::upcast(nameNode);
-            nameNode->name = context->mallocBuffer.newMem<char>(found_count + 1);
+            nameNode->name = context->memBuffer.newMem<char>(found_count + 1);
             nameNode->nameLength = found_count;
 
             memcpy(nameNode->name, context->chars + start, found_count);

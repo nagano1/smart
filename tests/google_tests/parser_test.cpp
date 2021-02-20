@@ -666,7 +666,7 @@ TEST(ParserTest_, aaHashMap) {
     }
 
     ParseContext *context = (ParseContext *)malloc(sizeof(ParseContext));
-    context->mallocBuffer.init();
+    context->memBuffer.init();
 
     for (int i = 0; i < 100; i++) {
 
@@ -711,7 +711,7 @@ TEST(ParserTest_, charBuffer) {
         srand((unsigned int)time(NULL));
         for (int i = 0; i < 80 * 100; i++) {
 
-            MallocBuffer *charBuffer3 = (MallocBuffer*)malloc(sizeof(MallocBuffer));
+            MemBuffer *charBuffer3 = (MemBuffer*)malloc(sizeof(MemBuffer));
             charBuffer3->init();
             
             unsigned int max = 1 + rand() % 10;
@@ -727,7 +727,7 @@ TEST(ParserTest_, charBuffer) {
                 EXPECT_EQ(chars->a, 5);
                 EXPECT_EQ(chars2->a, 2);
 
-                EXPECT_EQ(charBuffer3->currentBufferList, *((MallocBuffer **)((sm_byte*)chars2 - sizeof(MallocBuffer *))));
+                EXPECT_EQ(charBuffer3->currentBufferList, *((MemBuffer **)((sm_byte*)chars2 - sizeof(MemBuffer *))));
 
                 charBuffer3->tryDelete(chars);
                 charBuffer3->tryDelete(chars2);

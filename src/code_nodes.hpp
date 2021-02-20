@@ -340,7 +340,7 @@ namespace smart {
         LineBreakNodeStruct *remainedLineBreakNode;
         SpaceNodeStruct *remainedSpaceNode;
 
-        MallocBuffer mallocBuffer;
+        MemBuffer memBuffer;
         /*
         NodeBufferList<SimpleTextNodeStruct> spaceBufferList;
         NodeBufferList<CodeLine> codeLineBufferList;
@@ -350,42 +350,42 @@ namespace smart {
 
         template<typename T>
         T* newMem() {
-            return (T*)mallocBuffer.newMem<T>(1);
+            return (T*)memBuffer.newMem<T>(1);
         }
 
         template<typename T>
         T* newMemArray(int len) {
-            return (T*)mallocBuffer.newMem<T>(len);
+            return (T*)memBuffer.newMem<T>(len);
         }
 
 
-        LineBreakNodeStruct *mallocLineBreakNode() {
-            return mallocBuffer.newMem<LineBreakNodeStruct>(1);
+        LineBreakNodeStruct *newLineBreakNode() {
+            return memBuffer.newMem<LineBreakNodeStruct>(1);
             /*
             return lineBreakBufferList.newNode();
              */
         }
 
-        CodeLine *mallocCodeLine() {
-            return mallocBuffer.newMem<CodeLine>(1);
+        CodeLine *newCodeLine() {
+            return memBuffer.newMem<CodeLine>(1);
 
             //return codeLineBufferList.newNode();
         }
 
-        SpaceNodeStruct *mallocSpaceNode() {
-            return mallocBuffer.newMem<SimpleTextNodeStruct>(1);
+        SpaceNodeStruct *newSpaceNode() {
+            return memBuffer.newMem<SimpleTextNodeStruct>(1);
             //return spaceBufferList.newNode();
         }
 
-        NullNodeStruct *mallocNullNode() {
-            return mallocBuffer.newMem<SimpleTextNodeStruct>(1);
+        NullNodeStruct *newNullNode() {
+            return memBuffer.newMem<SimpleTextNodeStruct>(1);
             //return spaceBufferList.newNode();
         }
     };
 
 
     static inline void deleteContext(ParseContext *context) {
-        context->mallocBuffer.freeAll();
+        context->memBuffer.freeAll();
         /*
         deleteNodeBufferList(context->lineBreakBufferList.firstBufferList);
         deleteNodeBufferList(context->codeLineBufferList.firstBufferList);
@@ -728,7 +728,7 @@ namespace smart {
                         //context->scanEnd = true;
                         auto *boolNode = Alloc::newSpaceNode(context, parent);
 
-                        boolNode->text = context->mallocBuffer.newMem<char>(length+1);// context->charBuffer.newChars(length + 1);
+                        boolNode->text = context->memBuffer.newMem<char>(length + 1);// context->charBuffer.newChars(length + 1);
                         boolNode->textLength = length;
 
                         TEXT_MEMCPY(boolNode->text, context->chars + start, length);

@@ -47,7 +47,7 @@ namespace smart {
 
     SimpleTextNodeStruct *
     Alloc::newSimpleTextNode(ParseContext *context, NodeBase *parentNode) {
-        auto *spaceNode = context->mallocSpaceNode();
+        auto *spaceNode = context->newSpaceNode();
         auto *node = Cast::upcast(spaceNode);
 
         INIT_NODE(node, context, parentNode, VTables::SimpleTextVTable);
@@ -56,7 +56,7 @@ namespace smart {
 
 
     SpaceNodeStruct *Alloc::newSpaceNode(ParseContext *context, NodeBase *parentNode) {
-        auto *spaceNode = context->mallocSpaceNode();
+        auto *spaceNode = context->newSpaceNode();
         auto *node = Cast::upcast(spaceNode);
 
         INIT_NODE(node, context, parentNode, VTables::SpaceVTable);
@@ -64,7 +64,7 @@ namespace smart {
     }
 
     NullNodeStruct *Alloc::newNullNode(ParseContext *context, NodeBase *parentNode) {
-        auto *nullNode = context->mallocSpaceNode();
+        auto *nullNode = context->newSpaceNode();
         auto *node = Cast::upcast(nullNode);
 
         INIT_NODE(node, context, parentNode, VTables::NullVTable);
