@@ -46,10 +46,10 @@ int main(int argc, char **argv)
             unsigned int len = 1 + rand() % 100;
 
             int size = 355;
-            auto *chars = charBuffer3->newChars<S>(len);
+            auto *chars = charBuffer3->newMem<S>(len);
             chars->a = 5;
 
-            auto *chars2 = charBuffer3->newChars<S>(1);
+            auto *chars2 = charBuffer3->newMem<S>(1);
             chars2->a = 2;
 
             charBuffer3->tryDelete(chars);
