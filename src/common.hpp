@@ -266,17 +266,17 @@ struct MallocBuffer {
 
 
     template<typename NodeType>
-    NodeType *newChars(unsigned int count) {
+    NodeType *newMem(unsigned int count) {
         size_t charLen = sizeof(NodeType) * count;
         auto sizeOfBuffer = sizeof(MallocBuffer*);
         auto length = charLen + sizeOfBuffer;
 
-        unsigned int assign_size = CHAR_BUFFER_SIZE < length ? length : CHAR_BUFFER_SIZE;
 
         if (spaceNodeIndex + length < CHAR_BUFFER_SIZE) {
 
         }
         else {
+            unsigned int assign_size = CHAR_BUFFER_SIZE < length ? length : CHAR_BUFFER_SIZE;
             if (firstBufferList == nullptr) {
 
                 firstBufferList = currentBufferList = simpleMalloc<MallocBuffer>();
@@ -299,7 +299,7 @@ struct MallocBuffer {
         auto **address = (MallocBuffer **)node;
         *address = currentBufferList;
 
-        this->spaceNodeIndex += length;// assign_size;
+        this->spaceNodeIndex += length;
 
         return (NodeType*)((sm_byte*)node + sizeOfBuffer);
     }

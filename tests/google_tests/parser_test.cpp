@@ -707,46 +707,23 @@ TEST(ParserTest_, charBuffer) {
     charBuffer.init();
 
 
-    auto *chars = charBuffer.newChars(255);
-    EXPECT_EQ(charBuffer.firstBufferList, charBuffer.currentBufferList);
 
     {
-        CharBuffer<char> charBuffer2;
-        charBuffer2.init();
-        {
-            auto *chars = charBuffer2.newChars(255);
-
-            EXPECT_EQ('\0', *(chars + 254));
-            EXPECT_EQ(charBuffer2.currentBufferList, *((CharBuffer<char> **)(chars - sizeof(CharBuffer<char> *))));
-
-            charBuffer2.tryDelete(chars);
-        }
-
-        {
-            int size = 355;
-            auto *chars = charBuffer2.newChars(size);
-
-            EXPECT_EQ('\0', *(chars + size - 1));
-            EXPECT_EQ(charBuffer2.currentBufferList, *((CharBuffer<char> **)(chars - sizeof(CharBuffer<char> *))));
-            charBuffer2.tryDelete(chars);
-
-        }
-
         srand((unsigned int)time(NULL));
-        for (int i = 0; i < 8000 * 100; i++) {
-            unsigned int max = 1 + rand() % 1;
+        for (int i = 0; i < 80 * 100; i++) {
 
             MallocBuffer *charBuffer3 = (MallocBuffer*)malloc(sizeof(MallocBuffer));
             charBuffer3->init();
-
+            
+            unsigned int max = 1 + rand() % 10;
             for (int j = 0; j < max; j++) {
                 unsigned int len = 1 + rand() % 100;
 
                 int size = 355;
-                auto *chars = charBuffer3->newChars<S>(len);
+                auto *chars = charBuffer3->newMem<S>(len);
                 chars->a = 5;
 
-                auto *chars2 = charBuffer3->newChars<S>(1);
+                auto *chars2 = charBuffer3->newMem<S>(1);
                 chars2->a = 2;
                 EXPECT_EQ(chars->a, 5);
                 EXPECT_EQ(chars2->a, 2);
@@ -762,11 +739,6 @@ TEST(ParserTest_, charBuffer) {
         }
 
     }
-
-
-    auto *chars2 = charBuffer.newChars(1);
-    EXPECT_NE(charBuffer.firstBufferList, charBuffer.currentBufferList);
-
 
     auto elapsed = std::chrono::high_resolution_clock::now().time_since_epoch() - start;
     auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
