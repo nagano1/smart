@@ -695,6 +695,9 @@ TEST(ParserTest_, aaHashMap) {
 
 ENDTEST
 
+struct S {
+    int a{ 3 };
+};
 
 TEST(ParserTest_, charBuffer) {
     auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
@@ -726,6 +729,25 @@ TEST(ParserTest_, charBuffer) {
             EXPECT_EQ('\0', *(chars + size - 1));
             EXPECT_EQ(charBuffer2.currentBufferList, *((CharBuffer<char> **)(chars - sizeof(CharBuffer<char> *))));
             charBuffer2.tryDelete(chars);
+
+        }
+
+        {
+            MallocBuffer charBuffer3;
+            charBuffer3.init();;
+            int size = 355;
+            auto *chars = charBuffer3.newChars<S>(sizeof(S));
+            chars->a = 5;
+
+            auto *chars2 = charBuffer3.newChars<S>(sizeof(S));
+            chars2->a = 2;
+            EXPECT_EQ(chars->a, 5);
+            EXPECT_EQ(chars2->a, 2);
+
+            EXPECT_EQ(charBuffer3.currentBufferList, *((MallocBuffer **)(chars - sizeof(MallocBuffer *))));
+            charBuffer3.tryDelete(chars);
+
+
 
         }
     }
@@ -912,7 +934,7 @@ ENDTEST
 
 
 
-TEST(ParserTest_, ParseUtil) {
+    TEST(ParserTest_, ParseUtil) {
 
     EXPECT_EQ(true, ParseUtil::isIdentifierLetter('a'));
 

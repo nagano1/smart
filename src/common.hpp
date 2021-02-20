@@ -104,8 +104,6 @@ struct CharBuffer {
         else {
 
         }
-
-        
     }
 
 
@@ -122,11 +120,11 @@ struct CharBuffer {
             if (firstBufferList == nullptr) {
 
                 firstBufferList = currentBufferList = simpleMalloc<CharBuffer<NodeType>>();
-                firstBufferList->list = (NodeType *) malloc(sizeof(NodeType) * assign_size);
+                firstBufferList->list = (NodeType *) malloc(assign_size);
                 firstBufferList->next = nullptr;
             } else {
                 auto *newList = simpleMalloc<CharBuffer<NodeType>>();
-                newList->list = (NodeType *) malloc(sizeof(NodeType) * assign_size);
+                newList->list = (NodeType *) malloc(assign_size);
                 newList->next = nullptr;
                 currentBufferList->next = newList;
                 currentBufferList->isLast = false;
@@ -218,4 +216,90 @@ void deleteNodeBufferList(NodeBufferList<NodeType> *bufferList) {
         free(bufferList);
     }
 }
+
+
+
+struct MallocBuffer {
+    static constexpr int CHAR_BUFFER_SIZE = 255;
+    void *list = nullptr;//[500];
+    MallocBuffer *next = nullptr;
+
+
+    MallocBuffer *firstBufferList = nullptr;
+    MallocBuffer *currentBufferList = nullptr;
+    int spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
+    int itemCount = 0;
+    bool isLast = true;
+
+    void init() {
+        spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
+        firstBufferList = nullptr;
+        currentBufferList = nullptr;
+    }
+
+    void freeAll() {
+        MallocBuffer *bufferList = firstBufferList;
+
+        while (bufferList) {
+            free(bufferList->list);
+            bufferList = bufferList->next;
+        }
+    }
+
+    template<typename NodeType>
+    void tryDelete(NodeType *chars) {
+        auto * currentBufferList = *((MallocBuffer **)(chars - sizeof(MallocBuffer*)));
+        currentBufferList->itemCount--;
+        auto * next = currentBufferList->next;
+        if (next) {
+            if (next->itemCount == 0 && next->isLast == false) {
+                // can delete & free
+            }
+        }
+        else {
+
+        }
+    }
+
+
+    template<typename NodeType>
+    NodeType *newChars(size_t len) {
+        size_t charLen = len;// sizeof(NodeType);
+        auto sizeOfBuffer = sizeof(MallocBuffer*);
+        auto length = charLen + sizeOfBuffer;
+
+        if (spaceNodeIndex + length < CHAR_BUFFER_SIZE) {
+
+        }
+        else {
+            int assign_size = CHAR_BUFFER_SIZE < length ? length : CHAR_BUFFER_SIZE;
+            if (firstBufferList == nullptr) {
+
+                firstBufferList = currentBufferList = simpleMalloc<MallocBuffer>();
+                firstBufferList->list = (void *)malloc(assign_size);
+                firstBufferList->next = nullptr;
+            }
+            else {
+                auto *newList = simpleMalloc<MallocBuffer>();
+                newList->list = (void *)malloc(assign_size);
+                newList->next = nullptr;
+                currentBufferList->next = newList;
+                currentBufferList->isLast = false;
+                currentBufferList = newList;
+            }
+            spaceNodeIndex = 0;
+        }
+        currentBufferList->itemCount++;
+        NodeType *node = (NodeType*)((char*)(currentBufferList->list) + spaceNodeIndex);
+//        node[sizeOfBuffer + charLen - 1] = '\0';
+
+        auto **address = (MallocBuffer **)node;
+        *address = currentBufferList;
+
+        spaceNodeIndex += length;
+
+        return node + sizeOfBuffer;
+    }
+
+};
 

@@ -28,6 +28,8 @@ using namespace smart;
 
 int main(int argc, char **argv) {
 
+    srand(timeSeed());
+
 
 for (int i = 0; i < 200*1000; i++) 
     {
