@@ -83,16 +83,16 @@ struct MemBufferBlock {
 };
 
 struct MemBuffer {
-    static constexpr int CHAR_BUFFER_SIZE = 255;
+    static constexpr int DEFAULT_BUFFER_SIZE = 255;
 
     MemBufferBlock *firstBufferBlock = nullptr;
     MemBufferBlock *currentBufferBlock = nullptr;
-    unsigned int spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
+    unsigned int currentMemOffset = DEFAULT_BUFFER_SIZE + 1;
 
     void init() {
-        spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
-        firstBufferBlock = nullptr;
-        currentBufferBlock = nullptr;
+        this->currentMemOffset = DEFAULT_BUFFER_SIZE + 1;
+        this->firstBufferBlock = nullptr;
+        this->currentBufferBlock = nullptr;
     }
 
     void freeAll() {
@@ -127,11 +127,11 @@ struct MemBuffer {
         auto length = charLen + sizeOfBuffer;
 
 
-        if (spaceNodeIndex + length < CHAR_BUFFER_SIZE) {
+        if (currentMemOffset + length < DEFAULT_BUFFER_SIZE) {
 
         }
         else {
-            unsigned int assign_size = CHAR_BUFFER_SIZE < length ? length : CHAR_BUFFER_SIZE;
+            unsigned int assign_size = DEFAULT_BUFFER_SIZE < length ? length : DEFAULT_BUFFER_SIZE;
             if (firstBufferBlock == nullptr) {
 
                 firstBufferBlock = currentBufferBlock = (MemBufferBlock*)malloc(sizeof(MemBufferBlock));
@@ -150,15 +150,15 @@ struct MemBuffer {
             currentBufferBlock->itemCount = 0;
             currentBufferBlock->next = nullptr;
 
-            spaceNodeIndex = 0;
+            currentMemOffset = 0;
         }
         currentBufferBlock->itemCount++;
-        Type *node = (Type*)((sm_byte*)(currentBufferBlock->list) + spaceNodeIndex);
+        Type *node = (Type*)((sm_byte*)(currentBufferBlock->list) + currentMemOffset);
 
         auto **address = (MemBufferBlock **)node;
         *address = currentBufferBlock;
 
-        this->spaceNodeIndex += length;
+        this->currentMemOffset += length;
 
         return (Type*)((sm_byte*)node + sizeOfBuffer);
     }
