@@ -82,6 +82,20 @@ void LSPManager::LSP_main() {
 }
 
 
+static void validateJson(const char *text, size_t textLength) {
+    auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
+    DocumentUtils::parseText(document, text, textLength);
+
+    const char body[] = u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt","diagnostics": [{"severity": 1,"range": { "start": { "character": 1, "line": 2 }, "end": { "character": 2, "line": 3 } },"message": "awefawf","source": "ex"}]}})";
+    std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(body)) + "\n\n" + std::string{ body };
+
+    fprintf(stderr, "\n\n[%s]\n\n", text);
+    fflush(stderr);
+
+    fprintf(stdout, "%s", responseMessage.c_str());
+    fflush(stdout);
+}
+
 void LSPManager::nextRequest(char *chars, size_t length) {
     fprintf(stderr, "req: \n%s", chars);
     fflush(stderr);
@@ -126,11 +140,11 @@ void LSPManager::nextRequest(char *chars, size_t length) {
             auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
             auto *method = strNode->text;
 
-            fprintf(stderr, "here: [%s]", strNode->text);
+            fprintf(stderr, "here: [%s]", strNode->str);
             fflush(stderr);
 
-            if (strNode->textLength > 0 && 0 == strcmp(strNode->text, "\"initialize\"")) {
-                const char body[] = u8R"({"jsonrpc": "2.0","id" : "0","result" : {"capabilities": {"textDocumentSync": 2,"completionProvider": { "resolveProvider": true }}}})";
+            if (strNode->textLength > 0 && 0 == strcmp(strNode->str, "initialize")) {
+                const char body[] = u8R"({"jsonrpc": "2.0","id" : "0","result" : {"capabilities": {"textDocumentSync": 1,"completionProvider": { "resolveProvider": true }}}})";
 
                 std::string responseMessage = std::string{ "Content-Length: " } +std::to_string( + strlen(body)) + std::string{ "\n\n" }+std::string{ body };
 
@@ -140,17 +154,15 @@ void LSPManager::nextRequest(char *chars, size_t length) {
                 fflush(stdout);
                 return;
             }
-            if (strNode->textLength > 0 && 0 == strcmp(strNode->text, "\"textDocument/didOpen\"")) {
+            if (strNode->textLength > 0 && 0 == strcmp(strNode->str, "textDocument/didChange")) {
                 auto *item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
-                auto *item3 = Cast::downcast<JsonObjectStruct*>(item2->hashMap->get2("textDocument"));
-                auto *item4 = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("uri"));
+                auto *item3 = Cast::downcast<JsonArrayStruct*>(item2->hashMap->get2("contentChanges"));
+                auto *item5 = Cast::downcast<JsonObjectStruct*>(item3->firstItem->valueNode);
+                auto *item4 = Cast::downcast<StringLiteralNodeStruct*>(item5->hashMap->get2("text"));
 
-                const char body[] = u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt","diagnostics": [{"severity": 1,"range": { "start": { "character": 1, "line": 2 }, "end": { "character": 2, "line": 3 } },"message": "awefawf","source": "ex"}]}})";
-                std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(body)) + "\n\n" +std::string{ body };
 
-                fprintf(stdout, "%s", responseMessage.c_str());
-                fflush(stdout);
-
+                validateJson(item4->str, item4->strLength);
+                
                 return;
             }
         }

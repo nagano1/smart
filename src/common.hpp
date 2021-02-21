@@ -122,9 +122,9 @@ struct MemBuffer {
 
     template<typename Type>
     Type *newMem(unsigned int count) {
-        size_t charLen = sizeof(Type) * count;
-        auto sizeOfBuffer = sizeof(MemBufferBlock*);
-        auto length = charLen + sizeOfBuffer;
+        size_t bytes = sizeof(Type) * count;
+        auto sizeOfPointerToBlock = sizeof(MemBufferBlock*);
+        auto length = bytes + sizeOfPointerToBlock;
 
 
         if (currentMemOffset + length < DEFAULT_BUFFER_SIZE) {
@@ -133,7 +133,6 @@ struct MemBuffer {
         else {
             unsigned int assign_size = DEFAULT_BUFFER_SIZE < length ? length : DEFAULT_BUFFER_SIZE;
             if (firstBufferBlock == nullptr) {
-
                 firstBufferBlock = currentBufferBlock = (MemBufferBlock*)malloc(sizeof(MemBufferBlock));
                 firstBufferBlock->list = (void *)malloc(assign_size);
             }
@@ -160,7 +159,7 @@ struct MemBuffer {
 
         this->currentMemOffset += length;
 
-        return (Type*)((sm_byte*)node + sizeOfBuffer);
+        return (Type*)((sm_byte*)node + sizeOfPointerToBlock);
     }
 };
 

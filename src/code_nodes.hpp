@@ -102,8 +102,10 @@ namespace smart {
         char *text;
         size_t textLength;
 
-        char *strValue;
-        size_t strValueLength;
+        char *str;
+        size_t strLength;
+        
+        int literalType; // 0: "text", 1: `wjfeiofw`, 2: r"testfaojiwe"
     };
 
     using BoolNodeStruct = struct {

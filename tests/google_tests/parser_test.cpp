@@ -40,7 +40,7 @@ TEST(ParserTest_, JsonParseTest) {
 
 
     {
-        char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized"})");
+        char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "\"initialized\""})");
         auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
         DocumentUtils::parseText(document, text, strlen(text));
         auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
@@ -53,7 +53,10 @@ TEST(ParserTest_, JsonParseTest) {
         EXPECT_EQ(item->vtable, VTables::StringLiteralVTable);
 
         auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
-        EXPECT_EQ(std::string{ strNode->text }, std::string{ "\"initialized\"" });
+        EXPECT_EQ( strNode->strLength, 13);
+        EXPECT_EQ( strNode->textLength, 17);
+        EXPECT_EQ(std::string{ strNode->str }, std::string{ "\"initialized\"" });
+        //EXPECT_EQ(std::string{ strNode->text }, std::string{ "\\\"initialized\\\"" });
     }
 
 

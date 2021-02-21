@@ -42,18 +42,36 @@ namespace smart {
         // starts with "
         bool startsWithDQuote = false;
         bool endsWithDQuote = false;
-        if (context->chars[start] == '"') {
+
+        if (ch == '"') {
             startsWithDQuote = true;
             found_count++;
         }
+        else {
+            return -1;
+        }
 
         int letterStart = startsWithDQuote ? start + 1 : start;
+        bool escapeMode = false;
+
         for (uint_fast32_t i = letterStart; i < context->length; i++) {
-            if (ParseUtil::isIdentifierLetter(context->chars[i])) {
+            /*if (ParseUtil::isIdentifierLetter(context->chars[i])) {
                 found_count++;
             }
-            else if (startsWithDQuote) {
+            else 
+            */
+            if (startsWithDQuote) {
                 found_count++;
+
+                if (escapeMode) {
+                    escapeMode = false;
+                    continue;
+                }
+
+                if (context->chars[i] == '\\') {
+                    escapeMode = true;
+                    continue;
+                }
 
                 if (context->chars[i] == '"') {
                     endsWithDQuote = true;
@@ -64,6 +82,10 @@ namespace smart {
             }
         }
 
+
+
+
+
         if (startsWithDQuote && !endsWithDQuote) {
             context->syntaxErrorInfo.hasError = true;
             context->syntaxErrorInfo.charPosition = start;
@@ -73,19 +95,97 @@ namespace smart {
             return -1;
         }
 
+
         if (found_count > 0) {
             auto *strLiteralNode = context->newMem<StringLiteralNodeStruct>();
             Init::initStringLiteralNode(strLiteralNode, context, parent);
-
             context->codeNode = Cast::upcast(strLiteralNode);
-            strLiteralNode->text = //context->charBuffer.newChars(found_count + 1);
-                        context->memBuffer.newMem<char>(found_count + 1);// context->charBuffer.newChars(length + 1);
+
+            strLiteralNode->text = context->memBuffer.newMem<char>(found_count + 1);
 
             strLiteralNode->textLength = found_count;
 
             memcpy(strLiteralNode->text, context->chars + start, found_count);
             strLiteralNode->text[found_count] = '\0';
 
+
+            // create actual string
+            auto *str = context->memBuffer.newMem<char>(found_count);
+            bool escapeMode = false;
+            int strLength = 0;
+            int currentStrIndex = 0;
+            for (uint_fast32_t i = 1; i < found_count-1; i++) {
+
+                /*
+                \"	"	ダブルクォーテーション
+\\	\	バックスラッシュ
+\/	/	スラッシュ
+\b		バックスペース
+\f		改ページ
+\n		キャリジリターン(改行)
+\r		ラインフィード
+\t		タブ
+\uXXXX		4桁の16進数で表記されたUnicode文字
+                */
+                if (escapeMode) {
+                    escapeMode = false;
+                    auto ch = strLiteralNode->text[i];
+                    if (ch == 'r') {
+                        //str[currentStrIndex++] = '\r';
+                    }
+                    else if (ch == 'n') {
+                        str[currentStrIndex++] = '\n';
+                    }
+                    else if (ch == 't') {
+                        str[currentStrIndex++] = '\t';
+                    }
+                    else if (ch == '\\') {
+                        str[currentStrIndex++] = '\\';
+                    }
+                    else if (ch == 'f') {
+                        str[currentStrIndex++] = 'f';
+                    }
+                    else if (ch == '/') {
+                        str[currentStrIndex++] = '/';
+                    }
+                    else if (ch == 'u') {
+                        str[currentStrIndex++] = 'u'; // 
+                    }
+                    else {
+                        str[currentStrIndex++] = strLiteralNode->text[i];
+
+                    }
+                    continue;
+                }
+
+
+                if (strLiteralNode->text[i] == '\\') {
+                    escapeMode = true;
+                }
+                else {
+                    auto ch = strLiteralNode->text[i];
+                    str[currentStrIndex++] = ch;
+                }
+
+                strLength++;
+            }
+
+            if (startsWithDQuote) {
+                strLiteralNode->literalType = 0;
+
+                strLiteralNode->str = str;
+                strLiteralNode->strLength = strLength;
+                strLiteralNode->str[strLength] = '\0';
+
+            }
+            else {
+                strLiteralNode->literalType = 1;
+                
+                strLiteralNode->str = strLiteralNode->text;
+                strLiteralNode->strLength = strLiteralNode->textLength;
+            }
+
+            
             return start + found_count;
         }
 
@@ -104,8 +204,8 @@ namespace smart {
         INIT_NODE(name, context, parentNode, VTables::StringLiteralVTable);
         name->text = nullptr;
         name->textLength = 0;
+        name->str = nullptr;
+        name->strLength = 0;
 
-        name->strValue = nullptr;
-        name->strValueLength = 0;
     }
 }
