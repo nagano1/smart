@@ -74,28 +74,29 @@ inline void console_log(const char *str) {
 
 #endif
 
+
+struct MemBufferBlock {
+    void *list = nullptr;
+    MemBufferBlock *next = nullptr;
+    bool isLast = true;
+    int itemCount = 0;
+};
+
 struct MemBuffer {
     static constexpr int CHAR_BUFFER_SIZE = 255;
-    void *list = nullptr;//[500];
-    MemBuffer *next = nullptr;
 
-
-    MemBuffer *firstBufferList = nullptr;
-    MemBuffer *currentBufferList = nullptr;
+    MemBufferBlock *firstBufferBlock = nullptr;
+    MemBufferBlock *currentBufferBlock = nullptr;
     unsigned int spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
-    int itemCount = 0;
-    bool isLast = true;
 
     void init() {
         spaceNodeIndex = CHAR_BUFFER_SIZE + 1;
-        firstBufferList = nullptr;
-        currentBufferList = nullptr;
-        itemCount = 0;
-        isLast = true;
+        firstBufferBlock = nullptr;
+        currentBufferBlock = nullptr;
     }
 
     void freeAll() {
-        MemBuffer *bufferList = this->firstBufferList;
+        MemBufferBlock *bufferList = this->firstBufferBlock;
 
         while (bufferList) {
             free(bufferList->list);
@@ -107,10 +108,10 @@ struct MemBuffer {
     }
 
     template<typename Type>
-    void tryDelete(Type *chars) {
-        auto * currentBufferList = *((MemBuffer **)((sm_byte*)chars - sizeof(MemBuffer*)));
-        currentBufferList->itemCount--;
-        auto *next = currentBufferList->next;
+    void tryDelete(Type *ptr) {
+        auto *targetBufferList = *((MemBufferBlock **)((sm_byte*)ptr - sizeof(MemBufferBlock*)));
+        targetBufferList->itemCount--;
+        auto *next = targetBufferList->next;
         if (next) {
             if (next->itemCount == 0 && next->isLast == false) {
                 // can delete & free
@@ -122,7 +123,7 @@ struct MemBuffer {
     template<typename Type>
     Type *newMem(unsigned int count) {
         size_t charLen = sizeof(Type) * count;
-        auto sizeOfBuffer = sizeof(MemBuffer*);
+        auto sizeOfBuffer = sizeof(MemBufferBlock*);
         auto length = charLen + sizeOfBuffer;
 
 
@@ -131,27 +132,31 @@ struct MemBuffer {
         }
         else {
             unsigned int assign_size = CHAR_BUFFER_SIZE < length ? length : CHAR_BUFFER_SIZE;
-            if (firstBufferList == nullptr) {
+            if (firstBufferBlock == nullptr) {
 
-                firstBufferList = currentBufferList = (MemBuffer*)malloc(sizeof(MemBuffer));
-                firstBufferList->list = (void *)malloc(assign_size);
-                firstBufferList->next = nullptr;
+                firstBufferBlock = currentBufferBlock = (MemBufferBlock*)malloc(sizeof(MemBufferBlock));
+                firstBufferBlock->list = (void *)malloc(assign_size);
             }
             else {
-                auto *newList = (MemBuffer*)malloc(sizeof(MemBuffer));
-                newList->list = (void *)malloc(assign_size);
-                newList->next = nullptr;
-                currentBufferList->next = newList;
-                currentBufferList->isLast = false;
-                currentBufferList = newList;
+                auto *newNode = (MemBufferBlock*)malloc(sizeof(MemBufferBlock));
+                newNode->list = (void *)malloc(assign_size);
+
+                currentBufferBlock->next = newNode;
+                currentBufferBlock->isLast = false;
+                currentBufferBlock = newNode;
             }
+
+            currentBufferBlock->isLast = true;
+            currentBufferBlock->itemCount = 0;
+            currentBufferBlock->next = nullptr;
+
             spaceNodeIndex = 0;
         }
-        currentBufferList->itemCount++;
-        Type *node = (Type*)((sm_byte*)(currentBufferList->list) + spaceNodeIndex);
+        currentBufferBlock->itemCount++;
+        Type *node = (Type*)((sm_byte*)(currentBufferBlock->list) + spaceNodeIndex);
 
-        auto **address = (MemBuffer **)node;
-        *address = currentBufferList;
+        auto **address = (MemBufferBlock **)node;
+        *address = currentBufferBlock;
 
         this->spaceNodeIndex += length;
 

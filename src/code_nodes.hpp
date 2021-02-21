@@ -354,6 +354,11 @@ namespace smart {
         }
 
         template<typename T>
+        void tryDelete(T* m) {
+            return (T*)memBuffer.tryDelete(m);
+        }
+
+        template<typename T>
         T* newMemArray(int len) {
             return (T*)memBuffer.newMem<T>(len);
         }
@@ -661,6 +666,7 @@ namespace smart {
         static NullNodeStruct *newNullNode(ParseContext *context, NodeBase *parentNode);
 
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
+        
         static void deleteClassNode(NodeBase *node);
 
         static ClassNodeStruct *newFuncNode(ParseContext *context, NodeBase *parentNode);
