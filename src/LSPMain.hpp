@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <iostream>
 #include <string>
@@ -26,7 +26,7 @@
 struct LSPManager {
     static void LSP_main();
     
-    void nextRequest(char *str, size_t length);
+    void nextRequest(char *str, st_textlen length);
 };
 
 

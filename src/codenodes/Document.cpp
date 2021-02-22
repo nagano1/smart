@@ -16,7 +16,7 @@ namespace smart {
 
     // --------------------- Defines Document VTable ----------------------
 
-    static int selfTextLength(DocumentStruct *self) {
+    static st_textlen selfTextLength(DocumentStruct *self) {
         return 5;
     }
 
@@ -115,7 +115,7 @@ namespace smart {
 
 
     utf8byte *DocumentUtils::getTextFromNode(NodeBase *node) {
-        int len = VTableCall::selfTextLength(node);
+        st_textlen len = VTableCall::selfTextLength(node);
         int prev_char = node->prev_char != '\0' ? 1 : 0;
 
         auto *text = (char *) node->context->newMemArray<char>(len + 1 + prev_char);
@@ -176,7 +176,7 @@ namespace smart {
                     if (node->prev_char != '\0') {
                         totalCount++;
                     }
-                    int len = VTableCall::typeTextLength(node) + VTableCall::selfTextLength(node);
+                    st_textlen len = VTableCall::typeTextLength(node) + VTableCall::selfTextLength(node);
                     totalCount += len;
                     node = node->nextNodeInLine;
                 }
@@ -295,7 +295,7 @@ namespace smart {
                     if (node->prev_char != '\0') {
                         totalCount++;
                     }
-                    int len = VTableCall::selfTextLength(node);
+                    st_textlen len = VTableCall::selfTextLength(node);
                     totalCount += len;
                     node = node->nextNodeInLine;
                 }
@@ -399,7 +399,7 @@ namespace smart {
 
     }
 
-    void DocumentUtils::parseText(DocumentStruct *docStruct, const utf8byte *text, size_t length) {
+    void DocumentUtils::parseText(DocumentStruct *docStruct, const utf8byte *text, st_textlen length) {
         assert(docStruct->context != nullptr);
 
         auto *context = docStruct->context;

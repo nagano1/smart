@@ -105,9 +105,9 @@ struct ParseUtil {
     };
 
 
-    static inline bool matchWord(const utf8byte *text, int text_length, const char *word, int word_length, int start) {
+    static inline bool matchWord(const utf8byte *text, st_size text_length, const char *word, st_size word_length, st_uint start) {
         if (start + word_length <= text_length) { // determine word has enough length
-            for (int i = 0; i < word_length; i++) {
+            for (st_uint i = 0; i < word_length; i++) {
                 if (text[start + i] != word[i]) {
                     return false;
                 }

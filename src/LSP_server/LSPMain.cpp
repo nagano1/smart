@@ -65,7 +65,7 @@ void LSPManager::LSP_main() {
             auto rsize = fread(chars, 1, n, stdin);
             if (rsize > 0) {
                 chars[rsize] = '\0';
-                lspManager.nextRequest(chars, rsize);
+                lspManager.nextRequest(chars, (st_textlen)rsize);
             }
 
             free(chars);
@@ -109,7 +109,7 @@ static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int 
     return false;
 }
 
-static void validateJson(const char *text, size_t textLength) {
+static void validateJson(const char *text, st_textlen textLength) {
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, text, textLength);
 
@@ -154,7 +154,7 @@ static void validateJson(const char *text, size_t textLength) {
     */
 }
 
-void LSPManager::nextRequest(char *chars, size_t length) {
+void LSPManager::nextRequest(char *chars, st_textlen length) {
     fprintf(stderr, "req: \n%s", chars);
     fflush(stderr);
 

@@ -31,7 +31,7 @@ namespace smart {
         return node->name;
     };
 
-    static int selfTextLength(NameNodeStruct *self) {
+    static st_textlen selfTextLength(NameNodeStruct *self) {
         auto *node = self;//Cast::downcast<NameNodeStruct *>((NodeBase *) self);
 
         return node->nameLength;

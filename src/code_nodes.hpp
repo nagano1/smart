@@ -92,7 +92,7 @@ namespace smart {
         NODE_HEADER;
 
         char *name;
-        size_t nameLength;
+        st_textlen nameLength;
     };
 
 
@@ -100,10 +100,10 @@ namespace smart {
     using StringLiteralNodeStruct = struct {
         NODE_HEADER;
         char *text;
-        size_t textLength;
+        st_textlen textLength;
 
         char *str;
-        size_t strLength;
+        st_textlen strLength;
         
         int literalType; // 0: "text", 1: `wjfeiofw`, 2: r"testfaojiwe"
     };
@@ -112,7 +112,7 @@ namespace smart {
         NODE_HEADER;
 
         char *text;
-        size_t textLength;
+        st_textlen textLength;
         bool boolValue;
     };
 
@@ -121,7 +121,7 @@ namespace smart {
         NODE_HEADER;
 
         char *text;
-        size_t textLength;
+        st_textlen textLength;
         int num;
         int unit;
     };
@@ -188,10 +188,10 @@ namespace smart {
         NODE_HEADER;
 
         char *text;
-        size_t textLength;
+        st_textlen textLength;
 
         int namePos;
-        size_t nameLength;
+        st_textlen nameLength;
     };
 
     using JsonKeyValueItemStruct = struct {
@@ -227,24 +227,24 @@ namespace smart {
 
         template<std::size_t SIZE>
         static int calc_hash2(const char(&f4)[SIZE], size_t max) {
-            return HashMap::calc_hash((char *) f4, SIZE - 1, max);
+            return HashMap::calc_hash((const char *) f4, SIZE - 1, max);
         }
         int calc_hash0(const char *key, int keyLength) {
             return HashMap::calc_hash(key, keyLength, this->entries_length);
         }
         static int calc_hash(const char *key, int keyLength, size_t max);
-        void put(const char *keyA, int keyLength, NodeBase *val);
+        void put(const char *keyA, st_textlen keyLength, NodeBase *val);
         NodeBase *get(const char *key, int keyLength);
         bool has(const char *key, int keyLength);
         void deleteKey(const char *key, int keyLength);
 
         template<std::size_t SIZE>
         NodeBase *get2(const char(&f4)[SIZE]) {
-            return this->get((char *) f4, SIZE - 1);
+            return this->get((const char *) f4, SIZE - 1);
         }
         template<std::size_t SIZE>
         void put2(const char(&f4)[SIZE], NodeBase *val) {
-            return this->put((char *) f4, SIZE - 1, val);
+            return this->put((const char *) f4, SIZE - 1, val);
         }
     };
 
@@ -328,7 +328,7 @@ namespace smart {
 
     struct ParseContext {
         int start;
-        size_t length;
+        st_textlen length;
         bool scanEnd;
         NodeBase *codeNode;
         int former_start;
@@ -417,7 +417,7 @@ namespace smart {
 
 
     #define VTABLE_DEF(T) \
-        int (*selfTextLength)(T *self); \
+        st_textlen (*selfTextLength)(T *self); \
         const utf8byte *(*selfText)(T *self); \
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
         const char *typeChars; \
@@ -494,7 +494,7 @@ namespace smart {
 
     struct VTableCall {
 
-        static int selfTextLength(NodeBase *node) {
+        static st_textlen selfTextLength(NodeBase *node) {
             assert(node);
             assert(node->vtable);
             assert(node->vtable->selfTextLength);
@@ -512,7 +512,7 @@ namespace smart {
             };
         }
 
-        static int typeTextLength(NodeBase *node) {
+        static st_textlen typeTextLength(NodeBase *node) {
             assert(node);
             assert(node->vtable);
             return node->vtable->typeCharsLength;
@@ -625,7 +625,7 @@ namespace smart {
     };
 
     struct JsonUtils {
-        static void put(JsonObjectStruct *json, utf8byte *key, size_t keyLength, NodeBase* node);
+        static void put(JsonObjectStruct *json, utf8byte *key, st_textlen keyLength, NodeBase* node);
     };
 
 
@@ -636,7 +636,7 @@ namespace smart {
                 NodeBase *startNode, NodeBase *endNode
         );
 
-        static void parseText(DocumentStruct *docStruct, const utf8byte *text, size_t length);
+        static void parseText(DocumentStruct *docStruct, const utf8byte *text, st_textlen length);
         static JsonObjectStruct *generateHashTables(DocumentStruct *doc);
 
 
@@ -724,10 +724,10 @@ namespace smart {
 
         // SimpleTextNodeStruct
         template<typename TYPE, std::size_t SIZE>
-        static inline int WordTokenizer(TokenizerParams_parent_ch_start_context, char capitalLetter,
+        static inline int WordTokenizer(TokenizerParams_parent_ch_start_context, utf8byte capitalLetter,
                                         const TYPE(&word)[SIZE]) {
             if (capitalLetter == ch) {
-                size_t length = sizeof(word) - 1;
+                st_size length = st_size_of(word) - 1;
                 if (ParseUtil::matchWord(context->chars, context->length, word, length, start)) {
 
                     if (start + length == context->length // allowed to be the last char of the file

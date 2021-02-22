@@ -20,7 +20,14 @@
 using utf8byte = char;
 using utf8chars = const utf8byte *;
 
+using st_size = unsigned long;
+using st_uint = unsigned long;
+// type of size commonly used
+
+using st_textlen = st_size;
 using sm_byte = char;
+
+#define st_size_of(T) ((st_size)sizeof(T))
 
 #ifdef __x86_64__
 // do x64 stuff
@@ -91,11 +98,11 @@ struct MemBufferBlock {
 };
 
 struct MemBuffer {
-    static constexpr int DEFAULT_BUFFER_SIZE = 255;
+    static constexpr st_size DEFAULT_BUFFER_SIZE = 255;
 
     MemBufferBlock *firstBufferBlock = nullptr;
     MemBufferBlock *currentBufferBlock = nullptr;
-    unsigned int currentMemOffset = DEFAULT_BUFFER_SIZE + 1;
+    st_uint currentMemOffset = DEFAULT_BUFFER_SIZE + 1;
 
     void init() {
         this->currentMemOffset = DEFAULT_BUFFER_SIZE + 1;
@@ -130,8 +137,8 @@ struct MemBuffer {
 
     template<typename Type>
     Type *newMem(unsigned int count) {
-        size_t bytes = sizeof(Type) * count;
-        auto sizeOfPointerToBlock = sizeof(MemBufferBlock*);
+        auto bytes = st_size_of(Type) * count;
+        auto sizeOfPointerToBlock = st_size_of(MemBufferBlock*);
         auto length = bytes + sizeOfPointerToBlock;
 
 
@@ -139,7 +146,7 @@ struct MemBuffer {
 
         }
         else {
-            unsigned int assign_size = DEFAULT_BUFFER_SIZE < length ? length : DEFAULT_BUFFER_SIZE;
+            st_size assign_size = DEFAULT_BUFFER_SIZE < length ? length : DEFAULT_BUFFER_SIZE;
             if (firstBufferBlock == nullptr) {
                 firstBufferBlock = currentBufferBlock = (MemBufferBlock*)malloc(sizeof(MemBufferBlock));
                 firstBufferBlock->list = (void *)malloc(assign_size);

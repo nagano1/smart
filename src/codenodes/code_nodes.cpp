@@ -42,7 +42,7 @@ namespace smart {
         return (sum + salt) % max;
     }
 
-    void HashMap::put(const char * keyA, int keyLength, NodeBase* val) {
+    void HashMap::put(const char * keyA, st_textlen keyLength, NodeBase* val) {
 
         auto hashInt = calc_hash(keyA, keyLength, this->entries_length);
         HashNode* hashNode = this->entries[hashInt];
@@ -54,7 +54,7 @@ namespace smart {
 
 
             char *keyB = context->memBuffer.newMem<char>(keyLength + 1);
-            for (int i = 0; i < keyLength; i++) {
+            for (st_uint i = 0; i < keyLength; i++) {
                 keyB[i] = keyA[i];
             }
             newHashNode->key = keyB;
@@ -67,7 +67,7 @@ namespace smart {
             // find same key
             if (hashNode->keyLength == keyLength) {
                 bool sameKey = true;
-                for (int i = 0; i < keyLength; i++) {
+                for (st_uint i = 0; i < keyLength; i++) {
                     if (hashNode->key[i] != keyA[i]) {
                         sameKey = false;
                         break;
@@ -88,7 +88,7 @@ namespace smart {
 
         auto *newHashNode = context->newMem<HashNode>();
         char *keyB =  context->newMemArray<char>(keyLength + 1);
-        for (int i = 0; i < keyLength; i++) {
+        for (st_uint i = 0; i < keyLength; i++) {
             keyB[i] = keyA[i];
         }
         newHashNode->key = keyB;

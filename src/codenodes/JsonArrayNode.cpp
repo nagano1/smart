@@ -54,7 +54,7 @@ namespace smart {
         return "";
     }
 
-    static int selfTextLength2(JsonArrayItemStruct *self) {
+    static st_textlen selfTextLength2(JsonArrayItemStruct *self) {
         return 0;
     }
 
@@ -92,7 +92,7 @@ namespace smart {
         return "[";
     }
 
-    static int selfTextLength(JsonArrayStruct *self) {
+    static st_textlen selfTextLength(JsonArrayStruct *self) {
         return 1;
     }
 
