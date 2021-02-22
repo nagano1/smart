@@ -120,7 +120,7 @@ namespace smart {
                     escapeMode = false;
                     auto ch = strLiteralNode->text[i];
                     when(ch) {
-                        wfor('r', nullptr);
+                        wfor_noop('r');
                         wfor('n', str[currentStrIndex++] = '\n');
                         wfor('t', str[currentStrIndex++] = '\t');
                         wfor('\\', str[currentStrIndex++] = '\\');

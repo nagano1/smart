@@ -617,7 +617,7 @@ namespace smart {
         IndentSelection,
         BreakLine ,
         Deletion ,
-        AddMapItem
+        //AddMapItem
     };
 
     struct OperationResult {
