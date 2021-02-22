@@ -128,7 +128,7 @@ namespace smart {
             while (hashNode) {
                 if (hashNode->keyLength == keyLength) {
                     bool sameKey = true;
-                    for (int i = 0; i < keyLength; i++) {
+                    for (st_uint i = 0; i < keyLength; i++) {
                         if (hashNode->key[i] != key[i]) {
                             sameKey = false;
                             break;
