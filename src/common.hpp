@@ -25,7 +25,7 @@ using st_uint = unsigned long;
 // type of size commonly used
 
 using st_textlen = st_size;
-using sm_byte = char;
+using st_byte = unsigned char;
 
 #define st_size_of(T) ((st_size)sizeof(T))
 
@@ -124,7 +124,7 @@ struct MemBuffer {
 
     template<typename Type>
     void tryDelete(Type *ptr) {
-        auto *targetBufferList = *((MemBufferBlock **)((sm_byte*)ptr - sizeof(MemBufferBlock*)));
+        auto *targetBufferList = *((MemBufferBlock **)((st_byte*)ptr - sizeof(MemBufferBlock*)));
         targetBufferList->itemCount--;
         auto *next = targetBufferList->next;
         if (next) {
@@ -167,14 +167,14 @@ struct MemBuffer {
             currentMemOffset = 0;
         }
         currentBufferBlock->itemCount++;
-        Type *node = (Type*)((sm_byte*)(currentBufferBlock->list) + currentMemOffset);
+        Type *node = (Type*)((st_byte*)(currentBufferBlock->list) + currentMemOffset);
 
         auto **address = (MemBufferBlock **)node;
         *address = currentBufferBlock;
 
         this->currentMemOffset += length;
 
-        return (Type*)((sm_byte*)node + sizeOfPointerToBlock);
+        return (Type*)((st_byte*)node + sizeOfPointerToBlock);
     }
 };
 

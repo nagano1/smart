@@ -683,7 +683,7 @@ TEST(ParserTest_, charBuffer) {
                 EXPECT_EQ(chars->a, 5);
                 EXPECT_EQ(chars2->a, 2);
 
-                EXPECT_EQ(charBuffer3->currentBufferBlock, *((MemBufferBlock **)((sm_byte*)chars2 - sizeof(MemBufferBlock*))));
+                EXPECT_EQ(charBuffer3->currentBufferBlock, *((MemBufferBlock **)((st_byte*)chars2 - sizeof(MemBufferBlock*))));
 
                 charBuffer3->tryDelete(chars);
                 charBuffer3->tryDelete(chars2);

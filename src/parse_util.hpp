@@ -121,7 +121,7 @@ struct ParseUtil {
 
 
     // EXPECT_EQ(0, Tokenizer::matchFirstWithTrim("class A{}", "class"));
-    static int matchFirstWithTrim(const utf8byte *chars, const char *target, int start) {
+    static int matchFirstWithTrim(const char *chars, const char *target, int start) {
         //  return -1 if it fails
         int currentTargetIndex = 0;
         int matchStartIndex = -1;
