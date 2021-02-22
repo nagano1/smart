@@ -213,7 +213,7 @@ namespace smart {
     struct HashNode {
         HashNode *next;
         char *key;
-        int keyLength;
+        st_textlen keyLength;
         NodeBase *nodeBase;
     };
 
