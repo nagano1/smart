@@ -229,14 +229,14 @@ namespace smart {
         static int calc_hash2(const char(&f4)[SIZE], size_t max) {
             return HashMap::calc_hash((char *) f4, SIZE - 1, max);
         }
-        int calc_hash0(char *key, int keyLength) {
+        int calc_hash0(const char *key, int keyLength) {
             return HashMap::calc_hash(key, keyLength, this->entries_length);
         }
-        static int calc_hash(char *key, int keyLength, size_t max);
-        void put(char *keyA, int keyLength, NodeBase *val);
-        NodeBase *get(char *key, int keyLength);
-        bool has(char *key, int keyLength);
-        void deleteKey(char *key, int keyLength);
+        static int calc_hash(const char *key, int keyLength, size_t max);
+        void put(const char *keyA, int keyLength, NodeBase *val);
+        NodeBase *get(const char *key, int keyLength);
+        bool has(const char *key, int keyLength);
+        void deleteKey(const char *key, int keyLength);
 
         template<std::size_t SIZE>
         NodeBase *get2(const char(&f4)[SIZE]) {

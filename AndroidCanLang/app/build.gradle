@@ -24,7 +24,7 @@ android {
         versionName "1.0"
         externalNativeBuild {
             cmake {
-                arguments "-DCMAKE_CXX_FLAGS_DEBUG=-O2"
+                arguments "-DCMAKE_CXX_FLAGS_DEBUG=-O2 -Werror"
                 //arguments "-DCMAKE_CXX_FLAGS_DEBUG=-Ofast"
                 //cppFlags "-fopenmp"
                 cppFlags "-std=c++17 -Ofast"

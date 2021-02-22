@@ -593,9 +593,11 @@ void GreenThread::start() {
                                                         auto *deleteNode = firstNode;
                                                         if (total_delet_count % 20 == 0) {
 
+                                                            /*
                                                             if (target_thread->cacheAddedCount > INT64_MAX) {
                                                                 printf("==;");
                                                             }
+                                                                                                                          */
                                                             //printf("del: %d/n", temp_delete_count);
 
                                                         }

@@ -218,7 +218,7 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
 
 
     template<typename T1, typename T2>
-    static void test_output(T1 t1, T2 t2, char *t1_chars, char *t2_chars, bool ok, const std::string &op) {
+    static void test_output(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars, bool ok, const std::string &op) {
         std::stringstream s;
         s << t1;
         std::stringstream s2;
@@ -242,29 +242,29 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
     }
 
     template<typename T1, typename T2>
-    static void ecompare_static(T1 t1, T2 t2, char *t1_chars, char *t2_chars) {
+    static void ecompare_static(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars) {
         test_output(t1, t2, t1_chars, t2_chars, t1 == t2, "==");
     }
 
     template<typename T1, typename T2>
-    static void ecompare_not_equal(T1 t1, T2 t2, char *t1_chars, char *t2_chars) {
+    static void ecompare_not_equal(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars) {
         test_output(t1, t2, t1_chars, t2_chars, t1 != t2, "!=");
     }
 
     template<>
-    static void ecompare_static(float t1, float t2, char *t1_chars, char *t2_chars) {
+    void ecompare_static(float t1, float t2, const char *t1_chars, const char *t2_chars) {
 
     }
 
 
     template<typename T1, typename T2>
-    static void lt_static(T1 t1, T2 t2, char *t1_chars, char *t2_chars) {
+    static void lt_static(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars) {
         test_output(t1, t2, t1_chars, t2_chars, t1 < t2, "<");
 
     }
 
     template<typename T1, typename T2>
-    static void gt_static(T1 t1, T2 t2, char *t1_chars, char *t2_chars) {
+    static void gt_static(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars) {
         test_output(t1, t2, t1_chars, t2_chars, t1 > t2, ">");
     }
 

@@ -20,7 +20,7 @@
 namespace smart {
 
 
-    int HashMap::calc_hash(char *key, int keyLength, size_t max) {
+    int HashMap::calc_hash(const char *key, int keyLength, size_t max) {
         unsigned int sum = keyLength;
         int border = 128;
 
@@ -42,7 +42,7 @@ namespace smart {
         return (sum + salt) % max;
     }
 
-    void HashMap::put(char * keyA, int keyLength, NodeBase* val) {
+    void HashMap::put(const char * keyA, int keyLength, NodeBase* val) {
 
         auto hashInt = calc_hash(keyA, keyLength, this->entries_length);
         HashNode* hashNode = this->entries[hashInt];
@@ -111,17 +111,17 @@ namespace smart {
         }
     }
 
-    bool HashMap::has(char * key, int keyLength) {
+    bool HashMap::has(const char * key, int keyLength) {
         return this->entries[calc_hash0(key, keyLength)]->key != nullptr;
     }
 
-    void HashMap::deleteKey(char * key, int keyLength) {
+    void HashMap::deleteKey(const char * key, int keyLength) {
         if (this->entries[calc_hash0(key, keyLength)] != nullptr) {
             free(this->entries[calc_hash0(key, keyLength)]);
         }
     }
 
-    NodeBase* HashMap::get(char * key, int keyLength) {
+    NodeBase* HashMap::get(const char * key, int keyLength) {
         auto keyInt = calc_hash0(key, keyLength);
         if (this->entries[keyInt] != nullptr) {
             auto * hashNode = this->entries[keyInt];

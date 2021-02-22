@@ -165,7 +165,8 @@ TEST(cplusplus_test, stringstream_) {
     }
 
 
-    log << std::feof;
+    //log << std::feof(nullptr);
+    log << '\0';
     stopped = true;
     worker_thread.join();
 
@@ -594,7 +595,7 @@ TEST(concept, wakeup_test) {
 
     std::ostringstream output2;
     //output2 << "[error here]" << current << std::endl;
-    printf("k = %d \n", k);
+    printf("k = %llu \n", k);
     auto one_op_nanosec = nanoseconds / static_cast<float>(loopCount);
     auto wokeupCountPerMillisecond = (double)totalWokeupCount / (nanoseconds);
 
