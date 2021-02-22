@@ -361,7 +361,7 @@ std::string FormatWithCommas(T value)
 
 
 TEST(cplusplus_test, ThreadQueue) {
-    GLOG << "started: " << std::fflush;
+    GLOG << "started: ";// << std::fflush;
 
     auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
 
