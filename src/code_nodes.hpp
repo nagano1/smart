@@ -234,7 +234,7 @@ namespace smart {
         }
         static int calc_hash(const char *key, int keyLength, size_t max);
         void put(const char *keyA, st_textlen keyLength, NodeBase *val);
-        NodeBase *get(const char *key, int keyLength);
+        NodeBase *get(const char *key, st_textlen keyLength);
         bool has(const char *key, int keyLength);
         void deleteKey(const char *key, int keyLength);
 

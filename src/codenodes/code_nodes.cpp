@@ -121,7 +121,7 @@ namespace smart {
         }
     }
 
-    NodeBase* HashMap::get(const char * key, int keyLength) {
+    NodeBase* HashMap::get(const char * key, st_textlen keyLength) {
         auto keyInt = calc_hash0(key, keyLength);
         if (this->entries[keyInt] != nullptr) {
             auto * hashNode = this->entries[keyInt];
