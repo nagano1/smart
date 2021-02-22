@@ -218,6 +218,7 @@ TEST(cplusplus_test, test1) {
 
 ENDTEST
 
+/*
 std::atomic<unsigned long long> head3{ 2845 };
 
 
@@ -225,6 +226,7 @@ static std::mutex main_sleeper_mutex;
 
 std::atomic<bool> maybe_sleeping{ false };
 std::atomic<int> sleep_set_index{ -1 };
+ */
 
 
 void printFoo(std::ostream &os) {
