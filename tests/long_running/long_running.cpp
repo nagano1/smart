@@ -44,7 +44,6 @@ int main(int argc, char **argv)
         for (int j = 0; j < max; j++) {
             unsigned int len = 1 + rand() % 100;
 
-            int size = 355;
             auto *chars = charBuffer3->newMem<S>(len);
             chars->a = 5;
 
