@@ -41,6 +41,10 @@ constexpr static int BUFFER_SIZE = 64; //25
     (handler); break; \
     } \
 
+#define welse(handler) default: {\
+    (handler); break; \
+    } \
+
 template<class T>
 static inline T *simpleMalloc2() {
     return (T *) malloc(sizeof(T));

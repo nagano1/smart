@@ -209,6 +209,8 @@ namespace smart {
         //context->scanEnd = false;
         for (uint32_t i = start; i < context->length;) {
             ch = context->chars[i];
+            //fprintf(stderr, "%c ,", ch);
+            //fflush(stderr);
             //__android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
             //console_log("i:" + std::string(":") + ch + "," + std::to_string(i));
 

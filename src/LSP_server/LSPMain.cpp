@@ -82,18 +82,74 @@ void LSPManager::LSP_main() {
 }
 
 
+static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int &line, int &charactor) {
+    int currentLine = 0;
+    int currentCharactor = 0;
+    int lineFirstPos = 0;
+
+    for (uint32_t i = 0; i < textLength; i++) {
+
+        if (i == pos) {
+            line = currentLine;
+            charactor = ParseUtil::utf16_length(text + lineFirstPos, currentCharactor);
+            return true;
+        }
+        
+        currentCharactor++;
+
+        utf8byte ch = text[i];
+        if (ParseUtil::isBreakLine(ch)) {
+            currentCharactor = 0;
+            currentLine++;
+            lineFirstPos = i;
+        }
+    }
+
+    
+    return false;
+}
+
 static void validateJson(const char *text, size_t textLength) {
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, text, textLength);
 
-    const char body[] = u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt","diagnostics": [{"severity": 1,"range": { "start": { "character": 1, "line": 2 }, "end": { "character": 2, "line": 3 } },"message": "awefawf","source": "ex"}]}})";
-    std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(body)) + "\n\n" + std::string{ body };
+    if (document->context->syntaxErrorInfo.hasError) {
 
-    fprintf(stderr, "\n\n[%s]\n\n", text);
+        int line = 0;
+        int charactor = 0;
+        bool result = getLineAndPos(document->context->syntaxErrorInfo.charPosition, text, textLength, line, charactor);
+
+
+        char moji[1024];
+        sprintf(moji, u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c:/Users/wikihow/Desktop/AAA.txt","diagnostics": [{"severity": 1,"range": { "start": { "character": %d, "line": %d }, "end": { "character": %d, "line": %d } },"message": "awefawf","source": "ex"}]}})", charactor, line, 0, line+1);
+        fprintf(stderr, "\n\n[%s]\n\n", moji);
+        fflush(stderr);
+
+        std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(moji)) + "\n\n" + std::string{ moji };
+
+        fprintf(stdout, "%s", responseMessage.c_str());
+        fflush(stdout);
+
+    }
+    else {
+        const char body[] = u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt","diagnostics": []}})";
+
+        std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(body)) + "\n\n" + std::string{ body };
+
+        fprintf(stdout, "%s", responseMessage.c_str());
+        fflush(stdout);
+    }
+
+    Alloc::deleteDocument(document);
+
+    /*
+    char *treeText = DocumentUtils::getTextFromTree(document);
+    fprintf(stderr, "\ntext:\n[%s]\n\n", text);
     fflush(stderr);
 
-    fprintf(stdout, "%s", responseMessage.c_str());
-    fflush(stdout);
+    fprintf(stderr, "\ntreeText:\n[%s]\n\n", treeText);
+    fflush(stderr);
+    */
 }
 
 void LSPManager::nextRequest(char *chars, size_t length) {

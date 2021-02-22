@@ -19,7 +19,54 @@
 
 using letterCheckerType = bool(*)(int, char);
 
+
+/*
+
+UTF-8
+
+0xxxxxxx                            0 - 127
+110yyyyx 10xxxxxx                   128 - 2047
+1110yyyy 10yxxxxx 10xxxxxx          2048 - 65535
+11110yyy 10yyxxxx 10xxxxxx 10xxxxxx 65536 - 0x10FFFF
+
+at least one of the y should be 1
+*/
+
+static constexpr unsigned char utf8BytesTable[256]{
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+    3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+    4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4
+};
+
 struct ParseUtil {
+
+    static int utf16_length(const char *utf8_chars, unsigned int byte_len) {
+        unsigned int pos = 0;
+        int length = 0;
+
+        while (pos < byte_len) {
+            auto idx = (unsigned char)utf8_chars[pos];
+            int bytes = utf8BytesTable[idx];
+            pos += bytes;
+            length += bytes > 3 ? 2 : 1;
+        }
+        return length;
+    }
+
+
 
     template<class T>
     static inline int detectOne(const T &tokenizer, const utf8byte *chars, utf8byte ch, int i) {
@@ -164,6 +211,10 @@ struct ParseUtil {
 
         return (ch & 0x80) == 0x80;
     };
+
+
+
+
 
 };
 

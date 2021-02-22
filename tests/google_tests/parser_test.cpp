@@ -93,7 +93,7 @@ TEST(ParserTest_, JsonParseTest) {
         testJson(text);
     }
 
-    text = const_cast<char *>(u8R"({"aowfowo" : 21249, "jiofw": false})");
+    text = const_cast<char *>(u8R"({"aowfowo" : "😀😁😂ネコの顔文字と💘❤💓", "jiofw": false})");
     testJson(text);
 
 
@@ -216,50 +216,6 @@ bool func(int, char) {
 
 
 
-/*
-
-UTF-8
-
-0xxxxxxx                            0 - 127
-110yyyyx 10xxxxxx                   128 - 2047
-1110yyyy 10yxxxxx 10xxxxxx          2048 - 65535
-11110yyy 10yyxxxx 10xxxxxx 10xxxxxx 65536 - 0x10FFFF
-
-at least one of the y should be 1
-*/
-
-static const unsigned char utf8BytesTable[256]{
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-    3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
-    4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4
-};
-
-
-int utf16_length(const char *utf8_chars, unsigned int byte_len) {
-    unsigned int pos = 0;
-    int length = 0;
-
-    while (pos < byte_len) {
-        auto idx = (unsigned char)utf8_chars[pos];
-        int bytes = utf8BytesTable[idx];
-        pos += bytes;
-        length += bytes > 3 ? 2 : 1;
-    }
-    return length;
-}
 
 
 TEST(ParserTest_, utf16Length) {
@@ -269,67 +225,67 @@ TEST(ParserTest_, utf16Length) {
 
     {
         const char *str = u8"👨‍👩‍👧";
-        int utf16length = utf16_length(str, strlen(str));
+        int utf16length = ParseUtil::utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 8);
     }
 
     {
         const char *str = u8"😂abcd";
-        int utf16length = utf16_length(str, 4); // only for the first emoji
+        int utf16length = ParseUtil::utf16_length(str, 4); // only for the first emoji
         EXPECT_EQ(utf16length, 2);
     }
 
     {
         const char *str = u8"nanimo-*";
-        auto utf16length = utf16_length(str, strlen(str));
+        auto utf16length = ParseUtil::utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 8);
     }
 
     {
         const char *str = u8"a𐐀b";
-        auto utf16length = utf16_length(str, strlen(str));
+        auto utf16length = ParseUtil::utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 4);
     }
 
     {
         const char *str = u8"\r\n\n"; // line break
-        auto utf16length = utf16_length(str, strlen(str));
+        auto utf16length = ParseUtil::utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 3);
     }
 
     {
         const char *str = u8" "; // 1 space
-        auto utf16length = utf16_length(str, strlen(str));
+        auto utf16length = ParseUtil::utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 1);
     }
 
     {
         const char *str = u8""; // empty string
-        auto utf16length = utf16_length(str, strlen(str));
+        auto utf16length = ParseUtil::utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 0);
     }
 
     {
         const char *str = u8"Hasta el próximo miércoles"; // spanish
-        auto utf16length = utf16_length(str, strlen(str));
+        auto utf16length = ParseUtil::utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 26);
     }
 
     {
         const char *str = u8"de 13.0 と Emoji 13.0 に準拠した 😀😁😂などの色々な表情の顔文字や 👿悪魔 👹鬼 👺天狗 👽エイリアン 👻おばけ 😺ネコの顔文字と💘❤💓💔💕💖ハ";
-        int utf16length = utf16_length(str, strlen(str));
+        int utf16length = ParseUtil::utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 96);
     }
 
     {
         const char *str = u8"我喜欢吃水果。Wǒ xǐhuan chī shuǐguǒ．私は果物が好きです。";
-        int utf16length = utf16_length(str, strlen(str));
+        int utf16length = ParseUtil::utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 39);
     }
 
     {
         const char *str = u8"안녕하세요";
-        int utf16length = utf16_length(str, strlen(str));
+        int utf16length = ParseUtil::utf16_length(str, strlen(str));
         EXPECT_EQ(utf16length, 5);
     }
 

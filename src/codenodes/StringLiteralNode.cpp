@@ -110,50 +110,26 @@ namespace smart {
 
 
             // create actual string
-            auto *str = context->memBuffer.newMem<char>(found_count);
+            auto *str = context->memBuffer.newMem<char>(found_count+3);
             bool escapeMode = false;
             int strLength = 0;
             int currentStrIndex = 0;
             for (uint_fast32_t i = 1; i < found_count-1; i++) {
-
-                /*
-                \"	"	ダブルクォーテーション
-\\	\	バックスラッシュ
-\/	/	スラッシュ
-\b		バックスペース
-\f		改ページ
-\n		キャリジリターン(改行)
-\r		ラインフィード
-\t		タブ
-\uXXXX		4桁の16進数で表記されたUnicode文字
-                */
+                /* \uXXXX		4s, 16unit Unicode char */
                 if (escapeMode) {
                     escapeMode = false;
                     auto ch = strLiteralNode->text[i];
-                    if (ch == 'r') {
-                        //str[currentStrIndex++] = '\r';
-                    }
-                    else if (ch == 'n') {
-                        str[currentStrIndex++] = '\n';
-                    }
-                    else if (ch == 't') {
-                        str[currentStrIndex++] = '\t';
-                    }
-                    else if (ch == '\\') {
-                        str[currentStrIndex++] = '\\';
-                    }
-                    else if (ch == 'f') {
-                        str[currentStrIndex++] = 'f';
-                    }
-                    else if (ch == '/') {
-                        str[currentStrIndex++] = '/';
-                    }
-                    else if (ch == 'u') {
-                        str[currentStrIndex++] = 'u'; // 
-                    }
-                    else {
-                        str[currentStrIndex++] = strLiteralNode->text[i];
-
+                    when(ch) {
+                        wfor('r', nullptr);
+                        wfor('n', str[currentStrIndex++] = '\n');
+                        wfor('t', str[currentStrIndex++] = '\t');
+                        wfor('\\', str[currentStrIndex++] = '\\');
+                        wfor('f', str[currentStrIndex++] = 'f');
+                        wfor('/', str[currentStrIndex++] = '/');
+                        wfor('"', str[currentStrIndex++] = '"');
+                        wfor('\'', str[currentStrIndex++] = '\'');
+                        wfor('u', str[currentStrIndex++] = 'u');
+                        welse(str[currentStrIndex++] = strLiteralNode->text[i]);
                     }
                     continue;
                 }
