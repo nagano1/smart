@@ -129,7 +129,6 @@ static void validateJson(const char *text, size_t textLength) {
 
         fprintf(stdout, "%s", responseMessage.c_str());
         fflush(stdout);
-
     }
     else {
         const char body[] = u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt","diagnostics": []}})";
