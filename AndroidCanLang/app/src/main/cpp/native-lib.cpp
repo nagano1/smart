@@ -25,10 +25,6 @@
 
 std::mutex mtx;
 
-static void abc(int g, int k, int n) {
-
-}
-
 #ifndef ENDTEST
 #define ENDTEST //[ENDTEST]
 #endif
@@ -91,8 +87,6 @@ namespace doorlangtest {
 
         double pi = 0.0;
         double sum = 0.0;
-        std::atomic<int> head3{284};
-
         std::mutex mtx;
 
         step = 1.0 / (double) num_steps;
@@ -102,7 +96,7 @@ namespace doorlangtest {
 
         //#pragma omp parallel
         {
-            int i;
+            //int i;
             long steps100 = num_steps / 8;
 
             std::vector<std::thread *> args;
@@ -123,7 +117,7 @@ namespace doorlangtest {
 
 
                 auto tha = new std::thread(
-                        [&sum, &mtx](int start, int end, double step, std::atomic<int> *atomic_add
+                        [&sum/*, &mtx*/](int start, int end, double step, std::atomic<int> *atomic_add
                         ) {
                             double x = 0.0;
                             double sum_here = 0.0;
@@ -134,7 +128,7 @@ namespace doorlangtest {
                             int twf = 24;
 
 
-                            handle_character_proc state_proc2 = state_proc;
+                            //handle_character_proc state_proc2 = state_proc;
 
                             for (int j = this_start; j <= this_end; j++) {
                                 atomic_add->compare_exchange_weak(twf, 24);
@@ -167,7 +161,7 @@ namespace doorlangtest {
                 delete args[th];
             }
 
-            int a = 5;
+            //int a = 5;
             //#pragma omp for reduction(+:sum)
 
         }
@@ -182,12 +176,7 @@ namespace doorlangtest {
         long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(
                 elapsed).count();
 
-
-
-
-        long long diff = microseconds / 1000.0;
-
-
+        __android_log_print(ANDROID_LOG_DEBUG, "Tag", "TestImpl  : text = %llu", microseconds);
 
         //printf("The computed value of Pi is: %1.10lf\n", pi);
         //});
@@ -234,8 +223,6 @@ namespace doorlangtest {
         unsigned int G_NumOfCores = std::thread::hardware_concurrency();
 
         Test2::g = G_NumOfCores;
-
-        long a = addrGray;
 
         return Test2::g;// env->NewStringUTF(hello.c_str());
     }
@@ -308,17 +295,17 @@ namespace doorlangtest {
         jsize len = env->GetStringUTFLength(str);
 
         std::string strin{text};
-        auto *g = L"iofw";
+        // auto *g = L"iofw";
         std::wstring st = JavaToWSZ(env, str);
 
 
         char *twochars = (char *) text;
         char *w = twochars;
         utf8::advance(w, 0, w + len + 1);
-        auto valid = utf8::is_valid(w, w + len);
+        // auto valid = utf8::is_valid(w, w + len);
 
 
-        int alen = len;
+        // int alen = len;
 
         std::vector<char> chs;
 
@@ -335,7 +322,7 @@ namespace doorlangtest {
 
         std::string hello = "Hello from C++ 4";
 
-        unsigned int G_NumOfCores = std::thread::hardware_concurrency();
+        // unsigned int G_NumOfCores = std::thread::hardware_concurrency();
 
         return 55;
     }

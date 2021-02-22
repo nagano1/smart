@@ -9,7 +9,6 @@
 
 #include <cstdint>
 #include <ctime>
-#include <time.h>
 //#include <android/log.h>
 
 //#include "../../../../../tests/cplusplus_test.h"
@@ -21,16 +20,6 @@
 long Test2::g = 59;
 
 
-#if defined(OS_MACOSX)
-constexpr bool BOOST_ENABLED{ true };
-constexpr int BOOST_WAIT_TIME{ 7777 };
-#else
-constexpr bool BOOST_ENABLED{ true };
-//constexpr int BOOST_WAIT_TIME{3880};
-constexpr int BOOST_WAIT_TIME{ 388000 };
-#endif
-
-#define NANOS_IN_SECOND 1000000000
 
 namespace smartlang {
 
@@ -81,7 +70,8 @@ namespace smartlang {
 
     std::string make_key(const char *testcasename, const char *testname) {
         std::string key = std::string(testcasename) + '_' + std::string(testname);
-        return std::move(key);
+        //return std::move(key);
+        return key;
     }
 
     void initTests() {
@@ -164,7 +154,7 @@ namespace smartlang {
                     std::ostream_iterator<char>(out));
                 auto &&str = out.str();
                 if (str.length() > 0) {
-                    return str;
+                    return std::move(str);
                 }
                 return "";
             }
@@ -215,19 +205,8 @@ namespace smartlang {
 
 TEST(smartest, winotest) {
     EXPECT_EQ(54, 54.0f);
+    EXPECT_EQ(2.3f, 5.4f-2.1f);
 }
 
 ENDTEST
 
-static long currentTimeInMicros() {
-    /*
-    struct timeval tv;
-    gettimeofday (&tv, NULL);
-    return tv.tv_sec*1000000+ tv.tv_usec;
-    */
-
-    int aa = 523;
-    struct timespec res;
-    clock_gettime(CLOCK_REALTIME, &res);
-    return (res.tv_sec * NANOS_IN_SECOND) + res.tv_nsec;
-}

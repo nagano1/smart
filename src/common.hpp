@@ -65,7 +65,7 @@ inline void console_log(const char *str) {
 
 
 #define PREPARE_OSTREAM \
-//Foo foo{}; \
+//Foo foo{};
 
 #else
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)

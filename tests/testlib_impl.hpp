@@ -63,9 +63,9 @@ namespace smartlang {
 
         const std::string test_case_name_; // TestImpl case name
         const std::string name_;           // TestImpl name
-        bool should_run_;                  // True iff this test should run
-        bool is_disabled_;                 // True iff this test is disabled
-        bool matches_filter_;              // True if this test matches the
+        // bool should_run_;                  // True if this test should run
+        // bool is_disabled_;                 // True if this test is disabled
+        // bool matches_filter_;              // True if this test matches the
     };
 
 
@@ -251,10 +251,12 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
         test_output(t1, t2, t1_chars, t2_chars, t1 != t2, "!=");
     }
 
+    /*
     template<>
     void ecompare_static(float t1, float t2, const char *t1_chars, const char *t2_chars) {
 
     }
+     */
 
 
     template<typename T1, typename T2>

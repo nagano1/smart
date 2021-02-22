@@ -33,7 +33,7 @@ TEST(SpeedTest, memory_order_relaxed_is_fast) {
     current->store(9823, std::memory_order_relaxed);
 
     //long kkk;
-    P *p = new P();//uint64_t(33);
+    //P *p = new P();//uint64_t(33);
     int *a = NULL;
     int *newValue = new int{ 3 };
 
@@ -46,7 +46,6 @@ TEST(SpeedTest, memory_order_relaxed_is_fast) {
         }
         else {
             a = NULL;// newValue;
-
         }
         //current->compare_exchange_weak(loopCount, loopCount+1);
 
@@ -115,11 +114,9 @@ TEST(SpeedTest, stack_assign_is_fast) {
     {
         auto start = std::chrono::high_resolution_clock::now();
 
-        const int64_t loopCount = 1000 *     1000LL;
+        const int64_t loopCount = 1000 *  1000LL;
         int current = 0;//int{};
-        long long current32 = 0;
-        auto *aData = new AData{};
-        auto *current2 = &aData->a;
+        //auto *current2 = &aData->a;
         int lim = loopCount - 15;
         for (int i = 0; i < loopCount; i++) {
             if (i > lim) {
@@ -194,11 +191,13 @@ std::function<const int(const int)> Fx(const std::function<const int(const int)>
 static int fff_ori(int kl) {
 	return kl + 1;
 }
-*/
+
 auto fff_ori = [](int kl) {
     return kl + 1;
 };
+*/
 
+/*
 typedef int(*handle_character_proc)(int next_character);
 
 static handle_character_proc *state_proc;
@@ -212,6 +211,7 @@ int handle1(int a) {
     return 521;
 }
 
+ */
 
 TEST(SpeedTest, functor) {
     /*
@@ -223,11 +223,13 @@ TEST(SpeedTest, functor) {
 
     //std::cout << "argument function : " << var << std::endl;
 
+    /*
     auto gfunc = &fff_ori;
     auto &&gfunc2 = gfunc;
     auto result = (*gfunc2)(3);
     SetStateProc(handle1);
     auto state_proc2 = *state_proc;
+     */
 
     //fff(5);
     //auto fff_ori2 = gfunc;

@@ -174,7 +174,7 @@ constexpr bool EMULATOR = false;
 
 
 #define PREPARE_OSTREAM \
-//Foo foo{}; \
+//Foo foo{};
 
 #define GLOG smartlang::Log{}
 

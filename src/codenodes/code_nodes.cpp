@@ -171,9 +171,6 @@ namespace smart {
             return currentCodeLine;
         }
         auto *nodeBase = Cast::upcast(node);
-        if (nodeBase->vtable == nullptr) {
-            int a = 0;
-        }
         return nodeBase->vtable->appendToLine(nodeBase, currentCodeLine);
     }
 

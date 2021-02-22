@@ -162,7 +162,7 @@ TEST(ParserTest_, char_iteration) {
 
     std::string wstr{ u8"auto * 😂日本語たち=10234;" };
     std::string wstr2{ "class TestClass{ }" };
-    int alen = wstr.length();
+    //int alen = wstr.length();
     auto chs = std::vector<char>{};
 
     //chs.push_back(0xEF);
@@ -170,8 +170,6 @@ TEST(ParserTest_, char_iteration) {
     //chs.push_back(0xBF);
 
     //std::cout << "\n[" << wstr.length() << "\n";
-
-    auto &&val = std::move(23);
 
     char *text = const_cast<char *>(wstr.c_str());
     for (int i = 0; true; i++) {
@@ -677,7 +675,6 @@ TEST(ParserTest_, charBuffer) {
             for (int j = 0; j < max; j++) {
                 unsigned int len = 1 + rand() % 100;
 
-                int size = 355;
                 auto *chars = charBuffer3->newMem<S>(len);
                 chars->a = 5;
 

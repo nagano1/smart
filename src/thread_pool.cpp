@@ -23,11 +23,11 @@
 
 
 
-constexpr int BUFFER_SIZE = 16;
-
-int conflict = 0;
-int conflict2 = 0;
-int set_count_b = 0;
+//constexpr int BUFFER_SIZE = 16;
+//
+//int conflict = 0;
+//int conflict2 = 0;
+//int set_count_b = 0;
 
 
 void GreenThread::doStop() {
@@ -123,7 +123,7 @@ int TestUtil::copyConstructTest() {
     // mytype m2 = mytype();
     */
     {
-        const mytype &m2 = mytype{};// stack
+        //const mytype &m2 = mytype{};// stack
     }
 
 
@@ -180,13 +180,16 @@ int TestUtil::copyConstructTest() {
 
             }
 */
-            mytype __intA__ = mytype{};// stack //backing field   
+            /*
+            mytype __intA__ = mytype{};// stack //backing field
             mytype *intA= &__intA__;// mytype{};// stack
             mytype intB = mytype{};// stack
             //var intA = mytype();
             //con intB = mytype(); // caution
 
+             */
 
+            /*
             mut aiwejfoiawjofaioawjeiof = 234;
             let iofweoif = 3294;
             auto lfe = 324;
@@ -204,9 +207,11 @@ int TestUtil::copyConstructTest() {
                 *intA = std::move(intC);
                 //intA = move intC;
 
-                //*intA = copy(intC);
+                // *intA = copy(intC);
                 //intA = copy intC;
             }
+                          */
+
         }
 
 
@@ -218,10 +223,12 @@ int TestUtil::copyConstructTest() {
 
 
 int TestUtil::testMoveSemantics() {
+    /*
     A ka = std::move(A()); // 一時オブジェクトの値を変数aに移動
     printf("%d", *ka.p);  // "9"（一時オブジェクトから引き継いだ値）
     // 一時オブジェクト`A()`のデストラクタが呼ばれても、
     // 変数aにはなんの影響もない（ポインタa.pはまだ解放されていない）
+     */
 
     return 10;
 }
@@ -273,8 +280,6 @@ RunNode *GreenThread::getNextRunNode() {
     return &this->buffer[this->currentRunNodeIndex];
 }
 
-
-
 void GreenThread::start() {
 
     this->tha = new std::thread([this]() {
@@ -316,7 +321,7 @@ void GreenThread::start() {
                 }
             }
 
-            bool printg = false;
+            //bool printg = false;
             if (runNode == nullptr) {
                 /*
                 if (i % 70000 == 1) {
@@ -398,260 +403,261 @@ void GreenThread::start() {
             return false;
         };
 
-        auto dispose = [this](int threadIndex, long queueIndex, RunNode * &doingRunNode) {
-            this->disposinngIndex++;
-            constexpr static int base_dispose_size = 4000;// 10000;
-            constexpr static int each_dispose_size = base_dispose_size / 20;
-            if (this->disposinngIndex > base_dispose_size) {
-                this->disposinngIndex = 0;
+//        auto dispose = [this](int threadIndex, long queueIndex, RunNode * &doingRunNode) {
+//            this->disposinngIndex++;
+//            constexpr static int base_dispose_size = 4000;// 10000;
+//            constexpr static int each_dispose_size = base_dispose_size / 20;
+//            if (this->disposinngIndex > base_dispose_size) {
+//                this->disposinngIndex = 0;
+//
+//
+//                bool delete_done_once = false;
+//                for (int q = 0; q < thread_queue_size; q++) {
+//
+//                    auto &req = shared_dispose_data.dispose_requests[q];
+//                    bool shouldScanForDispose = true;
+//
+//                    if (q == queueIndex) {
+//                        if (req.requested) {
+//                            if (req.targetDoingRunNode.load() != nullptr) {
+//                                if (req.list[threadIndex] == 0) {
+//                                    req.list[threadIndex].store(1, std::memory_order_relaxed);
+//                                    shouldScanForDispose = false;
+//                                }
+//                            }
+//                            else {
+//                                shouldScanForDispose = false;
+//                            }
+//                        }
+//                        else {
+//                            shouldScanForDispose = false;
+//
+//                            //std::lock_guard<std::mutex> guard{ shared_dispose_data.mtx };
+//
+//
+//                            // try to make a dispose request
+//                            bool isfalse = false;
+//                            auto result = req.requested.compare_exchange_weak(isfalse, true);
+//                            if (result) {
+//                                // START!
+//                                // Initialize
+//                                for (int i = 0; i < threads_size; i++) {
+//                                    if (i == this->thread_index) {
+//                                        req.list[i].store(1, std::memory_order_relaxed);
+//                                    }
+//                                    else {
+//                                        req.list[i].store(0, std::memory_order_relaxed);
+//                                    }
+//                                }
+//                                req.targetDoingRunNode = doingRunNode;
+//                            }
+//                        }
+//                    }
+//                    else {
+//
+//                        if (req.requested) {
+//                            if (req.targetDoingRunNode.load() != nullptr) {
+//                                if (req.list[threadIndex].load() == 0) {
+//                                    req
+//                                        .list[threadIndex]
+//                                        .store(1, std::memory_order_relaxed);
+//
+//                                    shouldScanForDispose = false;
+//                                }
+//                            }
+//                            else {
+//                                shouldScanForDispose = false;
+//                            }
+//                        }
+//                        else {
+//                            shouldScanForDispose = false;
+//                        }
+//                    }
+//
+//                    if (shouldScanForDispose) {
+//                        bool doneDelete = false;
+//
+//                        if (delete_done_once == false) {
+//                            delete_done_once = true;
+//                            //std::lock_guard<std::mutex> guard{ shared_dispose_data.mtx };
+//                            //req.retryCount++;
+//
+//                            if (req.disposed == false) {
+//                                bool is_false = false;
+//                                auto result = req.disposed.compare_exchange_weak(is_false, true);
+//                                if (result) {
+//                                    auto *targetDoingRunNode = req.targetDoingRunNode.load();
+//                                    if (targetDoingRunNode == nullptr) {
+//                                        printf("null;");
+//                                    }
+//
+//                                    if (targetDoingRunNode != nullptr) {
+//                                        bool ok = true;
+//                                        for (int i = 0; i < threads_size; i++) {
+//                                            if (req.list[i].load() != 1) {
+//                                                ok = false;
+//                                                break;
+//                                            }
+//                                        }
+//
+//                                        if (ok == false) {
+//                                            //req.retryCount++;
+//                                            if (req.retryCount > 12200) {
+//                                                printf("[=%d]", q);
+//                                                ok = true;
+//                                            }
+//                                        }
+//
+//                                        if (ok) {
+//                                            doneDelete = true;
+//                                            // Dispose
+//                                            auto *node = this->threadPool->thread_queue[q]->firstRunNode.load();
+//                                            auto *firstNode = node;
+//                                            int total_delet_count = 0;
+//                                            int temp_delete_count = 0;
+//                                            int next_add_thread_index = 0;
+//                                            bool shouldBreak = false;
+//
+//                                            while (node) {
+//                                                auto *next = POINTER_LOAD(node->next);
+//                                                if (node == targetDoingRunNode) {
+//                                                    shouldBreak = true;
+//                                                    //if (count % 20 == 0) {
+////														printf("[g%d, %d, retry=%d]", q, total_delet_count, req.retryCount);
+//                                                    //}
+//                                                    if (next) {
+//                                                        this->threadPool->thread_queue[q]->firstRunNode.store(next, std::memory_order_relaxed);
+//                                                    }
+//                                                }
+//
+//                                                temp_delete_count++;
+//                                                total_delet_count++;
+//                                                if (temp_delete_count > each_dispose_size || shouldBreak) {
+//                                                    auto &target_thread = this->threadPool->threads[next_add_thread_index];
+//                                                    auto should_delete = target_thread->cacheAddedCount - target_thread->cacheUsedCount > 8000;
+//
+//                                                    if (should_delete == false) {
+//                                                        auto &atomic_cache = shared_dispose_data.atomic_for_cache[next_add_thread_index];
+//                                                        if (atomic_cache.compare_exchange_weak(is_false, true)) {
+//                                                            /*
+//                                                            auto *end = target_thread->cacheRunNodeEnd.load();
+//                                                            node->next.store(nullptr, std::memory_order_relaxed);
+//                                                            target_thread->cacheRunNodeEnd.store(node, std::memory_order_relaxed);
+//                                                            end->next.store(firstNode, std::memory_order_relaxed);
+//
+//                                                            target_thread->cacheAddedCount.fetch_add(temp_delete_count, std::memory_order_relaxed);
+//
+//                                                            atomic_cache.store(false, std::memory_order_relaxed);
+//                                                            */
+//
+//                                                        }
+//                                                        else {
+//                                                            should_delete = true;
+//                                                            //printf("fail;"); // assert
+//                                                        }
+//                                                    }
+//
+//
+//                                                    /*
+//                                                    bool inserted = false;
+//                                                    for (int t = 0; t < threads_size; t++) {
+//
+//                                                        auto &target_thread = this->threadPool->threads[next_add_thread_index];
+//                                                        bool have_capacity = target_thread->cacheAddedCount - target_thread->cacheUsedCount < 40000;
+//
+//                                                        if (have_capacity) {
+//                                                            auto &atomic_cache = shared_dispose_data.atomic_for_cache[next_add_thread_index];
+//                                                            if (atomic_cache.compare_exchange_weak(is_false, true)) {
+//
+//                                                                auto *end = target_thread->cacheRunNodeEnd.load();
+//                                                                node->next.store(nullptr, std::memory_order_relaxed);
+//                                                                target_thread->cacheRunNodeEnd.store(node, std::memory_order_relaxed);
+//                                                                end->next.store(firstNode, std::memory_order_relaxed);
+//
+//                                                                target_thread->cacheAddedCount.fetch_add(temp_delete_count, std::memory_order_relaxed);
+//
+//                                                                atomic_cache.store(false, std::memory_order_relaxed);
+//                                                                inserted = true;
+//                                                                break;
+//                                                            }
+//                                                            else {
+//                                                                //printf("fail;"); // assert
+//                                                            }
+//                                                        }
+//
+//                                                        next_add_thread_index++;
+//                                                        if (next_add_thread_index >= threads_size) {
+//                                                            next_add_thread_index = 0;
+//                                                        }
+//                                                    }
+//                                                    */
+//
+//
+//
+//                                                    if (should_delete) {
+//                                                        auto *deleteNode = firstNode;
+//                                                        if (total_delet_count % 20 == 0) {
+//
+//                                                            /*
+//                                                            if (target_thread->cacheAddedCount > INT64_MAX) {
+//                                                                printf("==;");
+//                                                            }
+//                                                                                                                          */
+//                                                            //printf("del: %d/n", temp_delete_count);
+//
+//                                                        }
+//                                                        //printf("here;%llu - %llu", this->threadPool->threads[next_add_thread_index]->cacheAddedCount.load(), this->threadPool->threads[next_add_thread_index]->cacheUsedCount.load());
+//
+//                                                        while (deleteNode != node) {
+//                                                            auto * delete_temp = deleteNode;
+//                                                            deleteNode = deleteNode->next;// .load();
+//                                                            delete delete_temp;
+//                                                        }
+//                                                        delete node;
+//                                                    }
+//                                                    else {
+//
+//                                                    }
+//
+//                                                    firstNode = next;
+//                                                    next_add_thread_index++;
+//                                                    if (next_add_thread_index >= threads_size) {
+//                                                        next_add_thread_index = 0;
+//                                                    }
+//                                                    temp_delete_count = 0;
+//
+//                                                }
+//
+//                                                if (shouldBreak) {
+//                                                    break;
+//                                                }
+//
+//                                                node = next;
+//
+//                                            }
+//
+//                                            req.retryCount = 0;
+//                                            req.targetDoingRunNode = nullptr;
+//                                            req.requested = false;
+//
+//
+//                                        }
+//                                    }
+//                                    req.disposed.store(false, std::memory_order_relaxed);
+//                                }
+//                            }
+//                        }
+//
+//                        if (doneDelete == false) {
+//                            req.retryCount++;
+//                        }
+//                    }
+//                }
+//            }
+//        };
 
 
-                bool delete_done_once = false;
-                for (int q = 0; q < thread_queue_size; q++) {
-
-                    auto &req = shared_dispose_data.dispose_requests[q];
-                    bool shouldScanForDispose = true;
-
-                    if (q == queueIndex) {
-                        if (req.requested) {
-                            if (req.targetDoingRunNode.load() != nullptr) {
-                                if (req.list[threadIndex] == 0) {
-                                    req.list[threadIndex].store(1, std::memory_order_relaxed);
-                                    shouldScanForDispose = false;
-                                }
-                            }
-                            else {
-                                shouldScanForDispose = false;
-                            }
-                        }
-                        else {
-                            shouldScanForDispose = false;
-
-                            //std::lock_guard<std::mutex> guard{ shared_dispose_data.mtx };
-
-
-                            // try to make a dispose request
-                            bool isfalse = false;
-                            auto result = req.requested.compare_exchange_weak(isfalse, true);
-                            if (result) {
-                                // START!
-                                // Initialize
-                                for (int i = 0; i < threads_size; i++) {
-                                    if (i == this->thread_index) {
-                                        req.list[i].store(1, std::memory_order_relaxed);
-                                    }
-                                    else {
-                                        req.list[i].store(0, std::memory_order_relaxed);
-                                    }
-                                }
-                                req.targetDoingRunNode = doingRunNode;
-                            }
-                        }
-                    }
-                    else {
-
-                        if (req.requested) {
-                            if (req.targetDoingRunNode.load() != nullptr) {
-                                if (req.list[threadIndex].load() == 0) {
-                                    req
-                                        .list[threadIndex]
-                                        .store(1, std::memory_order_relaxed);
-
-                                    shouldScanForDispose = false;
-                                }
-                            }
-                            else {
-                                shouldScanForDispose = false;
-                            }
-                        }
-                        else {
-                            shouldScanForDispose = false;
-                        }
-                    }
-
-                    if (shouldScanForDispose) {
-                        bool doneDelete = false;
-
-                        if (delete_done_once == false) {
-                            delete_done_once = true;
-                            //std::lock_guard<std::mutex> guard{ shared_dispose_data.mtx };
-                            //req.retryCount++;
-
-                            if (req.disposed == false) {
-                                bool is_false = false;
-                                auto result = req.disposed.compare_exchange_weak(is_false, true);
-                                if (result) {
-                                    auto *targetDoingRunNode = req.targetDoingRunNode.load();
-                                    if (targetDoingRunNode == nullptr) {
-                                        printf("null;");
-                                    }
-
-                                    if (targetDoingRunNode != nullptr) {
-                                        bool ok = true;
-                                        for (int i = 0; i < threads_size; i++) {
-                                            if (req.list[i].load() != 1) {
-                                                ok = false;
-                                                break;
-                                            }
-                                        }
-
-                                        if (ok == false) {
-                                            //req.retryCount++;
-                                            if (req.retryCount > 12200) {
-                                                printf("[=%d]", q);
-                                                ok = true;
-                                            }
-                                        }
-
-                                        if (ok) {
-                                            doneDelete = true;
-                                            // Dispose
-                                            auto *node = this->threadPool->thread_queue[q]->firstRunNode.load();
-                                            auto *firstNode = node;
-                                            int total_delet_count = 0;
-                                            int temp_delete_count = 0;
-                                            int next_add_thread_index = 0;
-                                            bool shouldBreak = false;
-
-                                            while (node) {
-                                                auto *next = POINTER_LOAD(node->next);
-                                                if (node == targetDoingRunNode) {
-                                                    shouldBreak = true;
-                                                    //if (count % 20 == 0) {
-//														printf("[g%d, %d, retry=%d]", q, total_delet_count, req.retryCount);
-                                                    //}
-                                                    if (next) {
-                                                        this->threadPool->thread_queue[q]->firstRunNode.store(next, std::memory_order_relaxed);
-                                                    }
-                                                }
-
-                                                temp_delete_count++;
-                                                total_delet_count++;
-                                                if (temp_delete_count > each_dispose_size || shouldBreak) {
-                                                    auto &target_thread = this->threadPool->threads[next_add_thread_index];
-                                                    auto should_delete = target_thread->cacheAddedCount - target_thread->cacheUsedCount > 8000;
-
-                                                    if (should_delete == false) {
-                                                        auto &atomic_cache = shared_dispose_data.atomic_for_cache[next_add_thread_index];
-                                                        if (atomic_cache.compare_exchange_weak(is_false, true)) {
-                                                            /*
-                                                            auto *end = target_thread->cacheRunNodeEnd.load();
-                                                            node->next.store(nullptr, std::memory_order_relaxed);
-                                                            target_thread->cacheRunNodeEnd.store(node, std::memory_order_relaxed);
-                                                            end->next.store(firstNode, std::memory_order_relaxed);
-
-                                                            target_thread->cacheAddedCount.fetch_add(temp_delete_count, std::memory_order_relaxed);
-
-                                                            atomic_cache.store(false, std::memory_order_relaxed);
-                                                            */
-
-                                                        }
-                                                        else {
-                                                            should_delete = true;
-                                                            //printf("fail;"); // assert
-                                                        }
-                                                    }
-
-
-                                                    /*
-                                                    bool inserted = false;
-                                                    for (int t = 0; t < threads_size; t++) {
-
-                                                        auto &target_thread = this->threadPool->threads[next_add_thread_index];
-                                                        bool have_capacity = target_thread->cacheAddedCount - target_thread->cacheUsedCount < 40000;
-
-                                                        if (have_capacity) {
-                                                            auto &atomic_cache = shared_dispose_data.atomic_for_cache[next_add_thread_index];
-                                                            if (atomic_cache.compare_exchange_weak(is_false, true)) {
-
-                                                                auto *end = target_thread->cacheRunNodeEnd.load();
-                                                                node->next.store(nullptr, std::memory_order_relaxed);
-                                                                target_thread->cacheRunNodeEnd.store(node, std::memory_order_relaxed);
-                                                                end->next.store(firstNode, std::memory_order_relaxed);
-
-                                                                target_thread->cacheAddedCount.fetch_add(temp_delete_count, std::memory_order_relaxed);
-
-                                                                atomic_cache.store(false, std::memory_order_relaxed);
-                                                                inserted = true;
-                                                                break;
-                                                            }
-                                                            else {
-                                                                //printf("fail;"); // assert
-                                                            }
-                                                        }
-
-                                                        next_add_thread_index++;
-                                                        if (next_add_thread_index >= threads_size) {
-                                                            next_add_thread_index = 0;
-                                                        }
-                                                    }
-                                                    */
-
-
-
-                                                    if (should_delete) {
-                                                        auto *deleteNode = firstNode;
-                                                        if (total_delet_count % 20 == 0) {
-
-                                                            /*
-                                                            if (target_thread->cacheAddedCount > INT64_MAX) {
-                                                                printf("==;");
-                                                            }
-                                                                                                                          */
-                                                            //printf("del: %d/n", temp_delete_count);
-
-                                                        }
-                                                        //printf("here;%llu - %llu", this->threadPool->threads[next_add_thread_index]->cacheAddedCount.load(), this->threadPool->threads[next_add_thread_index]->cacheUsedCount.load());
-
-                                                        while (deleteNode != node) {
-                                                            auto * delete_temp = deleteNode;
-                                                            deleteNode = deleteNode->next;// .load();
-                                                            delete delete_temp;
-                                                        }
-                                                        delete node;
-                                                    }
-                                                    else {
-
-                                                    }
-
-                                                    firstNode = next;
-                                                    next_add_thread_index++;
-                                                    if (next_add_thread_index >= threads_size) {
-                                                        next_add_thread_index = 0;
-                                                    }
-                                                    temp_delete_count = 0;
-
-                                                }
-
-                                                if (shouldBreak) {
-                                                    break;
-                                                }
-
-                                                node = next;
-
-                                            }
-
-                                            req.retryCount = 0;
-                                            req.targetDoingRunNode = nullptr;
-                                            req.requested = false;
-
-
-                                        }
-                                    }
-                                    req.disposed.store(false, std::memory_order_relaxed);
-                                }
-                            }
-                        }
-
-                        if (doneDelete == false) {
-                            req.retryCount++;
-                        }
-                    }
-                }
-            }
-        };
-
-        auto gfunc_consume = [this, &dispose]() {
+        auto gfunc_consume = [this/*, &dispose*/]() {
             auto &thq = this->threadPool->thread_queue;
             //int queue_info_list[thread_queue_size];
 
@@ -678,8 +684,8 @@ void GreenThread::start() {
                         NodeIndexInteger nextValue = currentDoingIndex + (NodeIndexInteger)1;
 
                         if (doingNextNode->nodeIndex == nextValue) {
-                            auto funcId = doingNextNode->func_id;
-                            auto *parameters = doingNextNode->parameters;
+                            //auto funcId = doingNextNode->func_id;
+                            //auto *parameters = doingNextNode->parameters;
 
                             auto result = thread_queue->currentDoingIndex.compare_exchange_strong(currentDoingIndex, nextValue);
                             if (result) {
@@ -763,7 +769,7 @@ void GreenThread::start() {
                 continue;
 
                 for (int i = 0; i < 1000 * 1000; i++) {
-                    auto *rr = new RunNode();//[1000*1000];
+                    //auto *rr = new RunNode();//[1000*1000];
                     //this->addRunNode(rr);
                     //this->addRunNode(&this->rr[i]);
                     //rr->next = nullptr;
@@ -838,7 +844,7 @@ int ThreadPool::init() {
     }
 
 
-    std::atomic<int> *atomic_add = nullptr;
+    //std::atomic<int> *atomic_add = nullptr;
 
     //atomic_add = new std::atomic<int>{ 24 };
 

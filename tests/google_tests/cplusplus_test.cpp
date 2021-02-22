@@ -10,6 +10,8 @@
 #include <vector>
 #include <iomanip>
 #include <locale>
+#include <ctime>
+#include <time.h>
 
 
 #include "../test_common.h"
@@ -139,7 +141,6 @@ TEST(cplusplus_test, stringstream_) {
 
     auto &sstream = log;
     auto worker_thread = std::thread([&]() {
-        char temp;
         std::vector<int> v;
         while (!stopped) {
             //printf(";");
@@ -175,11 +176,24 @@ TEST(cplusplus_test, stringstream_) {
 
 ENDTEST
 
+#define NANOS_IN_SECOND 1000000000
+static long currentTimeInMicros() {
+    /*
+    struct timeval tv;
+    gettimeofday (&tv, NULL);
+    return tv.tv_sec*1000000+ tv.tv_usec;
+    */
 
-
+    struct timespec res;
+    clock_gettime(CLOCK_REALTIME, &res);
+    return (res.tv_sec * NANOS_IN_SECOND) + res.tv_nsec;
+}
 
 
 TEST(cplusplus_test, test1) {
+    EXPECT_GT(currentTimeInMicros(), 20);
+
+
 
     //auto ret = TestUtil::testUtf8Text();
 
@@ -477,8 +491,6 @@ TEST(concept, wakeup_test) {
         wakeups[s] = 0;
 
         auto worker_thread = new std::thread([](int index) {
-            int this_count = 0;
-
             std::mutex this_mtx;
             std::unique_lock<std::mutex> sleeper_lock{ this_mtx };
 
@@ -502,19 +514,20 @@ TEST(concept, wakeup_test) {
                     break;
                 }
 
-                auto notified = main_sleeper_cond.wait_for(sleeper_lock,
+                //auto notified =
+                main_sleeper_cond.wait_for(sleeper_lock,
                     std::chrono::milliseconds(1));
 
                 {
-                    bool first = true;
+                    bool first2 = true;
                     while (true) {
                         auto l = sleepings.load();
                         if (sleepings.compare_exchange_weak(l, l & ~(1 << index))) {
                             break;
                         }
                         else {
-                            if (first == true) {
-                                first = false;
+                            if (first2 == true) {
+                                first2 = false;
                                 //printf("[");
                             }
                             //printf("p-%d,", index);
@@ -549,9 +562,6 @@ TEST(concept, wakeup_test) {
     unsigned long long k = 0;
     using newtype = unsigned int;
     newtype loopCount = ARM ? 1000 * 70 : 1000 * 100;
-
-    int kk = 8;
-    int a = 24;
 
     auto current = int{};
 
@@ -606,7 +616,9 @@ TEST(concept, wakeup_test) {
 
 
     GLOG << "wokeupCountPerMillisecond = " << wokeupCountPerMillisecond;
-    //EXPECT_LT(one_op_nanosec, 43.0f);
+    if (speed_test) {
+        EXPECT_LT(one_op_nanosec, 43.0f);
+    }
     //EXPECT_LT(k, loopCount * 20);
 
     //EXPECT_LT(totalWokeupCount, tryWakeupCount);

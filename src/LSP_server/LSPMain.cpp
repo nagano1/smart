@@ -117,7 +117,10 @@ static void validateJson(const char *text, size_t textLength) {
 
         int line = 0;
         int charactor = 0;
-        bool result = getLineAndPos(document->context->syntaxErrorInfo.charPosition, text, textLength, line, charactor);
+        bool ok = getLineAndPos(document->context->syntaxErrorInfo.charPosition, text, textLength, line, charactor);
+        if (!ok) {
+            line = 0;
+        }
 
 
         char moji[1024];
@@ -193,7 +196,6 @@ void LSPManager::nextRequest(char *chars, size_t length) {
         auto *item = rootJson->hashMap->get2("method");
         if (item) {
             auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
-            auto *method = strNode->text;
 
             fprintf(stderr, "here: [%s]", strNode->str);
             fflush(stderr);

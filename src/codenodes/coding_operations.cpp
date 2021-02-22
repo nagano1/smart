@@ -143,14 +143,10 @@ namespace smart {
 
         auto *line = doc->firstCodeLine;
         while (line) {
-            auto *node = line->firstNode;
-
             auto *firstElement = findFirstElementNode(line);
             if (firstElement) {
 
             }
-
-
             line = line->nextLine;
         }
     }
