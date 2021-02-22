@@ -18,7 +18,7 @@
 		"testname": "test1",
 		"filepath": "tests/google_tests/cplusplus_test.cpp",
 		"filename": "cplusplus_test.cpp",
-		"body": "TEST(cplusplus_test, test1) {\r\n    EXPECT_GT(currentTimeInMicros(), 20);\r\n\r\n\r\n\r\n    //auto ret = TestUtil::testUtf8Text();\r\n\r\n    //EXPECT_EQ(5, ret);\r\n\r\n    //arrange\r\n    //act\r\n    //assert\r\n    //EXPECT_EQ(1, 1) << \"Vectors x and y are of unequal length\";;\r\n\r\n    //ASSERT_TRUE(true);\r\n\r\n    EXPECT_EQ(20, 20);\r\n    EXPECT_EQ(100, 100);\r\n\r\n    /*\r\n        EXPECT_EQ(Formula::bla(0), 0);\r\n        EXPECT_EQ(Formula::bla(10), 20);\r\n        EXPECT_EQ(Formula::bla(50), 100);\r\n     */\r\n}\r\n\r\n"
+		"body": "TEST(cplusplus_test, test1) {\r\n\r\n    //auto ret = TestUtil::testUtf8Text();\r\n\r\n    //EXPECT_EQ(5, ret);\r\n\r\n    //arrange\r\n    //act\r\n    //assert\r\n    //EXPECT_EQ(1, 1) << \"Vectors x and y are of unequal length\";;\r\n\r\n    //ASSERT_TRUE(true);\r\n\r\n    EXPECT_EQ(20, 20);\r\n    EXPECT_EQ(100, 100);\r\n\r\n    /*\r\n        EXPECT_EQ(Formula::bla(0), 0);\r\n        EXPECT_EQ(Formula::bla(10), 20);\r\n        EXPECT_EQ(Formula::bla(50), 100);\r\n     */\r\n}\r\n\r\n"
 	},
 	{
 		"testcasename": "cplusplus_test",

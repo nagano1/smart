@@ -176,24 +176,21 @@ TEST(cplusplus_test, stringstream_) {
 
 ENDTEST
 
+/*
 #define NANOS_IN_SECOND 1000000000
 static long currentTimeInMicros() {
-    /*
-    struct timeval tv;
-    gettimeofday (&tv, NULL);
-    return tv.tv_sec*1000000+ tv.tv_usec;
-    */
+    //struct timeval tv;
+    //gettimeofday (&tv, NULL);
+    //return tv.tv_sec*1000000+ tv.tv_usec;
 
     struct timespec res;
     clock_gettime(CLOCK_REALTIME, &res);
     return (res.tv_sec * NANOS_IN_SECOND) + res.tv_nsec;
 }
+*/
 
 
 TEST(cplusplus_test, test1) {
-    EXPECT_GT(currentTimeInMicros(), 20);
-
-
 
     //auto ret = TestUtil::testUtf8Text();
 
