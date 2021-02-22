@@ -297,8 +297,6 @@ ENDTEST
 
 TEST(cplusplus_test, printFoo) {
     
-    GLOG << "fflush" << std::fflush;
-
     int sleepings = 0;
     sleepings = sleepings | (1 << 0);
     EXPECT_EQ(sleepings, 1);
