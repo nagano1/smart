@@ -327,6 +327,8 @@ namespace smart {
         int errorDisplayType = 0;
 
         static void setError(_errorInfo *error, int errorCode, st_uint start, const char *reason) {
+            error->hasError = true;
+            error->charPosition = start;
             st_textlen len = (st_textlen)strlen(reason);
             error->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
             TEXT_MEMCPY(error->reason, reason, error->reasonLength);
