@@ -51,7 +51,7 @@ void LSPManager::LSP_main() {
         if (n > 0) {
             // skip remain headers
             bool lineBreak = false;
-            char c1;
+            int c1;
             while (EOF != (c1 = getchar())) {
                 if (c1 == '\n') {
                     if (lineBreak) break;
@@ -73,7 +73,7 @@ void LSPManager::LSP_main() {
         else {
             fprintf(stderr, "FAILED!!!\n");
             fflush(stderr);
-            char stop = getchar();
+            int stop = getchar();
             if (EOF == stop) {
                 return;
             }

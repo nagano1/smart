@@ -252,11 +252,11 @@ TEST(cplusplus_test, ArmAssemblyTest2) {
     EXPECT_EQ(sysconf(_SC_NPROCESSORS_CONF), 8);
     EXPECT_EQ(sysconf(_SC_NPROCESSORS_ONLN), 8);
 
-    register void *sp asm("sp");
-    void* p2 = NULL;
+    //register void *sp asm("sp");
+    // void* p2 = NULL;
 
 
-    EXPECT_EQ(sp, (void*)&p2);
+    //EXPECT_EQ(sp, (void*)&p2);
 }
 
 static int add(int i, int j)
@@ -268,7 +268,7 @@ static int add(int i, int j)
     );
      */
 
-    int address = 0;
+    //int address = 0;
     /*
      *
     __asm ("STR sp, [%0]\n\t"
@@ -282,7 +282,7 @@ static int add(int i, int j)
       */
 
 
-    long a = 324;
+    //long a = 324;
     //EXPECT_EQ(address, 3);
 
     return res;

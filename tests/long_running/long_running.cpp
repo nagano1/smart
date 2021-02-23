@@ -34,6 +34,7 @@ struct S
 int main(int argc, char **argv)
 {
     // long running test
+    /*
     srand((unsigned int)time(NULL));
     for (int i = 0; i < 8000 * 1000; i++) {
         unsigned int max = 1 + rand() % 1000;
@@ -56,9 +57,10 @@ int main(int argc, char **argv)
         charBuffer3->freeAll();
         free(charBuffer3);
     }
+*/
 
-
-    for (int i = 0; i < 1000*1000*1000; i++) {
+    while (true) {
+    //for (int i = 0; i < 1000*1000*1000; i++) {
         //std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 

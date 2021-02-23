@@ -6,8 +6,10 @@ set(BINARY ${CMAKE_PROJECT_NAME})
 
 file(GLOB cpp_files
     "./main.cpp"
+
     #"./codenodes/*.cpp"
 )
+
 
 add_executable(${BINARY}_run ${cpp_files})
 if(DEFINED DOOR32)
