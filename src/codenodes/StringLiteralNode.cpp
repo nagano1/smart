@@ -86,13 +86,7 @@ namespace smart {
 
 
         if (startsWithDQuote && !endsWithDQuote) {
-            context->syntaxErrorInfo.setError(&context->syntaxErrorInfo,21390, start, "no end quote");
-            /*
-            context->syntaxErrorInfo.hasError = true;
-            context->syntaxErrorInfo.charPosition = start;
-            context->syntaxErrorInfo.reason = (const char*)"no end quote";
-            context->syntaxErrorInfo.errorCode = 21390;
-*/
+            SyntaxErrorInfo::setError(&context->syntaxErrorInfo,21390, start, "missing closing quote");
             return -1;
         }
 

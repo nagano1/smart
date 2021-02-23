@@ -322,6 +322,9 @@ namespace smart {
         st_uint charPosition;
         int charEndPosition;
 
+
+        //char *errors[1024];
+
         // 0: "between start and  end"
         // 1: "from start to end of line,"
         int errorDisplayType = 0;
@@ -330,6 +333,7 @@ namespace smart {
             error->hasError = true;
             error->errorCode = errorCode;
             error->charPosition = start;
+
             st_textlen len = (st_textlen)strlen(reason);
             error->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
             TEXT_MEMCPY(error->reason, reason, error->reasonLength);
@@ -338,7 +342,7 @@ namespace smart {
     };
 
     struct ParseContext {
-        int start;
+        st_uint start;
         st_textlen length;
         bool scanEnd;
         NodeBase *codeNode;

@@ -122,9 +122,8 @@ static void validateJson(const char *text, st_textlen textLength) {
             line = 0;
         }
 
-
         char moji[1024];
-        sprintf(moji, u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c:/Users/wikihow/Desktop/AAA.txt","diagnostics": [{"severity": 1,"range": { "start": { "character": %d, "line": %d }, "end": { "character": %d, "line": %d } },"message": "awefawf","source": "ex"}]}})", charactor, line, 0, line+1);
+        sprintf(moji, u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c:/Users/wikihow/Desktop/AAA.txt","diagnostics": [{"severity": 1,"range": { "start": { "character": %d, "line": %d }, "end": { "character": %d, "line": %d } },"message": "%s","source": "ex"}]}})", charactor, line, 0, line+1, document->context->syntaxErrorInfo.reason);
         fprintf(stderr, "\n\n[%s]\n\n", moji);
         fflush(stderr);
 
