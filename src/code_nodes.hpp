@@ -410,7 +410,7 @@ namespace smart {
         }
 
         template<typename T>
-        T *newMemArray(int len) {
+        T *newMemArray(st_size len) {
             return (T *) memBuffer.newMem<T>(len);
         }
 

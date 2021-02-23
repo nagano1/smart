@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+﻿#include <cstdio>
 #include <string>
 #include <array>
 #include <algorithm>
@@ -41,10 +41,10 @@ namespace smart {
 
     static constexpr const char DocumentTypeText[] = "<Document>";
 
-    static const node_vtable _Document = CREATE_VTABLE(DocumentStruct, selfTextLength, selfText,
+    static const node_vtable DocumentVTable_ = CREATE_VTABLE/*NOLINT*/(DocumentStruct, selfTextLength, selfText,
                                                        appendToLine, DocumentTypeText, true);
 
-    const node_vtable *VTables::DocumentVTable = &_Document;
+    const node_vtable *VTables::DocumentVTable = &DocumentVTable_;
 
     static void staticActionCreator(void *node1, void *node2, int actionRequest) {
 
@@ -116,7 +116,7 @@ namespace smart {
 
     utf8byte *DocumentUtils::getTextFromNode(NodeBase *node) {
         st_textlen len = VTableCall::selfTextLength(node);
-        int prev_char = node->prev_char != '\0' ? 1 : 0;
+        st_uint prev_char = node->prev_char != '\0' ? 1 : 0;
 
         auto *text = (char *) node->context->newMemArray<char>(len + 1 + prev_char);
         text[len + prev_char] = '\0';
