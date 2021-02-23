@@ -334,7 +334,6 @@ namespace smart {
             error->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
             TEXT_MEMCPY(error->reason, reason, error->reasonLength);
             error->reason[error->reasonLength] = '\0';
-
         }
     };
 
