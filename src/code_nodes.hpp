@@ -308,20 +308,29 @@ namespace smart {
     };
 
 
-
-    enum ErrorCode {
+    enum class ErrorCode {
         missing_closing_quote = 8591000,
         missing_closing_quote2 = 8591001,
     };
 
+        enum class Language {
+            missing_closing_quote = 8591000,
+            missing_closing_quote2 = 8591001,
+        };
     static const char *getErrorMessage(ErrorCode errorCode) {
         const char *mes = nullptr;
         when(errorCode) {
-            wfor(missing_closing_quote, mes = u8"missing closing quote");
-            wfor(missing_closing_quote2, mes = u8"missing closing quote");
+            wfor(ErrorCode::missing_closing_quote, mes = u8"missing closing quote");
+            wfor(ErrorCode::missing_closing_quote2, mes = u8"missing closing quote");
         }
 
         return mes;
+    }
+
+    static const char *translateErrorMessage(ErrorCode errorCode, Language lang) {
+
+
+        return nullptr;
     }
 
     #define MAX_REASON_LENGTH 1024
