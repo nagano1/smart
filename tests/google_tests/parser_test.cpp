@@ -34,8 +34,9 @@ TEST(ParserTest_, JsonParseTest) {
         auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
         DocumentUtils::parseText(document, text, strlen(text));
 
+
         EXPECT_EQ(document->context->syntaxErrorInfo.hasError, true);
-        EXPECT_EQ(document->context->syntaxErrorInfo.errorCode, ErrorCode::missing_closing_quote);
+        EXPECT_EQ(static_cast<int>(document->context->syntaxErrorInfo.errorCode), static_cast<int>(ErrorCode::missing_closing_quote));
         EXPECT_EQ(std::string{ document->context->syntaxErrorInfo.reason }, std::string{ "missing closing quote" });
     }
 

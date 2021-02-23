@@ -314,9 +314,14 @@ namespace smart {
     };
 
         enum class Language {
-            missing_closing_quote = 8591000,
-            missing_closing_quote2 = 8591001,
+            en = 8591000,
+            jp = 8591001,
         };
+
+
+    static const char *translateErrorMessage(ErrorCode errorCode, Language lang) {
+        return nullptr;
+    }
     static const char *getErrorMessage(ErrorCode errorCode) {
         const char *mes = nullptr;
         when(errorCode) {
@@ -324,14 +329,16 @@ namespace smart {
             wfor(ErrorCode::missing_closing_quote2, mes = u8"missing closing quote");
         }
 
+        auto *transMess = translateErrorMessage(errorCode, Language::jp);
+        if (transMess != nullptr) {
+            mes = transMess;
+        }
+
+
         return mes;
     }
 
-    static const char *translateErrorMessage(ErrorCode errorCode, Language lang) {
 
-
-        return nullptr;
-    }
 
     #define MAX_REASON_LENGTH 1024
     /**
@@ -340,7 +347,7 @@ namespace smart {
     using SyntaxErrorInfo = struct _errorInfo {
         bool hasError{false};
 
-        int errorCode{100};
+        ErrorCode errorCode;
         char reason[MAX_REASON_LENGTH + 1];
         st_textlen reasonLength = 0;
 
