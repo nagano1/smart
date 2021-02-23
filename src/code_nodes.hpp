@@ -328,6 +328,7 @@ namespace smart {
 
         static void setError(_errorInfo *error, int errorCode, st_uint start, const char *reason) {
             error->hasError = true;
+            error->errorCode = errorCode;
             error->charPosition = start;
             st_textlen len = (st_textlen)strlen(reason);
             error->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;

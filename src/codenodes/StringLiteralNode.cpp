@@ -86,7 +86,7 @@ namespace smart {
 
 
         if (startsWithDQuote && !endsWithDQuote) {
-            context->syntaxErrorInfo.setError(&context->syntaxErrorInfo,10234, start, "no end quote");
+            context->syntaxErrorInfo.setError(&context->syntaxErrorInfo,21390, start, "no end quote");
             /*
             context->syntaxErrorInfo.hasError = true;
             context->syntaxErrorInfo.charPosition = start;
