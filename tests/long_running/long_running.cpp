@@ -80,9 +80,6 @@ int main(int argc, char **argv)
         auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
         DocumentUtils::parseText(document, text, strlen(text));
 
-        if (document->context->syntaxErrorInfo.errorCode ==  21390) {
-
-        }
         Alloc::deleteDocument(document);
 
     }
