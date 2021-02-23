@@ -319,14 +319,14 @@ namespace smart {
         char reason[MAX_REASON_LENGTH+1];
         st_textlen reasonLength = 0;
 
-        int charPosition;
+        st_uint charPosition;
         int charEndPosition;
 
         // 0: "between start and  end"
         // 1: "from start to end of line,"
         int errorDisplayType = 0;
 
-        static void setError(_errorInfo *error, int errorCode, const char *reason) {
+        static void setError(_errorInfo *error, int errorCode, st_uint start, const char *reason) {
             st_textlen len = (st_textlen)strlen(reason);
             error->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
             TEXT_MEMCPY(error->reason, reason, error->reasonLength);
@@ -710,7 +710,7 @@ namespace smart {
      * Function Types and vtable for node structures
      */
     #define TokenizerParams_parent_ch_start_context \
-        NodeBase *parent, utf8byte ch, int start, ParseContext *context
+        NodeBase *parent, utf8byte ch, st_uint start, ParseContext *context
 
     #define TokenizerParams_pass parent, ch, start, context
 
