@@ -22,7 +22,6 @@ using utf8chars = const utf8byte *;
 
 using st_size = unsigned long;
 using st_uint = unsigned long;
-// type of size commonly used
 
 using st_textlen = st_size;
 using st_byte = unsigned char;

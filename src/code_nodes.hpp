@@ -308,22 +308,31 @@ namespace smart {
     };
 
 
+    #define MAX_REASON_LENGTH 1024
     /**
      * Syntax error is allowed only once
      */
     using SyntaxErrorInfo = struct _errorInfo {
         bool hasError{false};
 
-        int errorCode = 100;
-        char *reason;
+        int errorCode{100};
+        char reason[MAX_REASON_LENGTH+1];
+        st_textlen reasonLength = 0;
 
         int charPosition;
+        int charEndPosition;
 
-        int startLine;
-        int endLine;
+        // 0: "between start and  end"
+        // 1: "from start to end of line,"
+        int errorDisplayType = 0;
 
-        int startCharacter;
-        int endCharacter;
+        static void setError(_errorInfo *error, int errorCode, const char *reason) {
+            st_textlen len = (st_textlen)strlen(reason);
+            error->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
+            TEXT_MEMCPY(error->reason, reason, error->reasonLength);
+            error->reason[error->reasonLength] = '\0';
+
+        }
     };
 
     struct ParseContext {
