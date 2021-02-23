@@ -34,7 +34,7 @@ TEST(ParserTest_, JsonParseTest) {
 
         EXPECT_EQ(document->context->syntaxErrorInfo.hasError, true);
         EXPECT_EQ(document->context->syntaxErrorInfo.errorCode, 21390);
-        EXPECT_EQ(std::string{ document->context->syntaxErrorInfo.reason }, std::string{ "no end quote" });
+        EXPECT_EQ(std::string{ document->context->syntaxErrorInfo.reason }, std::string{ "missing closing quote" });
     }
 
 
