@@ -20,11 +20,13 @@ static void testJson(const char* codeText);
 
 TEST(ParserTest_, JsonParseTest) {
 
-    // preserve spaces and line-breaks
-    char *text = const_cast<char *>(u8R"(
+    {
+        // preserve spaces and line-breaks
+        char *text = const_cast<char *>(u8R"(
 {"jsonrpc":"2.0","id":0,"method":"initialize","params":{"processId":28196,"rootPath":null,"rootUri":null,"capabilities":{"workspace":{"applyEdit":true,"workspaceEdit":{"documentChanges":true},"didChangeConfiguration":{"dynamicRegistration":true},"didChangeWatchedFiles":{"dynamicRegistration":true},"symbol":{"dynamicRegistration":true,"symbolKind":{"valueSet":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]}},"executeCommand":{"dynamicRegistration":true},"configuration":true,"workspaceFolders":true},"textDocument":{"publishDiagnostics":{"relatedInformation":true},"synchronization":{"dynamicRegistration":true,"willSave":true,"willSaveWaitUntil":true,"didSave":true},"completion":{"dynamicRegistration":true,"contextSupport":true,"completionItem":{"snippetSupport":true,"commitCharactersSupport":true,"documentationFormat":["markdown","plaintext"],"deprecatedSupport":true},"completionItemKind":{"valueSet":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]}},"hover":{"dynamicRegistration":true,"contentFormat":["markdown","plaintext"]},"signatureHelp":{"dynamicRegistration":true,"signatureInformation":{"documentationFormat":["markdown","plaintext"]}},"definition":{"dynamicRegistration":true},"references":{"dynamicRegistration":true},"documentHighlight":{"dynamicRegistration":true},"documentSymbol":{"dynamicRegistration":true,"symbolKind":{"valueSet":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]}},"codeAction":{"dynamicRegistration":true},"codeLens":{"dynamicRegistration":true},"formatting":{"dynamicRegistration":true},"rangeFormatting":{"dynamicRegistration":true},"onTypeFormatting":{"dynamicRegistration":true},"rename":{"dynamicRegistration":true},"documentLink":{"dynamicRegistration":true},"typeDefinition":{"dynamicRegistration":true},"implementation":{"dynamicRegistration":true},"colorProvider":{"dynamicRegistration":true}}},"trace":"off","workspaceFolders":null}}
 )");
-    testJson(text);
+        testJson(text);
+    }
 
     {
         char *text = const_cast<char *>(u8R"( {"jsonrpc":"2.0", "method" : "initialized
@@ -33,7 +35,7 @@ TEST(ParserTest_, JsonParseTest) {
         DocumentUtils::parseText(document, text, strlen(text));
 
         EXPECT_EQ(document->context->syntaxErrorInfo.hasError, true);
-        EXPECT_EQ(document->context->syntaxErrorInfo.errorCode, 21390);
+        EXPECT_EQ(document->context->syntaxErrorInfo.errorCode, ErrorCode::missing_closing_quote);
         EXPECT_EQ(std::string{ document->context->syntaxErrorInfo.reason }, std::string{ "missing closing quote" });
     }
 
@@ -77,7 +79,7 @@ TEST(ParserTest_, JsonParseTest) {
 
     // follow indent rule
     {
-        text = const_cast<char *>(u8R"(
+        auto text = const_cast<char *>(u8R"(
 {
         "aowowo" :    21249,
 "jio fw" : null,
@@ -92,10 +94,11 @@ TEST(ParserTest_, JsonParseTest) {
 })");
         testJson(text);
     }
+    {
 
-    text = const_cast<char *>(u8R"({"aowfowo" : "😀😁😂ネコの顔文字と💘❤💓", "jiofw": false})");
-    testJson(text);
-
+        auto text = const_cast<char *>(u8R"({"aowfowo" : "😀😁😂ネコの顔文字と💘❤💓", "jiofw": false})");
+        testJson(text);
+    }
 
 
     testJson("{}");    // empty json object
@@ -105,23 +108,25 @@ TEST(ParserTest_, JsonParseTest) {
     testJson(u8R"({"empty_array" : [
             421,true, "ijofwe", null,false]})");
 
-    // nested json object
-    text = const_cast<char *>(u8R"({"jfoiw": { "fjioew"  :   { "jfiow": true } 
+    {
+        // nested json object
+        auto text = const_cast<char *>(u8R"({"jfoiw": { "fjioew"  :   { "jfiow": true } 
 
         } 
 
             })");
-    testJson(text);
+        testJson(text);
+    }
 
-
-
-    // last comma is allowed
-    text = const_cast<char *>(u8R"({"jfoiw": true
+    {
+        // last comma is allowed
+        auto text = const_cast<char *>(u8R"({"jfoiw": true
 
     , 
 }
 )");
-    testJson(text);
+        testJson(text);
+    }
 }
 
 static void testJson(const char* codeText) {

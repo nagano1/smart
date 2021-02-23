@@ -104,7 +104,7 @@ namespace smart {
 
         char *str;
         st_textlen strLength;
-        
+
         int literalType; // 0: "text", 1: `wjfeiofw`, 2: r"testfaojiwe"
     };
 
@@ -220,7 +220,7 @@ namespace smart {
     struct HashMap {
         HashNode **entries;// [HashNode_TABLE_SIZE] = {};
         size_t entries_length;
-        ParseContext* context;
+        ParseContext *context;
         //MallocBuffer charBuffer;
 
         void init(ParseContext *context);
@@ -308,6 +308,22 @@ namespace smart {
     };
 
 
+
+    enum ErrorCode {
+        missing_closing_quote = 8591000,
+        missing_closing_quote2 = 8591001,
+    };
+
+    static const char *getErrorMessage(ErrorCode errorCode) {
+        const char *mes = nullptr;
+        when(errorCode) {
+            wfor(missing_closing_quote, mes = u8"missing closing quote");
+            wfor(missing_closing_quote2, mes = u8"missing closing quote");
+        }
+
+        return mes;
+    }
+
     #define MAX_REASON_LENGTH 1024
     /**
      * Syntax error is allowed only once
@@ -316,30 +332,32 @@ namespace smart {
         bool hasError{false};
 
         int errorCode{100};
-        char reason[MAX_REASON_LENGTH+1];
+        char reason[MAX_REASON_LENGTH + 1];
         st_textlen reasonLength = 0;
 
         st_uint charPosition;
         int charEndPosition;
 
-
-        //char *errors[1024];
-
         // 0: "between start and  end"
         // 1: "from start to end of line,"
         int errorDisplayType = 0;
 
-        static void setError(_errorInfo *error, int errorCode, st_uint start, const char *reason) {
+        static void setError(_errorInfo *error, ErrorCode errorCode, st_uint start) {
             error->hasError = true;
             error->errorCode = errorCode;
             error->charPosition = start;
 
-            st_textlen len = (st_textlen)strlen(reason);
+            const char *reason = getErrorMessage(errorCode);
+            if (reason == nullptr) {
+                reason = "";
+            }
+            st_textlen len = (st_textlen) strlen(reason);
             error->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
             TEXT_MEMCPY(error->reason, reason, error->reasonLength);
             error->reason[error->reasonLength] = '\0';
         }
     };
+
 
     struct ParseContext {
         st_uint start;
@@ -366,18 +384,18 @@ namespace smart {
          */
 
         template<typename T>
-        T* newMem() {
-            return (T*)memBuffer.newMem<T>(1);
+        T *newMem() {
+            return (T *) memBuffer.newMem<T>(1);
         }
 
         template<typename T>
-        void tryDelete(T* m) {
-            return (T*)memBuffer.tryDelete(m);
+        void tryDelete(T *m) {
+            return (T *) memBuffer.tryDelete(m);
         }
 
         template<typename T>
-        T* newMemArray(int len) {
-            return (T*)memBuffer.newMem<T>(len);
+        T *newMemArray(int len) {
+            return (T *) memBuffer.newMem<T>(len);
         }
 
 
@@ -583,7 +601,7 @@ namespace smart {
                 }
             }
 
-            ((NodeBase *)node)->line = this;
+            ((NodeBase *) node)->line = this;
 
             return this;
         }
@@ -598,7 +616,7 @@ namespace smart {
             }
 
             lastNode = (NodeBase *) node;
-            ((NodeBase *)node)->line = this;
+            ((NodeBase *) node)->line = this;
 
             return this;
         }
@@ -630,8 +648,8 @@ namespace smart {
      */
     enum CodingOperations {
         IndentSelection,
-        BreakLine ,
-        Deletion ,
+        BreakLine,
+        Deletion,
         //AddMapItem
     };
 
@@ -640,7 +658,8 @@ namespace smart {
     };
 
     struct JsonUtils {
-        static void put(JsonObjectStruct *json, utf8byte *key, st_textlen keyLength, NodeBase* node);
+        static void
+        put(JsonObjectStruct *json, utf8byte *key, st_textlen keyLength, NodeBase *node);
     };
 
 
@@ -655,7 +674,6 @@ namespace smart {
         static JsonObjectStruct *generateHashTables(DocumentStruct *doc);
 
 
-        
         static void assignIndents(DocumentStruct *doc);
         static void formatIndent(DocumentStruct *doc);
 
@@ -684,7 +702,7 @@ namespace smart {
         static NullNodeStruct *newNullNode(ParseContext *context, NodeBase *parentNode);
 
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
-        
+
         static void deleteClassNode(NodeBase *node);
 
         static ClassNodeStruct *newFuncNode(ParseContext *context, NodeBase *parentNode);
@@ -739,8 +757,9 @@ namespace smart {
 
         // SimpleTextNodeStruct
         template<typename TYPE, std::size_t SIZE>
-        static inline int WordTokenizer(TokenizerParams_parent_ch_start_context, utf8byte capitalLetter,
-                                        const TYPE(&word)[SIZE]) {
+        static inline int
+        WordTokenizer(TokenizerParams_parent_ch_start_context, utf8byte capitalLetter,
+                      const TYPE(&word)[SIZE]) {
             if (capitalLetter == ch) {
                 st_size length = st_size_of(word) - 1;
                 if (ParseUtil::matchWord(context->chars, context->length, word, length, start)) {
@@ -752,7 +771,8 @@ namespace smart {
                         //context->scanEnd = true;
                         auto *boolNode = Alloc::newSpaceNode(context, parent);
 
-                        boolNode->text = context->memBuffer.newMem<char>(length + 1);// context->charBuffer.newChars(length + 1);
+                        boolNode->text = context->memBuffer.newMem<char>(
+                                length + 1);// context->charBuffer.newChars(length + 1);
                         boolNode->textLength = length;
 
                         TEXT_MEMCPY(boolNode->text, context->chars + start, length);
