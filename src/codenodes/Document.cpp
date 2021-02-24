@@ -16,38 +16,37 @@ namespace smart {
 
     // --------------------- Defines Document VTable ----------------------
 
-    static st_textlen selfTextLength(DocumentStruct *self) {
+    static st_textlen selfTextLength(DocumentStruct * self) {
+
         return 5;
     }
 
-    static const char *selfText(DocumentStruct *self) {
+    static const char *selfText(DocumentStruct * self) {
         return "";
-    };
+    }
 
     static CodeLine *appendToLine(DocumentStruct *self, CodeLine *currentCodeLine) {
-        auto *doc = self;//Cast::downcast<DocumentStruct *>(self);
-        //currentCodeLine = addPrevLineBreakNode(node, currentCodeLine);
-        auto *child = doc->firstRootNode;
+        auto *child = self->firstRootNode;
         while (child) {
             currentCodeLine = VTableCall::appendToLine(child, currentCodeLine);
             child = child->nextNode;
         }
-
-        currentCodeLine = VTableCall::appendToLine(&doc->endOfFile, currentCodeLine);
-
+        currentCodeLine = VTableCall::appendToLine(&self->endOfFile, currentCodeLine);
         return currentCodeLine;
-    };
+    }
 
 
     static constexpr const char DocumentTypeText[] = "<Document>";
 
-    static const node_vtable DocumentVTable_ = CREATE_VTABLE/*NOLINT*/(DocumentStruct, selfTextLength, selfText,
+    static const node_vtable DocumentVTable_ = CREATE_VTABLE(DocumentStruct, selfTextLength, selfText,
                                                        appendToLine, DocumentTypeText, true);
 
     const node_vtable *VTables::DocumentVTable = &DocumentVTable_;
 
     static void staticActionCreator(void *node1, void *node2, int actionRequest) {
-
+        UNUSED(node1);
+        UNUSED(node2);
+        UNUSED(actionRequest);
     }
 
     // --------------------- Implements Document functions ----------------------
@@ -55,6 +54,8 @@ namespace smart {
             DocumentType docType,
             void(*actionCreator)(void *node1, void *node2, int actionRequest)
     ) {
+        UNUSED(actionCreator);
+
         auto *context = simpleMalloc2<ParseContext>();
         auto *doc = simpleMalloc2<DocumentStruct>();
 
@@ -198,16 +199,18 @@ namespace smart {
             while (line) {
                 auto *node = line->firstNode;
                 while (node) {
-                    auto *chs = VTableCall::typeText(node);
-                    if (node->prev_char != '\0') {
-                        text[currentOffset] = node->prev_char;
-                        currentOffset++;
+                    {
+                        auto *chs = VTableCall::typeText(node);
+                        if (node->prev_char != '\0') {
+                            text[currentOffset] = node->prev_char;
+                            currentOffset++;
+                        }
+
+                        size_t len = VTableCall::typeTextLength(node);
+                        memcpy(text + currentOffset, chs, len);
+
+                        currentOffset += len;
                     }
-
-                    size_t len = VTableCall::typeTextLength(node);
-                    memcpy(text + currentOffset, chs, len);
-
-                    currentOffset += len;
 
                     {
                         auto *chs = VTableCall::selfText(node);

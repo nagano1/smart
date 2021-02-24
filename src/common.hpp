@@ -27,6 +27,8 @@ using st_int = long;
 using st_textlen = st_size;
 using st_byte = unsigned char;
 
+#define UNUSED(x) (void)(x)
+
 #define st_size_of(T) ((st_size)sizeof(T))
 
 #ifdef __x86_64__
