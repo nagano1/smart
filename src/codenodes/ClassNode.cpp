@@ -100,14 +100,7 @@ namespace smart {
     }
 
     void Alloc::deleteClassNode(NodeBase *node) {
-        auto *classNode = Cast::downcast<ClassNodeStruct *>(node);
-
-        if (classNode->nameNode.name != nullptr) {
-            //free(classNode->nameNode.name);
-            //classNode->nameNode.name = nullptr;
-        }
-
-        //free(classNode);
+//        auto *classNode = Cast::downcast<ClassNodeStruct *>(node);
     }
 
 

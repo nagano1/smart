@@ -498,11 +498,11 @@ namespace smart {
             decltype(std::declval<vtableT<T>>().appendToLine) f3,
             const char(&f4)[SIZE],
             bool is_indent_change_point_parent
-    ) {
+    ) noexcept {
         return 0;
     }
 
-#define CREATE_VTABLE(T, f1, f2, f3, f4, f5) \
+    #define CREATE_VTABLE(T, f1, f2, f3, f4, f5) \
         node_vtable { \
             reinterpret_cast<selfTextLengthFunction> (f1) \
             , reinterpret_cast<selfTextFunction> (f2) \
@@ -599,16 +599,16 @@ namespace smart {
             // context->actionCreator(Cast::upcast(doc), 1);
         }
 
-        CodeLine *insertNode(NodeBase *node, NodeBase *prev) {
+        CodeLine *insertNode(NodeBase *node, NodeBase *prev2) {
             if (firstNode == nullptr) {
-                assert(prev == nullptr);
+                assert(prev2 == nullptr);
                 firstNode = node;
                 lastNode = node;
             } else {
-                if (prev != nullptr) { // insert it after prev
-                    node->nextNodeInLine = prev->nextNodeInLine;
-                    prev->nextNodeInLine = node;
-                    if (prev == lastNode) {
+                if (prev2 != nullptr) { // insert it after prev
+                    node->nextNodeInLine = prev2->nextNodeInLine;
+                    prev2->nextNodeInLine = node;
+                    if (prev2 == lastNode) {
                         lastNode = (NodeBase *) node;
                     }
                 } else { // insert into top
@@ -731,6 +731,7 @@ namespace smart {
         newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
         static JsonArrayStruct *newJsonArray(ParseContext *context, NodeBase *parentNode);
         static JsonArrayItemStruct *newJsonArrayItem(ParseContext *context, NodeBase *parentNode);
+
         static void deleteJsonObject(NodeBase *node);
         static void deleteJsonArray(NodeBase *node);
 

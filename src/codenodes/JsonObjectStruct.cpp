@@ -227,16 +227,7 @@ namespace smart {
         return jsonObjectNode;
     }
 
-
     void Alloc::deleteJsonObject(NodeBase *node) {
-        auto *classNode = Cast::downcast<JsonObjectStruct *>(node);
-
-        //if (classNode->nameNode.name != nullptr) {
-        //free(classNode->nameNode.name);
-        //classNode->nameNode.name = nullptr;
-        //}
-
-        free(classNode);
     }
 
 
