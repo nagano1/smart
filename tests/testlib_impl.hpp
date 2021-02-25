@@ -180,7 +180,7 @@ namespace smartlang {
 
         static void *doAllTests();
 
-        static int runTest(const char *testcasename, const char *testname);
+        static unsigned int runTest(const char *testcasename, const char *testname);
 
         static std::string runTestNext(int testIndex);
 
@@ -216,7 +216,7 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
 
 #define TEST(test_case_name, test_name) GTEST_TEST(test_case_name, test_name)
 
-    static void test_true(bool true_test, bool t1, const char *t1_chars) {
+    static void test_is_true(bool true_test, bool t1, const char *t1_chars) {
         std::stringstream s;
         s << (t1 ? "true" : "false");
 
@@ -225,7 +225,7 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
 
         Test::logstream <<  (ok? "\n    ✅ OK: ": "\n    ❌ NG: ")
                         << s.str().c_str() << " "
-                        << std::endl << "    ( " << t1_chars << " "<<  ")"
+                        << std::endl << "　　　　    ( " << t1_chars << " "<<  ")"
                         << std::endl << "    ";
 
         if (!ok) {
@@ -236,7 +236,7 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
     }
 
     template<typename T1, typename T2>
-    static void test_output(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars, bool ok, const std::string &op) {
+    static void test_binary_op(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars, bool ok, const std::string &op) {
         std::stringstream s;
         s << t1;
         std::stringstream s2;
@@ -246,7 +246,7 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
 
         Test::logstream <<  (ok? "\n    ✅ OK: ": "\n    ❌ NG: ")
                         << s.str().c_str() << " " << op << " " << s2.str().c_str()
-                        << std::endl << "    (" << t1_chars << " "<< op << " " << t2_chars <<  ")"
+                        << std::endl << "　　　　   (" << t1_chars << " "<< op << " " << t2_chars <<  ")"
                         << std::endl << "    ";
 
         if (!ok) {
@@ -258,17 +258,17 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
 
     template<typename T1, typename T2>
     static void ecompare_static(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars) {
-        test_output(t1, t2, t1_chars, t2_chars, t1 == t2, "==");
+        test_binary_op(t1, t2, t1_chars, t2_chars, t1 == t2, "==");
     }
 
     static void etrue_static(bool true_test, bool is_true, const char *t1_chars) {
-        test_true(true_test, is_true, t1_chars);
+        test_is_true(true_test, is_true, t1_chars);
     }
 
 
     template<typename T1, typename T2>
     static void ecompare_not_equal(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars) {
-        test_output(t1, t2, t1_chars, t2_chars, t1 != t2, "!=");
+        test_binary_op(t1, t2, t1_chars, t2_chars, t1 != t2, "!=");
     }
 
     /*
@@ -281,17 +281,17 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
 
     template<typename T1, typename T2>
     static void lt_static(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars) {
-        test_output(t1, t2, t1_chars, t2_chars, t1 < t2, "<");
+        test_binary_op(t1, t2, t1_chars, t2_chars, t1 < t2, "<");
 
     }
 
     template<typename T1, typename T2>
     static void gt_static(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars) {
-        test_output(t1, t2, t1_chars, t2_chars, t1 > t2, ">");
+        test_binary_op(t1, t2, t1_chars, t2_chars, t1 > t2, ">");
     }
 
 #define FAIL() \
-smartlang::test_output(true, false, "", "", false, "FAIL()");
+smartlang::etrue_static(false, true, "FAIL()");
 
 #define EXPECT_EQ(val1, val2) \
 smartlang::ecompare_static(val1, val2, #val1, #val2)

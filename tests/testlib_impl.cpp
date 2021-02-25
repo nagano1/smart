@@ -9,6 +9,7 @@
 
 #include <cstdint>
 #include <ctime>
+#include <utility>
 //#include <android/log.h>
 
 //#include "../../../../../tests/cplusplus_test.h"
@@ -26,13 +27,17 @@ namespace smartlang {
     class TestFactoryNode {
     public:
         TestFactoryNode(TestFactoryBase *factory, std::string argtestcasename,
-            std::string argtestname)
-            : testcasename{ argtestcasename }, testname{ argtestname } {
+            std::string argtestname, const char *file, int line)
+            : testcasename{std::move( argtestcasename )}
+            , testname{ std::move(argtestname)}, filepath{file}, line{line}
+         {
             this->factory = factory;
         }
 
         std::string testcasename;
         std::string testname;
+        std::string filepath;
+        int line;
 
         TestFactoryBase *factory = nullptr;
         TestFactoryNode *next = nullptr;
@@ -53,9 +58,7 @@ namespace smartlang {
         std::string st = file;
 
         //if ("test_casewow" == std::string(testcasename)) {
-        //__android_log_print(ANDROID_LOG_DEBUG, "aaa", "Message : %s, %d", st.c_str(), line);
-
-        auto *node = new TestFactoryNode(factory, testcasename, testname);
+        auto *node = new TestFactoryNode(factory, testcasename, testname, file, line);
         if (firstTestFactory == nullptr) {
             firstTestFactory = node;
         }
@@ -70,19 +73,16 @@ namespace smartlang {
 
     std::string make_key(const char *testcasename, const char *testname) {
         std::string key = std::string(testcasename) + '_' + std::string(testname);
-        //return std::move(key);
         return key;
     }
 
     void initTests() {
-        if (testFactories.size() == 0) {
-
+        if (testFactories.empty()) {
             auto *current = firstTestFactory;
             while (current != nullptr) {
                 std::string key = make_key(current->testcasename.c_str(),
                     current->testname.c_str());
-                testFactories.insert(
-                    std::make_pair(key, current));
+                testFactories.insert(std::make_pair(key, current));
 
                 current = current->next;
             }
@@ -92,12 +92,11 @@ namespace smartlang {
 
     static unsigned int current_test_index = 0;
     static smartlang::Test *currentTest = nullptr;
-    static std::string last_text = "";
-    static std::mutex stream_mtx;
+    static std::string last_text;
 
     static bool failed = false;
 
-    int CPPTestUtil::runTest(const char *testcasename, const char *testname) {
+    unsigned int CPPTestUtil::runTest(const char *testcasename, const char *testname) {
 
         initTests();
         failed = false;
@@ -167,7 +166,6 @@ namespace smartlang {
                 }
                 return "";
             }
-
         }
 
         if (failed) {

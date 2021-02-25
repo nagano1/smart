@@ -621,7 +621,6 @@ TEST(ParserTest_, aaHashMap) {
         }
 
         EXPECT_FALSE(3 == 5);
-        ASSERT_FALSE(3 == 5);
     }
 
     {
@@ -636,12 +635,12 @@ TEST(ParserTest_, aaHashMap) {
         EXPECT_NE(hashKey, hashKey2);
     }
 
-    ParseContext *context = (ParseContext *)malloc(sizeof(ParseContext));
+    auto *context = (ParseContext *)malloc(sizeof(ParseContext));
     context->memBuffer.init();
 
     for (int i = 0; i < 100; i++) {
 
-        HashMap *hashMap = context->newMem<HashMap>();
+        auto *hashMap = context->newMem<HashMap>();
         hashMap->init(context);
 
         auto *first = Cast::upcast(context->newMem<DocumentStruct>());
@@ -679,10 +678,10 @@ TEST(ParserTest_, charBuffer) {
     uint64_t loopCount = 100 * 1000LLU;
 
     {
-        srand((unsigned int)time(NULL));
+        srand((unsigned int)time(nullptr));
         for (int i = 0; i < 80 * 100; i++) {
 
-            MemBuffer *charBuffer3 = (MemBuffer*)malloc(sizeof(MemBuffer));
+            auto *charBuffer3 = (MemBuffer*)malloc(sizeof(MemBuffer));
             charBuffer3->init();
             
             unsigned int max = 1 + rand() % 10;
@@ -697,7 +696,7 @@ TEST(ParserTest_, charBuffer) {
                 EXPECT_EQ(chars->a, 5);
                 EXPECT_EQ(chars2->a, 2);
 
-                EXPECT_EQ(charBuffer3->currentBufferBlock, *((MemBufferBlock **)((st_byte*)chars2 - sizeof(MemBufferBlock*))));
+                EXPECT_EQ(charBuffer3->currentBufferBlock, *((MemBufferBlock **)((st_byte*)chars2 - st_size_of(MemBufferBlock*))));
 
                 charBuffer3->tryDelete(chars);
                 charBuffer3->tryDelete(chars2);
