@@ -206,6 +206,7 @@ namespace smartlang {
 TEST(smartest, winotest) {
     EXPECT_EQ(54, 54.0f);
     EXPECT_EQ(2.3f, 5.4f-2.1f);
+    EXPECT_TRUE(true);
 }
 
 ENDTEST

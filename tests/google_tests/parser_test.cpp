@@ -615,10 +615,13 @@ TEST(ParserTest_, aaHashMap) {
         char a = -122;
         unsigned char b = a;
         if (ARM) {
-            EXPECT_EQ((int)(a),  (int)(b));
+            EXPECT_TRUE((int)a == (int)b);
         } else {
-            EXPECT_NE((int)(a),  (int)(b));
+            EXPECT_TRUE((int)a != (int)b);
         }
+
+        EXPECT_FALSE(3 == 5);
+        ASSERT_FALSE(3 == 5);
     }
 
     {

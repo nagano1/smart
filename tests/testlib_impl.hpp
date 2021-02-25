@@ -216,6 +216,24 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
 
 #define TEST(test_case_name, test_name) GTEST_TEST(test_case_name, test_name)
 
+    static void test_true(bool true_test, bool t1, const char *t1_chars) {
+        std::stringstream s;
+        s << (t1 ? "true" : "false");
+
+        bool ok = true_test == t1;
+        std::lock_guard<std::mutex> guard(Test::log_mtx);
+
+        Test::logstream <<  (ok? "\n    ✅ OK: ": "\n    ❌ NG: ")
+                        << s.str().c_str() << " "
+                        << std::endl << "    ( " << t1_chars << " "<<  ")"
+                        << std::endl << "    ";
+
+        if (!ok) {
+            if (Test::this_current_test != nullptr) {
+                Test::this_current_test->failed = true;
+            }
+        }
+    }
 
     template<typename T1, typename T2>
     static void test_output(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars, bool ok, const std::string &op) {
@@ -225,9 +243,6 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
         s2 << t2;
 
         std::lock_guard<std::mutex> guard(Test::log_mtx);
-
-        //__android_log_print(ANDROID_LOG_DEBUG, "aaa", "equal! : %s %s %s", s.str().c_str(), op,
-                            //s2.str().c_str());
 
         Test::logstream <<  (ok? "\n    ✅ OK: ": "\n    ❌ NG: ")
                         << s.str().c_str() << " " << op << " " << s2.str().c_str()
@@ -245,6 +260,11 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
     static void ecompare_static(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars) {
         test_output(t1, t2, t1_chars, t2_chars, t1 == t2, "==");
     }
+
+    static void etrue_static(bool true_test, bool is_true, const char *t1_chars) {
+        test_true(true_test, is_true, t1_chars);
+    }
+
 
     template<typename T1, typename T2>
     static void ecompare_not_equal(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars) {
@@ -276,6 +296,13 @@ smartlang::test_output(true, false, "", "", false, "FAIL()");
 #define EXPECT_EQ(val1, val2) \
 smartlang::ecompare_static(val1, val2, #val1, #val2)
 
+#define EXPECT_TRUE(val1) \
+smartlang::etrue_static(true, val1, #val1)
+
+#define EXPECT_FALSE(val1) \
+smartlang::etrue_static(false, val1, #val1)
+
+
 #define EXPECT_NE(val1, val2) \
 smartlang::ecompare_not_equal(val1, val2, #val1, #val2)
 
@@ -299,7 +326,10 @@ public:
 };
 
 class JsCallFromBackground {
-
+    void sta_func() {
+        EXPECT_TRUE(true);
+        EXPECT_FALSE(false);
+    }
 };
 
 
