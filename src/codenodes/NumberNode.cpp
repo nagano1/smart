@@ -38,13 +38,11 @@ namespace smart {
 
 
     /*
-        +--------------------------+
-        |                          |
-        |                          |
-        |      BoolNode            |
-        |                          |
-        |                          |
-        +--------------------------+
+        +----------------------------------------------------+
+        |                          
+        |      BoolNode            
+        |                          
+        +----------------------------------------------------+
     */
 
     static CodeLine *appendToLine2(BoolNodeStruct *self, CodeLine *currentCodeLine) {

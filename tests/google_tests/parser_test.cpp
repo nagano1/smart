@@ -610,10 +610,15 @@ ENDTEST
 
 
 TEST(ParserTest_, aaHashMap) {
+
     {
         char a = -122;
         unsigned char b = a;
-        EXPECT_NE((int)a, (int)b);
+        if (ARM) {
+            EXPECT_EQ((int)(a),  (int)(b));
+        } else {
+            EXPECT_NE((int)(a),  (int)(b));
+        }
     }
 
     {
