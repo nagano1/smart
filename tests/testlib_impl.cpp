@@ -46,8 +46,7 @@ namespace smartlang {
     TestFactoryNode *lastTestFactory = nullptr;
     TestFactoryNode *firstTestFactory = nullptr;
 
-    static std::unordered_map<std::string, TestFactoryNode *> testFactories;// = new std::vector<TestFactoryBase *>;
-
+    static std::unordered_map<std::string, TestFactoryNode *> testFactories;
 
     int *CPPTestUtil::MakeAndRegisterTestInfo(
         const char *testcasename, const char *testname, const char *file, int line,
@@ -71,7 +70,7 @@ namespace smartlang {
     };
 
 
-    std::string make_key(const char *testcasename, const char *testname) {
+    static std::string make_key(const char *testcasename, const char *testname) {
         std::string key = std::string(testcasename) + '_' + std::string(testname);
         return key;
     }

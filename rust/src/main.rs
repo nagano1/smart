@@ -38,6 +38,24 @@ mod parse_util {
 
         return utf16length;
     }
+
+    fn is_identifier_letter(ch:u8) -> bool {
+            if 'A' as u8 <= ch && ch <= 'Z' as u8 {
+                return true;
+            }
+            else if 'a' as u8 <= ch && ch <= 'z' as u8 {
+                return true;
+            }
+            else if '0' as u8 <= ch && ch <= '9' as u8 {
+                return true;
+            }
+            else if '_' as u8 == ch {
+                return true;
+            }
+    
+            return (ch & 0x80) == 0x80;
+    
+    }
 }
 
 

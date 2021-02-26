@@ -71,9 +71,6 @@ namespace smart {
         context->actionCreator(Cast::upcast(doc), nullptr,
                                EventType::CreateDocument); // create document
 
-//doc->lastLineBreakNode = nullptr;
-//doc->lastSpaceNode = nullptr;
-
         doc->firstCodeLine = nullptr;
         doc->nodeCount = 0;
 
