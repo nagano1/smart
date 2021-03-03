@@ -611,17 +611,6 @@ ENDTEST
 
 TEST(ParserTest_, aaHashMap) {
 
-    {
-        char a = -122;
-        unsigned char b = a;
-        if (ARM) {
-            EXPECT_TRUE((int)a == (int)b);
-        } else {
-            EXPECT_TRUE((int)a != (int)b);
-        }
-
-        EXPECT_FALSE(3 == 5);
-    }
 
     {
         auto hashKey = HashMap::calc_hash2("ak", 10000);

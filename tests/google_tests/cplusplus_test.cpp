@@ -191,6 +191,19 @@ static long currentTimeInMicros() {
 
 
 TEST(cplusplus_test, test1) {
+    {
+        char a = -122;
+        unsigned char b = a;
+        if (ARM) {
+            EXPECT_TRUE((int)a == (int)b);
+        }
+        else {
+            EXPECT_TRUE((int)a != (int)b);
+        }
+
+        EXPECT_FALSE(3 == 5);
+    }
+
 
     //auto ret = TestUtil::testUtf8Text();
 
@@ -792,22 +805,22 @@ TEST(concept, add_consume_test) {
         */
 
 
-        char value0;
-        char value1;
-        char value2;
-        char value3;
-        char value4;
-        char value5;
-        char value6;
-        char value7;
-        char value8;
-        char value9;
-        char value10;
-        char value11;
-        char value12;
-        char value13;
-        char value14;
-        char value15;
+        short value0;
+        short value1;
+        short value2;
+        short value3;
+        short value4;
+        short value5;
+        short value6;
+        short value7;
+        short value8;
+        short value9;
+        short value10;
+        short value11;
+        short value12;
+        short value13;
+        short value14;
+        short value15;
 
 
         /*

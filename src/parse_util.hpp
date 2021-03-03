@@ -211,10 +211,5 @@ struct ParseUtil {
 
         return (ch & 0x80) == 0x80;
     };
-
-
-
-
-
 };
 
