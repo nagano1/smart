@@ -3,7 +3,6 @@
 	"description": "smart lang",
 	"author": "",
 	"version": "1.0.0",
-
 	"publisher": "vscode-samples-2",
 	"categories": [],
 	"keywords": [
@@ -39,19 +38,27 @@
 					"description": "Traces the communication between VS Code and the language server."
 				}
 			}
-        },
-        "languages": [{
-            "id": "smartlang",
-            "aliases": ["smartlang", "smartlang"],
-            "extensions": [".smt"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "smartlang",
-            "scopeName": "source.smt",
-            "path": "./syntaxes/smartlang.tmLanguage.json"
-        }]
-
+		},
+		"languages": [
+			{
+				"id": "smartlang",
+				"aliases": [
+					"smartlang",
+					"smartlang"
+				],
+				"extensions": [
+					".smt"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "smartlang",
+				"scopeName": "source.smt",
+				"path": "./syntaxes/smartlang.tmLanguage.json"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "cd client && npm run update-vscode && cd .. && npm run compile",
@@ -65,6 +72,5 @@
 		"@types/node": "^8.0.0",
 		"tslint": "^5.11.0",
 		"typescript": "^3.1.3"
-    }
-    
+	}
 }

@@ -32,10 +32,10 @@
             "outFiles": [
                 "${workspaceRoot}/lsp_vscode_server/client/out/**/*.js"
             ],
-            // "preLaunchTask": {
-            // 	"type": "npm",
-            // 	"script": "watch"
-            // }
+            "preLaunchTask": {
+            	"type": "npm",
+            	"script": "lsp_watch"
+            }
         }
                 
     ]

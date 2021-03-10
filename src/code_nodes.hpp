@@ -381,6 +381,7 @@ namespace smart {
         bool scanEnd;
         NodeBase *codeNode;
         int former_start;
+        st_uint baseIndent;
         utf8byte *chars;
         SyntaxErrorInfo syntaxErrorInfo;
         bool has_cancel_request{false};
@@ -588,7 +589,7 @@ namespace smart {
         CodeLine *prev;
         NodeBase *firstNode;
         NodeBase *lastNode;
-        int indent;
+        st_uint indent;
 
         void init(ParseContext *context) {
             this->firstNode = nullptr;
@@ -662,7 +663,7 @@ namespace smart {
     /**
      * Defines Managed Coding Operations
      */
-    enum CodingOperations {
+    enum class CodingOperations {
         IndentSelection,
         BreakLine,
         Deletion,

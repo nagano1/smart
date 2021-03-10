@@ -25,6 +25,7 @@ namespace smart {
 
      */
 
+    // find an ancestor
     static NodeBase *findIndentChangingPointParent(NodeBase *node) {
         node = node->parentNode;
         while (node != nullptr) {
@@ -35,6 +36,7 @@ namespace smart {
         }
         return nullptr;
     }
+
 
     static NodeBase *findFirstElementNode(CodeLine *line) {
         auto * node = line->firstNode;
@@ -53,38 +55,37 @@ namespace smart {
     }
 
 
-    static void indentFormatLine(CodeLine * line) {
+    static void indentFormatLine(CodeLine *line) {
+        auto *firstElement = findFirstElementNode(line);
+        if (firstElement) {
+            assert(firstElement->parentNode != nullptr);
 
-
-        auto *startNode = findFirstElementNode(line);
-        if (startNode) {
-            assert(startNode->parentNode != nullptr);
-
-            auto *context = startNode->context;
-            NodeBase *pointParent = findIndentChangingPointParent(startNode);
-            if (pointParent != nullptr) {
+            NodeBase *pointParent = findIndentChangingPointParent(firstElement);
+            if (pointParent) {
+                assert(pointParent->line);
                 auto *parentLine = pointParent->line;
-                if (parentLine != nullptr && parentLine != startNode->line) {
+
+                if (parentLine && parentLine != firstElement->line) {
                     auto parentIndent = parentLine->indent;
-                    NodeBase *element = findFirstElementNode(startNode->line);
-                    if (element != nullptr) {
-                        SpaceNodeStruct *space;
-                        if (element->prevSpaceNode) {
-                            space = element->prevSpaceNode;
-                        } else {
-                            space = Alloc::newSpaceNode(context, element);
-                            element->prev_char = '\0';
-                            element->prevSpaceNode = space;
-                            element->line->insertNode(Cast::upcast(space), nullptr);
-                        }
+                    auto *context = firstElement->context;
 
-                        line->indent = parentIndent + 4;
+                    // modify Indent
+                    SpaceNodeStruct *space;
+                    if (firstElement->prevSpaceNode) {
+                        space = firstElement->prevSpaceNode;
+                    } else {
+                        space = Alloc::newSpaceNode(context, firstElement);
+                        firstElement->prev_char = '\0';
+                        firstElement->prevSpaceNode = space;
+                        firstElement->line->insertNode(Cast::upcast(space), nullptr);
+                    }
 
-                        space->textLength = parentIndent + 4;
-                        space->text = context->memBuffer.newMem<char>(parentIndent + 4 + 1);
-                        for (int i = 0; i < parentIndent + 4; i++) {
-                            space->text[i] = ' ';
-                        }
+                    auto &baseIndent = context->baseIndent;
+                    line->indent = parentIndent + baseIndent;
+                    space->textLength = parentIndent + baseIndent;
+                    space->text = context->memBuffer.newMem<char>(parentIndent + baseIndent + 1);
+                    for (int i = 0; i < parentIndent + baseIndent; i++) {
+                        space->text[i] = ' ';
                     }
                 }
             }
@@ -111,10 +112,8 @@ namespace smart {
         }
     }
 
-    OperationResult *DocumentUtils::performCodingOperation(
-            CodingOperations op, DocumentStruct *doc,
-            NodeBase *startNode, NodeBase *endNode) {
-
+    OperationResult * DocumentUtils::performCodingOperation(CodingOperations op, DocumentStruct * doc, NodeBase * startNode, NodeBase * endNode)
+    {
         if (startNode == nullptr) {
             return nullptr;
         }

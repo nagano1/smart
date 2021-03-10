@@ -8,6 +8,7 @@
     "test": "tests"
   },
   "scripts": {
+      "lsp_watch": "cd lsp_vscode_server && npm run compile",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

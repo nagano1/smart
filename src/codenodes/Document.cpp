@@ -399,6 +399,8 @@ namespace smart {
 
     }
 
+
+
     void DocumentUtils::parseText(DocumentStruct *docStruct, const utf8byte *text, st_textlen length) {
         assert(docStruct->context != nullptr);
 
@@ -411,6 +413,7 @@ namespace smart {
         context->codeNode = nullptr;
         context->remainedLineBreakNode = nullptr;
         context->remainedSpaceNode = nullptr;
+        context->baseIndent = 4;
 
 
         if (docStruct->documentType == DocumentType::CodeDocument) {
