@@ -600,16 +600,16 @@ namespace smart {
             // context->actionCreator(Cast::upcast(doc), 1);
         }
 
-        CodeLine *insertNode(NodeBase *node, NodeBase *prev2) {
+        CodeLine *insertNode(NodeBase *node, NodeBase *prev) {
             if (firstNode == nullptr) {
-                assert(prev2 == nullptr);
+                assert(prev == nullptr);
                 firstNode = node;
                 lastNode = node;
             } else {
-                if (prev2 != nullptr) { // insert it after prev
-                    node->nextNodeInLine = prev2->nextNodeInLine;
-                    prev2->nextNodeInLine = node;
-                    if (prev2 == lastNode) {
+                if (prev != nullptr) { // insert it after prev
+                    node->nextNodeInLine = prev->nextNodeInLine;
+                    prev->nextNodeInLine = node;
+                    if (prev == lastNode) {
                         lastNode = (NodeBase *) node;
                     }
                 } else { // insert into top
@@ -664,7 +664,8 @@ namespace smart {
      * Defines Managed Coding Operations
      */
     enum class CodingOperations {
-        IndentSelection,
+        AutoIndentSelection,
+        AutoIndentForSpacingRule,
         BreakLine,
         Deletion,
         //AddMapItem
@@ -686,6 +687,7 @@ namespace smart {
                 CodingOperations op, DocumentStruct *doc,
                 NodeBase *startNode, NodeBase *endNode
         );
+
 
         static void parseText(DocumentStruct *docStruct, const utf8byte *text, st_textlen length);
         static JsonObjectStruct *generateHashTables(DocumentStruct *doc);

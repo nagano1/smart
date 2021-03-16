@@ -55,7 +55,7 @@ namespace smart {
     }
 
 
-    static void indentFormatLine(CodeLine *line) {
+    static void indentFormatLine(CodeLine *line, bool justKeepRule) {
         auto *firstElement = findFirstElementNode(line);
         if (firstElement) {
             assert(firstElement->parentNode != nullptr);
@@ -68,10 +68,17 @@ namespace smart {
                 if (parentLine && parentLine != firstElement->line) {
                     auto parentIndent = parentLine->indent;
                     auto *context = firstElement->context;
+                    auto &baseIndent = context->baseIndent;
 
                     // modify Indent
                     SpaceNodeStruct *space;
                     if (firstElement->prevSpaceNode) {
+                        if (justKeepRule) {
+                            if (firstElement->prevSpaceNode->textLength >=
+                                baseIndent + parentIndent) {
+                                return;
+                            }
+                        }
                         space = firstElement->prevSpaceNode;
                     } else {
                         space = Alloc::newSpaceNode(context, firstElement);
@@ -80,13 +87,13 @@ namespace smart {
                         firstElement->line->insertNode(Cast::upcast(space), nullptr);
                     }
 
-                    auto &baseIndent = context->baseIndent;
                     line->indent = parentIndent + baseIndent;
                     space->textLength = parentIndent + baseIndent;
                     space->text = context->memBuffer.newMem<char>(parentIndent + baseIndent + 1);
-                    for (int i = 0; i < parentIndent + baseIndent; i++) {
+                    for (unsigned int i = 0; i < parentIndent + baseIndent; i++) {
                         space->text[i] = ' ';
                     }
+
                 }
             }
         }
@@ -94,12 +101,12 @@ namespace smart {
 
     // IndentSelection operation will not add a line
     static void performIndentSelectionOperation(
-            DocumentStruct *doc, NodeBase *startNode, NodeBase *endNode
+            DocumentStruct *doc, NodeBase *startNode, NodeBase *endNode, bool keepRuleMode
     ) {
         assert(startNode != nullptr);
         auto *line = startNode->line;
         while (line) {
-            indentFormatLine(line);
+            indentFormatLine(line, keepRuleMode);
 
             if (endNode == nullptr) {
                 break;
@@ -119,12 +126,14 @@ namespace smart {
         }
 
         when(op) {
-            wfor(CodingOperations::IndentSelection,
-                 performIndentSelectionOperation(doc, startNode, endNode))
+            wfor(CodingOperations::AutoIndentForSpacingRule,
+                 performIndentSelectionOperation(doc, startNode, endNode, true))
+            wfor(CodingOperations::AutoIndentSelection,
+                 performIndentSelectionOperation(doc, startNode, endNode, false))
             wfor(CodingOperations::Deletion,
-                 performIndentSelectionOperation(doc, startNode, endNode));
+                 performIndentSelectionOperation(doc, startNode, endNode, false));
             wfor(CodingOperations::BreakLine,
-                 performIndentSelectionOperation(doc, startNode, endNode));
+                 performIndentSelectionOperation(doc, startNode, endNode, false));
         }
 
         return nullptr;
@@ -134,7 +143,7 @@ namespace smart {
     void DocumentUtils::formatIndent(DocumentStruct *doc) {
 
         DocumentUtils::performCodingOperation(
-                CodingOperations::IndentSelection,
+                CodingOperations::AutoIndentSelection,
                 doc,
                 doc->firstRootNode,
                 Cast::upcast(&doc->endOfFile)
