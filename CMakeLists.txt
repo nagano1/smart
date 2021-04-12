@@ -10,6 +10,8 @@ set(CMAKE_CXX_EXTENSIONS OFF) #...without compiler extensions like gnu++11
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS "/W4 /source-charset:utf-8")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
     # -DCMAKE_GENERATOR_PLATFORM=x86 . 
 else()
     set(CMAKE_CXX_FLAGS "-O3 -std=c++11 -Wall  -Werror")
@@ -18,8 +20,7 @@ endif()
 # target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
 
 
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+
 
 
 
