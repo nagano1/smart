@@ -805,22 +805,22 @@ TEST(concept, add_consume_test) {
         */
 
 
-        short value0;
-        short value1;
-        short value2;
-        short value3;
-        short value4;
-        short value5;
-        short value6;
-        short value7;
-        short value8;
-        short value9;
-        short value10;
-        short value11;
-        short value12;
-        short value13;
-        short value14;
-        short value15;
+        int value0;
+        int value1;
+        int value2;
+        int value3;
+        int value4;
+        int value5;
+        int value6;
+        int value7;
+        int value8;
+        int value9;
+        int value10;
+        int value11;
+        int value12;
+        int value13;
+        int value14;
+        int value15;
 
 
         /*
@@ -906,33 +906,20 @@ TEST(concept, add_consume_test) {
 
                 constexpr int k = 3;
                 item->value0 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value1 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value2 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value3 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value4 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value5 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value6 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value7 = k + 8;
                 std::atomic_thread_fence(std::memory_order_release);
                 item->value8 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value9 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value10 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value11 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value12 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value13 = k + 8;
-                std::atomic_thread_fence(std::memory_order_release);
                 item->value14 = k + 8;
 
                 std::atomic_thread_fence(std::memory_order_release);
