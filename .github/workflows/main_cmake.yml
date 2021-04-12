@@ -16,7 +16,7 @@ jobs:
               lspbin: 'lsp_vscode_server/Release/main_lsp.exe',
               longrunning_bin: 'tests/long_running/Release/main_tst_long_running.exe',
               cmakeConfig: '-A Win32 -T v142,host=x64',
-              cmakeBuildConfig: '-DCMAKE_BUILD_TYPE=Release ',
+              cmakeBuildConfig: '--config Release -DCMAKE_BUILD_TYPE=Release ',
               runPuppeteer: '',
               prescript: 'chcp 65001',
               sudo: '  ',
