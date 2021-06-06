@@ -805,22 +805,22 @@ TEST(concept, add_consume_test) {
         */
 
 
-        int value0;
-        int value1;
-        int value2;
-        int value3;
-        int value4;
-        int value5;
-        int value6;
-        int value7;
-        int value8;
-        int value9;
-        int value10;
-        int value11;
-        int value12;
-        int value13;
-        int value14;
-        int value15;
+        char value0;
+        char value1;
+        char value2;
+        char value3;
+        char value4;
+        char value5;
+        char value6;
+        char value7;
+        char value8;
+        char value9;
+        char value10;
+        char value11;
+        char value12;
+        char value13;
+        char value14;
+        char value15;
 
 
         /*
