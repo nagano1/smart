@@ -114,8 +114,8 @@
         //NSLog(@"%@", [json description]);
         
         //ThreadQueue
-        if ([testname isEqualToString:@"add_consume_test"]){ 
-        //if ([testname isEqualToString:@"ThreadQueue"]){ 
+//        if ([testname isEqualToString:@"add_consume_test"]){
+        if ([testname isEqualToString:@"ThreadQueue"]){ 
             NSLog(@"%@", str);
             NSLog(@"%@", testname);
 
