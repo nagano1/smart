@@ -753,7 +753,7 @@ TEST(concept, add_consume_test) {
 
     using newtype = unsigned int;
 
-    static int work_node_max = ARM ? 2050 * 2 : 1800 * 1;
+    static int work_node_max = ARM ? 2050 * 2 : 1800 * 2;
 
     static std::atomic<bool> wow2{ false };
 
@@ -936,7 +936,7 @@ TEST(concept, add_consume_test) {
 
         }, 3, firstItem, cacheVec);
 
-        add_thread.join();
+        // add_thread.join();
 
         // std::this_thread::sleep_for(std::chrono::milliseconds{ 1 });
 
@@ -1091,7 +1091,7 @@ TEST(concept, add_consume_test) {
 
         }, 3, firstItem);
 
-        //add_thread.join();
+        add_thread.join();
         consume_thread.join();
 
     }

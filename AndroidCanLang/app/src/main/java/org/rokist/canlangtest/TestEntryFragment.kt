@@ -135,7 +135,12 @@ class Tab02Fragment : Fragment() {
             }
 
             binding.runTestButton.setOnClickListener {
-                runTest()
+                //thread {
+                    //Thread.sleep(2500);
+                    Handler(Looper.getMainLooper()).post {
+                        runTest()
+                    }
+                //}
             }
 
         } else {
