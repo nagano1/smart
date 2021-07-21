@@ -29,7 +29,7 @@ function slp(milliseconds) {
                 if (json.isTestResult) {
                     if (json.ok) {
                         console.log("ok:");
-                        //okOnce = true;
+                        okOnce = true;
                     } else {
                         await process.exit(240);
                     }
