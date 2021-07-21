@@ -61,7 +61,7 @@ jobs:
           # this doesn't affect at all
           #-DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32  -DCMAKE_C_FLAGS=-m32 -DCMAKE_MODULE_LINKER_FLAGS=-m32 -DCMAKE_STATIC_LINKER_FLAGS=-m32  -DCMAKE_SHARED_LINKER_FLAGS=-m32
 
-          cmake -D NO_SPEED_TEST=1 -DCMAKE_BUILD_TYPE=Release  ${{ matrix.config.cmakeConfig }} .. 
+          cmake -D NO_SPEED_TEST=1   ${{ matrix.config.cmakeConfig }} .. 
           #make all
           cmake --build . ${{ matrix.config.cmakeBuildConfig }}
           #ls -R .
