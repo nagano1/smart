@@ -28,7 +28,6 @@ function slp(milliseconds) {
                 const json = JSON.parse(msg.text());
                 if (json.isTestResult) {
                     if (json.ok) {
-                        
                         console.log("ok:");
                         okOnce = true;
                     } else {
