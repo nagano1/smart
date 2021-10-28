@@ -105,7 +105,11 @@ struct ParseUtil {
     };
 
 
-    static inline bool matchWord(const utf8byte *text, st_size text_length, const char *word, st_size word_length, st_uint start) {
+    static inline bool matchWord(const utf8byte *text,
+        st_size text_length,
+        const char *word, st_size word_length,
+        st_uint start)
+    {
         if (start + word_length <= text_length) { // determine word has enough length
             for (st_uint i = 0; i < word_length; i++) {
                 if (text[start + i] != word[i]) {
@@ -121,7 +125,8 @@ struct ParseUtil {
 
 
     // EXPECT_EQ(0, Tokenizer::matchFirstWithTrim("class A{}", "class"));
-    static int matchFirstWithTrim(const char *chars, const char *target, int start) {
+    static int matchFirstWithTrim(const char *chars, const char *target, int start)
+    {
         //  return -1 if it fails
         int currentTargetIndex = 0;
         int matchStartIndex = -1;
@@ -169,37 +174,46 @@ struct ParseUtil {
     };
 
 
-    static inline bool isSpaceOrLineBreak(utf8byte ch) {
+    static inline bool isSpaceOrLineBreak(utf8byte ch)
+    {
         return ' ' == ch || ch == '\n' || '\t' == ch;
-    };
+    }
 
-    static inline bool isSpace(utf8byte ch) {
+
+    static inline bool isSpace(utf8byte ch)
+    {
         return ' ' == ch || '\t' == ch;
-    };
+    }
 
-    static inline bool isNonIdentifierChar(utf8byte ch) {
+
+    static inline bool isNonIdentifierChar(utf8byte ch)
+    {
         return ' ' == ch || '\t' == ch || '!' == ch || '#' == ch || '[' == ch || '\n' == ch
             || '%' == ch || ']' == ch || '"' == ch || '[' == ch || '\'' == ch
             || '=' == ch || '*' == ch || '+' == ch || '-' == ch || '?' == ch
             || '@' == ch || '{' == ch || '}' == ch || ',' == ch || ';' == ch
             || ':' == ch || '.' == ch || '`' == ch || '&' == ch || '|' == ch
             || '<' == ch || '>' == ch || '^' == ch || '\\' == ch || '/' == ch;
-    };
+    }
 
 
-    static inline bool isBreakLine(utf8byte ch) {
+    static inline bool isBreakLine(utf8byte ch)
+    {
         return '\r' == ch || '\n' == ch;
-    };
+    }
 
-    static inline bool isNumberLetter(utf8byte ch) {
+
+    static inline bool isNumberLetter(utf8byte ch)
+    {
         return '0' <= ch && ch <= '9';
     }
 
-    static inline bool isIdentifierLetter(utf8byte ch) {
+
+    static inline bool isIdentifierLetter(utf8byte ch)
+    {
         if ('A' <= ch && ch <= 'Z') {
             return true;
-        }
-        else if ('a' <= ch && ch <= 'z') {
+        } else if ('a' <= ch && ch <= 'z') {
             return true;
         }
         else if ('0' <= ch && ch <= '9') {
@@ -210,6 +224,6 @@ struct ParseUtil {
         }
 
         return (ch & 0x80) == 0x80;
-    };
+    }
 };
 

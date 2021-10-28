@@ -744,6 +744,7 @@ TEST(concept, add_consume_test_win32) {
     //FAIL();
 #endif
 }
+
 ENDTEST
 
 TEST(concept, add_consume_test) {

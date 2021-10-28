@@ -380,7 +380,7 @@ namespace smart {
         st_textlen length;
         bool scanEnd;
         NodeBase *codeNode;
-        int former_start;
+        // int former_start;
         st_uint baseIndent;
         utf8byte *chars;
         SyntaxErrorInfo syntaxErrorInfo;

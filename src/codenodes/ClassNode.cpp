@@ -38,7 +38,7 @@ namespace smart {
     }
 
     static CodeLine *appendToLine(ClassNodeStruct *self, CodeLine *currentCodeLine) {
-        auto *classNode = self;//Cast::downcast<ClassNodeStruct *>(self);
+        auto *classNode = self;
 
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(classNode);
 
@@ -75,8 +75,8 @@ namespace smart {
                                                           selfText,
                                                           appendToLine,
                                                           classTypeText,
-                                                          true
-    );
+                                                          true);
+
     const struct node_vtable *VTables::ClassVTable = &_ClassVTable;
 
 
@@ -143,48 +143,50 @@ namespace smart {
     };
 
 
+
+
     int Tokenizers::classTokenizer(TokenizerParams_parent_ch_start_context) {
         static constexpr const char class_chars[] = "class";
         static constexpr unsigned int size_of_class = sizeof(class_chars) - 1;
 
         if ('c' == ch) {
-            Tokenizers::WordTokenizer(TokenizerParams_pass, 'c', "class");
-
             auto idx = ParseUtil::matchFirstWithTrim(context->chars, class_chars, start);
             if (idx > -1) {
                 if (idx + size_of_class < context->length
                     && ParseUtil::isSpace(context->chars[idx + size_of_class])
                         ) {
 
-                    int returnPos = idx + size_of_class;
+                    int currentPos = idx + size_of_class;
+                    int resultPos = -1;
 
-                    // here "class " came
+                    // "class " came here
                     auto *classNode = Alloc::newClassNode(context, parent);
 
                     {
-                        returnPos = Scanner::scan(&classNode->nameNode,
+                        resultPos = Scanner::scan(&classNode->nameNode,
                                                   Tokenizers::nameTokenizer,
-                                                  returnPos,
+                                                  currentPos,
                                                   context);
 
-                        if (returnPos == -1) {
+                        if (resultPos == -1) {
                             // a class should have a class name
                             context->codeNode = Cast::upcast(classNode);
-                            return context->former_start;
+                            return currentPos;
                         }
 
                         //console_log("name=" + std::string(classNode->nameNode.name));
                     }
 
                     // Parse body
-                    if (-1 == (returnPos = Scanner::scan(classNode, classBodyTokenizer,
-                                                         returnPos, context))) {
+                    currentPos = resultPos;
+                    if (-1 == (resultPos = Scanner::scan(classNode, classBodyTokenizer,
+                                                         currentPos, context))) {
                         context->codeNode = Cast::upcast(classNode);
-                        return context->former_start;
+                        return currentPos;
                     }
 
                     context->codeNode = Cast::upcast(classNode);
-                    return returnPos;
+                    return resultPos;
                 }
             }
         }

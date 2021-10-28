@@ -42,6 +42,7 @@ function slp(milliseconds) {
 
     await page.goto(URL);
 
+
     // Get the "viewport" of the page, as reported by the page.
     const dimensions = await page.evaluate(() => {
         return {

@@ -316,7 +316,7 @@ namespace smart {
             }
         }
 
-        context->former_start = start;
+        //context->former_start = start;
         return returnResult;
     }
 }
