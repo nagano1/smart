@@ -215,7 +215,6 @@ class TestGroupViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 }
 
-
 enum class TestItemViewType(val id: Int) {
     TestEntry(0),
     TestGroup(1);
