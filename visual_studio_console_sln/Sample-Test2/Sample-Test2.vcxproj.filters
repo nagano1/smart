@@ -63,19 +63,6 @@
     <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
-    <ClCompile Include="..\..\src\codenodes\code_nodes.cpp" />
-    <ClCompile Include="..\..\src\codenodes\coding_operations.cpp" />
-    <ClCompile Include="..\..\src\codenodes\Document.cpp" />
-    <ClCompile Include="..\..\src\codenodes\EndOfFileNode.cpp" />
-    <ClCompile Include="..\..\src\codenodes\FuncNode.cpp" />
-    <ClCompile Include="..\..\src\codenodes\JsonArrayNode.cpp" />
-    <ClCompile Include="..\..\src\codenodes\JsonObjectStruct.cpp" />
-    <ClCompile Include="..\..\src\codenodes\LineBreak.cpp" />
-    <ClCompile Include="..\..\src\codenodes\NameNode.cpp" />
-    <ClCompile Include="..\..\src\codenodes\NumberNode.cpp" />
-    <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
-    <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
-    <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\EndOfFileNode.cpp">
       <Filter>library</Filter>
     </ClCompile>
@@ -97,9 +84,9 @@
     <ClCompile Include="..\..\tests\google_tests\coding_operation_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ClInclude Include="..\..\tests\test_common.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\tests\test_common.h" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

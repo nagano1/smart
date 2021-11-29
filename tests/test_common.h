@@ -123,7 +123,7 @@ constexpr bool speed_test = true;//// true
 #ifdef CMAKE_TEST
 constexpr bool managed_cmake_test = true;
 #else
-constexpr bool managed_cmake_test = false; // false // or visual studio embedded tests
+constexpr bool managed_cmake_test = true; // false // or visual studio embedded tests
 #endif
 
 #ifdef __ANDROID__
