@@ -470,7 +470,6 @@ ENDTEST
 
 
 
-
 std::atomic<unsigned int> sleepings{ 0 };
 bool stopped2 = false;
 
@@ -668,11 +667,11 @@ DWORD WINAPI ThreadFunc(LPVOID arg)
 
 
 TEST(concept, add_consume_test_win32) {
-    printf("what?");
+
     //#ifdef WIN32
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-    InterlockedCompareExchange64;
-    InitializeConditionVariable;
+    //InterlockedCompareExchange64;
+    //InitializeConditionVariable;
 
     HANDLE h;
 
@@ -694,21 +693,20 @@ TEST(concept, add_consume_test_win32) {
     HANDLE hThread;
     DWORD dwThreadId;
 
-    //スレッド起動
+    // run thread
     hThread = CreateThread(
-        NULL, //セキュリティ属性
-        100, //スタックサイズ
-        ThreadFunc, //スレッド関数
-        NULL, //スレッド関数に渡す引数
-        0, //作成オプション(0またはCREATE_SUSPENDED)
-        &dwThreadId);//スレッドID
+        NULL, // security attributes
+        100, // stack size
+        ThreadFunc, // function to invoke on the thread
+        NULL, // arguments
+        0, // create option (0 or CREATE_SUSPENDED)
+        &dwThreadId);// thread id
 
 
     // We are not gonna use this
     //int *a = NULL;
     //int *newValue = new int{ 3 };
     //InterlockedExchangePointerNoFence((PVOID *)&a, newValue);
-
 
 
     // CAS
@@ -718,7 +716,7 @@ TEST(concept, add_consume_test_win32) {
     EXPECT_EQ(metValue, 24);
     if (metValue == 24) {
         // succeed
-
+        EXPECT_EQ(a, newValue);
     }
     else {
         // failed, but a could be already equivalent to newValue thanks to other thread.
@@ -746,6 +744,18 @@ TEST(concept, add_consume_test_win32) {
 }
 
 ENDTEST
+
+
+
+TEST(concept, i_have_32threads_cpu) {
+    std::atomic<bool> atomicvalue{ true };
+    if (atomicvalue) {
+        // FAIL();
+    }
+}
+ENDTEST
+
+
 
 TEST(concept, add_consume_test) {
 
@@ -1161,5 +1171,6 @@ TEST(concept, unordered_map_test) {
 }
 
 ENDTEST
+
 
 
