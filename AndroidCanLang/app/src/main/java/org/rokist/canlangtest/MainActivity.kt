@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-
         // Collect tests
         val testEntryMap = mutableMapOf<String, TestEntry>()
         val topTestGroup = TestParser.collectTests(this, testEntryMap)
