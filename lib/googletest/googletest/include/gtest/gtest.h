@@ -177,7 +177,6 @@ class FuchsiaDeathTest;
 class UnitTestImpl* GetUnitTestImpl();
 void ReportFailureInUnknownLocation(TestPartResult::Type result_type,
                                     const std::string& message);
-std::set<std::string>* GetIgnoredParameterizedTestSuites();
 
 }  // namespace internal
 
@@ -413,6 +412,8 @@ class GTEST_API_ Test {
   // test in test case Foo.  Hence a sub-class can define its own
   // SetUpTestSuite() method to shadow the one defined in the super
   // class.
+  // Failures that happen during SetUpTestSuite are logged but otherwise
+  // ignored.
   static void SetUpTestSuite() {}
 
   // Tears down the stuff shared by all tests in this test suite.
@@ -421,6 +422,8 @@ class GTEST_API_ Test {
   // test in test case Foo.  Hence a sub-class can define its own
   // TearDownTestSuite() method to shadow the one defined in the super
   // class.
+  // Failures that happen during TearDownTestSuite are logged but otherwise
+  // ignored.
   static void TearDownTestSuite() {}
 
   // Legacy API is deprecated but still available
@@ -886,9 +889,7 @@ class GTEST_API_ TestSuite {
   bool Passed() const { return !Failed(); }
 
   // Returns true if and only if the test suite failed.
-  bool Failed() const {
-    return failed_test_count() > 0 || ad_hoc_test_result().Failed();
-  }
+  bool Failed() const { return failed_test_count() > 0; }
 
   // Returns the elapsed time, in milliseconds.
   TimeInMillis elapsed_time() const { return elapsed_time_; }
@@ -1419,7 +1420,6 @@ class GTEST_API_ UnitTest {
   friend class internal::StreamingListenerTest;
   friend class internal::UnitTestRecordPropertyTestHelper;
   friend Environment* AddGlobalTestEnvironment(Environment* env);
-  friend std::set<std::string>* internal::GetIgnoredParameterizedTestSuites();
   friend internal::UnitTestImpl* internal::GetUnitTestImpl();
   friend void internal::ReportFailureInUnknownLocation(
       TestPartResult::Type result_type,
@@ -1889,7 +1889,7 @@ class TestWithParam : public Test, public WithParamInterface<T> {
 // Skips test in runtime.
 // Skipping test aborts current function.
 // Skipped tests are neither successful nor failed.
-#define GTEST_SKIP() GTEST_SKIP_("")
+#define GTEST_SKIP() GTEST_SKIP_("Skipped")
 
 // ADD_FAILURE unconditionally adds a failure to the current test.
 // SUCCEED generates a success - it doesn't automatically make the
@@ -2298,7 +2298,8 @@ class GTEST_API_ ScopedTrace {
 // to cause a compiler error.
 template <typename T1, typename T2>
 constexpr bool StaticAssertTypeEq() noexcept {
-  static_assert(std::is_same<T1, T2>::value, "T1 and T2 are not the same type");
+  static_assert(std::is_same<T1, T2>::value,
+                "type1 and type2 are not the same type");
   return true;
 }
 

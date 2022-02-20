@@ -53,7 +53,7 @@ else()
   cmake_policy(SET CMP0048 NEW)
   project(gtest VERSION ${GOOGLETEST_VERSION} LANGUAGES CXX C)
 endif()
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 2.6.4)
 
 if (POLICY CMP0063) # Visibility
   cmake_policy(SET CMP0063 NEW)
@@ -126,8 +126,6 @@ include_directories(${gtest_build_include_dirs})
 # are used for other targets, to ensure that gtest can be compiled by a user
 # aggressive about warnings.
 cxx_library(gtest "${cxx_strict}" src/gtest-all.cc)
-#set_target_properties(gtest PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
-
 cxx_library(gtest_main "${cxx_strict}" src/gtest_main.cc)
 # If the CMake version supports it, attach header directory information
 # to the targets for when we are part of a parent build (ie being pulled
@@ -268,7 +266,6 @@ $env:Path = \"$project_bin;$env:Path\"
   cxx_executable(googletest-break-on-failure-unittest_ test gtest)
   py_test(googletest-break-on-failure-unittest)
 
-  py_test(gtest_skip_check_output_test)
   py_test(gtest_skip_environment_check_output_test)
 
   # Visual Studio .NET 2003 does not support STL with exceptions disabled.
