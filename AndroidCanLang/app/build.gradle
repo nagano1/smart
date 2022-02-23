@@ -6,6 +6,7 @@ apply plugin: 'kotlin-kapt'
 
 android {
     signingConfigs {
+
         /*
         release_sign {
             storeFile f ile('release.jks')
