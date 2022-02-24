@@ -32,8 +32,8 @@ cmake --build . --config Release
 ## command line: cmake  Windows
 install cmake and llvm
 
-cd build
 ```bash
+cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --config Release
 tests\Release\main_tst.exe
