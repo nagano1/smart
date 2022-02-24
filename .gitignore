@@ -26,3 +26,5 @@ package-lock.json
 *.d
 
 
+#Libre office draw
+.~lock.*
