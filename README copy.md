@@ -1,4 +1,4 @@
-[!🏻‍🚀CMake Build Matrix](https://github.com/nagano1/smart/actions/workflows/main_cmake.yml/badge.svg)](https://github.com/nagano1/smart/actions/workflows/main_cmake.yml)
+[![💎 CMake Build Matrix](https://github.com/nagano1/smart/actions/workflows/main_cmake.yml/badge.svg)](https://github.com/nagano1/smart/actions/workflows/main_cmake.yml)
 
 [![👽 Windows binary using Clang/LLVM](https://github.com/nagano1/smart/actions/workflows/windows_clang.yml/badge.svg)](https://github.com/nagano1/smart/actions/workflows/windows_clang.yml)
 
