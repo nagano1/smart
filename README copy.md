@@ -2,7 +2,7 @@
 
 [![👽 Windows binary using Clang/LLVM](https://github.com/nagano1/smart/actions/workflows/windows_clang.yml/badge.svg)](https://github.com/nagano1/smart/actions/workflows/windows_clang.yml)
 
-![👺 Wasm test, build file, upload it and test it](https://github.com/nagano1/smart/workflows/%F0%9F%91%BA%20Wasm%20test,%20build%20file,%20upload%20it%20and%20test%20it/badge.svg)
+[![👺 Wasm test, build file, upload it and test it](https://github.com/nagano1/smart/actions/workflows/wasm.yml/badge.svg)](https://github.com/nagano1/smart/actions/workflows/wasm.yml)
 
 # Top Folders
 - **AndroidCanLang** : Android app running unit tests(Google Test)
