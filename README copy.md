@@ -19,13 +19,14 @@
 Deed
 
 # Install on Ubuntu 
+```bash
 sudo apt-get install llvm-10-dev cmake clang-10 lld-10
 export CXX=clang++-10
 
 cd build
 cmake --config Release ..
 cmake --build . --config Release 
-
+```
 
 # Windows
 ## command line: cmake  Windows
@@ -63,11 +64,12 @@ and you might need to update google test in Nuget manager.
 - https://denspe.blog.fc2.com/blog-entry-173.html
 
 ## llvm IR commands
+```bash
 sudo apt-get install libc6-dev-i386
 sudo apt-get install gcc-multilib g++-multilib
 
 clang-10 -S -emit-llvm -O3 main.c && llc-10 main.ll && clang-10 main.s -o hello
-
+```
 
 <aowfeijf ara:=awfjo-ajweoifjoaw aowiejf:=jofaiwe-ojawiefwao awfea:ajwoipjfpowa afe="jafowief" awf=foiawjeopaw
 
