@@ -18,9 +18,6 @@
 - **wasm_project_test** : npm project folder for `npm install puppeteer` and run a test on Github actions
 
 
-
-Deed
-
 # Install on Ubuntu 
 ```bash
 sudo apt-get install llvm-10-dev cmake clang-10 lld-10
