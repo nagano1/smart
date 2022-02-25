@@ -90,6 +90,8 @@ jobs:
 
           #clang.exe --version
           #dir $(pwd)/llvm/bin
+
+          clang++ --version
           
           cd llvm_ir_test
           clang++ -S main.cpp 
@@ -101,7 +103,7 @@ jobs:
           dir
 
           #clang++.exe -static -lstdc++ -lpthread main.s lib.s -o hello.exe;
-          clang++ -mwindows main.s lib.s -o hello.exe;
+          clang++-11 -mwindows main.s lib.s -o hello.exe;
           ls -al;
           #./hello.exe;
 
