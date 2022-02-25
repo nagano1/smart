@@ -5,14 +5,14 @@ set -e
 
 #clang-10 -S -emit-llvm main.cpp 
 #clang-10 -S -emit-llvm lib.cpp
-COMPILER=clang++-12
-LINKER=lld++-12
+COMPILER=clang++-11
+LINKER=lld++-11
 
 $COMPILER -S -emit-llvm -O3 main.cpp
 $COMPILER -S -emit-llvm -O3 lib.cpp
 
-llc-12 main.ll
-llc-12 lib.ll
+llc-11 main.ll
+llc-11 lib.ll
 
 #-nostdlib
 $LINKER -lpthread  main.s lib.s -o hello && echo start && ./hello
