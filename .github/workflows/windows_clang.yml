@@ -12,7 +12,7 @@ jobs:
           - {
               # 64bit
               name: 64bit,
-              os: windows-latest,
+              os: windows-2019,
               addpath: 'echo "C:\\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
               
               hello: "hello.exe",
@@ -22,7 +22,7 @@ jobs:
           - {
               # 32bit
               name: 32bit,
-              os: windows-latest,
+              os: windows-2019,
               addpath_old: 'echo "::add-path::C:\msys64\mingw32\bin"',
               addpath: 'echo "C:\\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
               hello: "hello32.exe",
@@ -90,8 +90,6 @@ jobs:
 
           #clang.exe --version
           #dir $(pwd)/llvm/bin
-
-          clang++ --version
           
           cd llvm_ir_test
           clang++ -S main.cpp 
@@ -103,7 +101,7 @@ jobs:
           dir
 
           #clang++.exe -static -lstdc++ -lpthread main.s lib.s -o hello.exe;
-          clang++-11 -mwindows main.s lib.s -o hello.exe;
+          clang++ -mwindows main.s lib.s -o hello.exe;
           ls -al;
           #./hello.exe;
 
