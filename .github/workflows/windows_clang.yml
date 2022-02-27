@@ -41,25 +41,25 @@ jobs:
           echo "::add-matcher::.github/problem_matcher.json"
 
           
-      - name: Install clang (Windows)
-        shell: bash
-        run: |
-          curl -fsSLO https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/LLVM-10.0.0-win64.exe
-          7z x LLVM-10.0.0-win64.exe -y -o"llvm"
-          #echo "$(pwd)/llvm/bin" >> $GITHUB_PATH
-          #echo "WASM_AR=$(pwd)/llvm/bin/llvm-ar.exe" >> $GITHUB_ENV
-        if: matrix.config.os == 'windows-latest'
+      # - name: Install clang (Windows)
+      #   if: matrix.config.os == 'windows-latest'
+      #   shell: bash
+      #   run: |
+      #     curl -fsSLO https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/LLVM-10.0.0-win64.exe
+      #     7z x LLVM-10.0.0-win64.exe -y -o"llvm"
+      #     #echo "$(pwd)/llvm/bin" >> $GITHUB_PATH
+      #     #echo "WASM_AR=$(pwd)/llvm/bin/llvm-ar.exe" >> $GITHUB_ENV
 
-      - name: Install llvm-nm (Windows)
-        shell: bash
-        run: |
-          rustup update stable
-          rustup default stable
-          rustup component add llvm-tools-preview
-          echo "$(rustc --print sysroot|sed 's|C:|/c|'|sed 's|\\|/|g')/lib/rustlib/x86_64-pc-windows-msvc/bin/llvm-nm.exe"
-          ls -al "$(rustc --print sysroot|sed 's|C:|/c|'|sed 's|\\|/|g')/lib/rustlib/x86_64-pc-windows-msvc/bin/"
+      # - name: Install llvm-nm (Windows)
+      #   if: matrix.config.os == 'windows-latest'
+      #   shell: bash
+      #   run: |
+      #     rustup update stable
+      #     rustup default stable
+      #     rustup component add llvm-tools-preview
+      #     echo "$(rustc --print sysroot|sed 's|C:|/c|'|sed 's|\\|/|g')/lib/rustlib/x86_64-pc-windows-msvc/bin/llvm-nm.exe"
+      #     ls -al "$(rustc --print sysroot|sed 's|C:|/c|'|sed 's|\\|/|g')/lib/rustlib/x86_64-pc-windows-msvc/bin/"
 
-        if: matrix.config.os == 'windows-latest'
       # - name: Install llvm-nm (Windows)
       #   shell: bash
       #   run: |
