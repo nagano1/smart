@@ -30,6 +30,14 @@ cmake --build . --config Release
 
 # Windows
 ## command line: cmake  Windows
+Run followings on the PowerShell or Command .
+winget install Microsoft.VisualStudioCode -e
+winget install Kitware.CMake -e
+winget install Microsoft.VisualStudio.2022.Community -e
+winget install Git.Git -e
+winget install Python.Python.3 -e
+winget install doxygen -e
+winget install graphviz -e
 install cmake and llvm
 
 ```bash
