@@ -707,6 +707,7 @@ TEST(ParserTest_, charBuffer) {
 ENDTEST
 
 
+
 TEST(ParserTest_, CodeNode) {
     std::string text = "   class           A   {    }   ";
     /*
@@ -750,6 +751,7 @@ ENDTEST
 
 TEST(ParserTest_, ErrorNodeTest_class) {
     std::string text = u8R"(
+
 class A {
     class B {
         class TestCl😂日本語10234ass {
@@ -769,6 +771,21 @@ class A {
     char *treeText = DocumentUtils::getTextFromTree(document);
     EXPECT_EQ(std::string(treeText), std::string(chars));
     EXPECT_EQ(strlen(treeText), strlen(chars));
+
+
+    EXPECT_EQ(document->firstCodeLine->firstNode->vtable, VTables::LineBreakVTable);
+    EXPECT_EQ(document->firstCodeLine->nextLine->firstNode->vtable, VTables::LineBreakVTable);
+    
+
+
+
+    auto* maybeSpaceNode = document->firstCodeLine->nextLine->nextLine->nextLine->firstNode;
+    EXPECT_EQ(maybeSpaceNode->vtable, VTables::SpaceVTable);
+
+    auto *spaceNode = Cast::downcast<SpaceNodeStruct *>(maybeSpaceNode);
+    EXPECT_EQ(spaceNode->textLength, 4);
+    
+    EXPECT_EQ(spaceNode->nextNodeInLine->vtable, VTables::ClassVTable);
 
     Alloc::deleteDocument(document);
 

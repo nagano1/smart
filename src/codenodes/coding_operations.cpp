@@ -55,6 +55,68 @@ namespace smart {
     }
 
 
+    /*
+    * Before editing this file, it is required to modify indentation to follow ZM's indent rule
+    */
+    void DocumentUtils::assignIndentsAndDepth(DocumentStruct* doc)
+    {
+        auto* line = doc->firstCodeLine;
+        st_uint prevIndent = 0;
+        while (line) {
+            auto* node = line->firstNode;
+
+            if (node->vtable == VTables::SpaceVTable)
+            {
+                auto* space = Cast::downcast<SpaceNodeStruct*>(node);
+                line->indent = space->textLength;
+            }
+            /*else if (node->vtable == VTables::LineBreakVTable)
+            {
+                line->indent = prevIndent;
+            }*/
+            else if (node->prev_char == ' ')
+            {
+                line->indent = 1;
+            }
+            else
+            {
+                line->indent = 0;
+            }
+
+            prevIndent = line->indent;
+
+            line = line->nextLine;
+        }
+
+
+        doc->context->has_depth_error = false;
+    }
+
+
+
+
+    static void assignIndentsToBreakLines(DocumentStruct* doc)
+    {
+        auto* line = doc->firstCodeLine;
+        st_uint prevIndent = 0;
+        while (line) {
+
+            auto* firstElement = findFirstElementNode(line);
+            if (firstElement == nullptr) {
+                line->indent = prevIndent;
+            }
+
+            prevIndent = line->indent;
+
+            line = line->nextLine;
+        }
+    }
+
+
+
+    /*
+    * if justKeepRule is specified,  only rightward indent fix is gonna be performed.
+    */
     static void indentFormatLine(CodeLine *line, bool justKeepRule) {
         auto *firstElement = findFirstElementNode(line);
         if (firstElement) {
@@ -70,24 +132,24 @@ namespace smart {
                     auto *context = firstElement->context;
                     auto &baseIndent = context->baseIndent;
 
-                    // modify Indent
+                    // modify indent
                     SpaceNodeStruct *space;
                     if (firstElement->prevSpaceNode) {
                         if (justKeepRule) {
-                            if (firstElement->prevSpaceNode->textLength >=
-                                baseIndent + parentIndent) {
+                            if (firstElement->prevSpaceNode->textLength >= parentIndent + baseIndent) {
                                 return;
                             }
                         }
                         space = firstElement->prevSpaceNode;
                     } else {
+
                         space = Alloc::newSpaceNode(context, firstElement);
                         firstElement->prev_char = '\0';
                         firstElement->prevSpaceNode = space;
                         firstElement->line->insertNode(Cast::upcast(space), nullptr);
                     }
 
-                    line->indent = parentIndent + baseIndent;
+                    line->indent = parentIndent + 1;
                     space->textLength = parentIndent + baseIndent;
                     space->text = context->memBuffer.newMem<char>(parentIndent + baseIndent + 1);
                     for (unsigned int i = 0; i < parentIndent + baseIndent; i++) {
@@ -117,10 +179,17 @@ namespace smart {
             }
             line = line->nextLine;
         }
+
+        //assignIndentsToBreakLines(doc);
+
     }
 
-    OperationResult * DocumentUtils::performCodingOperation(CodingOperations op, DocumentStruct * doc, NodeBase * startNode, NodeBase * endNode)
-    {
+    OperationResult * DocumentUtils::performCodingOperation(
+        CodingOperations op,
+        DocumentStruct * doc,
+        NodeBase * startNode,
+        NodeBase * endNode
+    ) {
         if (startNode == nullptr) {
             return nullptr;
         }
@@ -128,10 +197,13 @@ namespace smart {
         when(op) {
             wfor(CodingOperations::AutoIndentForSpacingRule,
                  performIndentSelectionOperation(doc, startNode, endNode, true))
+
             wfor(CodingOperations::AutoIndentSelection,
                  performIndentSelectionOperation(doc, startNode, endNode, false))
+
             wfor(CodingOperations::Deletion,
                  performIndentSelectionOperation(doc, startNode, endNode, false));
+
             wfor(CodingOperations::BreakLine,
                  performIndentSelectionOperation(doc, startNode, endNode, false));
         }

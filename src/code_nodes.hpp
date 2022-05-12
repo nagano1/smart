@@ -385,6 +385,8 @@ namespace smart {
         utf8byte *chars;
         SyntaxErrorInfo syntaxErrorInfo;
         bool has_cancel_request{false};
+        bool has_depth_error{false};
+
 
         void (*actionCreator)(void *node1, void *node2, int actionRequest);
 
@@ -590,12 +592,14 @@ namespace smart {
         NodeBase *firstNode;
         NodeBase *lastNode;
         st_uint indent;
+        st_uint depth;
 
         void init(ParseContext *context) {
             this->firstNode = nullptr;
             this->lastNode = nullptr;
             this->nextLine = nullptr;
             this->prev = nullptr;
+            this->depth= 0;
 
             // context->actionCreator(Cast::upcast(doc), 1);
         }
@@ -693,13 +697,16 @@ namespace smart {
         static JsonObjectStruct *generateHashTables(DocumentStruct *doc);
 
 
-        static void assignIndents(DocumentStruct *doc);
+        static void assignIndentsAndDepth(DocumentStruct *doc);
+        //static void assignIndentsToBreakLines(DocumentStruct *doc);
         static void formatIndent(DocumentStruct *doc);
 
         static utf8byte *getTextFromTree(DocumentStruct *doc);
         static utf8byte *getTypeTextFromTree(DocumentStruct *doc);
         static utf8byte *getTextFromLine(CodeLine *line);
         static utf8byte *getTextFromNode(NodeBase *line);
+
+
     };
 
 

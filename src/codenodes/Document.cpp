@@ -268,20 +268,7 @@ namespace smart {
 
 
 
-    void DocumentUtils::assignIndents(DocumentStruct *doc) {
-        auto *line = doc->firstCodeLine;
-        while (line) {
-            auto *node = line->firstNode;
-            if (node->vtable == VTables::SpaceVTable) {
-                auto *space = Cast::downcast<SpaceNodeStruct *>(node);
-                line->indent = space->textLength;
-            }
-            else {
-                line->indent = 0;
-            }
-            line = line->nextLine;
-        }
-    }
+
 
 
     utf8byte *DocumentUtils::getTextFromTree(DocumentStruct *doc) {
@@ -422,24 +409,24 @@ namespace smart {
             Scanner::scan_for_root(docStruct, tryTokenizeJson, 0, context, /*root*/true);
         }
 
-        if (docStruct->lastRootNode) {
-            //docStruct->lastRootNode->nextNode = Cast::upcast(&docStruct->endOfFile);
+        
+        if (!context->syntaxErrorInfo.hasError) {
+            if (docStruct->lastRootNode) {
+                //docStruct->lastRootNode->nextNode = Cast::upcast(&docStruct->endOfFile);
+            }
+
+            docStruct->lastRootNode = Cast::upcast(&docStruct->endOfFile);
+            docStruct->lastRootNode->prevSpaceNode = context->remainedSpaceNode;
+            docStruct->lastRootNode->prevLineBreakNode = context->remainedLineBreakNode;
+
+            docStruct->firstCodeLine = context->newCodeLine();// simpleMalloc<CodeLine>();
+            docStruct->firstCodeLine->init(context);
+
+            VTableCall::appendToLine(docStruct, docStruct->firstCodeLine);
+
+            DocumentUtils::assignIndentsAndDepth(docStruct);
         }
 
-        docStruct->lastRootNode = Cast::upcast(&docStruct->endOfFile);
-        docStruct->lastRootNode->prevSpaceNode = context->remainedSpaceNode;
-        docStruct->lastRootNode->prevLineBreakNode = context->remainedLineBreakNode;
-
-        docStruct->firstCodeLine = context->newCodeLine();// simpleMalloc<CodeLine>();
-        docStruct->firstCodeLine->init(context);
-
-        VTableCall::appendToLine(docStruct, docStruct->firstCodeLine);
-
-
-
-        DocumentUtils::assignIndents(docStruct);
-
         callAllLineEvent(docStruct, docStruct->firstCodeLine, context);
-
     }
 }
