@@ -92,7 +92,7 @@ namespace smart {
 			line = line->nextLine;
 		}
 
-
+		/*
 		// assign depth
 		line = doc->firstCodeLine;
 
@@ -132,7 +132,7 @@ namespace smart {
 
 			line = line->nextLine;
 		}
-		
+		*/
 	}
 
 

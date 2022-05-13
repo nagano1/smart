@@ -36,14 +36,21 @@ namespace smart {
 
         auto* next = lineBreakNode;
         while (next) {
-            currentCodeLine = currentCodeLine->addPrevLineBreakNode((next));
+            currentCodeLine = currentCodeLine->addPrevLineBreakNode(next);
             currentCodeLine->appendNode(Cast::upcast(next));
+            
+            //currentCodeLine->parentDepth = prevLine->parentDepth;
+            //currentCodeLine->depth = prevLine->parentDepth + 1;
+            auto* prevLine = currentCodeLine;
 
             auto *newNextLine = lineBreakNode->context->newCodeLine();
             newNextLine->init(lineBreakNode->context);
 
             currentCodeLine->nextLine = newNextLine;
             currentCodeLine = newNextLine;
+
+            currentCodeLine->parentDepth = prevLine->parentDepth;
+            currentCodeLine->depth = prevLine->parentDepth + 1;
 
             next = next->nextLineBreakNode;
         }

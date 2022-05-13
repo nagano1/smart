@@ -601,7 +601,7 @@ namespace smart {
             this->nextLine = nullptr;
             this->prev = nullptr;
             this->depth = 0;
-            this->parentDepth = 0;
+            this->parentDepth = -1;
 
             // context->actionCreator(Cast::upcast(doc), 1);
         }

@@ -39,7 +39,6 @@ namespace smart {
 
     static CodeLine *appendToLine(ClassNodeStruct *self, CodeLine *currentCodeLine) {
         auto *classNode = self;
-        auto* prevLine = currentCodeLine;
 
 
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(classNode);
@@ -47,13 +46,15 @@ namespace smart {
 
         currentCodeLine->appendNode(classNode);
 
-        if (prevLine != currentCodeLine) {
-            currentCodeLine->depth = prevLine->parentDepth+1;
-        }
-
 
         currentCodeLine = VTableCall::appendToLine(&classNode->nameNode, currentCodeLine);
+
+
         currentCodeLine = VTableCall::appendToLine(&classNode->bodyStartNode, currentCodeLine);
+        
+
+        auto originalDepth = currentCodeLine->parentDepth;
+        currentCodeLine->parentDepth += 1;
 
         {
             auto *child = classNode->firstChildNode;
@@ -63,8 +64,25 @@ namespace smart {
             }
         }
 
-        currentCodeLine = VTableCall::appendToLine(&classNode->endBodyNode, currentCodeLine);
 
+
+        auto* prevCodeLine = currentCodeLine;
+        currentCodeLine = currentCodeLine->addPrevLineBreakNode(&classNode->endBodyNode);
+        if (prevCodeLine != currentCodeLine) {
+            currentCodeLine->depth = originalDepth+1;
+        }
+        currentCodeLine->parentDepth = originalDepth;
+
+
+
+        auto* nodeBase2 = Cast::upcast(&classNode->endBodyNode);
+
+        currentCodeLine->appendNode(&classNode->endBodyNode);
+
+        //currentCodeLine = VTables::SymbolVTable->(Cast::upcast( &classNode->endBodyNode), currentCodeLine);
+
+
+        //currentCodeLine = VTableCall::appendToLine(&classNode->endBodyNode, currentCodeLine);
 
         return currentCodeLine;
     };
