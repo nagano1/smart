@@ -169,7 +169,7 @@ namespace smart {
                                                   context);
 
                         if (resultPos == -1) {
-                            // a class should have a class name
+                            // the class should have a class name
                             context->codeNode = Cast::upcast(classNode);
                             return currentPos;
                         }
