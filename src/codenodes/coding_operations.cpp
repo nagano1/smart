@@ -26,17 +26,17 @@ namespace smart {
 	 */
 
 	 // find an ancestor
-	static NodeBase* findIndentChangingPointParent(NodeBase* node) {
-		node = node->parentNode;
-		while (node != nullptr) {
-			if (node->vtable->is_indent_change_point_parent) {
-				return node;
-			}
-			node = node->parentNode;
-		}
-		return nullptr;
-	}
-
+//	static NodeBase* findIndentChangingPointParent(NodeBase* node) {
+//		node = node->parentNode;
+//		while (node != nullptr) {
+//			if (node->vtable->is_indent_change_point_parent) {
+//				return node;
+//			}
+//			node = node->parentNode;
+//		}
+//		return nullptr;
+//	}
+//
 
 	static NodeBase* findFirstElementNode(CodeLine* line) {
 		auto* node = line->firstNode;
@@ -165,13 +165,7 @@ namespace smart {
 		if (firstElement) {
 			assert(firstElement->parentNode != nullptr);
 
-			NodeBase* pointParent = findIndentChangingPointParent(firstElement);
-			if (pointParent) {
 				assert(pointParent->line);
-				auto* parentLine = pointParent->line;
-
-				if (parentLine && parentLine != firstElement->line) {
-					auto parentIndent = parentLine->indent;
 					auto* context = firstElement->context;
 					auto& baseIndent = context->baseIndent;
 
@@ -179,7 +173,7 @@ namespace smart {
 					SpaceNodeStruct* space;
 					if (firstElement->prevSpaceNode) {
 						if (justKeepRule) {
-							if (firstElement->prevSpaceNode->textLength >= parentIndent + baseIndent) {
+							if (firstElement->prevSpaceNode->textLength >= line->depth* baseIndent) {
 								return;
 							}
 						}
@@ -193,15 +187,13 @@ namespace smart {
 						firstElement->line->insertNode(Cast::upcast(space), nullptr);
 					}
 
-					line->indent = parentIndent + 1;
-					space->textLength = parentIndent + baseIndent;
-					space->text = context->memBuffer.newMem<char>(parentIndent + baseIndent + 1);
-					for (unsigned int i = 0; i < parentIndent + baseIndent; i++) {
+					line->indent = line->depth * baseIndent;
+					space->textLength = line->depth + baseIndent;
+					space->text = context->memBuffer.newMem<char>(line->depth*baseIndent + 1);
+					for (unsigned int i = 0; i < line->depth*baseIndent; i++) {
 						space->text[i] = ' ';
 					}
 
-				}
-			}
 		}
 	}
 

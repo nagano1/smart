@@ -53,7 +53,7 @@ namespace smart {
         currentCodeLine = VTableCall::appendToLine(&classNode->bodyStartNode, currentCodeLine);
         
 
-        auto originalDepth = currentCodeLine->parentDepth;
+        auto formerParentDepth = currentCodeLine->parentDepth;
         currentCodeLine->parentDepth += 1;
 
         {
@@ -67,22 +67,14 @@ namespace smart {
 
 
         auto* prevCodeLine = currentCodeLine;
-        currentCodeLine = currentCodeLine->addPrevLineBreakNode(&classNode->endBodyNode);
+        currentCodeLine = VTableCall::appendToLine(&classNode->endBodyNode, currentCodeLine);
+
         if (prevCodeLine != currentCodeLine) {
-            currentCodeLine->depth = originalDepth+1;
+            currentCodeLine->depth = formerParentDepth+1;
         }
-        currentCodeLine->parentDepth = originalDepth;
+        
+        currentCodeLine->parentDepth = formerParentDepth;
 
-
-
-        auto* nodeBase2 = Cast::upcast(&classNode->endBodyNode);
-
-        currentCodeLine->appendNode(&classNode->endBodyNode);
-
-        //currentCodeLine = VTables::SymbolVTable->(Cast::upcast( &classNode->endBodyNode), currentCodeLine);
-
-
-        //currentCodeLine = VTableCall::appendToLine(&classNode->endBodyNode, currentCodeLine);
 
         return currentCodeLine;
     };
@@ -100,8 +92,8 @@ namespace smart {
                                                           selfTextLength,
                                                           selfText,
                                                           appendToLine,
-                                                          classTypeText,
-                                                          true);
+                                                          classTypeText
+                                                          );
 
     const struct node_vtable *VTables::ClassVTable = &_ClassVTable;
 

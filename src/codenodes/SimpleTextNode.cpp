@@ -38,7 +38,7 @@ namespace smart {
                                                                   selfTextLength,
                                                                   self_text,
                                                                   appendToLine, simpleTextTypeText
-                                                                  ,false);
+                                                                  );
 
     const struct node_vtable *VTables::SimpleTextVTable = &_SIMPLE_TEXT_VTABLE;
     const struct node_vtable *VTables::SpaceVTable = &_SIMPLE_TEXT_VTABLE;
