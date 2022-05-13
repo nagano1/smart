@@ -593,13 +593,15 @@ namespace smart {
         NodeBase *lastNode;
         st_uint indent;
         st_uint depth;
+        st_uint parentDepth;
 
         void init(ParseContext *context) {
             this->firstNode = nullptr;
             this->lastNode = nullptr;
             this->nextLine = nullptr;
             this->prev = nullptr;
-            this->depth= 0;
+            this->depth = 0;
+            this->parentDepth = 0;
 
             // context->actionCreator(Cast::upcast(doc), 1);
         }

@@ -34,17 +34,7 @@ namespace smart {
     static CodeLine *appendToLine(LineBreakNodeStruct *self, CodeLine *currentCodeLine) {
         auto *lineBreakNode = self;//Cast::downcast<LineBreakNodeStruct *>(self);
 
-        currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
-        currentCodeLine->appendNode(self);
-
-        auto *newNextLine = lineBreakNode->context->newCodeLine();//simpleMalloc<CodeLine>();
-        newNextLine->init(lineBreakNode->context);
-
-        currentCodeLine->nextLine = newNextLine;
-        currentCodeLine = newNextLine;
-
-
-        auto *next = lineBreakNode->nextLineBreakNode;
+        auto* next = lineBreakNode;
         while (next) {
             currentCodeLine = currentCodeLine->addPrevLineBreakNode((next));
             currentCodeLine->appendNode(Cast::upcast(next));

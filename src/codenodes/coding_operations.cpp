@@ -62,6 +62,7 @@ namespace smart {
 	{
 		doc->context->has_depth_error = false;
 
+
 		// assign indent
 		auto* line = doc->firstCodeLine;
 		st_uint prevIndent = 0;

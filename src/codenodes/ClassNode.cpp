@@ -39,10 +39,18 @@ namespace smart {
 
     static CodeLine *appendToLine(ClassNodeStruct *self, CodeLine *currentCodeLine) {
         auto *classNode = self;
+        auto* prevLine = currentCodeLine;
+
 
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(classNode);
 
+
         currentCodeLine->appendNode(classNode);
+
+        if (prevLine != currentCodeLine) {
+            currentCodeLine->depth = prevLine->parentDepth+1;
+        }
+
 
         currentCodeLine = VTableCall::appendToLine(&classNode->nameNode, currentCodeLine);
         currentCodeLine = VTableCall::appendToLine(&classNode->bodyStartNode, currentCodeLine);
