@@ -102,7 +102,7 @@ namespace smart {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
         currentCodeLine->appendNode(self);
 
-        currentCodeLine->parentDepth += 1;
+        self->context->parentDepth += 1;
 
         JsonArrayItemStruct *item = self->firstItem;
         while (item != nullptr) {
@@ -110,7 +110,7 @@ namespace smart {
             item = Cast::downcast<JsonArrayItemStruct*>(item->nextNode);
         }
 
-        currentCodeLine->parentDepth -= 1;
+        self->context->parentDepth -= 1;
 
         return VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
     };

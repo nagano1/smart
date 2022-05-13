@@ -386,6 +386,7 @@ namespace smart {
         SyntaxErrorInfo syntaxErrorInfo;
         bool has_cancel_request{false};
         bool has_depth_error{false};
+        st_int parentDepth{ -1 };
 
 
         void (*actionCreator)(void *node1, void *node2, int actionRequest);
@@ -590,7 +591,6 @@ namespace smart {
         NodeBase *lastNode;
         st_uint indent;
         st_uint depth;
-        st_uint parentDepth;
 
         void init(ParseContext *context) {
             this->firstNode = nullptr;
@@ -598,7 +598,6 @@ namespace smart {
             this->nextLine = nullptr;
             this->prev = nullptr;
             this->depth = 0;
-            this->parentDepth = -1;
 
             // context->actionCreator(Cast::upcast(doc), 1);
         }

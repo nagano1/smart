@@ -401,6 +401,7 @@ namespace smart {
         context->remainedLineBreakNode = nullptr;
         context->remainedSpaceNode = nullptr;
         context->baseIndent = 4;
+        context->parentDepth = -1;
 
 
         if (docStruct->documentType == DocumentType::CodeDocument) {

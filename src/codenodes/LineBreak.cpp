@@ -49,8 +49,7 @@ namespace smart {
             currentCodeLine->nextLine = newNextLine;
             currentCodeLine = newNextLine;
 
-            currentCodeLine->parentDepth = prevLine->parentDepth;
-            currentCodeLine->depth = prevLine->parentDepth + 1;
+            currentCodeLine->depth = self->context->parentDepth + 1;
 
             next = next->nextLineBreakNode;
         }
