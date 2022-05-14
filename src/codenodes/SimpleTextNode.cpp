@@ -43,15 +43,19 @@ namespace smart {
 
 
 
-    static struct node_vtable _SpaceVTable_VTABLE = CREATE_VTABLE2(SimpleTextNodeStruct,
+
+
+    static constexpr const char spaceTextTypeText[] = "<SpaceText>";
+
+    static struct node_vtable _SpaceVTable_VTABLE = CREATE_VTABLE2(SpaceNodeStruct,
         selfTextLength,
         self_text,
-        appendToLine, "<SpaceNode>", NodeTypeId::Space, 1
+        appendToLine, spaceTextTypeText, NodeTypeId::Space, 1
     );
     const struct node_vtable *VTables::SpaceVTable = &_SpaceVTable_VTABLE;
 
 
-    static struct node_vtable _NullVTable_VTABLE = CREATE_VTABLE2(SimpleTextNodeStruct,
+    static struct node_vtable _NullVTable_VTABLE = CREATE_VTABLE2(NullNodeStruct,
         selfTextLength,
         self_text,
         appendToLine, "<NULL>", NodeTypeId::NULLId, 2

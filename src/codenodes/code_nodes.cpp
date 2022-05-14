@@ -175,13 +175,18 @@ namespace smart {
     }
 
 
-    static SpaceNodeStruct *
-        genSpaceNode(ParseContext *context, void *parentNode, int start, int end) {
+    static SpaceNodeStruct *genSpaceNode(ParseContext *context, void *parentNode, int start, int end) {
 
         auto *prevSpaceNode = Alloc::newSpaceNode(context, Cast::upcast(parentNode));
         prevSpaceNode->text =  context->memBuffer.newMem<char>(end - start + 1);
         memcpy(prevSpaceNode->text, context->chars + start, (end - start));
         prevSpaceNode->textLength = end - start;
+/*
+        for (int i = 0; i < end - start; i++) {
+            prevSpaceNode->text[i] = ' ';
+        }
+        prevSpaceNode->text[(end - start)] = '\0';
+*/
 
         return prevSpaceNode;
     }
@@ -209,7 +214,7 @@ namespace smart {
             //fprintf(stderr, "%c ,", ch);
             //fflush(stderr);
             //__android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
-            console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
+            // console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
 
             if (ParseUtil::isBreakLine(ch)) {
                 afterLineBreak = true;

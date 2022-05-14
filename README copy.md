@@ -38,6 +38,9 @@ winget install Git.Git -e
 winget install Python.Python.3 -e
 winget install doxygen -e
 winget install graphviz -e
+winget install -e --id LLVM.LLVM
+
+
 install cmake and llvm
 
 ```bash

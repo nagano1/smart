@@ -433,7 +433,7 @@ namespace smart {
         }
 
         SpaceNodeStruct *newSpaceNode() {
-            return memBuffer.newMem<SimpleTextNodeStruct>(1);
+            return memBuffer.newMem<SpaceNodeStruct>(1);
             //return spaceBufferList.newNode();
         }
 

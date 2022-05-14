@@ -141,7 +141,7 @@ namespace smart {
         auto *classNode = Cast::downcast<ClassNodeStruct *>(parent);
 
         //console_log(std::string(""+ch).c_str());
-        console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
+        //console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
 
 
         if (!classNode->startFound) {
@@ -174,8 +174,6 @@ namespace smart {
         static constexpr unsigned int size_of_class = sizeof(class_chars) - 1;
 
         if ('c' == ch) {
-            console_log(std::string("wow4").c_str());
-
             auto idx = ParseUtil::matchFirstWithTrim(context->chars, class_chars, start);
             if (idx > -1) {
                 if (idx + size_of_class < context->length
@@ -185,7 +183,7 @@ namespace smart {
                     int currentPos = idx + size_of_class;
                     int resultPos = -1;
 
-                    console_log(std::string("wow5").c_str());
+                    // console_log(std::string("wow5").c_str());
 
                     // "class " came here
                     auto *classNode = Alloc::newClassNode(context, parent);
