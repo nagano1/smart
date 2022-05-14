@@ -68,7 +68,7 @@ namespace smart {
                                                                              selfTextLength2,
                                                                              selfText_JsonKeyValueItemStruct,
                                                                              appendToLine2,
-                                                                             class_chars);
+                                                                             class_chars, NodeTypeId::JsonKeyValueItem);
 
     const struct node_vtable *VTables::JsonKeyValueItemVTable = &_JsonObjectKeyValueStructVTable;
 
@@ -113,7 +113,7 @@ namespace smart {
                                                                         selfTextLength3, selfText3,
                                                                         appendToLine3,
                                                                         "<JsonObjectKeyNodeStruct>"
-                                                                        );
+                                                                        ,NodeTypeId::JsonObjectKey);
 
     JsonObjectKeyNodeStruct *
     Alloc::newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode) {
@@ -208,7 +208,7 @@ namespace smart {
 
     static const node_vtable _JsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,
                                                                selfTextLength, selfText,
-                                                               appendToLine, _typeName);
+                                                               appendToLine, _typeName, NodeTypeId::JsonObject);
     const struct node_vtable *VTables::JsonObjectVTable = &_JsonObjectVTable;
 
 

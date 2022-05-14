@@ -209,7 +209,7 @@ namespace smart {
             //fprintf(stderr, "%c ,", ch);
             //fflush(stderr);
             //__android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
-            //console_log("i:" + std::string(":") + ch + "," + std::to_string(i));
+            console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
 
             if (ParseUtil::isBreakLine(ch)) {
                 afterLineBreak = true;

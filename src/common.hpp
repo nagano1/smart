@@ -69,7 +69,7 @@ static inline T *simpleMalloc2() {
 #include <android/log.h>
 
 inline void console_log(const char *str) {
-    __android_log_print(ANDROID_LOG_DEBUG, "aaa", ": %s", str);
+    __android_log_print(ANDROID_LOG_DEBUG, "aaaa", ": %s", str);
 }
 
 

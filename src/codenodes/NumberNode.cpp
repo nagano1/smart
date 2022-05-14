@@ -74,7 +74,7 @@ namespace smart {
 
     static constexpr const char boolNodeTypeText[] = "<bool>";
     static const node_vtable _Bool_VTable = CREATE_VTABLE(BoolNodeStruct, selfTextLength2,
-        selfText2, appendToLine2, boolNodeTypeText);
+        selfText2, appendToLine2, boolNodeTypeText, NodeTypeId::Bool);
 
     const node_vtable *VTables::BoolVTable = &_Bool_VTable;
 
@@ -151,7 +151,7 @@ namespace smart {
 
     static const node_vtable _number_VTable_ = CREATE_VTABLE(NumberNodeStruct, selfTextLength,
         selfText,
-        appendToLine, numberNodeTypeText);
+        appendToLine, numberNodeTypeText, NodeTypeId::Number);
 
     const node_vtable *VTables::NumberVTable = &_number_VTable_;
 

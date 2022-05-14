@@ -468,6 +468,33 @@ namespace smart {
         }
     };
 
+    enum class NodeTypeId {
+        Document = 0,
+        EndOfDoc = 1,
+        StringLiteral = 2,
+        Symbol = 3,
+        Class = 4,
+        Name = 5,
+        SimpleText = 6,
+
+
+        Number = 9,
+        LineBreak = 10,
+        Bool = 11,
+
+
+        JsonObject = 12,
+        JsonObjectKey = 13,
+        JsonKeyValueItem = 14,
+
+        JsonArrayItem = 7,
+        JsonArrayStruct = 8,
+        
+        Space = 15,
+
+        //Func(3),
+        NULLId = 16
+    };
 
     #define VTABLE_DEF(T) \
         st_textlen (*selfTextLength)(T *self); \
@@ -475,6 +502,7 @@ namespace smart {
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
         const char *typeChars; \
         int typeCharsLength; \
+        NodeTypeId nodeTypeId; \
 
 
     /**
@@ -499,20 +527,24 @@ namespace smart {
             decltype(std::declval<vtableT<T>>().selfTextLength) f1,
             decltype(std::declval<vtableT<T>>().selfText) f2,
             decltype(std::declval<vtableT<T>>().appendToLine) f3,
-            const char(&f4)[SIZE]
+            const char(&f4)[SIZE],
+            NodeTypeId f5
     ) noexcept {
         return 0;
     }
+    #define CREATE_VTABLE(T, f1, f2, f3, f4, f5) \
+        CREATE_VTABLE2(T, f1, f2, f3, f4, f5, 0)
 
-    #define CREATE_VTABLE(T, f1, f2, f3, f4) \
+    #define CREATE_VTABLE2(T, f1, f2, f3, f4, f5, f6) \
         node_vtable { \
             reinterpret_cast<selfTextLengthFunction> (f1) \
             , reinterpret_cast<selfTextFunction> (f2) \
             , reinterpret_cast<appendToLineFunction> (f3) \
             , (const char *)(f4) \
             , (sizeof(f4)-1) \
+            , f5 \
         } \
-        ;static const int check_result_##T = vtable_type_check<T>(f1,f2,f3,f4)
+        ;static const int check_result_##T##f6 = vtable_type_check<T>(f1,f2,f3,f4, f5)
     // static_assert(std::is_same<F2, decltype(std::declval<vtableT<T>>().selfText)>::value, "");
 
     struct VTables {
@@ -540,6 +572,8 @@ namespace smart {
 
                 *EndOfFileVTable;
     };
+
+
 
 
     struct VTableCall {

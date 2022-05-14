@@ -34,15 +34,29 @@ namespace smart {
 
     static constexpr const char simpleTextTypeText[] = "<SimpleText>";
 
-    static struct node_vtable _SIMPLE_TEXT_VTABLE = CREATE_VTABLE(SimpleTextNodeStruct,
+    static struct node_vtable _SIMPLE_TEXT_VTABLE = CREATE_VTABLE2(SimpleTextNodeStruct,
                                                                   selfTextLength,
                                                                   self_text,
                                                                   appendToLine, simpleTextTypeText
-                                                                  );
-
+                                                                  ,NodeTypeId::SimpleText, 0);
     const struct node_vtable *VTables::SimpleTextVTable = &_SIMPLE_TEXT_VTABLE;
-    const struct node_vtable *VTables::SpaceVTable = &_SIMPLE_TEXT_VTABLE;
-    const struct node_vtable *VTables::NullVTable = &_SIMPLE_TEXT_VTABLE;
+
+
+
+    static struct node_vtable _SpaceVTable_VTABLE = CREATE_VTABLE2(SimpleTextNodeStruct,
+        selfTextLength,
+        self_text,
+        appendToLine, "<SpaceNode>", NodeTypeId::Space, 1
+    );
+    const struct node_vtable *VTables::SpaceVTable = &_SpaceVTable_VTABLE;
+
+
+    static struct node_vtable _NullVTable_VTABLE = CREATE_VTABLE2(SimpleTextNodeStruct,
+        selfTextLength,
+        self_text,
+        appendToLine, "<NULL>", NodeTypeId::NULLId, 2
+    );
+    const struct node_vtable *VTables::NullVTable = &_NullVTable_VTABLE;
 
 
     SimpleTextNodeStruct *

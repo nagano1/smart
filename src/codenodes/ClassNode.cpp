@@ -43,17 +43,19 @@ namespace smart {
 
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(classNode);
 
-
         currentCodeLine->appendNode(classNode);
 
 
+        auto formerParentDepth = self->context->parentDepth;
+        self->context->parentDepth += 1;
         currentCodeLine = VTableCall::appendToLine(&classNode->nameNode, currentCodeLine);
+        self->context->parentDepth = formerParentDepth;
 
 
         currentCodeLine = VTableCall::appendToLine(&classNode->bodyStartNode, currentCodeLine);
         
 
-        auto formerParentDepth = self->context->parentDepth;
+        formerParentDepth = self->context->parentDepth;
         self->context->parentDepth += 1;
 
         {
@@ -93,7 +95,7 @@ namespace smart {
                                                           selfText,
                                                           appendToLine,
                                                           classTypeText
-                                                          );
+                                                          ,NodeTypeId::Class);
 
     const struct node_vtable *VTables::ClassVTable = &_ClassVTable;
 
@@ -138,6 +140,10 @@ namespace smart {
     int classBodyTokenizer(TokenizerParams_parent_ch_start_context) {
         auto *classNode = Cast::downcast<ClassNodeStruct *>(parent);
 
+        //console_log(std::string(""+ch).c_str());
+        console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
+
+
         if (!classNode->startFound) {
             if (ch == '{') {
                 classNode->startFound = true;
@@ -168,14 +174,18 @@ namespace smart {
         static constexpr unsigned int size_of_class = sizeof(class_chars) - 1;
 
         if ('c' == ch) {
+            console_log(std::string("wow4").c_str());
+
             auto idx = ParseUtil::matchFirstWithTrim(context->chars, class_chars, start);
             if (idx > -1) {
                 if (idx + size_of_class < context->length
-                    && ParseUtil::isSpace(context->chars[idx + size_of_class])
+                    && ParseUtil::isSpaceOrLineBreak(context->chars[idx + size_of_class])
                         ) {
 
                     int currentPos = idx + size_of_class;
                     int resultPos = -1;
+
+                    console_log(std::string("wow5").c_str());
 
                     // "class " came here
                     auto *classNode = Alloc::newClassNode(context, parent);
@@ -188,6 +198,8 @@ namespace smart {
 
                         if (resultPos == -1) {
                             // the class should have a class name
+                            //console_log(std::string(classNode->nameNode.name).c_str());
+
                             context->codeNode = Cast::upcast(classNode);
                             return currentPos;
                         }
@@ -195,11 +207,15 @@ namespace smart {
                         //console_log("name=" + std::string(classNode->nameNode.name));
                     }
 
+
                     // Parse body
                     currentPos = resultPos;
                     if (-1 == (resultPos = Scanner::scan(classNode, classBodyTokenizer,
                                                          currentPos, context))) {
                         context->codeNode = Cast::upcast(classNode);
+
+
+
                         return currentPos;
                     }
 

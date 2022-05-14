@@ -168,7 +168,7 @@ namespace smart {
 
     static const node_vtable _VTable = CREATE_VTABLE(StringLiteralNodeStruct, selfTextLength,
                                                           self_text,
-                                                          appendToLine, nameTypeText);
+                                                          appendToLine, nameTypeText, NodeTypeId::StringLiteral);
     const node_vtable *VTables::StringLiteralVTable = &_VTable;
 
     void Init::initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context, NodeBase *parentNode) {

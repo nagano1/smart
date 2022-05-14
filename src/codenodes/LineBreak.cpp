@@ -57,7 +57,7 @@ namespace smart {
 
     static const node_vtable _LineBreakVTable = CREATE_VTABLE(LineBreakNodeStruct,
         selfTextLength, self_text,
-        appendToLine, lineBreakTypeText);
+        appendToLine, lineBreakTypeText, NodeTypeId::LineBreak);
 
     const node_vtable *VTables::LineBreakVTable = &_LineBreakVTable;
 
