@@ -556,6 +556,7 @@ ENDTEST
 
 
 TEST(ParserTest_, parser_benchmark) {
+    return;
 
 
     auto start = std::chrono::high_resolution_clock::now().time_since_epoch();

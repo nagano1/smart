@@ -138,22 +138,22 @@ namespace smart {
 
 
 
-	static void assignIndentsToBreakLines(DocumentStruct* doc)
-	{
-		auto* line = doc->firstCodeLine;
-		st_uint prevIndent = 0;
-		while (line) {
+	//static void assignIndentsToBreakLines(DocumentStruct* doc)
+	//{
+	//	auto* line = doc->firstCodeLine;
+	//	st_uint prevIndent = 0;
+	//	while (line) {
 
-			auto* firstElement = findFirstElementNode(line);
-			if (firstElement == nullptr) {
-				line->indent = prevIndent;
-			}
+	//		auto* firstElement = findFirstElementNode(line);
+	//		if (firstElement == nullptr) {
+	//			line->indent = prevIndent;
+	//		}
 
-			prevIndent = line->indent;
+	//		prevIndent = line->indent;
 
-			line = line->nextLine;
-		}
-	}
+	//		line = line->nextLine;
+	//	}
+	//}
 
 
 
