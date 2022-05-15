@@ -719,10 +719,18 @@ namespace smart {
 
     struct DocumentUtils {
 
+        static OperationResult* performCodingOperation(
+            CodingOperations op,
+            DocumentStruct* doc,
+            NodeBase* startNode,
+            NodeBase* endNode
+        );
+            /*
         static OperationResult *performCodingOperation(
                 CodingOperations op, DocumentStruct *doc,
                 NodeBase *startNode, NodeBase *endNode
         );
+            */
 
 
         static void parseText(DocumentStruct *docStruct, const utf8byte *text, st_textlen length);

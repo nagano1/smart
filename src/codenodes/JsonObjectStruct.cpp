@@ -194,6 +194,9 @@ namespace smart {
 
         currentCodeLine->appendNode(self);
 
+        auto formerParentDepth = self->context->parentDepth;
+        self->context->parentDepth += 1;
+
 
         JsonKeyValueItemStruct *item = self->firstKeyValueItem;
         while (item != nullptr) {
@@ -201,7 +204,16 @@ namespace smart {
             item = Cast::downcast<JsonKeyValueItemStruct *>(item->nextNode);
         }
 
+        auto* prevCodeLine = currentCodeLine;
         currentCodeLine = VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
+        if (prevCodeLine != currentCodeLine) {
+            currentCodeLine->depth = formerParentDepth+1;
+        }
+
+        self->context->parentDepth = formerParentDepth;
+
+
+
         return currentCodeLine;
     };
 

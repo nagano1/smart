@@ -164,7 +164,6 @@ namespace smart {
 		auto* firstElement = findFirstElementNode(line);
 		if (firstElement) {
 			assert(firstElement->parentNode != nullptr);
-
 				assert(pointParent->line);
 					auto* context = firstElement->context;
 					auto& baseIndent = context->baseIndent;
@@ -187,12 +186,16 @@ namespace smart {
 						firstElement->line->insertNode(Cast::upcast(space), nullptr);
 					}
 
-					line->indent = line->depth * baseIndent;
-					space->textLength = line->depth + baseIndent;
-					space->text = context->memBuffer.newMem<char>(line->depth*baseIndent + 1);
-					for (unsigned int i = 0; i < line->depth*baseIndent; i++) {
+					unsigned int textLen = line->depth * baseIndent;
+					line->indent = textLen;
+					space->textLength = textLen;
+					space->text = context->memBuffer.newMem<char>(textLen + 1);
+
+					for (unsigned int i = 0; i < textLen; i++) {
 						space->text[i] = ' ';
 					}
+					space->text[textLen] = '\0';
+
 
 		}
 	}
