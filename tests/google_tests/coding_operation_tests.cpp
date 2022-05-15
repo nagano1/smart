@@ -81,7 +81,7 @@ TEST(CodingOp, IndentSelection) {
     "jsonrpc":"2.0",
                     "jsonrpc2":"2.0",
                         "jsonrpc3": {
-                            "a":"日本語"
+        "a":"日本語"
     }
 }
 )");
