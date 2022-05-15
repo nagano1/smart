@@ -7,7 +7,7 @@ import {
     ServerOptions,
     TransportKind,
     Executable
-} from 'vscode-languageclient';
+} from 'vscode-languageclient/node';
 
 import { statSync } from 'fs';
 let client: LanguageClient;
