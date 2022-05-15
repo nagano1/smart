@@ -196,7 +196,7 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
         if (item) {
             auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
 
-            fprintf(stderr, "here: [%s]", strNode->str);
+            fprintf(stderr, "here5: [%s]", strNode->str);
             fflush(stderr);
 
             if (strNode->textLength > 0 && 0 == strcmp(strNode->str, "initialize")) {

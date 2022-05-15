@@ -85,6 +85,7 @@ TEST(CodingOp, IndentSelection) {
     }
 }
 )");
+
             auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
             DocumentUtils::parseText(document, text, strlen(text));
             EXPECT_EQ(document->context->syntaxErrorInfo.hasError, false);
@@ -95,11 +96,11 @@ TEST(CodingOp, IndentSelection) {
             auto *item = rootJson->firstKeyValueItem->keyNode;
             if (item) {
                 EXPECT_EQ(item->vtable, VTables::JsonObjectKeyVTable);
-                DocumentUtils::performCodingOperation(
-                        CodingOperations::AutoIndentForSpacingRule
-                        , document, Cast::upcast(document->firstRootNode), Cast::upcast(&document->endOfFile));
             }
 
+            DocumentUtils::performCodingOperation(
+                CodingOperations::AutoIndentForSpacingRule
+                , document, Cast::upcast(document->firstRootNode), Cast::upcast(&document->endOfFile));
 
             char *treeText = DocumentUtils::getTextFromTree(document);
             EXPECT_EQ(std::string{ treeText }, std::string{ autoIndentedText });
