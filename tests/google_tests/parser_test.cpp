@@ -556,8 +556,6 @@ ENDTEST
 
 
 TEST(ParserTest_, parser_benchmark) {
-    return;
-
 
     auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
     uint64_t loopCount = 100 * 1000LLU;
