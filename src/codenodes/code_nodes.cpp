@@ -20,6 +20,21 @@
 namespace smart {
 
     ErrorInfo ErrorInfoList[errorListSize];
+
+    static int checkSum() {
+        constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
+
+        for (int i = 0; i < len; i++) {
+            ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = tempList[i];
+        }
+
+        // check duplicate of error code
+        std::sort(ErrorInfoList, ErrorInfoList + errorListSize, acompare);
+
+        return 0;
+    }
+
+
     static int a = checkSum();
 
     int HashMap::calc_hash(const char *key, int keyLength, size_t max) {

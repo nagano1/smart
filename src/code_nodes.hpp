@@ -362,18 +362,6 @@ namespace smart {
         return lhs.errorCode < rhs.errorCode;
     }
 
-    static int checkSum() {
-        constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
-
-        for (int i = 0; i < len; i++) {
-            ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = tempList[i];
-        }
-
-        // check duplicate of error code
-        std::sort(ErrorInfoList, ErrorInfoList + errorListSize, acompare);
-        
-        return 0;
-    }
 
 
     enum class Language {
