@@ -75,7 +75,7 @@ jobs:
           echo BBB
           ${{ matrix.config.testbin }}
           echo CCC
-          ${{ matrix.config.lspbin }}
+          #${{ matrix.config.lspbin }}
           echo DDD
 
       - name: Copy artifact
