@@ -21,7 +21,7 @@
 #include <emmintrin.h>
 
 #include "thread_pool.hpp"
-#include "LSPMain.hpp"
+#include "LSP_Server/LSPMain.hpp"
 
 #pragma execution_character_set( "utf-8" )
 

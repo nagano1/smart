@@ -20,7 +20,7 @@
 namespace smart {
 
     ErrorInfo ErrorInfoList[errorListSize];
-    ErrorInfo sortErrorInfoList[errorListSize];
+    //ErrorInfo sortErrorInfoList[errorListSize];
 
 
 
@@ -35,21 +35,22 @@ namespace smart {
 
 
 
-    static int checkSum() {
+    static int checkSum() {/*
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
 
         for (int i = 0; i < len; i++) {
-            auto&& errorInfo = tempList[i];
-            if (static_cast<int>(errorInfo.errorIndex) != i) {
+            //auto&& errorInfo = tempList[i];
+            if (static_cast<int>(tempList[i].errorIndex) != i) {
                 printf("error info index\n");
             }
 
-            ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
-            sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
+            ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = tempList[i];// errorInfo;
+            //sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
         }
 
         // check duplicate of error code
-        std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
+        //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
+                           */
 
         return 0;
     }

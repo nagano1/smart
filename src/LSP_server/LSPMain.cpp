@@ -42,11 +42,11 @@ Content-Length: 200
 
 void LSPManager::LSP_main() {
     LSPManager lspManager;
-    std::thread{ []() {
+    auto th = std::thread{ []() {
         LSPHttpServer::LSP_server();
 
     } };
-    //th.get_id();
+    th.get_id();
     //th2->detach();
 
     

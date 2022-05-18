@@ -328,6 +328,7 @@ namespace smart {
 
     extern ErrorInfo ErrorInfoList[errorListSize];
     
+
     static constexpr ErrorInfo tempList[] = {
         ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
 
@@ -351,7 +352,7 @@ namespace smart {
     }
     */
 
-    static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
+    //static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
     //static_assert(is_sorted(), "error list should have the same length");
 
 
