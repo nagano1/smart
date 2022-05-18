@@ -356,7 +356,7 @@ namespace smart {
 
 
 
-    static constexpr bool acompare(ErrorInfo& lhs, ErrorInfo& rhs) {
+    static bool acompare(ErrorInfo& lhs, ErrorInfo& rhs) {
         if (lhs.errorCode == rhs.errorCode) {
             printf("duplicate error id\n");
             throw 3;
