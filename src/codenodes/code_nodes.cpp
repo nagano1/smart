@@ -20,6 +20,7 @@
 namespace smart {
 
     ErrorInfo ErrorInfoList[errorListSize];
+    ErrorInfo sortErrorInfoList[errorListSize];
 
 
 
@@ -44,10 +45,11 @@ namespace smart {
             }
 
             ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
+            sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
         }
 
         // check duplicate of error code
-        std::sort(ErrorInfoList, ErrorInfoList + errorListSize, acompare);
+        std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
 
         return 0;
     }
