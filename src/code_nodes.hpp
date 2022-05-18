@@ -356,16 +356,6 @@ namespace smart {
 
 
 
-    static bool acompare(ErrorInfo& lhs, ErrorInfo& rhs) {
-        if (lhs.errorCode == rhs.errorCode) {
-            printf("duplicate error id\n");
-            throw 3;
-        }
-        return lhs.errorCode < rhs.errorCode;
-    }
-
-
-
     enum class Language {
         en = 8591000,
         jp = 8591001,

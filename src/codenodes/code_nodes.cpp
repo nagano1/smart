@@ -21,6 +21,19 @@ namespace smart {
 
     ErrorInfo ErrorInfoList[errorListSize];
 
+
+
+
+    static bool acompare(ErrorInfo& lhs, ErrorInfo& rhs) {
+        if (lhs.errorCode == rhs.errorCode) {
+            printf("duplicate error id\n");
+            throw 3;
+        }
+        return lhs.errorCode < rhs.errorCode;
+    }
+
+
+
     static int checkSum() {
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
 
