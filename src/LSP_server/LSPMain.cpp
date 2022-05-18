@@ -42,7 +42,7 @@ Content-Length: 200
 
 void LSPManager::LSP_main() {
     LSPManager lspManager;
-    auto &&th = std::thread{ []() {
+    std::thread{ []() {
         LSPHttpServer::LSP_server();
 
     } };
