@@ -341,6 +341,7 @@ namespace smart {
         ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
     };
 
+
     /*
     // C++-14
     bool is_sorted() {
