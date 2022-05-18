@@ -331,16 +331,17 @@ namespace smart {
     static constexpr ErrorInfo tempList[] = {
         ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
 
-        ErrorInfo{ ErrorCode::missing_object_delemeter, 77812, "missing object delimeter"},
-        
-        
         ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote2" },
         ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote2" },
+
+        ErrorInfo{ ErrorCode::missing_object_delemeter, 77812, "missing object delimeter"},
+
 
         ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
     };
 
-    constexpr bool is_sorted() {
+    /*
+    bool is_sorted() {
         for (std::size_t i = 0; i < (sizeof tempList) / (sizeof tempList[0]) - 1; ++i) {
             if (tempList[i].errorCode >= tempList[i + 1].errorCode) {
                 return false;
@@ -348,9 +349,10 @@ namespace smart {
         }
         return true;
     }
+    */
 
     static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
-    static_assert(is_sorted(), "error list should have the same length");
+    //static_assert(is_sorted(), "error list should have the same length");
 
 
 

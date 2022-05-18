@@ -25,7 +25,12 @@ namespace smart {
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
 
         for (int i = 0; i < len; i++) {
-            ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = tempList[i];
+            auto&& errorInfo = tempList[i];
+            if (static_cast<int>(tempList->errorIndex) != i) {
+                printf("error info index\n");
+            }
+
+            ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
         }
 
         // check duplicate of error code
@@ -36,6 +41,7 @@ namespace smart {
 
 
     static int a = checkSum();
+
 
     int HashMap::calc_hash(const char *key, int keyLength, size_t max) {
         unsigned int sum = keyLength;
