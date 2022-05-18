@@ -18,7 +18,7 @@ export function activate(context: ExtensionContext) {
         path.join("server", "out", "ConsoleApplication2.exe")
     )
     */
-    let consoleApp = require('path').resolve(__dirname, '../../../')+ "/visual_studio_console_sln\\x64\\Release\\ConsoleApplication2.exe";
+    let consoleApp = require('path').resolve(__dirname, '../../../') + "/visual_studio_console_sln\\x64\\Release\\ConsoleApplication2.exe";
     //consoleApp = __dirname + "/ConsoleApplication2.exe";
 
     let serverOptions: ServerOptions = {
@@ -53,3 +53,22 @@ export function deactivate(): Thenable<void> | undefined {
     }
     return client.stop();
 }
+
+
+
+/*
+const connection = connectToServer(hostname, path);
+const client = new LanguageClient(
+    "docfxLanguageServer",
+    "Docfx Language Server",
+    () => Promise.resolve<StreamInfo>({
+        reader: connection,
+        writer: connection,
+    }),
+    {});
+
+private connectToServer(hostname: string, path: string): Duplex {
+    const ws = new WebSocket(`ws://${hostname}/${path}`);
+    return WebSocket.createWebSocketStream(ws);
+}
+*/

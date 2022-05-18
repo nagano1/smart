@@ -22,7 +22,9 @@
 #include <ctime>
 //#include <emmintrin.h>
 
-#include "LSPMain.hpp"
+#include "./LSPMain.hpp"
+#include "./LSPLocalServer.hpp"
+
 #include "code_nodes.hpp"
 
 #include "common.hpp"
@@ -40,6 +42,14 @@ Content-Length: 200
 
 void LSPManager::LSP_main() {
     LSPManager lspManager;
+    auto &&th = std::thread{ []() {
+        LSPHttpServer::LSP_server();
+
+    } };
+    //th.get_id();
+    //th2->detach();
+
+    
 
     while (true) {
         int n = 0;
@@ -153,6 +163,7 @@ static void validateJson(const char *text, st_textlen textLength) {
     */
 }
 
+
 void LSPManager::nextRequest(char *chars, st_textlen length) {
     fprintf(stderr, "req: \n%s", chars);
     fflush(stderr);
@@ -161,16 +172,10 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
     DocumentUtils::parseText(document, chars, length);
 
     /*
-    auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
-        DocumentUtils::parseText(document, text, strlen(text));
         DocumentUtils::performCodingOperation(
             CodingOperations::IndentSelection
             , document, Cast::upcast(document->firstRootNode), Cast::upcast(&document->endOfFile)
         );
-
-
-        char *treeText = DocumentUtils::getTextFromTree(document);
-        EXPECT_EQ(std::string{ treeText }, std::string{ autoIndentedText });
     */
 
 
@@ -178,19 +183,13 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
     {"jsonrpc":"2.0","method":"textDocument/didOpen","params":{"textDocument":{"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt","languageId":"plaintext","version":1,"text":"AAA\r\n\r\nBBB\r\nCCC\r\nAAA\r\nBBB\r\n\r\nCCC\r\nDDD\r\nEEE\r\nCCC"}}}
     */
 
-    //char *typeText = DocumentUtils::getTypeTextFromTree(document);
-    //    if (typeText != nullptr) {
-            //EXPECT_EQ(std::string{ typeText }, std::string{ "fjow" });
-        //}
-
     char *treeText = DocumentUtils::getTextFromTree(document);
     DocumentUtils::generateHashTables(document);
 
     auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
-    //fprintf(stderr, "type: %s", rootJson->vtable->typeChars);
-    //fflush(stderr);
+    fprintf(stderr, "type: %s", rootJson->vtable->typeChars);
+    fflush(stderr);
 
-    //fprintf(stderr, "item2: %d", rootJson);
     if (rootJson) {
         auto *item = rootJson->hashMap->get2("method");
         if (item) {
@@ -210,6 +209,7 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
                 fflush(stdout);
                 return;
             }
+
             if (strNode->textLength > 0 && 0 == strcmp(strNode->str, "textDocument/didChange")) {
                 auto *item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
                 auto *item3 = Cast::downcast<JsonArrayStruct*>(item2->hashMap->get2("contentChanges"));
@@ -258,9 +258,6 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
 
 
     */
-
-
-
     
 }
 

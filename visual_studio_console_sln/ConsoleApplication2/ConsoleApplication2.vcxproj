@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\LSP_server\LSPLocalServer.cpp" />
     <ClCompile Include="..\..\src\LSP_server\LSPMain.cpp" />
     <ClCompile Include="ConsoleApplication2.cpp" />
   </ItemGroup>
@@ -26,6 +27,10 @@
     <ProjectReference Include="..\StaticLib1\StaticLib1.vcxproj">
       <Project>{56add32b-b949-4a6b-a7d6-3329bf90ad89}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\LSP_server\LSPLocalServer.hpp" />
+    <ClInclude Include="..\..\src\LSP_server\LSPMain.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

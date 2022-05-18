@@ -22,7 +22,7 @@ namespace smart {
         EXPECT_NAME = 0,
         DELIMETER = 1,
         VALUE = 2,
-        COMMA = 3
+        EXPECT_COMMA = 3
     };
 
     // -----------------------------------------------------------------------------------
@@ -289,10 +289,8 @@ namespace smart {
     }
 
 
-
-
     // object name
-    // var val = {
+    // let$ val = {
     //   name : "valuevar"
     //   v2: true
     //   watashi: (234 + 512
@@ -309,35 +307,43 @@ namespace smart {
     // aweff = 2342
 
 
+    inline int parseObjectKey(TokenizerParams_parent_ch_start_context, JsonObjectStruct* jsonObject)
+    {
+        int result;
+        if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(parent, ch, start, context))) {
+            JsonKeyValueItemStruct* nextItem = Alloc::newJsonKeyValueItemNode(context, parent);
+
+            nextItem->keyNode = Cast::downcast<JsonObjectKeyNodeStruct*>(context->codeNode);
+
+            if (jsonObject->firstKeyValueItem == nullptr) {
+                jsonObject->firstKeyValueItem = nextItem;
+            }
+            else {
+                jsonObject->lastKeyValueItem->nextNode = Cast::upcast(nextItem);
+            }
+            jsonObject->lastKeyValueItem = nextItem;
+
+            jsonObject->parsePhase = DELIMETER;
+            return result;
+        }
+
+
+        return -1;
+    }
+
     int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
 
         auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
 
         if (jsonObject->parsePhase == phase::EXPECT_NAME) {
-            if (ch == '}') {
+            if (ch == '}') { // empty
                 context->scanEnd = true;
                 context->codeNode = Cast::upcast(&jsonObject->endBodyNode);
                 return start + 1;
             }
 
 
-            int result;
-            if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(parent, ch, start, context))) {
-                JsonKeyValueItemStruct *nextItem = Alloc::newJsonKeyValueItemNode(context, parent);
-
-                nextItem->keyNode = Cast::downcast<JsonObjectKeyNodeStruct *>(context->codeNode);
-
-                if (jsonObject->firstKeyValueItem == nullptr) {
-                    jsonObject->firstKeyValueItem = nextItem;
-                } else {
-                    jsonObject->lastKeyValueItem->nextNode = Cast::upcast(nextItem);
-                }
-                jsonObject->lastKeyValueItem = nextItem;
-
-                jsonObject->parsePhase = phase::DELIMETER;
-                return result;
-            }
-            return -1;
+            return parseObjectKey(TokenizerParams_pass, jsonObject);
         }
 
         auto *currentKeyValueItem = jsonObject->lastKeyValueItem;
@@ -349,7 +355,9 @@ namespace smart {
                 jsonObject->parsePhase = phase::VALUE;
                 return start + 1;
             }
-            return -1;
+
+            SyntaxErrorInfo::setError(&context->syntaxErrorInfo, ErrorCode::missing_object_delemeter, start);
+            return SyntaxErrorInfo::SYNTAX_ERROR_RETURN;
         }
 
 
@@ -358,7 +366,7 @@ namespace smart {
             if (-1 < (result = Tokenizers::jsonValueTokenizer(Cast::upcast(currentKeyValueItem), ch,
                                                               start, context))) {
                 currentKeyValueItem->valueNode = context->codeNode;
-                jsonObject->parsePhase = phase::COMMA;
+                jsonObject->parsePhase = phase::EXPECT_COMMA;
                 //context->scanEnd = false;
                 return result;
             }
@@ -366,7 +374,7 @@ namespace smart {
         }
 
 
-        if (jsonObject->parsePhase == phase::COMMA) {
+        if (jsonObject->parsePhase == phase::EXPECT_COMMA) {
             if (ch == ',') { // try to find ',' which leads to next key-value
                 currentKeyValueItem->hasComma = true;
                 context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
@@ -377,11 +385,16 @@ namespace smart {
                 context->codeNode = Cast::upcast(&jsonObject->endBodyNode);
                 return start + 1;
             }
+            else if (context->afterLineBreak) {
+                // comma is not needed after a Line break
+                return parseObjectKey(TokenizerParams_pass, jsonObject);
+            }
             return -1;
         }
 
         return -1;
     }
+
 
 
     int Tokenizers::jsonValueTokenizer(TokenizerParams_parent_ch_start_context) {

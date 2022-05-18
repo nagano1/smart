@@ -45,6 +45,7 @@ add_library( # Sets the name of the library.
         ${lib_src_dir}/thread_pool.cpp
 
         ${lib_src_dir}/LSP_server/LSPMain.cpp
+        ${lib_src_dir}/LSP_server/LSPLocalServer.cpp
         ${code_nodes_files}
 
         ${tests_src_dir}/../testlib_impl.cpp

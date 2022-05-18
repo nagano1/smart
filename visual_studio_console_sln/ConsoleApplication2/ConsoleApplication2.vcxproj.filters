@@ -9,5 +9,10 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\LSP_server\LSPMain.cpp" />
     <ClCompile Include="ConsoleApplication2.cpp" />
+    <ClCompile Include="..\..\src\LSP_server\LSPLocalServer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\LSP_server\LSPMain.hpp" />
+    <ClInclude Include="..\..\src\LSP_server\LSPLocalServer.hpp" />
   </ItemGroup>
 </Project>

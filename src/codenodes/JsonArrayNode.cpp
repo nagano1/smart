@@ -20,7 +20,7 @@ namespace smart {
 
     enum phase {
         EXPECT_VALUE = 0,
-        COMMA = 3
+        EXPECT_COMMA = 3
     };
 
 
@@ -227,7 +227,7 @@ namespace smart {
 
                 appendRootNode(jsonArray, nextItem);
 
-                jsonArray->parsePhase = phase::COMMA;
+                jsonArray->parsePhase = phase::EXPECT_COMMA;
                 //context->scanEnd = false;
                 return result;
             }
@@ -236,7 +236,7 @@ namespace smart {
 
         auto *currentKeyValueItem = jsonArray->lastItem;
 
-        if (jsonArray->parsePhase == phase::COMMA) {
+        if (jsonArray->parsePhase == phase::EXPECT_COMMA) {
             if (ch == ',') { // try to find ',' which leads to next key-value
                 currentKeyValueItem->hasComma = true;
                 context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);

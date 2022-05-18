@@ -307,33 +307,87 @@ namespace smart {
         NodeBase *lastRootNode;
     };
 
+    
 
     enum class ErrorCode {
-        missing_closing_quote = 8591000,
-        missing_closing_quote2 = 8591001,
+        first_keeper,
+
+        missing_closing_quote,
+        missing_closing_quote2,
+        missing_object_delemeter,
+
+        last_keeper
     };
 
-        enum class Language {
-            en = 8591000,
-            jp = 8591001,
+    static constexpr int errorListSize = 1 + static_cast<int>(ErrorCode::last_keeper);
+    
+    struct ErrorInfo {
+        ErrorCode errorIndex;
+        int errorCode;
+        const char* msg;
+    };
+
+    extern ErrorInfo ErrorInfoList[errorListSize];
+
+
+    static constexpr bool acompare(ErrorInfo& lhs, ErrorInfo& rhs) {
+        if (lhs.errorCode == rhs.errorCode) {
+            printf("duplicate error id\n");
+            throw 3;
+        }
+        return lhs.errorCode < rhs.errorCode;
+    }
+
+
+    static int checkSum() {
+        
+        constexpr static ErrorInfo tempList[] = {
+            ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
+
+            ErrorInfo{ ErrorCode::missing_object_delemeter, 77812, "missing object delimeter"},
+
+
+            ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote2" },
+            ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote2" },
+
+            ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
         };
+
+        static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
+
+        constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
+
+        for (int i = 0; i < len; i++) {
+            ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = tempList[i];
+        }
+
+        // check duplicate of error code
+        std::sort(ErrorInfoList, ErrorInfoList + errorListSize, acompare);
+        
+        return 0;
+    }
+
+
+    enum class Language {
+        en = 8591000,
+        jp = 8591001,
+    };
 
 
     static const char *translateErrorMessage(ErrorCode errorCode, Language lang) {
         return nullptr;
     }
+
+
     static const char *getErrorMessage(ErrorCode errorCode) {
         const char *mes = nullptr;
-        when(errorCode) {
-            wfor(ErrorCode::missing_closing_quote, mes = u8"missing closing quote");
-            wfor(ErrorCode::missing_closing_quote2, mes = u8"missing closing quote");
-        }
+        auto&& errorInfo = ErrorInfoList[static_cast<int>(errorCode)];
+        mes = errorInfo.msg;
 
         auto *transMess = translateErrorMessage(errorCode, Language::jp);
         if (transMess != nullptr) {
             mes = transMess;
         }
-
 
         return mes;
     }
@@ -358,6 +412,8 @@ namespace smart {
         // 1: "from start to end of line,"
         int errorDisplayType = 0;
 
+        static const int SYNTAX_ERROR_RETURN = -1;
+
         static void setError(_errorInfo *error, ErrorCode errorCode, st_uint start) {
             error->hasError = true;
             error->errorCode = errorCode;
@@ -379,6 +435,7 @@ namespace smart {
         st_uint start;
         st_textlen length;
         bool scanEnd;
+        bool afterLineBreak;
         NodeBase *codeNode;
         // int former_start;
         st_uint baseIndent;

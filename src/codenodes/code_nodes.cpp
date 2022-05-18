@@ -19,6 +19,8 @@
 
 namespace smart {
 
+    ErrorInfo ErrorInfoList[errorListSize];
+    static int a = checkSum();
 
     int HashMap::calc_hash(const char *key, int keyLength, size_t max) {
         unsigned int sum = keyLength;
@@ -217,6 +219,7 @@ namespace smart {
             // console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
 
             if (ParseUtil::isBreakLine(ch)) {
+                context->afterLineBreak = true;
                 afterLineBreak = true;
                 auto *newLineBreak
                     = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
@@ -259,6 +262,7 @@ namespace smart {
 
             int result = tokenizer(Cast::upcast(parentNode), ch, i, context);
             afterLineBreak = false;
+            context->afterLineBreak = false;
 
             if (context->syntaxErrorInfo.hasError) {
                 return -1;
