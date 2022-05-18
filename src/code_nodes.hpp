@@ -308,7 +308,6 @@ namespace smart {
     };
 
     
-
     enum class ErrorCode {
         first_keeper,
 
@@ -328,9 +327,34 @@ namespace smart {
     };
 
     extern ErrorInfo ErrorInfoList[errorListSize];
+    
+    static constexpr ErrorInfo tempList[] = {
+        ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
+
+        ErrorInfo{ ErrorCode::missing_object_delemeter, 77812, "missing object delimeter"},
+        
+        
+        ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote2" },
+        ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote2" },
+
+        ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
+    };
+
+    constexpr bool is_sorted() {
+        for (std::size_t i = 0; i < (sizeof tempList) / (sizeof tempList[0]) - 1; ++i) {
+            if (tempList[i].errorCode >= tempList[i + 1].errorCode) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
+    static_assert(is_sorted(), "error list should have the same length");
 
 
-    static bool acompare(ErrorInfo& lhs, ErrorInfo& rhs) {
+
+    static constexpr bool acompare(ErrorInfo& lhs, ErrorInfo& rhs) {
         if (lhs.errorCode == rhs.errorCode) {
             printf("duplicate error id\n");
             throw 3;
@@ -338,26 +362,10 @@ namespace smart {
         return lhs.errorCode < rhs.errorCode;
     }
 
-
     static int checkSum() {
-        
-        constexpr static ErrorInfo tempList[] = {
-            ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
-
-            ErrorInfo{ ErrorCode::missing_object_delemeter, 77812, "missing object delimeter"},
-
-
-            ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote2" },
-            ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote2" },
-
-            ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
-        };
-
-        static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
-
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
-        for (int i = 0; i < len; i++)
-        {
+
+        for (int i = 0; i < len; i++) {
             ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = tempList[i];
         }
 
