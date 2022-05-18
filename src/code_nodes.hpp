@@ -330,7 +330,7 @@ namespace smart {
     extern ErrorInfo ErrorInfoList[errorListSize];
 
 
-    static constexpr bool acompare(ErrorInfo& lhs, ErrorInfo& rhs) {
+    static bool acompare(ErrorInfo& lhs, ErrorInfo& rhs) {
         if (lhs.errorCode == rhs.errorCode) {
             printf("duplicate error id\n");
             throw 3;
@@ -356,8 +356,8 @@ namespace smart {
         static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
 
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
-
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++)
+        {
             ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = tempList[i];
         }
 
