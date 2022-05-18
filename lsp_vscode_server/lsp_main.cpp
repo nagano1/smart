@@ -22,6 +22,7 @@
 #include <ctime>
 #include <emmintrin.h>
 #include "LSPMain.hpp"
+#include "../src/LSP_server/LSPMain.hpp"
 
 
 int main(int argc, char **argv) {
