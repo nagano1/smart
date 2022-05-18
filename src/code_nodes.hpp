@@ -342,6 +342,7 @@ namespace smart {
     };
 
     /*
+    // C++-14
     bool is_sorted() {
         for (std::size_t i = 0; i < (sizeof tempList) / (sizeof tempList[0]) - 1; ++i) {
             if (tempList[i].errorCode >= tempList[i + 1].errorCode) {
@@ -350,10 +351,10 @@ namespace smart {
         }
         return true;
     }
+    static_assert(is_sorted(), "error list should have the same length");
     */
 
-    //static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
-    //static_assert(is_sorted(), "error list should have the same length");
+    static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
 
 
 
