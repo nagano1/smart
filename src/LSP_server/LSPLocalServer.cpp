@@ -41,4 +41,6 @@ void LSPHttpServer::LSP_server() {
 	});
 
 	svr.listen("0.0.0.0", 8080);
+
+	svr.stop();
 }

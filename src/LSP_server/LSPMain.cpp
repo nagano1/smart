@@ -89,6 +89,8 @@ void LSPManager::LSP_main() {
             }
         }
     }
+
+    th.detach();
 }
 
 
