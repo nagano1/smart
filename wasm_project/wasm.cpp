@@ -123,13 +123,13 @@ extern "C"
         auto *doc = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
 
         DocumentUtils::parseText(doc, text2, strlen(text2));
-
-        char *treeText = DocumentUtils::getTextFromTree(doc);
-
         if (doc->context->syntaxErrorInfo.hasError == true) {
             print(doc->context->syntaxErrorInfo.reason);
         }
 
+        char *treeText = DocumentUtils::getTextFromTree(doc);
+
+        
         print(treeText);
 
         const char *text = R"(
