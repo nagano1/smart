@@ -108,7 +108,6 @@ extern "C"
         const char *text2 = R"(                                                         
                                                                                     
 {                                                                                   
-                                                                                    
     "null = ": null,                                                                
                                                                                     
     "jiofw":12,                                                                     
@@ -126,6 +125,10 @@ extern "C"
         DocumentUtils::parseText(doc, text2, strlen(text2));
 
         char *treeText = DocumentUtils::getTextFromTree(doc);
+
+        if (doc->context->syntaxErrorInfo.hasError == true) {
+            print(doc->context->syntaxErrorInfo.reason);
+        }
 
         print(treeText);
 
