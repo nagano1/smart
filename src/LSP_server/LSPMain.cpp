@@ -46,7 +46,7 @@ void LSPManager::LSP_main() {
         LSPHttpServer::LSP_server();
 
     } };
-    //th.get_id();
+    th.get_id();
     //th2->detach();
 
     
