@@ -23,16 +23,17 @@ namespace smart {
     static ErrorInfo sortErrorInfoList[errorListSize];
 
     static int acompare(void const * alhs, void const * arhs) {
-        return 0;
         //
-        //ErrorInfo* lhs = (ErrorInfo*)alhs;
-        //ErrorInfo* rhs = (ErrorInfo*)arhs;
+        ErrorInfo* lhs = (ErrorInfo*)alhs;
+        ErrorInfo* rhs = (ErrorInfo*)arhs;
 
-        //if (lhs->errorCode == rhs->errorCode) {
+        if (lhs->errorCode == rhs->errorCode) {
         //    printf("duplicate error id\n");
         //    //throw 3;
-        //}
+        }
         //return lhs->errorCode - rhs->errorCode;
+        return 0;
+
     }
 
 
