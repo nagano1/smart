@@ -22,15 +22,16 @@ namespace smart {
     ErrorInfo ErrorInfoList[errorListSize];
     ErrorInfo sortErrorInfoList[errorListSize];
 
-    /*
-    static bool acompare(ErrorInfo& lhs, ErrorInfo& rhs) {
-        if (lhs.errorCode == rhs.errorCode) {
+    int acompare(void const * alhs, void const * arhs) {
+        ErrorInfo* lhs = (ErrorInfo*)alhs;
+        ErrorInfo* rhs = (ErrorInfo*)arhs;
+
+        if (lhs->errorCode == rhs->errorCode) {
             printf("duplicate error id\n");
             throw 3;
         }
-        return lhs.errorCode < rhs.errorCode;
+        return lhs->errorCode - rhs->errorCode;
     }
-    */
 
 
 
@@ -49,7 +50,7 @@ namespace smart {
 
         // check duplicate of error code
         //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
-
+        qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
         return 0;
     }
 
