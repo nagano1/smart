@@ -410,7 +410,7 @@ namespace smart {
             error->errorCode = errorCode;
             error->charPosition = start;
 
-            const char *reason = getErrorMessage(errorCode);
+            const char* reason = "afwoi";// getErrorMessage(errorCode);
             if (reason == nullptr) {
                 reason = "";
             }

@@ -114,7 +114,7 @@ extern "C"
                                                                                     
     "nest": {}                                                                      
     
-    "nest2": "jfaiw"                                                                      
+    "nest2": "jfaiw                                                                      
                                                                                     
 }                                                                                   
                                                                                     
@@ -127,7 +127,6 @@ extern "C"
 
         if (doc->context->syntaxErrorInfo.hasError == true) {
             print("HEREHEREEHERE?");
-
             print(doc->context->syntaxErrorInfo.reason);
         }
 
