@@ -46,7 +46,7 @@ namespace smart {
         }
 
         // check duplicate of error code
-        std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
+        //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
 
         return 0;
     }

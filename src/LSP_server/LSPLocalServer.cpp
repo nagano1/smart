@@ -30,6 +30,9 @@
 #include "common.hpp"
 
 
+void LSPHttpServer::close() {
+	//svr.stop();
+}
 
 void LSPHttpServer::LSP_server() {
 	// https://github.com/yhirose/cpp-httplib
@@ -41,6 +44,4 @@ void LSPHttpServer::LSP_server() {
 	});
 
 	svr.listen("0.0.0.0", 8080);
-
-	svr.stop();
 }

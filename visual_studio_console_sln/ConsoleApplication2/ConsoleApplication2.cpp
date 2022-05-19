@@ -52,7 +52,7 @@ int main() {
     */
 
     //test_central_job_queues();
-    //LSPManager::LSP_main();
+    LSPManager::LSP_main();
 
     return 0;
 }

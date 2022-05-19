@@ -25,5 +25,6 @@
 
 struct LSPHttpServer{
     static void LSP_server();
+    static void close();
 };
 
