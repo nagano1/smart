@@ -22,6 +22,7 @@ namespace smart {
     ErrorInfo ErrorInfoList[errorListSize];
     ErrorInfo sortErrorInfoList[errorListSize];
 
+    /*
     static bool acompare(ErrorInfo& lhs, ErrorInfo& rhs) {
         if (lhs.errorCode == rhs.errorCode) {
             printf("duplicate error id\n");
@@ -29,6 +30,7 @@ namespace smart {
         }
         return lhs.errorCode < rhs.errorCode;
     }
+    */
 
 
 
