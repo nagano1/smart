@@ -38,6 +38,7 @@ namespace smart {
         else
         {
             return -1;
+
         }
 
         //return lhs->errorCode - rhs->errorCode;
