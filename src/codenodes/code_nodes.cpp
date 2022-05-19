@@ -22,6 +22,8 @@ namespace smart {
     ErrorInfo ErrorInfoList[errorListSize];
     static ErrorInfo sortErrorInfoList[errorListSize];
 
+
+
     static int acompare(void const * alhs, void const * arhs) {
         ErrorInfo* lhs = (ErrorInfo*)alhs;
         ErrorInfo* rhs = (ErrorInfo*)arhs;
@@ -44,12 +46,10 @@ namespace smart {
     }
 
 
-
     static int checkSum() {
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
-
         for (int i = 0; i < len; i++) {
-            auto&& errorInfo = tempList[i];
+            auto errorInfo = tempList[i];
             if (static_cast<int>(errorInfo.errorIndex) != i) {
                 printf("error info index\n");
             }

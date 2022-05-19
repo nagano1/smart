@@ -123,10 +123,7 @@ extern "C"
         auto *doc = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
 
         DocumentUtils::parseText(doc, text2, strlen(text2));
-            print("BREEZE");
-
         if (doc->context->syntaxErrorInfo.hasError == true) {
-            print("HEREHEREEHERE?");
             print(doc->context->syntaxErrorInfo.reason);
         }
 
