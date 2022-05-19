@@ -27,9 +27,9 @@ namespace smart {
         ErrorInfo* rhs = (ErrorInfo*)arhs;
 
         if (lhs->errorCode == rhs->errorCode) {
-            //printf("duplicate error id\n");
+            throw 3;
+
             return 0;
-            // throw 3;
         }
         else if (lhs->errorCode > rhs->errorCode) {
             return 1;
