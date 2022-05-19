@@ -50,7 +50,7 @@ namespace smart {
 
         // check duplicate of error code
         //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
-        qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
+        //qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
         return 0;
     }
 
