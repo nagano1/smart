@@ -328,7 +328,8 @@ namespace smart {
 
     extern ErrorInfo ErrorInfoList[errorListSize];
     extern bool errorInfoInitialized;
-    
+    static ErrorInfo sortErrorInfoList[errorListSize];
+
 
     static constexpr ErrorInfo tempList[] = {
         ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
@@ -342,10 +343,33 @@ namespace smart {
         ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
     };
 
+
+    static int acompare(void const * alhs, void const * arhs) {
+        ErrorInfo* lhs = (ErrorInfo*)alhs;
+        ErrorInfo* rhs = (ErrorInfo*)arhs;
+
+        if (lhs->errorCode == rhs->errorCode) {
+            // printf("duplicate error id(%d)\n ", lhs->errorCode);
+            return 0;
+            // throw 3;
+        }
+        else if (lhs->errorCode > rhs->errorCode) {
+            return 1;
+        }
+        else {
+            return -1;
+        }
+
+        //return lhs->errorCode - rhs->errorCode;
+        return 0;
+    }
+
+
+
     static int checkSum() {
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
         for (int i = 0; i < len; i++) {
-            auto errorInfo = tempList[i];
+            auto &&errorInfo = tempList[i];
             if (static_cast<int>(errorInfo.errorIndex) != i) {
                 printf("error info index\n");
             }
@@ -356,7 +380,7 @@ namespace smart {
 
         // check duplicate of error code
         //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
-        //qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
+        qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
 
         return 0;
     }
