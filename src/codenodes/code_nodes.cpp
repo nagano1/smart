@@ -27,7 +27,7 @@ namespace smart {
         ErrorInfo* rhs = (ErrorInfo*)arhs;
 
         if (lhs->errorCode == rhs->errorCode) {
-            throw 3;
+            //throw 3;
 
             return 0;
         }
