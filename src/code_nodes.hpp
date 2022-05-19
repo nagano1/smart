@@ -349,7 +349,7 @@ namespace smart {
         ErrorInfo* rhs = (ErrorInfo*)arhs;
 
         if (lhs->errorCode == rhs->errorCode) {
-            printf("duplicate error id(%d)\n ", lhs->errorCode);
+            // printf("duplicate error id(%d)\n ", lhs->errorCode);
             return 0;
             // throw 3;
         }
@@ -420,7 +420,6 @@ namespace smart {
             checkSum();
             errorInfoInitialized = true;
         }
-
         const char *mes = nullptr;
         auto&& errorInfo = ErrorInfoList[static_cast<int>(errorCode)];
         mes = errorInfo.msg;
