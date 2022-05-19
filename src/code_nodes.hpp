@@ -326,10 +326,10 @@ namespace smart {
         const char* msg;
     };
 
-    extern ErrorInfo ErrorInfoList[errorListSize];
+    extern ErrorInfo ErrorInfoList[errorListSize] = {
     
 
-    static constexpr ErrorInfo tempList[] = {
+    //static constexpr ErrorInfo tempList[] = {
         ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
 
         ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },

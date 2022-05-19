@@ -47,6 +47,7 @@ namespace smart {
 
 
     static int checkSum() {
+        /*
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
         for (int i = 0; i < len; i++) {
             auto errorInfo = tempList[i];
@@ -61,7 +62,8 @@ namespace smart {
         // check duplicate of error code
         //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
         qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
-        
+        */
+
         return 0;
     }
 
