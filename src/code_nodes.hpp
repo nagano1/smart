@@ -326,7 +326,7 @@ namespace smart {
         const char* msg;
     };
 
-    extern ErrorInfo ErrorInfoList[errorListSize] = {
+    ErrorInfo ErrorInfoList[errorListSize] = {
     
 
     //static constexpr ErrorInfo tempList[] = {

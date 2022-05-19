@@ -19,7 +19,7 @@
 
 namespace smart {
 
-    ErrorInfo ErrorInfoList[errorListSize];
+//    ErrorInfo ErrorInfoList[errorListSize];
     static ErrorInfo sortErrorInfoList[errorListSize];
 
 
