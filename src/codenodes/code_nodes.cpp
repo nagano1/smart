@@ -20,6 +20,7 @@
 namespace smart {
     ErrorInfo ErrorInfoList[errorListSize];
     bool errorInfoInitialized{false};
+    static int ab = checkSum();
 
     int HashMap::calc_hash(const char *key, int keyLength, size_t max) {
         unsigned int sum = keyLength;
