@@ -331,17 +331,6 @@ namespace smart {
     static ErrorInfo sortErrorInfoList[errorListSize];
 
 
-    static constexpr ErrorInfo tempList[] = {
-        ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
-
-        ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
-        ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },
-
-        ErrorInfo{ ErrorCode::missing_object_delemeter, 77812, "missing object delimeter"},
-
-
-        ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
-    };
 
 
     static int acompare(void const * alhs, void const * arhs) {
@@ -368,6 +357,20 @@ namespace smart {
 
     static int checkSum() {
         errorInfoInitialized = true;
+
+
+        static constexpr ErrorInfo tempList[] = {
+    ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
+
+    ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
+    ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },
+
+    ErrorInfo{ ErrorCode::missing_object_delemeter, 77812, "missing object delimeter"},
+
+
+    ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
+        };
+
 
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
         for (int i = 0; i < len; i++) {
