@@ -338,7 +338,7 @@ namespace smart {
         ErrorInfo* rhs = (ErrorInfo*)arhs;
 
         if (lhs->errorCode == rhs->errorCode) {
-            // printf("duplicate error id(%d)\n ", lhs->errorCode);
+            printf("duplicate error id(%d)\n ", lhs->errorCode);
             return 0;
             // throw 3;
         }
@@ -363,7 +363,7 @@ namespace smart {
     ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
 
     ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
-    ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },
+    ErrorInfo{ ErrorCode::missing_closing_quote2, 989800, "missing closing quote" },
 
     ErrorInfo{ ErrorCode::missing_object_delemeter, 77812, "missing object delimeter"},
 
@@ -380,7 +380,7 @@ namespace smart {
             }
 
             ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
-            //sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
+            sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
         }
 
         // check duplicate of error code
