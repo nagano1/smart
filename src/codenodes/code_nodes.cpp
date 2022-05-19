@@ -20,7 +20,7 @@
 namespace smart {
 
     ErrorInfo ErrorInfoList[errorListSize];
-    static ErrorInfo sortErrorInfoList[errorListSize];
+    //static ErrorInfo sortErrorInfoList[errorListSize];
 
     static int acompare(void const * alhs, void const * arhs) {
         ErrorInfo* lhs = (ErrorInfo*)alhs;
@@ -45,12 +45,13 @@ namespace smart {
             }
 
             ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
-            sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
+            //sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
         }
 
         // check duplicate of error code
         //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
-        qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
+        qsort(ErrorInfoList, sizeof(ErrorInfoList) / sizeof(ErrorInfoList[0]), sizeof(ErrorInfo), acompare);
+        
         return 0;
     }
 
