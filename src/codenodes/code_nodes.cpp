@@ -27,10 +27,19 @@ namespace smart {
         ErrorInfo* lhs = (ErrorInfo*)alhs;
         ErrorInfo* rhs = (ErrorInfo*)arhs;
 
-        //if (lhs->errorCode == rhs->errorCode) {
+        if (lhs->errorCode == rhs->errorCode) {
+            return 0;
         //    printf("duplicate error id\n");
         //    //throw 3;
-        //}
+        }
+        else if (lhs->errorCode > rhs->errorCode) {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
+
         //return lhs->errorCode - rhs->errorCode;
         return 0;
 
