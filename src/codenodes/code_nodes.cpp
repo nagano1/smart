@@ -20,9 +20,9 @@
 namespace smart {
 
     ErrorInfo ErrorInfoList[errorListSize];
-    ErrorInfo sortErrorInfoList[errorListSize];
+    static ErrorInfo sortErrorInfoList[errorListSize];
 
-    int acompare(void const * alhs, void const * arhs) {
+    static int acompare(void const * alhs, void const * arhs) {
         ErrorInfo* lhs = (ErrorInfo*)alhs;
         ErrorInfo* rhs = (ErrorInfo*)arhs;
 
@@ -50,7 +50,7 @@ namespace smart {
 
         // check duplicate of error code
         //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
-        //qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
+        qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
         return 0;
     }
 
