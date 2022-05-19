@@ -18,16 +18,8 @@
 #include "code_nodes.hpp"
 
 namespace smart {
-
     ErrorInfo ErrorInfoList[errorListSize];
     bool errorInfoInitialized{false};
-
-
-
-
-
-
-
 
     int HashMap::calc_hash(const char *key, int keyLength, size_t max) {
         unsigned int sum = keyLength;

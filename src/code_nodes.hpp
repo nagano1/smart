@@ -367,6 +367,8 @@ namespace smart {
 
 
     static int checkSum() {
+        errorInfoInitialized = true;
+
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
         for (int i = 0; i < len; i++) {
             auto &&errorInfo = tempList[i];
@@ -415,6 +417,9 @@ namespace smart {
 
     static const char *getErrorMessage(ErrorCode errorCode) {
         if (errorInfoInitialized == false) {
+            errorInfoInitialized = true;
+        }
+        else {
             checkSum();
         }
         const char *mes = nullptr;
