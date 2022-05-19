@@ -327,7 +327,39 @@ namespace smart {
     };
 
     extern ErrorInfo ErrorInfoList[errorListSize];
+    extern bool errorInfoInitialized;
+    
 
+    static constexpr ErrorInfo tempList[] = {
+        ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
+
+        ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
+        ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },
+
+        ErrorInfo{ ErrorCode::missing_object_delemeter, 77812, "missing object delimeter"},
+
+
+        ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
+    };
+
+    static int checkSum() {
+        constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
+        for (int i = 0; i < len; i++) {
+            auto errorInfo = tempList[i];
+            if (static_cast<int>(errorInfo.errorIndex) != i) {
+                printf("error info index\n");
+            }
+
+            ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
+            //sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
+        }
+
+        // check duplicate of error code
+        //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
+        //qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
+
+        return 0;
+    }
 
     /*
     // C++-14
@@ -358,6 +390,9 @@ namespace smart {
 
 
     static const char *getErrorMessage(ErrorCode errorCode) {
+        if (errorInfoInitialized == false) {
+            checkSum();
+        }
         const char *mes = nullptr;
         auto&& errorInfo = ErrorInfoList[static_cast<int>(errorCode)];
         mes = errorInfo.msg;
