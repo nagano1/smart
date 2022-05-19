@@ -34,8 +34,7 @@ namespace smart {
         else if (lhs->errorCode > rhs->errorCode) {
             return 1;
         }
-        else
-        {
+        else {
             return -1;
         }
 
@@ -62,6 +61,7 @@ namespace smart {
         // check duplicate of error code
         //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
         qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
+        
         return 0;
     }
 
