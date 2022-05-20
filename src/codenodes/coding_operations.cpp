@@ -58,10 +58,9 @@ namespace smart {
 	/*
 	* Before editing this file, it is required to modify indentation to follow ZM's indent rule
 	*/
-	void DocumentUtils::assignIndentsAndDepth(DocumentStruct* doc)
+	void DocumentUtils::assignIndents(DocumentStruct* doc)
 	{
 		doc->context->has_depth_error = false;
-
 
 		// assign indent
 		auto* line = doc->firstCodeLine;
@@ -74,10 +73,6 @@ namespace smart {
 				auto* space = Cast::downcast<SpaceNodeStruct*>(node);
 				line->indent = space->textLength;
 			}
-			/*else if (node->vtable == VTables::LineBreakVTable)
-			{
-				line->indent = prevIndent;
-			}*/
 			else if (node->prev_char == ' ')
 			{
 				line->indent = 1;
@@ -91,70 +86,7 @@ namespace smart {
 
 			line = line->nextLine;
 		}
-
-		/*
-		// assign depth
-		line = doc->firstCodeLine;
-
-		while (line) {
-			auto* firstElement = line->firstNode;//findFirstElementNode(line);
-
-			NodeBase* pointParent = findIndentChangingPointParent(firstElement);
-			if (pointParent) {
-				assert(pointParent->line);
-				auto* parentLine = pointParent->line;
-
-				if (parentLine && parentLine != firstElement->line) {
-					auto parentIndent = parentLine->indent;
-					auto parentDepth = parentLine->depth;
-
-
-					auto* context = firstElement->context;
-					auto& baseIndent = context->baseIndent;
-
-					// modify indent
-					if (firstElement->prevSpaceNode) {
-						if (firstElement->prevSpaceNode->textLength >= parentIndent + baseIndent) {
-							//return;
-						}
-					}
-					else {
-
-					}
-
-					line->depth = parentDepth + 1;
-					if (parentIndent >= line->indent) {
-						doc->context->has_depth_error = true;
-					}
-				}
-			}
-
-
-			line = line->nextLine;
-		}
-		*/
 	}
-
-
-
-
-	//static void assignIndentsToBreakLines(DocumentStruct* doc)
-	//{
-	//	auto* line = doc->firstCodeLine;
-	//	st_uint prevIndent = 0;
-	//	while (line) {
-
-	//		auto* firstElement = findFirstElementNode(line);
-	//		if (firstElement == nullptr) {
-	//			line->indent = prevIndent;
-	//		}
-
-	//		prevIndent = line->indent;
-
-	//		line = line->nextLine;
-	//	}
-	//}
-
 
 
 	/*
@@ -164,39 +96,37 @@ namespace smart {
 		auto* firstElement = findFirstElementNode(line);
 		if (firstElement) {
 			assert(firstElement->parentNode != nullptr);
-				assert(pointParent->line);
-					auto* context = firstElement->context;
-					auto& baseIndent = context->baseIndent;
+			assert(pointParent->line);
+			auto* context = firstElement->context;
+			auto& baseIndent = context->baseIndent;
 
-					// modify indent
-					SpaceNodeStruct* space;
-					if (firstElement->prevSpaceNode) {
-						if (justKeepRule) {
-							if (firstElement->prevSpaceNode->textLength >= line->depth* baseIndent) {
-								return;
-							}
-						}
-						space = firstElement->prevSpaceNode;
+			// modify indent
+			SpaceNodeStruct* space;
+			if (firstElement->prevSpaceNode) {
+				if (justKeepRule) {
+					if (firstElement->prevSpaceNode->textLength >= line->depth * baseIndent) {
+						return;
 					}
-					else {
+				}
+				space = firstElement->prevSpaceNode;
+			}
+			else {
 
-						space = Alloc::newSpaceNode(context, firstElement);
-						firstElement->prev_char = '\0';
-						firstElement->prevSpaceNode = space;
-						firstElement->line->insertNode(Cast::upcast(space), nullptr);
-					}
+				space = Alloc::newSpaceNode(context, firstElement);
+				firstElement->prev_char = '\0';
+				firstElement->prevSpaceNode = space;
+				firstElement->line->insertNode(Cast::upcast(space), nullptr);
+			}
 
-					unsigned int textLen = line->depth * baseIndent;
-					line->indent = textLen;
-					space->textLength = textLen;
-					space->text = context->memBuffer.newMem<char>(textLen + 1);
+			unsigned int textLen = line->depth * baseIndent;
+			line->indent = textLen;
+			space->textLength = textLen;
+			space->text = context->memBuffer.newMem<char>(textLen + 1);
 
-					for (unsigned int i = 0; i < textLen; i++) {
-						space->text[i] = ' ';
-					}
-					space->text[textLen] = '\0';
-
-
+			for (unsigned int i = 0; i < textLen; i++) {
+				space->text[i] = ' ';
+			}
+			space->text[textLen] = '\0';
 		}
 	}
 
@@ -237,11 +167,11 @@ namespace smart {
 			wfor(CodingOperations::AutoIndentForSpacingRule,
 				performIndentSelectionOperation(doc, startNode, endNode, true))
 
-				wfor(CodingOperations::AutoIndentSelection,
-					performIndentSelectionOperation(doc, startNode, endNode, false))
+			wfor(CodingOperations::AutoIndentSelection,
+				performIndentSelectionOperation(doc, startNode, endNode, false))
 
-				wfor(CodingOperations::Deletion,
-					performIndentSelectionOperation(doc, startNode, endNode, false));
+			wfor(CodingOperations::Deletion,
+				performIndentSelectionOperation(doc, startNode, endNode, false));
 
 			wfor(CodingOperations::BreakLine,
 				performIndentSelectionOperation(doc, startNode, endNode, false));

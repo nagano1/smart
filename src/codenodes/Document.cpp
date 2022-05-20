@@ -427,7 +427,7 @@ namespace smart {
 
             VTableCall::appendToLine(docStruct, docStruct->firstCodeLine);
 
-            DocumentUtils::assignIndentsAndDepth(docStruct);
+            DocumentUtils::assignIndents(docStruct);
 
             callAllLineEvent(docStruct, docStruct->firstCodeLine, context);
         }

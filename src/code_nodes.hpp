@@ -386,6 +386,7 @@ namespace smart {
             ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
         };
 
+
         static_assert(errorListSize == (sizeof tempList) / sizeof(ErrorInfo), "error list should have the same length");
         //static_assert(is_sorted(tempList), "error List should be sorted"); // C++14
 
@@ -836,7 +837,7 @@ namespace smart {
         static JsonObjectStruct *generateHashTables(DocumentStruct *doc);
 
 
-        static void assignIndentsAndDepth(DocumentStruct *doc);
+        static void assignIndents(DocumentStruct *doc);
         //static void assignIndentsToBreakLines(DocumentStruct *doc);
         static void formatIndent(DocumentStruct *doc);
 
