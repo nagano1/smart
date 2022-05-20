@@ -343,7 +343,6 @@ namespace smart {
 #endif
             //exit(9990);
             return 0;
-            // throw 3;
         }
         else if (lhs->errorCode > rhs->errorCode) {
             return 1;
@@ -357,9 +356,9 @@ namespace smart {
 
 
 
-    static int checkSum() {
+    static int initErrorInfoList()
+    {
         errorInfoInitialized = true;
-
 
         ErrorInfo tempList[] = {
             ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
@@ -371,7 +370,8 @@ namespace smart {
 
             ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
         };
-        static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
+
+        static_assert(errorListSize == (sizeof tempList) / sizeof(ErrorInfo), "error list should have the same length");
 
 
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
@@ -420,8 +420,7 @@ namespace smart {
 
     static const char *getErrorMessage(ErrorCode errorCode) {
         if (errorInfoInitialized == false) {
-            checkSum();
-            errorInfoInitialized = true;
+            initErrorInfoList();
         }
 
         const char *mes = nullptr;
