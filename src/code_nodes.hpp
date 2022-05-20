@@ -358,7 +358,8 @@ namespace smart {
 
 
     // C++-14
-    static constexpr bool is_sorted(const ErrorInfo tempList[]) {
+    static constexpr bool is_sorted(const ErrorInfo tempList[])
+    {
         for (std::size_t i = 0; i < errorListSize - 1; ++i) {
             if (tempList[i].errorCode >= tempList[i + 1].errorCode) {
                 return false;
@@ -383,7 +384,7 @@ namespace smart {
             ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
         };
 
-        static_assert(errorListSize == (sizeof tempList) / sizeof(ErrorInfo), "error list should have the same length");
+        static_assert(errorListSize == (sizeof tempList) / (sizeof ErrorInfo), "error list should have the same length");
         static_assert(is_sorted(tempList), "error List should be sorted");
 
 
