@@ -14,7 +14,7 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
     # -DCMAKE_GENERATOR_PLATFORM=x86 . 
 else()
-    set(CMAKE_CXX_FLAGS "-O3 -std=c++11 -Wall  -Werror")
+    set(CMAKE_CXX_FLAGS "-O3 -std=c++11 -Wall ") #  -Werror
 endif()
 
 # target_compile_options(${TARGET_NAME} PRIVATE -Wall -Wextra -pedantic -Werror)
