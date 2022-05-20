@@ -362,7 +362,7 @@ namespace smart {
             ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
 
             ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
-            ErrorInfo{ ErrorCode::missing_closing_quote2, 989800, "missing closing quote" },
+            ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },
 
             ErrorInfo{ ErrorCode::missing_object_delemeter, 77812, "missing object delimeter"},
 
