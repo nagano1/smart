@@ -339,7 +339,7 @@ namespace smart {
 
         if (lhs->errorCode == rhs->errorCode) {
             //printf("duplicate error id(%d)\n ", lhs->errorCode);
-            exit(0);
+            //exit(0);
             return 0;
             // throw 3;
         }
@@ -369,6 +369,7 @@ namespace smart {
 
             ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
         };
+        static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
 
 
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
@@ -389,20 +390,18 @@ namespace smart {
         return 0;
     }
 
-    /*
+
     // C++-14
-    bool is_sorted() {
+    /* bool is_sorted() {
         for (std::size_t i = 0; i < (sizeof tempList) / (sizeof tempList[0]) - 1; ++i) {
             if (tempList[i].errorCode >= tempList[i + 1].errorCode) {
                 return false;
             }
         }
         return true;
-    }
-    static_assert(is_sorted(), "error list should have the same length");
-    */
+    }*/
+    //static_assert(is_sorted(), "error list should have the same length");
 
-//    static_assert(errorListSize == (sizeof tempList) / (sizeof(ErrorInfo)), "error list should have the same length");
 
 
 
