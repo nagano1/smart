@@ -338,8 +338,7 @@ namespace smart {
         ErrorInfo* rhs = (ErrorInfo*)arhs;
 
         if (lhs->errorCode == rhs->errorCode) {
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-
+#if defined(_MSVC_LANG) //_MSC_VER  _MSVC_LANG _MSC_BUILD
             printf("duplicate error id(%d)\n ", lhs->errorCode);
 #endif
             //exit(9990);
@@ -424,6 +423,7 @@ namespace smart {
             checkSum();
             errorInfoInitialized = true;
         }
+
         const char *mes = nullptr;
         auto&& errorInfo = ErrorInfoList[static_cast<int>(errorCode)];
         mes = errorInfo.msg;
