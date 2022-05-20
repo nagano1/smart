@@ -221,8 +221,7 @@ namespace smart {
             if (ParseUtil::isBreakLine(ch)) {
                 context->afterLineBreak = true;
                 afterLineBreak = true;
-                auto *newLineBreak
-                    = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
+                auto *newLineBreak = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
 
                 if (prevLineBreak == nullptr) {
                     lastLineBreak = prevLineBreak = newLineBreak;
@@ -233,9 +232,7 @@ namespace smart {
                 }
 
                 if (whitespace_startpos != -1 && (uint32_t)whitespace_startpos < i) {
-                    lastLineBreak->prevSpaceNode = genSpaceNode(context,
-                        parentNode,
-                        whitespace_startpos, i);
+                    lastLineBreak->prevSpaceNode = genSpaceNode(context, parentNode, whitespace_startpos, i);
                     whitespace_startpos = -1;
                 }
 
