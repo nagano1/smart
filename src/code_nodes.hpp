@@ -356,22 +356,35 @@ namespace smart {
 
 
 
+
+    // C++-14
+    static constexpr bool is_sorted(const ErrorInfo tempList[]) {
+        for (std::size_t i = 0; i < errorListSize - 1; ++i) {
+            if (tempList[i].errorCode >= tempList[i + 1].errorCode) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     static int initErrorInfoList()
     {
         errorInfoInitialized = true;
 
-        ErrorInfo tempList[] = {
+        static constexpr ErrorInfo tempList[] = {
             ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
 
             ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
             ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },
 
-            ErrorInfo{ ErrorCode::missing_object_delemeter, 77812, "missing object delimeter"},
+            ErrorInfo{ ErrorCode::missing_object_delemeter, 7777812, "missing object delimeter"},
 
             ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
         };
 
         static_assert(errorListSize == (sizeof tempList) / sizeof(ErrorInfo), "error list should have the same length");
+        static_assert(is_sorted(tempList), "error List should be sorted");
 
 
         constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
@@ -393,17 +406,7 @@ namespace smart {
     }
 
 
-    // C++-14
-    /* bool is_sorted() {
-        for (std::size_t i = 0; i < (sizeof tempList) / (sizeof tempList[0]) - 1; ++i) {
-            if (tempList[i].errorCode >= tempList[i + 1].errorCode) {
-                return false;
-            }
-        }
-        return true;
-    }*/
-    //static_assert(is_sorted(), "error list should have the same length");
-
+    
 
 
 
