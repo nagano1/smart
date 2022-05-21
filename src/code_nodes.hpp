@@ -355,8 +355,6 @@ namespace smart {
     }
 
 
-
-
     // C++-14
     /*
     static constexpr bool is_sorted(const ErrorInfo tempList[])
@@ -375,7 +373,7 @@ namespace smart {
     {
         errorInfoInitialized = true;
 
-        /*static constexpr*/ErrorInfo tempList[] = {
+        ErrorInfo tempList[] = {
             ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
 
             ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },

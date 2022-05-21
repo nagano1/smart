@@ -141,17 +141,17 @@
 	},
 	{
 		"testcasename": "ParserTest_",
-		"testname": "CodeNode",
+		"testname": "SameLength_01",
 		"filepath": "tests/google_tests/parser_test.cpp",
 		"filename": "parser_test.cpp",
-		"body": "TEST(ParserTest_, CodeNode) {\n    std::string text = \"   class           A   {    }   \";\n    /*\n    std::string text = u8R\"(\nclass A {\n    class B {\n        class TestCl😂日本語10234ass {\n\n        }\n    }\n}\nclass A {}\nclass A {}\nclass A {}\nclass BDD{}\n\n\n\n\nclass AABC  {  }\n)\";\n    */\n\n    const char *chars = text.c_str();\n    auto *document = Alloc::newDocument(\n        DocumentType::CodeDocument, nullptr);\n\n    DocumentUtils::parseText(document, chars, text.size());\n\n    char *treeText = DocumentUtils::getTextFromTree(document);\n    EXPECT_EQ(std::string(treeText), std::string(chars));\n    EXPECT_EQ(strlen(treeText), strlen(chars));\n\n    Alloc::deleteDocument(document);\n\n}\n\n"
+		"body": "TEST(ParserTest_, SameLength_01) {\n    // std::string text = \"   class           A   {    }   \";\n    std::string text = u8R\"(\nclass A {\n    class B {\n        class TestCl😂日本語10234ass {\n\n        }\n    }\n}\nclass A {}\nclass A {}\nclass A {}\nclass BDD{}\n\n\n\n\nclass AABC  {  }\n\n)\";\n\n    const char *chars = text.c_str();\n    auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);\n    DocumentUtils::parseText(document, chars, text.size());\n\n    char *treeText = DocumentUtils::getTextFromTree(document);\n    EXPECT_EQ(std::string{ treeText }, std::string{ chars });\n    EXPECT_EQ(strlen(treeText), strlen(chars));\n\n    Alloc::deleteDocument(document);\n}\n\n"
 	},
 	{
 		"testcasename": "ParserTest_",
-		"testname": "ErrorNodeTest_class",
+		"testname": "NodeTypeEquality",
 		"filepath": "tests/google_tests/parser_test.cpp",
 		"filename": "parser_test.cpp",
-		"body": "TEST(ParserTest_, ErrorNodeTest_class) {\n    std::string text = u8R\"(\n\nclass A {\n    class B {\n        class TestCl😂日本語10234ass {\n\n        }\n\n        class C { }\n    }\n}\n)\";\n\n    const char *chars = text.c_str();\n    auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);\n\n    DocumentUtils::parseText(document, chars, text.size());\n\n    char *treeText = DocumentUtils::getTextFromTree(document);\n    EXPECT_EQ(std::string(treeText), std::string(chars));\n    EXPECT_EQ(strlen(treeText), strlen(chars));\n\n\n    EXPECT_EQ(document->firstCodeLine->firstNode->vtable, VTables::LineBreakVTable);\n    EXPECT_EQ(document->firstCodeLine->nextLine->firstNode->vtable, VTables::LineBreakVTable);\n    \n\n\n\n    auto* maybeSpaceNode = document->firstCodeLine->nextLine->nextLine->nextLine->firstNode;\n    EXPECT_EQ(maybeSpaceNode->vtable, VTables::SpaceVTable);\n\n    auto *spaceNode = Cast::downcast<SpaceNodeStruct *>(maybeSpaceNode);\n    EXPECT_EQ(spaceNode->textLength, 4);\n    \n    EXPECT_EQ(spaceNode->nextNodeInLine->vtable, VTables::ClassVTable);\n\n    Alloc::deleteDocument(document);\n\n}\n\n"
+		"body": "TEST(ParserTest_, NodeTypeEquality) {\n    std::string text = u8R\"(\n\nclass A {\n    class B {\n        class TestCl😂日本語10234ass {\n\n        }\n\n        class C { }\n    }\n}\n)\";\n\n    const char *chars = text.c_str();\n    auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);\n\n    DocumentUtils::parseText(document, chars, text.size());\n\n    char *treeText = DocumentUtils::getTextFromTree(document);\n    EXPECT_EQ(std::string(treeText), std::string(chars));\n    EXPECT_EQ(strlen(treeText), strlen(chars));\n\n\n    EXPECT_EQ(document->firstCodeLine->firstNode->vtable, VTables::LineBreakVTable);\n    EXPECT_EQ(document->firstCodeLine->nextLine->firstNode->vtable, VTables::LineBreakVTable);\n\n\n    auto* maybeSpaceNode = document->firstCodeLine->nextLine->nextLine->nextLine->firstNode;\n    EXPECT_EQ(maybeSpaceNode->vtable, VTables::SpaceVTable);\n\n    auto *spaceNode = Cast::downcast<SpaceNodeStruct *>(maybeSpaceNode);\n    EXPECT_EQ(spaceNode->textLength, 4);\n    \n    EXPECT_EQ(spaceNode->nextNodeInLine->vtable, VTables::ClassVTable);\n\n    Alloc::deleteDocument(document);\n\n}\n\n"
 	},
 	{
 		"testcasename": "ParserTest_",

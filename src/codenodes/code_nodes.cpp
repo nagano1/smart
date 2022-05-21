@@ -208,19 +208,16 @@ namespace smart {
 
         int32_t whitespace_startpos = -1;
 
-        bool afterLineBreak = false;
-
         //context->scanEnd = false;
         for (uint32_t i = start; i < context->length;) {
             ch = context->chars[i];
-            //fprintf(stderr, "%c ,", ch);
-            //fflush(stderr);
-            //__android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
+            // fprintf(stderr, "%c ,", ch);
+            // fflush(stderr);
+            // __android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
             // console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
 
             if (ParseUtil::isBreakLine(ch)) {
                 context->afterLineBreak = true;
-                afterLineBreak = true;
                 auto *newLineBreak = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
 
                 if (prevLineBreak == nullptr) {
@@ -258,7 +255,6 @@ namespace smart {
             }
 
             int result = tokenizer(Cast::upcast(parentNode), ch, i, context);
-            afterLineBreak = false;
             context->afterLineBreak = false;
 
             if (context->syntaxErrorInfo.hasError) {
@@ -269,16 +265,12 @@ namespace smart {
                 //console_log(":try:" + std::to_string(result));
 
                 // Attach a space node
-                /*
-*/
                 if (whitespace_startpos != -1) {
-                    if (context->chars[whitespace_startpos] == ' '
-                        && i - whitespace_startpos == 1) {
+                    if (context->chars[whitespace_startpos] == ' ' && i - whitespace_startpos == 1) {
                         context->codeNode->prev_char = ' ';
                     }
                     else {
-                        context->codeNode->prevSpaceNode = genSpaceNode(context, parentNode,
-                            whitespace_startpos, i);
+                        context->codeNode->prevSpaceNode = genSpaceNode(context, parentNode, whitespace_startpos, i);
                     }
 
                     whitespace_startpos = -1;
@@ -305,8 +297,8 @@ namespace smart {
             if (!root) {
                 break;
             }
-            i++;
 
+            i++;
         }
 
         if (root) {

@@ -707,9 +707,8 @@ ENDTEST
 
 
 
-TEST(ParserTest_, CodeNode) {
-    std::string text = "   class           A   {    }   ";
-    /*
+TEST(ParserTest_, SameLength_01) {
+    // std::string text = "   class           A   {    }   ";
     std::string text = u8R"(
 class A {
     class B {
@@ -727,28 +726,25 @@ class BDD{}
 
 
 class AABC  {  }
+
 )";
-    */
 
     const char *chars = text.c_str();
-    auto *document = Alloc::newDocument(
-        DocumentType::CodeDocument, nullptr);
-
+    auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
     DocumentUtils::parseText(document, chars, text.size());
 
     char *treeText = DocumentUtils::getTextFromTree(document);
-    EXPECT_EQ(std::string(treeText), std::string(chars));
+    EXPECT_EQ(std::string{ treeText }, std::string{ chars });
     EXPECT_EQ(strlen(treeText), strlen(chars));
 
     Alloc::deleteDocument(document);
-
 }
 
 ENDTEST
 
 
 
-TEST(ParserTest_, ErrorNodeTest_class) {
+TEST(ParserTest_, NodeTypeEquality) {
     std::string text = u8R"(
 
 class A {
@@ -774,8 +770,6 @@ class A {
 
     EXPECT_EQ(document->firstCodeLine->firstNode->vtable, VTables::LineBreakVTable);
     EXPECT_EQ(document->firstCodeLine->nextLine->firstNode->vtable, VTables::LineBreakVTable);
-    
-
 
 
     auto* maybeSpaceNode = document->firstCodeLine->nextLine->nextLine->nextLine->firstNode;
