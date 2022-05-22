@@ -24,10 +24,6 @@ namespace smart {
     };
 
 
-
-
-
-
     // -----------------------------------------------------------------------------------
     //
     //                              JsonArrayItemStruct
@@ -208,6 +204,23 @@ namespace smart {
 
 
 
+    static inline int parseNextValue(TokenizerParams_parent_ch_start_context, JsonArrayStruct* jsonArray)
+    {
+        int result;
+        if (-1 < (result = Tokenizers::jsonValueTokenizer(parent, ch, start, context))) {
+            auto *nextItem = Alloc::newJsonArrayItem(context, parent);
+
+            nextItem->valueNode = context->codeNode;
+
+            appendRootNode(jsonArray, nextItem);
+
+            jsonArray->parsePhase = phase::EXPECT_COMMA;
+            //context->scanEnd = false;
+            return result;
+        }
+        return -1;
+    }
+
     int internal_JsonArrayTokenizer(TokenizerParams_parent_ch_start_context) {
         auto *jsonArray = Cast::downcast<JsonArrayStruct *>(parent);
 
@@ -218,19 +231,7 @@ namespace smart {
         }
 
         if (jsonArray->parsePhase == phase::EXPECT_VALUE) {
-            int result;
-            if (-1 < (result = Tokenizers::jsonValueTokenizer(parent, ch, start, context))) {
-                auto *nextItem = Alloc::newJsonArrayItem(context, parent);
-
-                nextItem->valueNode = context->codeNode;
-
-                appendRootNode(jsonArray, nextItem);
-
-                jsonArray->parsePhase = phase::EXPECT_COMMA;
-                //context->scanEnd = false;
-                return result;
-            }
-            return -1;
+            return parseNextValue(TokenizerParams_pass, jsonArray);
         }
 
         auto *currentKeyValueItem = jsonArray->lastItem;
@@ -241,6 +242,9 @@ namespace smart {
                 context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
                 jsonArray->parsePhase = phase::EXPECT_VALUE;
                 return start + 1;
+            } else if (context->afterLineBreak) {
+                // comma is not needed after a line break
+                return parseNextValue(TokenizerParams_pass, jsonArray);
             }
             return -1;
         }

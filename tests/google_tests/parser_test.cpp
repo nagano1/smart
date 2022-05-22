@@ -85,9 +85,9 @@ TEST(ParserTest_, JsonParseTest) {
         "aowowo" :    21249,
 "jio fw" : null,
             "text" : "日本語"
-            , "ijofw": [2134
+            "ijofw": [2134
                   	    ,
-                            "test", true,
+                            "test", true
                         null,
                         {"君はどうなんだろう": [true]}
             ]
@@ -95,6 +95,8 @@ TEST(ParserTest_, JsonParseTest) {
 })");
         testJson(text);
     }
+
+
     {
 
         auto text = const_cast<char *>(u8R"({"aowfowo" : "😀😁😂ネコの顔文字と💘❤💓", "jiofw": false})");
@@ -105,6 +107,19 @@ TEST(ParserTest_, JsonParseTest) {
     testJson("{}");    // empty json object
     testJson("[]");    // empty json array
     testJson("[298341,12432134, true, false, \"fwo\", null]");
+
+    // comma is not needed after break line
+    {
+        auto text = const_cast<char*>(u8R"(
+    [
+        "aowowo"
+        null
+        "日本語"
+        {"君はどうなんだろう": [true]}
+
+    ])");
+        testJson(text);
+    }
 
     testJson(u8R"({"empty_array" : [
             421,true, "ijofwe", null,false]})");
@@ -750,7 +765,11 @@ TEST(ParserTest_, NodeTypeEquality) {
 class A {
     class B {
         class TestCl😂日本語10234ass {
-            fn a() {}
+
+            fn aFunc (
+                )
+            {
+            }
 
         }
 
@@ -768,6 +787,8 @@ class A {
     EXPECT_EQ(std::string(treeText), std::string(chars));
     EXPECT_EQ(strlen(treeText), strlen(chars));
 
+    EXPECT_EQ(document->context->syntaxErrorInfo.hasError, false);
+
 
     EXPECT_EQ(document->firstCodeLine->firstNode->vtable, VTables::LineBreakVTable);
     EXPECT_EQ(document->firstCodeLine->nextLine->firstNode->vtable, VTables::LineBreakVTable);
@@ -782,7 +803,6 @@ class A {
     EXPECT_EQ(spaceNode->nextNodeInLine->vtable, VTables::ClassVTable);
 
     Alloc::deleteDocument(document);
-
 }
 
 ENDTEST
