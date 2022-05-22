@@ -853,8 +853,7 @@ namespace smart {
         static void initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context,
                                           NodeBase *parentNode);
 
-        static void
-        initSymbolNode(SymbolStruct *self, ParseContext *context, void *parent, utf8byte letter);
+        static void initSymbolNode(SymbolStruct *self, ParseContext *context, void *parent, utf8byte letter);
     };
 
     struct Alloc {
@@ -866,17 +865,14 @@ namespace smart {
         static NullNodeStruct *newNullNode(ParseContext *context, NodeBase *parentNode);
 
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
-
         static void deleteClassNode(NodeBase *node);
 
         static ClassNodeStruct *newFuncNode(ParseContext *context, NodeBase *parentNode);
         static void deleteFuncNode(NodeBase *node);
 
         static JsonObjectStruct *newJsonObject(ParseContext *context, NodeBase *parentNode);
-        static JsonObjectKeyNodeStruct *
-        newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode);
-        static JsonKeyValueItemStruct *
-        newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
+        static JsonObjectKeyNodeStruct *newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode);
+        static JsonKeyValueItemStruct *newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
         static JsonArrayStruct *newJsonArray(ParseContext *context, NodeBase *parentNode);
         static JsonArrayItemStruct *newJsonArrayItem(ParseContext *context, NodeBase *parentNode);
 

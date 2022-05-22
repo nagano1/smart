@@ -149,7 +149,7 @@ namespace smart {
         //classNode->nameNode.name = nullptr;
         //}
 
-        free(classNode);
+        //free(classNode);
     }
 
 
@@ -170,7 +170,6 @@ namespace smart {
 
                 returnPosition = result;
                 return returnPosition;
-
             }
         }
 
