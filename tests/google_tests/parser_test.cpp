@@ -750,6 +750,7 @@ TEST(ParserTest_, NodeTypeEquality) {
 class A {
     class B {
         class TestCl😂日本語10234ass {
+            fn a() {}
 
         }
 

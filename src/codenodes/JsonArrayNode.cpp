@@ -142,7 +142,7 @@ namespace smart {
 
 
     void Alloc::deleteJsonArray(NodeBase *node) {
-        auto *classNode = Cast::downcast<JsonArrayStruct*>(node);
+        //auto *classNode = Cast::downcast<JsonArrayStruct*>(node);
 
         //if (classNode->nameNode.name != nullptr) {
         //free(classNode->nameNode.name);

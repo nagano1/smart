@@ -109,12 +109,12 @@ namespace smart {
         classNode->lastChildNode = nullptr;
         classNode->firstChildNode = nullptr;
 
-        Init::initNameNode(&classNode->nameNode, context, parentNode);
+        Init::initNameNode(&classNode->nameNode, context, classNode);
 
         classNode->startFound = false;
 
-        Init::initSymbolNode(&classNode->bodyStartNode, context, parentNode, '{');
-        Init::initSymbolNode(&classNode->endBodyNode, context, parentNode, '}');
+        Init::initSymbolNode(&classNode->bodyStartNode, context, classNode, '{');
+        Init::initSymbolNode(&classNode->endBodyNode, context, classNode, '}');
 
         return classNode;
     }
@@ -137,7 +137,7 @@ namespace smart {
         classNode->childCount++;
     }
 
-    int classBodyTokenizer(TokenizerParams_parent_ch_start_context) {
+    static int classBodyTokenizer(TokenizerParams_parent_ch_start_context) {
         auto *classNode = Cast::downcast<ClassNodeStruct *>(parent);
 
         //console_log(std::string(""+ch).c_str());
@@ -158,6 +158,12 @@ namespace smart {
             int result;
             if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
                 auto *innerClassNode = Cast::downcast<ClassNodeStruct *>(parent);
+                appendChildNode(innerClassNode, context->codeNode);
+                return result;
+            }
+
+            if (-1 < (result = Tokenizers::fnTokenizer(parent, ch, start, context))) {
+                auto* innerClassNode = Cast::downcast<ClassNodeStruct*>(parent);
                 appendChildNode(innerClassNode, context->codeNode);
                 return result;
             }

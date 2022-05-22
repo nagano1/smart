@@ -145,8 +145,6 @@ namespace smart {
     //        NodeBase *lastChildNode;
     //    };
 
-
-
     using ClassNodeStruct = struct {
         NODE_HEADER;
 
@@ -166,21 +164,29 @@ namespace smart {
         int childCount;
     };
 
-    using FuncBodyStruct = struct {
-        NODE_HEADER;
-
-        bool isChecked;
-        utf8byte body[2];
-
-        // expressionNodes;
-        SymbolStruct endBodyNode;
-    };
-
     using FuncNodeStruct = struct {
         NODE_HEADER;
 
         NameNodeStruct nameNode;
-        FuncBodyStruct bodyNode;
+
+        SymbolStruct parameterStartNode;
+        SymbolStruct parameterEndNode;
+
+
+        SymbolStruct bodyStartNode;
+        SymbolStruct endBodyNode;
+        bool parameterStartFound;
+        bool parameterEndFound;
+        bool bodyStartFound;
+
+
+        NodeBase *firstChildParameterNode;
+        NodeBase *lastChildParameterNode;
+
+
+        NodeBase *firstChildBodyNode;
+        NodeBase *lastChildBodyNode;
+        int childCount;
     };
 
 
@@ -597,7 +603,7 @@ namespace smart {
         
         Space = 15,
 
-        //Func(3),
+        Func = 17,
         NULLId = 16
     };
 
@@ -658,6 +664,8 @@ namespace smart {
 
                 *ClassVTable,
                 *ClassBodyVTable,
+
+                *FnVTable,
 
                 *NameVTable,
                 *StringLiteralVTable,
@@ -849,7 +857,7 @@ namespace smart {
 
 
     struct Init {
-        static void initNameNode(NameNodeStruct *name, ParseContext *context, NodeBase *parentNode);
+        static void initNameNode(NameNodeStruct *name, ParseContext *context, void *parentNode);
         static void initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context,
                                           NodeBase *parentNode);
 
@@ -867,7 +875,7 @@ namespace smart {
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
         static void deleteClassNode(NodeBase *node);
 
-        static ClassNodeStruct *newFuncNode(ParseContext *context, NodeBase *parentNode);
+        static FuncNodeStruct *newFuncNode(ParseContext *context, NodeBase *parentNode);
         static void deleteFuncNode(NodeBase *node);
 
         static JsonObjectStruct *newJsonObject(ParseContext *context, NodeBase *parentNode);
@@ -909,6 +917,7 @@ namespace smart {
         static int boolTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int classTokenizer(TokenizerParams_parent_ch_start_context);
+        static int fnTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int jsonObjectTokenizer(TokenizerParams_parent_ch_start_context);
         static int jsonArrayTokenizer(TokenizerParams_parent_ch_start_context);

@@ -74,7 +74,7 @@ namespace smart {
     const node_vtable *VTables::NameVTable = &_Name_VTable;
 
 
-    void Init::initNameNode(NameNodeStruct *name, ParseContext *context, NodeBase *parentNode) {
+    void Init::initNameNode(NameNodeStruct *name, ParseContext *context, void *parentNode) {
         INIT_NODE(name, context, parentNode, VTables::NameVTable);
         name->name = nullptr;
         name->nameLength = 0;
