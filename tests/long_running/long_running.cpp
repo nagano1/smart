@@ -80,7 +80,7 @@ int main(int argc, char **argv)
         auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
         DocumentUtils::parseText(document, text, strlen(text));
 
-        //Alloc::deleteDocument(document);
+        Alloc::deleteDocument(document);
 
     }
 
