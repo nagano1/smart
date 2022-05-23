@@ -73,11 +73,6 @@ namespace smart {
 
 
 
-
-
-
-
-
     // -----------------------------------------------------------------------------------
     //
     //                              JsonArrayStruct
@@ -156,6 +151,8 @@ namespace smart {
         if (ch == '[') {
             int returnPosition = start + 1;
             auto *jsonArray = Alloc::newJsonArray(context, parent);
+            jsonArray->parsePhase = phase::EXPECT_VALUE;
+
             int result = Scanner::scan(jsonArray,
                 internal_JsonArrayTokenizer,
                 returnPosition,
