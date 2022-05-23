@@ -75,6 +75,7 @@ __funcs_on_exit
 __funcs_on_exit
 __funcs_on_quick_exit
 __funcs_on_quick_exit
+__futimesat
 __fwritable
 __fwritex
 __fwriting
@@ -297,15 +298,16 @@ __wasi_path_symlink
 __wasi_path_unlink_file
 __wasi_poll_oneoff
 __wasi_proc_exit
-__wasi_proc_raise
 __wasi_random_get
 __wasi_sched_yield
+__wasi_sock_accept
 __wasi_sock_recv
 __wasi_sock_send
 __wasi_sock_shutdown
 __wasilibc_access
 __wasilibc_cwd
 __wasilibc_deinitialize_environ
+__wasilibc_dttoif
 __wasilibc_ensure_environ
 __wasilibc_environ
 __wasilibc_environ
@@ -314,6 +316,7 @@ __wasilibc_find_abspath
 __wasilibc_find_relpath
 __wasilibc_find_relpath_alloc
 __wasilibc_get_environ
+__wasilibc_iftodt
 __wasilibc_initialize_environ
 __wasilibc_link
 __wasilibc_link_newat
@@ -360,6 +363,8 @@ _start
 a64l
 abort
 abs
+accept
+accept4
 access
 acos
 acosf
@@ -647,6 +652,7 @@ ftello64
 ftime
 ftruncate
 futimens
+futimesat
 fwide
 fwprintf
 fwrite
@@ -1120,6 +1126,7 @@ uselocale
 usleep
 utime
 utimensat
+utimes
 vasprintf
 vdprintf
 versionsort
