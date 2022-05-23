@@ -239,11 +239,6 @@ namespace smart {
         return jsonObjectNode;
     }
 
-    void Alloc::deleteJsonObject(NodeBase *node) {
-    }
-
-
-
 
     static void appendRootNode(JsonObjectStruct *doc, JsonKeyValueItemStruct *node) {
         if (doc->firstKeyValueItem == nullptr) {

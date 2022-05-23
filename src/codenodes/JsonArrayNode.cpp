@@ -23,7 +23,6 @@ namespace smart {
         EXPECT_COMMA = 3
     };
 
-
     // -----------------------------------------------------------------------------------
     //
     //                              JsonArrayItemStruct
@@ -132,18 +131,6 @@ namespace smart {
     }
 
 
-    void Alloc::deleteJsonArray(NodeBase *node) {
-        //auto *classNode = Cast::downcast<JsonArrayStruct*>(node);
-
-        //if (classNode->nameNode.name != nullptr) {
-        //free(classNode->nameNode.name);
-        //classNode->nameNode.name = nullptr;
-        //}
-
-        //free(classNode);
-    }
-
-
 
     static int internal_JsonArrayTokenizer(TokenizerParams_parent_ch_start_context);
 
@@ -160,9 +147,7 @@ namespace smart {
 
             if (result > -1) {
                 context->codeNode = Cast::upcast(jsonArray);
-
-                returnPosition = result;
-                return returnPosition;
+                return result;
             }
         }
 
@@ -204,15 +189,12 @@ namespace smart {
     static inline int parseNextValue(TokenizerParams_parent_ch_start_context, JsonArrayStruct* jsonArray)
     {
         int result;
-        if (-1 < (result = Tokenizers::jsonValueTokenizer(parent, ch, start, context))) {
+        if (-1 < (result = Tokenizers::jsonValueTokenizer(TokenizerParams_pass))) {
             auto *nextItem = Alloc::newJsonArrayItem(context, parent);
 
             nextItem->valueNode = context->codeNode;
-
             appendRootNode(jsonArray, nextItem);
-
             jsonArray->parsePhase = phase::EXPECT_COMMA;
-            //context->scanEnd = false;
             return result;
         }
         return -1;

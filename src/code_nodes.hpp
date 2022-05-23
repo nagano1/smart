@@ -876,17 +876,12 @@ namespace smart {
         static void deleteClassNode(NodeBase *node);
 
         static FuncNodeStruct *newFuncNode(ParseContext *context, NodeBase *parentNode);
-        static void deleteFuncNode(NodeBase *node);
 
         static JsonObjectStruct *newJsonObject(ParseContext *context, NodeBase *parentNode);
         static JsonObjectKeyNodeStruct *newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode);
         static JsonKeyValueItemStruct *newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
         static JsonArrayStruct *newJsonArray(ParseContext *context, NodeBase *parentNode);
         static JsonArrayItemStruct *newJsonArrayItem(ParseContext *context, NodeBase *parentNode);
-
-        static void deleteJsonObject(NodeBase *node);
-        static void deleteJsonArray(NodeBase *node);
-
 
         static DocumentStruct *newDocument(
                 DocumentType docType,
