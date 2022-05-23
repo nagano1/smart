@@ -34,53 +34,75 @@ struct S
 int main(int argc, char **argv)
 {
     // long running test
-    /*
     srand((unsigned int)time(NULL));
-    for (int i = 0; i < 8000 * 1000; i++) {
-        unsigned int max = 1 + rand() % 1000;
-
-        MemBuffer *charBuffer3 = (MemBuffer *)malloc(sizeof(MemBuffer));
-        charBuffer3->init();
-
-        for (int j = 0; j < max; j++) {
-            unsigned int len = 1 + rand() % 100;
-
-            auto *chars = charBuffer3->newMem<S>(len);
-            chars->a = 5;
-
-            auto *chars2 = charBuffer3->newMem<S>(1);
-            chars2->a = 2;
-
-            charBuffer3->tryDelete(chars);
-            charBuffer3->tryDelete(chars2);
-        }
-        charBuffer3->freeAll();
-        free(charBuffer3);
-    }
-*/
-
+    
     while (true) {
+        for (int i = 0; i < 80; i++) {
+            unsigned int max = 1 + rand() % 1000;
+
+            MemBuffer *charBuffer3 = (MemBuffer *)malloc(sizeof(MemBuffer));
+            charBuffer3->init();
+
+            for (int j = 0; j < max; j++) {
+                unsigned int len = 1 + rand() % 100;
+
+                auto *chars = charBuffer3->newMem<S>(len);
+                chars->a = 5;
+
+                auto *chars2 = charBuffer3->newMem<S>(1);
+                chars2->a = 2;
+
+                charBuffer3->tryDelete(chars);
+                charBuffer3->tryDelete(chars2);
+            }
+            charBuffer3->freeAll();
+            free(charBuffer3);
+        }
+
+
+
     //for (int i = 0; i < 1000*1000*1000; i++) {
         //std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 
-        auto *text = const_cast<char *>(u8R"(
-{
-        "aowowo" :    21249,
-"jio fw" : null,
-            "text" : "日本語"
-            , "ijofw": [2134
-                  	    ,
-                            "test", true,
-                        null,
-                        {"君はどうなんだろう": [true]}
-            ]
+        {
+                auto *text = const_cast<char *>(u8R"(
+        {
+                "aowowo" :    21249,
+        "jio fw" : null,
+                    "text" : "日本語"
+                    , "ijofw": [2134
+                                ,
+                                    "test", true,
+                                null,
+                                {"君はどうなんだろう": [true]}
+                    ]
 
-})");
-        auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
-        DocumentUtils::parseText(document, text, strlen(text));
+        })");
+                auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
+                DocumentUtils::parseText(document, text, strlen(text));
 
-        Alloc::deleteDocument(document);
+                Alloc::deleteDocument(document);
+
+
+
+        }
+
+        {
+                    auto *text = const_cast<char *>(u8R"(
+        class ABC {
+            fn func() {}
+        }
+        )");
+                auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
+                DocumentUtils::parseText(document, text, strlen(text));
+
+                Alloc::deleteDocument(document);
+        }
+
+
+
+
 
     }
 
