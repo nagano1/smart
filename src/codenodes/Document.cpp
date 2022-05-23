@@ -98,6 +98,7 @@ namespace smart {
      */
 
     void Alloc::deleteDocument(DocumentStruct *doc) {
+        /*
         auto *node = doc->firstRootNode;
         while (node) {
             auto *nextNode = node->nextNode;
@@ -106,7 +107,7 @@ namespace smart {
             }
             node = nextNode;
         }
-
+*/
         deleteContext(doc->context);
         free(doc);
     }

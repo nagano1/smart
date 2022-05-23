@@ -119,10 +119,6 @@ namespace smart {
         return classNode;
     }
 
-    void Alloc::deleteClassNode(NodeBase *node) {
-//        auto *classNode = Cast::downcast<ClassNodeStruct *>(node);
-    }
-
 
     // --------------------- Implements ClassNode Parser ----------------------
 

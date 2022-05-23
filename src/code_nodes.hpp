@@ -873,7 +873,6 @@ namespace smart {
         static NullNodeStruct *newNullNode(ParseContext *context, NodeBase *parentNode);
 
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
-        static void deleteClassNode(NodeBase *node);
 
         static FuncNodeStruct *newFuncNode(ParseContext *context, NodeBase *parentNode);
 
