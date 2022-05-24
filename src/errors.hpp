@@ -4,7 +4,7 @@
 #include <array>
 //
 #include <cstdlib>
-//#include <cassert>
+#include <cassert>
 //#include <cstdio>
 //#include <chrono>
 //#include <unordered_map>
