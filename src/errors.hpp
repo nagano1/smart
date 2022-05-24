@@ -5,7 +5,6 @@
 //
 #include <cstdlib>
 //#include <cassert>
-#include <assert.h>
 #include <cstdio>
 #include <chrono>
 #include <unordered_map>
