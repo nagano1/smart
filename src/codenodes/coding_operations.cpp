@@ -96,7 +96,7 @@ namespace smart {
 		auto* firstElement = findFirstElementNode(line);
 		if (firstElement) {
 			assert(firstElement->parentNode != nullptr);
-			assert(pointParent->line);
+			//assert(pointParent->line);
 			auto* context = firstElement->context;
 			auto& baseIndent = context->baseIndent;
 
@@ -148,8 +148,6 @@ namespace smart {
 			}
 			line = line->nextLine;
 		}
-
-		//assignIndentsToBreakLines(doc);
 
 	}
 
