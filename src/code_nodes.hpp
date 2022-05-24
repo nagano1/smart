@@ -95,6 +95,14 @@ namespace smart {
         st_textlen nameLength;
     };
 
+    using TypeNodeStruct = struct {
+        NODE_HEADER;
+
+        char *name;
+        st_textlen nameLength;
+    };
+
+
 
 
     using StringLiteralNodeStruct = struct {
@@ -187,6 +195,20 @@ namespace smart {
         NodeBase *firstChildBodyNode;
         NodeBase *lastChildBodyNode;
         int childCount;
+    };
+
+    /* ($ point: Point) */
+    using FuncParameterItemStruct = struct {
+        NODE_HEADER;
+
+        NameNodeStruct nameNode;
+
+        SymbolStruct delimeter;
+
+        TypeNodeStruct typeNode;
+
+        SymbolStruct follwingComma;
+        bool hasComma;
     };
 
 
@@ -604,7 +626,9 @@ namespace smart {
         Space = 15,
 
         Func = 17,
-        NULLId = 16
+        NULLId = 16,
+
+        Type = 18
     };
 
     #define VTABLE_DEF(T) \
@@ -668,6 +692,7 @@ namespace smart {
                 *FnVTable,
 
                 *NameVTable,
+                *TypeVTable,
                 *StringLiteralVTable,
                 *NumberVTable,
                 *BoolVTable,
@@ -858,6 +883,7 @@ namespace smart {
 
     struct Init {
         static void initNameNode(NameNodeStruct *name, ParseContext *context, void *parentNode);
+        static void initTypeNode(TypeNodeStruct *name, ParseContext *context, void *parentNode);
         static void initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context,
                                           NodeBase *parentNode);
 
@@ -905,6 +931,7 @@ namespace smart {
 
     struct Tokenizers {
         static int nameTokenizer(TokenizerParams_parent_ch_start_context);
+        static int typeTokenizer(TokenizerParams_parent_ch_start_context);
         static int numberTokenizer(TokenizerParams_parent_ch_start_context);
         static int nullTokenizer(TokenizerParams_parent_ch_start_context);
         static int stringLiteralTokenizer(TokenizerParams_parent_ch_start_context);

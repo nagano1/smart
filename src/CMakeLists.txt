@@ -11,6 +11,7 @@ file(GLOB cpp_files
 )
 
 
+
 add_executable(${BINARY}_run ${cpp_files})
 if(DEFINED DOOR32)
     set_target_properties(${BINARY}_run PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")

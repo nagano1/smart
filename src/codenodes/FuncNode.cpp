@@ -87,7 +87,7 @@ namespace smart {
     static constexpr const char fnTypeText[] = "<fn>";
 
 /*
- * fn A() {
+ * static low fn A<T>(a: int, b: String) {
  *
  *
  * }
@@ -142,6 +142,40 @@ namespace smart {
         fnNode->childCount++;
     }
 */
+
+/*
+    int internal_parameterListTokenizer(TokenizerParams_parent_ch_start_context) {
+        auto *jsonArray = Cast::downcast<JsonArrayStruct *>(parent);
+
+        if (ch == ']') {
+            context->scanEnd = true;
+            context->codeNode = Cast::upcast(&jsonArray->endBodyNode);
+            return start + 1;
+        }
+
+        if (jsonArray->parsePhase == phase::EXPECT_VALUE) {
+            return parseNextValue(TokenizerParams_pass, jsonArray);
+        }
+
+        auto *currentKeyValueItem = jsonArray->lastItem;
+
+        if (jsonArray->parsePhase == phase::EXPECT_COMMA) {
+            if (ch == ',') { // try to find ',' which leads to next key-value
+                currentKeyValueItem->hasComma = true;
+                context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
+                jsonArray->parsePhase = phase::EXPECT_VALUE;
+                return start + 1;
+            } else if (context->afterLineBreak) {
+                // comma is not needed after a line break
+                return parseNextValue(TokenizerParams_pass, jsonArray);
+            }
+            return -1;
+        }
+
+        return -1;
+    }
+ */
+
     static int fnBodyTokenizer(TokenizerParams_parent_ch_start_context) {
         auto *fnNode = Cast::downcast<FuncNodeStruct *>(parent);
 
