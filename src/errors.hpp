@@ -1,11 +1,11 @@
 ﻿#pragma once
 //
 #include <stdlib.h>
-//#include <array>
+#include <array>
 //
-//#include <cstdlib>
-//#include <cassert>
-//#include <cstdio>
+#include <cstdlib>
+#include <cassert>
+#include <cstdio>
 //#include <chrono>
 //#include <unordered_map>
 //
