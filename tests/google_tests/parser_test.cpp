@@ -758,6 +758,73 @@ class AABC  {  }
 ENDTEST
 
 
+/*
+* 
+fn method() : int {
+
+
+}
+
+@Attr(awf="jofwie")
+fn afunc(mut test:int): int {
+    @Attr(awf="jofwie")
+    mut a = 342
+
+
+    @Attr(awf="jofwie")
+    mut b = 224
+
+    mut b = 3142
+    let c = 314
+    
+    if true {
+        a = 314
+    }
+
+    for i = 0; i < 10; i++ {
+
+    }
+
+    let res2 = method()
+
+    let res = try {
+        method()
+    } {
+        ok(n) -> 
+        Err(e) -> 0
+        else -> false
+    }
+
+    let res3 = try method() else 0
+
+
+    throws ErrorA()
+
+    switch one {
+        1 -> {
+        
+        }
+        2 -> {
+
+        }
+    }
+
+
+    when abc {
+        3 -> 45
+        else -> 54
+    }
+    
+    0
+    =let aboiajw
+
+    32 / 123 - 4321 + 5
+    =set wow
+
+
+}
+*/
+
 
 TEST(ParserTest_, NodeTypeEquality) {
     std::string text = u8R"(

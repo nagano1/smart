@@ -18,17 +18,15 @@
 ////using utf8byte = char;
 ///*
 // *
-// * aewffweoif
-// *     <int>
-// *     () {
+// * afunc
+// *   <int<int>>
+// *   () {
 // *
 // * }
 // *
 // *
 // */
 namespace smart {
-
-
 
     enum class ErrorCode {
         first_keeper,

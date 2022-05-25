@@ -23,6 +23,162 @@ namespace smart {
     static constexpr const char fn_first_char = fn_chars[0];
     static constexpr unsigned int size_of_fn = sizeof(fn_chars) - 1;
 
+
+
+    /*
+     *
+     */
+
+    static st_textlen selfTextLength2(BodyNodeStruct *classNode) {
+        return 1;
+    }
+
+    static const utf8byte *selfText2(BodyNodeStruct *node) {
+        return "{";
+    }
+
+    static CodeLine *appendToLine2(BodyNodeStruct *self, CodeLine *currentCodeLine) {
+        auto *classNode = self;
+
+
+        currentCodeLine = currentCodeLine->addPrevLineBreakNode(classNode);
+
+        currentCodeLine->appendNode(self);
+
+
+        auto formerParentDepth = self->context->parentDepth;
+        self->context->parentDepth += 1;
+
+        {
+            auto *child = classNode->firstChildNode;
+            while (child) {
+                currentCodeLine = VTableCall::appendToLine(child, currentCodeLine);
+                child = child->nextNode;
+            }
+        }
+
+
+        auto *prevCodeLine = currentCodeLine;
+        currentCodeLine = VTableCall::appendToLine(&classNode->endBodyNode, currentCodeLine);
+
+        if (prevCodeLine != currentCodeLine) {
+            currentCodeLine->depth = formerParentDepth + 1;
+        }
+
+        self->context->parentDepth = formerParentDepth;
+
+
+        return currentCodeLine;
+    };
+
+
+    static constexpr const char bodyTypeText[] = "<body>";
+
+/*
+ * static low fn A<T>(a: int, b: String) {
+ *
+ *
+ * }
+ */
+    static const node_vtable _BodyVTable = CREATE_VTABLE(BodyNodeStruct,
+                                                       selfTextLength2,
+                                                       selfText2,
+                                                       appendToLine2,
+                                                       bodyTypeText, NodeTypeId::Body);
+
+    const struct node_vtable *VTables::BodyVTable = &_BodyVTable;
+
+    void Init::initBodyNode(BodyNodeStruct *node, ParseContext *context, void *parentNode) {
+        INIT_NODE(node, context, parentNode, VTables::BodyVTable);
+
+        node->lastChildNode = nullptr;
+        node->firstChildNode = nullptr;
+        node->childCount = 0;
+        node->startFound = false;
+
+        Init::initSymbolNode(&node->bodyStartNode, context, node, '{');
+        Init::initSymbolNode(&node->endBodyNode, context, node, '}');
+    }
+
+
+/*
+    static void appendChildNode(BodyNodeStruct *body, NodeBase *node) {
+        if (body->firstChildNode == nullptr) {
+            body->firstChildNode = node;
+        }
+        if (body->lastChildNode != nullptr) {
+            body->lastChildNode->nextNode = node;
+        }
+        body->lastChildNode = node;
+        body->childCount++;
+    }
+ */
+
+    static int inner_bodyTokenizer(TokenizerParams_parent_ch_start_context) {
+        auto *body = Cast::downcast<BodyNodeStruct *>(parent);
+        if (ch == '}') {
+            context->scanEnd = true;
+            context->codeNode = Cast::upcast(&body->endBodyNode);
+            return start + 1;
+        } else {
+            //int result;
+            /*
+            if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
+                auto *innerClassNode = Cast::downcast<ClassNodeStruct *>(parent);
+                appendChildNode(body, context->codeNode);
+                return result;
+            }
+
+            if (-1 < (result = Tokenizers::fnTokenizer(parent, ch, start, context))) {
+                auto* innerClassNode = Cast::downcast<ClassNodeStruct*>(parent);
+                appendChildNode(body, context->codeNode);
+                return result;
+            }
+             */
+        }
+
+        return -1;
+    }
+
+    int Tokenizers::bodyTokenizer(TokenizerParams_parent_ch_start_context) {
+        if (ch == '{') {
+            int returnPosition = start + 1;
+
+            auto *bodyNode = Cast::downcast<BodyNodeStruct *>(parent);
+
+            int result = Scanner::scan(bodyNode,
+                                       inner_bodyTokenizer,
+                                       returnPosition,
+                                       context);
+
+            if (result > -1) {
+                context->codeNode = Cast::upcast(bodyNode);
+
+                returnPosition = result;
+                return returnPosition;
+            }
+        }
+        return -1;
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // --------------------- Defines FuncNode VTable ---------------------- /
 
     static st_textlen selfTextLength(FuncNodeStruct *classNode) {
@@ -53,32 +209,7 @@ namespace smart {
         currentCodeLine = VTableCall::appendToLine(&classNode->parameterStartNode, currentCodeLine);
         currentCodeLine = VTableCall::appendToLine(&classNode->parameterEndNode, currentCodeLine);
 
-
-
-        currentCodeLine = VTableCall::appendToLine(&classNode->bodyStartNode, currentCodeLine);
-
-
-        formerParentDepth = self->context->parentDepth;
-        self->context->parentDepth += 1;
-
-        {
-            auto *child = classNode->firstChildBodyNode;
-            while (child) {
-                currentCodeLine = VTableCall::appendToLine(child, currentCodeLine);
-                child = child->nextNode;
-            }
-        }
-
-
-        auto *prevCodeLine = currentCodeLine;
-        currentCodeLine = VTableCall::appendToLine(&classNode->endBodyNode, currentCodeLine);
-
-        if (prevCodeLine != currentCodeLine) {
-            currentCodeLine->depth = formerParentDepth + 1;
-        }
-
-        self->context->parentDepth = formerParentDepth;
-
+        currentCodeLine = VTableCall::appendToLine(&classNode->bodyNode, currentCodeLine);
 
         return currentCodeLine;
     };
@@ -105,8 +236,6 @@ namespace smart {
         auto *funcNode = context->newMem<FuncNodeStruct>();
 
         INIT_NODE(funcNode, context, parentNode, &_FnVTable);
-        funcNode->lastChildBodyNode = nullptr;
-        funcNode->firstChildBodyNode = nullptr;
 
         funcNode->lastChildParameterNode = nullptr;
         funcNode->firstChildParameterNode = nullptr;
@@ -116,14 +245,11 @@ namespace smart {
 
         funcNode->parameterStartFound = false;
         funcNode->parameterEndFound = false;
-        funcNode->bodyStartFound = false;
-
-        Init::initSymbolNode(&funcNode->bodyStartNode, context, funcNode, '{');
-        Init::initSymbolNode(&funcNode->endBodyNode, context, funcNode, '}');
 
         Init::initSymbolNode(&funcNode->parameterStartNode, context, funcNode, '(');
         Init::initSymbolNode(&funcNode->parameterEndNode, context, funcNode, ')');
 
+        Init::initBodyNode(&funcNode->bodyNode, context, funcNode);
 
         return funcNode;
     }
@@ -203,29 +329,12 @@ namespace smart {
                             return result;
                         }
                          */
+
                 }
             } else {
-                if (!fnNode->bodyStartFound) {
-                    if (ch == '{') {
-                        fnNode->bodyStartFound = true;
-                        context->codeNode = Cast::upcast(&fnNode->bodyStartNode);
-                        return start + 1;
-                    }
-                } else {
-                    if (ch == '}') {
-                        context->scanEnd = true;
-                        context->codeNode = Cast::upcast(&fnNode->endBodyNode);
-                        return start + 1;
-                    } else {
-                        /*
-                        int result;
-                        if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
-                            auto *innerClassNode = Cast::downcast<ClassNodeStruct *>(parent);
-                            appendChildNode(innerClassNode, context->codeNode);
-                            return result;
-                        }
-                         */
-                    }
+                int result;
+                if (-1 < (result = Tokenizers::bodyTokenizer(Cast::upcast(&fnNode->bodyNode), ch, start, context))) {
+                    return result;
                 }
             }
         }

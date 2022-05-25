@@ -104,7 +104,12 @@ namespace smart {
         st_textlen nameLength;
     };
 
+    using StatementNodeStruct = struct {
+        NODE_HEADER;
 
+        char *name;
+        st_textlen nameLength;
+    };
 
 
     using StringLiteralNodeStruct = struct {
@@ -174,6 +179,20 @@ namespace smart {
         int childCount;
     };
 
+    using BodyNodeStruct = struct {
+        NODE_HEADER;
+
+        bool startFound;
+
+        SymbolStruct bodyStartNode;
+        SymbolStruct endBodyNode;
+
+        NodeBase *firstChildNode;
+        NodeBase *lastChildNode;
+        int childCount;
+    };
+
+
     using FuncNodeStruct = struct {
         NODE_HEADER;
 
@@ -182,22 +201,16 @@ namespace smart {
         SymbolStruct parameterStartNode;
         SymbolStruct parameterEndNode;
 
-
-        SymbolStruct bodyStartNode;
-        SymbolStruct endBodyNode;
         bool parameterStartFound;
         bool parameterEndFound;
-        bool bodyStartFound;
 
+        BodyNodeStruct bodyNode;
 
         NodeBase *firstChildParameterNode;
         NodeBase *lastChildParameterNode;
-
-
-        NodeBase *firstChildBodyNode;
-        NodeBase *lastChildBodyNode;
-        int childCount;
+        int parameterChildCount;
     };
+
 
     /* ($ point: Point) */
     using FuncParameterItemStruct = struct {
@@ -458,7 +471,8 @@ namespace smart {
         Func = 17,
         NULLId = 16,
 
-        Type = 18
+        Type = 18,
+        Body = 19
     };
 
     #define VTABLE_DEF(T) \
@@ -522,6 +536,7 @@ namespace smart {
                 *FnVTable,
 
                 *NameVTable,
+                *BodyVTable,
                 *TypeVTable,
                 *StringLiteralVTable,
                 *NumberVTable,
@@ -712,6 +727,7 @@ namespace smart {
 
     struct Init {
         static void initNameNode(NameNodeStruct *name, ParseContext *context, void *parentNode);
+        static void initBodyNode(BodyNodeStruct *name, ParseContext *context, void *parentNode);
         static void initTypeNode(TypeNodeStruct *name, ParseContext *context, void *parentNode);
         static void initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context,
                                           NodeBase *parentNode);
@@ -767,6 +783,7 @@ namespace smart {
         static int boolTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int classTokenizer(TokenizerParams_parent_ch_start_context);
+        static int bodyTokenizer(TokenizerParams_parent_ch_start_context);
         static int fnTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int jsonObjectTokenizer(TokenizerParams_parent_ch_start_context);
