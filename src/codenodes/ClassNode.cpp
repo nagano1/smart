@@ -33,7 +33,7 @@ namespace smart {
         return 5;
     }
 
-    static const utf8byte *selfText(ClassNodeStruct *node) {
+    static const utf8byte *selfText(ClassNodeStruct *) {
         return "class";
     }
 
@@ -90,14 +90,14 @@ namespace smart {
      *
      * }
      */
-    static const node_vtable _ClassVTable = CREATE_VTABLE(ClassNodeStruct,
+    static const node_vtable _classVTable = CREATE_VTABLE(ClassNodeStruct,
                                                           selfTextLength,
                                                           selfText,
                                                           appendToLine,
                                                           classTypeText
-                                                          ,NodeTypeId::Class);
+                                                          , NodeTypeId::Class);
 
-    const struct node_vtable *const VTables::ClassVTable = &_ClassVTable;
+    const struct node_vtable *const VTables::ClassVTable = &_classVTable;
 
 
     // -------------------- Implements ClassNode Allocator --------------------- //
@@ -105,7 +105,7 @@ namespace smart {
         auto *classNode = context->newMem<ClassNodeStruct>();
         //classNode->sub = simpleMalloc<ClassNodeStruct::Impl>();
 
-        INIT_NODE(classNode, context, parentNode, &_ClassVTable);
+        INIT_NODE(classNode, context, parentNode, &_classVTable);
         classNode->lastChildNode = nullptr;
         classNode->firstChildNode = nullptr;
 
@@ -166,7 +166,7 @@ namespace smart {
         }
 
         return -1;
-    };
+    }
 
 
 
@@ -183,9 +183,7 @@ namespace smart {
                         ) {
 
                     int currentPos = idx + size_of_class;
-                    int resultPos = -1;
-
-                    // console_log(std::string("wow5").c_str());
+                    int resultPos;
 
                     // "class " came here
                     auto *classNode = Alloc::newClassNode(context, parent);
@@ -203,8 +201,6 @@ namespace smart {
                             context->codeNode = Cast::upcast(classNode);
                             return currentPos;
                         }
-
-                        //console_log("name=" + std::string(classNode->nameNode.name));
                     }
 
 
@@ -213,9 +209,6 @@ namespace smart {
                     if (-1 == (resultPos = Scanner::scan(classNode, classBodyTokenizer,
                                                          currentPos, context))) {
                         context->codeNode = Cast::upcast(classNode);
-
-
-
                         return currentPos;
                     }
 
@@ -225,7 +218,7 @@ namespace smart {
             }
         }
         return -1;
-    };
+    }
 }
 
 
