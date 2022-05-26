@@ -42,7 +42,8 @@ constexpr static int BUFFER_SIZE = 64; //25
 #ifdef assert
 #undef assert
 #endif
-#define assert(expression)  \
+#define assert(expression) static_assert(true, "ok")
+
 
 
 #define when(op) switch(op) 

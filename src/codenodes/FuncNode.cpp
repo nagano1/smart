@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+﻿#include <cstdio>
 #include <iostream>
 #include <string>
 #include <array>
@@ -29,11 +29,11 @@ namespace smart {
      *
      */
 
-    static st_textlen selfTextLength2(BodyNodeStruct *classNode) {
+    static st_textlen selfTextLength2(BodyNodeStruct *) {
         return 1;
     }
 
-    static const utf8byte *selfText2(BodyNodeStruct *node) {
+    static const utf8byte *selfText2(BodyNodeStruct *) {
         return "{";
     }
 
@@ -69,14 +69,13 @@ namespace smart {
 
 
         return currentCodeLine;
-    };
+    }
 
 
     static constexpr const char bodyTypeText[] = "<body>";
 
 /*
  * static low fn A<T>(a: int, b: String) {
- *
  *
  * }
  */
@@ -181,11 +180,11 @@ namespace smart {
 
 // --------------------- Defines FuncNode VTable ---------------------- /
 
-    static st_textlen selfTextLength(FuncNodeStruct *classNode) {
+    static st_textlen selfTextLength(FuncNodeStruct *) {
         return size_of_fn;
     }
 
-    static const utf8byte *selfText(FuncNodeStruct *node) {
+    static const utf8byte *selfText(FuncNodeStruct *) {
         return fn_chars;
     }
 

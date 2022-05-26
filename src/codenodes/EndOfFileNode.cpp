@@ -1,5 +1,4 @@
-﻿#include <stdio.h>
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <array>
 #include <algorithm>
@@ -26,13 +25,13 @@ namespace smart {
         currentCodeLine->appendNode(self);
 
         return currentCodeLine;
-    };
+    }
 
-    static const utf8byte *selfText(EndOfFileNodeStruct *self) {
+    static const utf8byte *selfText(EndOfFileNodeStruct *) {
         return "";
-    };
+    }
 
-    static st_textlen selfTextLength(EndOfFileNodeStruct *self) {
+    static st_textlen selfTextLength(EndOfFileNodeStruct *) {
         return 0;
     }
 

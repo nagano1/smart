@@ -44,7 +44,7 @@ namespace smart {
         return (sum + salt) % max;
     }
 
-    void HashMap::put(const char *keyA, st_textlen keyLength, NodeBase* val) {
+    void HashMap::put(const char *keyA, st_textlen keyLength, NodeBase* val) const {
 
         auto hashInt = calc_hash(keyA, keyLength, this->entries_length);
         HashNode* hashNode = this->entries[hashInt];

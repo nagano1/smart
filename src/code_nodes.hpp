@@ -276,7 +276,7 @@ namespace smart {
             return HashMap::calc_hash(key, keyLength, this->entries_length);
         }
         static int calc_hash(const char *key, int keyLength, size_t max);
-        void put(const char *keyA, st_textlen keyLength, NodeBase *val);
+        void put(const char *keyA, st_textlen keyLength, NodeBase *val) const;
         NodeBase *get(const char *key, st_textlen keyLength);
         bool has(const char *key, int keyLength);
         void deleteKey(const char *key, int keyLength);
@@ -768,7 +768,7 @@ namespace smart {
      * Function Types and vtable for node structures
      */
     #define TokenizerParams_parent_ch_start_context \
-        NodeBase *parent, utf8byte ch, st_uint start, ParseContext *context
+        NodeBase *parent, utf8byte ch, st_int start, ParseContext *context
 
     #define TokenizerParams_pass parent, ch, start, context
 

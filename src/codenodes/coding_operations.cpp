@@ -64,7 +64,6 @@ namespace smart {
 
 		// assign indent
 		auto* line = doc->firstCodeLine;
-		st_uint prevIndent = 0;
 		while (line) {
 			auto* node = line->firstNode;
 
@@ -81,8 +80,6 @@ namespace smart {
 			{
 				line->indent = 0;
 			}
-
-			prevIndent = line->indent;
 
 			line = line->nextLine;
 		}
@@ -169,10 +166,10 @@ namespace smart {
 				performIndentSelectionOperation(doc, startNode, endNode, false))
 
 			wfor(CodingOperations::Deletion,
-				performIndentSelectionOperation(doc, startNode, endNode, false));
+				performIndentSelectionOperation(doc, startNode, endNode, false))
 
 			wfor(CodingOperations::BreakLine,
-				performIndentSelectionOperation(doc, startNode, endNode, false));
+				performIndentSelectionOperation(doc, startNode, endNode, false))
 		}
 
 		return nullptr;

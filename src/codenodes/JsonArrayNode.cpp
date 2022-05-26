@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+﻿#include <cstdio>
 #include <iostream>
 #include <array>
 #include <algorithm>
@@ -12,7 +12,7 @@
 
 #include <cstdint>
 #include <ctime>
-#include <string.h>
+#include <cstring>
 
 #include "code_nodes.hpp"
 
@@ -45,11 +45,11 @@ namespace smart {
     };
 
 
-    static const utf8byte *selfText_JsonKeyValueItemStruct(JsonArrayItemStruct *self) {
+    static const utf8byte *selfText_JsonKeyValueItemStruct(JsonArrayItemStruct *) {
         return "";
     }
 
-    static st_textlen selfTextLength2(JsonArrayItemStruct *self) {
+    static st_textlen selfTextLength2(JsonArrayItemStruct *) {
         return 0;
     }
 
