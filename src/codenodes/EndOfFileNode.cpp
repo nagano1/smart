@@ -43,5 +43,5 @@ namespace smart {
                                                              selfText,
                                                              appendToLine, endOfFileTypeText, NodeTypeId::EndOfDoc);
 
-    const node_vtable *VTables::EndOfFileVTable = &_endOfDocVTable;
+    const node_vtable *const VTables::EndOfFileVTable = &_endOfDocVTable;
 }

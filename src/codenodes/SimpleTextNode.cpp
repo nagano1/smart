@@ -39,7 +39,7 @@ namespace smart {
                                                                   self_text,
                                                                   appendToLine, simpleTextTypeText
                                                                   ,NodeTypeId::SimpleText, 0);
-    const struct node_vtable *VTables::SimpleTextVTable = &_SIMPLE_TEXT_VTABLE;
+    const struct node_vtable *const VTables::SimpleTextVTable = &_SIMPLE_TEXT_VTABLE;
 
 
 
@@ -52,7 +52,7 @@ namespace smart {
         self_text,
         appendToLine, spaceTextTypeText, NodeTypeId::Space, 1
     );
-    const struct node_vtable *VTables::SpaceVTable = &_SpaceVTable_VTABLE;
+    const struct node_vtable *const VTables::SpaceVTable = &_SpaceVTable_VTABLE;
 
 
     static struct node_vtable _NullVTable_VTABLE = CREATE_VTABLE2(NullNodeStruct,
@@ -60,7 +60,7 @@ namespace smart {
         self_text,
         appendToLine, "<NULL>", NodeTypeId::NULLId, 2
     );
-    const struct node_vtable *VTables::NullVTable = &_NullVTable_VTABLE;
+    const struct node_vtable *const VTables::NullVTable = &_NullVTable_VTABLE;
 
 
     SimpleTextNodeStruct *

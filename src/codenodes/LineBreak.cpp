@@ -59,7 +59,7 @@ namespace smart {
         selfTextLength, self_text,
         appendToLine, lineBreakTypeText, NodeTypeId::LineBreak);
 
-    const node_vtable *VTables::LineBreakVTable = &_LineBreakVTable;
+    const node_vtable *const VTables::LineBreakVTable = &_LineBreakVTable;
 
     LineBreakNodeStruct *Alloc::newLineBreakNode(ParseContext *context, NodeBase *parentNode) {
         auto *lineNode = context->newLineBreakNode();

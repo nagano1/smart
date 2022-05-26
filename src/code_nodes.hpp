@@ -528,32 +528,32 @@ namespace smart {
 
     struct VTables {
         static const node_vtable
-                *DocumentVTable,
+                *const DocumentVTable,
 
-                *ClassVTable,
-                *ClassBodyVTable,
+                *const ClassVTable,
+                *const ClassBodyVTable,
 
-                *FnVTable,
+                *const FnVTable,
 
-                *NameVTable,
-                *BodyVTable,
-                *TypeVTable,
-                *StringLiteralVTable,
-                *NumberVTable,
-                *BoolVTable,
-                *SymbolVTable,
-                *SimpleTextVTable,
-                *NullVTable,
-                *SpaceVTable,
-                *LineBreakVTable,
+                *const NameVTable,
+                *const BodyVTable,
+                *const TypeVTable,
+                *const StringLiteralVTable,
+                *const NumberVTable,
+                *const BoolVTable,
+                *const SymbolVTable,
+                *const SimpleTextVTable,
+                *const NullVTable,
+                *const SpaceVTable,
+                *const LineBreakVTable,
 
-                *JsonObjectVTable,
-                *JsonArrayVTable,
-                *JsonKeyValueItemVTable,
-                *JsonArrayItemVTable,
-                *JsonObjectKeyVTable,
+                *const JsonObjectVTable,
+                *const JsonArrayVTable,
+                *const JsonKeyValueItemVTable,
+                *const JsonArrayItemVTable,
+                *const JsonObjectKeyVTable,
 
-                *EndOfFileVTable;
+                *const EndOfFileVTable;
     };
 
 

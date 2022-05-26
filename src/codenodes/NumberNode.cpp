@@ -76,7 +76,7 @@ namespace smart {
     static const node_vtable _Bool_VTable = CREATE_VTABLE(BoolNodeStruct, selfTextLength2,
         selfText2, appendToLine2, boolNodeTypeText, NodeTypeId::Bool);
 
-    const node_vtable *VTables::BoolVTable = &_Bool_VTable;
+    const node_vtable *const VTables::BoolVTable = &_Bool_VTable;
 
     BoolNodeStruct* Alloc::newBoolNode(ParseContext *context, NodeBase *parentNode) {
         auto *node = context->newMem<BoolNodeStruct>();
@@ -153,7 +153,7 @@ namespace smart {
         selfText,
         appendToLine, numberNodeTypeText, NodeTypeId::Number);
 
-    const node_vtable *VTables::NumberVTable = &_number_VTable_;
+    const node_vtable *const VTables::NumberVTable = &_number_VTable_;
 
 
 

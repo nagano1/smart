@@ -86,7 +86,7 @@ namespace smart {
                                                        appendToLine2,
                                                        bodyTypeText, NodeTypeId::Body);
 
-    const struct node_vtable *VTables::BodyVTable = &_BodyVTable;
+    const struct node_vtable *const VTables::BodyVTable = &_BodyVTable;
 
     void Init::initBodyNode(BodyNodeStruct *node, ParseContext *context, void *parentNode) {
         INIT_NODE(node, context, parentNode, VTables::BodyVTable);
@@ -229,7 +229,7 @@ namespace smart {
                                                           appendToLine,
                                                        fnTypeText, NodeTypeId::Func);
 
-    const struct node_vtable *VTables::FnVTable = &_FnVTable;
+    const struct node_vtable *const VTables::FnVTable = &_FnVTable;
 
     FuncNodeStruct* Alloc::newFuncNode(ParseContext *context, NodeBase *parentNode)
     {

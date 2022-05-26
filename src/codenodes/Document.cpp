@@ -41,7 +41,7 @@ namespace smart {
     static const node_vtable DocumentVTable_ = CREATE_VTABLE(DocumentStruct, selfTextLength, selfText,
                                                        appendToLine, DocumentTypeText, NodeTypeId::Document);
 
-    const node_vtable *VTables::DocumentVTable = &DocumentVTable_;
+    const node_vtable *const VTables::DocumentVTable = &DocumentVTable_;
 
     static void staticActionCreator(void *node1, void *node2, int actionRequest) {
         UNUSED(node1);

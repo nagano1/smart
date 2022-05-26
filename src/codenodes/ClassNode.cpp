@@ -97,7 +97,7 @@ namespace smart {
                                                           classTypeText
                                                           ,NodeTypeId::Class);
 
-    const struct node_vtable *VTables::ClassVTable = &_ClassVTable;
+    const struct node_vtable *const VTables::ClassVTable = &_ClassVTable;
 
 
     // -------------------- Implements ClassNode Allocator --------------------- //
