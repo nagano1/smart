@@ -68,10 +68,10 @@ namespace smart {
 
     static constexpr const char typeTypeText[] = "<Type>";
 
-    static const node_vtable _Type_VTable = CREATE_VTABLE(TypeNodeStruct, selfTextLength,
-                                                          self_text,
-                                                          appendToLine, typeTypeText, NodeTypeId::Type);
-    const node_vtable *const VTables::TypeVTable = &_Type_VTable;
+    static const node_vtable _typeVTable = CREATE_VTABLE(TypeNodeStruct, selfTextLength,
+                                                         self_text,
+                                                         appendToLine, typeTypeText, NodeTypeId::Type);
+    const node_vtable *const VTables::TypeVTable = &_typeVTable;
 
 
     void Init::initTypeNode(TypeNodeStruct *name, ParseContext *context, void *parentNode) {

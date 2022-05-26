@@ -80,13 +80,13 @@ namespace smart {
  *
  * }
  */
-    static const node_vtable _BodyVTable = CREATE_VTABLE(BodyNodeStruct,
-                                                       selfTextLength2,
-                                                       selfText2,
-                                                       appendToLine2,
-                                                       bodyTypeText, NodeTypeId::Body);
+    static const node_vtable _bodyVTable = CREATE_VTABLE(BodyNodeStruct,
+                                                         selfTextLength2,
+                                                         selfText2,
+                                                         appendToLine2,
+                                                         bodyTypeText, NodeTypeId::Body);
 
-    const struct node_vtable *const VTables::BodyVTable = &_BodyVTable;
+    const struct node_vtable *const VTables::BodyVTable = &_bodyVTable;
 
     void Init::initBodyNode(BodyNodeStruct *node, ParseContext *context, void *parentNode) {
         INIT_NODE(node, context, parentNode, VTables::BodyVTable);
@@ -223,19 +223,19 @@ namespace smart {
  *
  * }
  */
-    static const node_vtable _FnVTable = CREATE_VTABLE(FuncNodeStruct,
-                                                          selfTextLength,
-                                                          selfText,
-                                                          appendToLine,
+    static const node_vtable _fnVTable = CREATE_VTABLE(FuncNodeStruct,
+                                                       selfTextLength,
+                                                       selfText,
+                                                       appendToLine,
                                                        fnTypeText, NodeTypeId::Func);
 
-    const struct node_vtable *const VTables::FnVTable = &_FnVTable;
+    const struct node_vtable *const VTables::FnVTable = &_fnVTable;
 
     FuncNodeStruct* Alloc::newFuncNode(ParseContext *context, NodeBase *parentNode)
     {
         auto *funcNode = context->newMem<FuncNodeStruct>();
 
-        INIT_NODE(funcNode, context, parentNode, &_FnVTable);
+        INIT_NODE(funcNode, context, parentNode, &_fnVTable);
 
         funcNode->lastChildParameterNode = nullptr;
         funcNode->firstChildParameterNode = nullptr;

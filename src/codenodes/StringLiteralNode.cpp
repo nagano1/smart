@@ -166,10 +166,10 @@ namespace smart {
 
     static constexpr const char nameTypeText[] = "<string>";
 
-    static const node_vtable _VTable = CREATE_VTABLE(StringLiteralNodeStruct, selfTextLength,
+    static const node_vtable _stringVTable = CREATE_VTABLE(StringLiteralNodeStruct, selfTextLength,
                                                           self_text,
                                                           appendToLine, nameTypeText, NodeTypeId::StringLiteral);
-    const node_vtable *const VTables::StringLiteralVTable = &_VTable;
+    const node_vtable *const VTables::StringLiteralVTable = &_stringVTable;
 
     void Init::initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context, NodeBase *parentNode) {
         INIT_NODE(name, context, parentNode, VTables::StringLiteralVTable);

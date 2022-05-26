@@ -64,20 +64,20 @@ namespace smart {
 
     static constexpr const char class_chars[] = "<JsonKeyValueItem>";
 
-    static const node_vtable _JsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
+    static const node_vtable _jsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
                                                                              selfTextLength2,
                                                                              selfText_JsonKeyValueItemStruct,
                                                                              appendToLine2,
                                                                              class_chars, NodeTypeId::JsonKeyValueItem);
 
-    const struct node_vtable *const VTables::JsonKeyValueItemVTable = &_JsonObjectKeyValueStructVTable;
+    const struct node_vtable *const VTables::JsonKeyValueItemVTable = &_jsonObjectKeyValueStructVTable;
 
 
     JsonKeyValueItemStruct *
     Alloc::newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode) {
         auto *keyValueItem = context->newMem<JsonKeyValueItemStruct>();
 
-        INIT_NODE(keyValueItem, context, parentNode, &_JsonObjectKeyValueStructVTable);
+        INIT_NODE(keyValueItem, context, parentNode, &_jsonObjectKeyValueStructVTable);
 
         Init::initSymbolNode(&keyValueItem->delimeter, context, keyValueItem, ':');
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
@@ -109,16 +109,16 @@ namespace smart {
         return self->textLength;
     }
 
-    static const node_vtable _JsonObjectKeyStructVTable = CREATE_VTABLE(JsonObjectKeyNodeStruct,
+    static const node_vtable _jsonObjectKeyStructVTable = CREATE_VTABLE(JsonObjectKeyNodeStruct,
                                                                         selfTextLength3, selfText3,
                                                                         appendToLine3,
                                                                         "<JsonObjectKeyNodeStruct>"
-                                                                        ,NodeTypeId::JsonObjectKey);
+                                                                        , NodeTypeId::JsonObjectKey);
 
     JsonObjectKeyNodeStruct *
     Alloc::newJsonObjectKeyNode(ParseContext *context, NodeBase *parentNode) {
         auto *jsonKey = context->newMem<JsonObjectKeyNodeStruct>();
-        INIT_NODE(jsonKey, context, parentNode, &_JsonObjectKeyStructVTable);
+        INIT_NODE(jsonKey, context, parentNode, &_jsonObjectKeyStructVTable);
 
         jsonKey->text = nullptr;
         jsonKey->nameLength = jsonKey->textLength = 0;
@@ -171,7 +171,7 @@ namespace smart {
     }
 
 
-    const struct node_vtable *const VTables::JsonObjectKeyVTable = &_JsonObjectKeyStructVTable;
+    const struct node_vtable *const VTables::JsonObjectKeyVTable = &_jsonObjectKeyStructVTable;
 
 
     // -----------------------------------------------------------------------------------
@@ -218,10 +218,10 @@ namespace smart {
     };
 
 
-    static const node_vtable _JsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,
+    static const node_vtable _jsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,
                                                                selfTextLength, selfText,
                                                                appendToLine, _typeName, NodeTypeId::JsonObject);
-    const struct node_vtable *const VTables::JsonObjectVTable = &_JsonObjectVTable;
+    const struct node_vtable *const VTables::JsonObjectVTable = &_jsonObjectVTable;
 
 
     JsonObjectStruct *Alloc::newJsonObject(ParseContext *context, NodeBase *parentNode) {
