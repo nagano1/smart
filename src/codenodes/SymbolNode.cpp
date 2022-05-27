@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+﻿#include <cstdio>
 #include <iostream>
 #include <string>
 #include <array>
@@ -21,13 +21,13 @@ namespace smart {
 
     static CodeLine *appendToLine(SymbolStruct *self, CodeLine *currentCodeLine) {
         return currentCodeLine->addPrevLineBreakNode(self)->appendNode(self);
-    };
+    }
 
     static const utf8byte *self_text(SymbolStruct *self) {
         return self->symbol;
-    };
+    }
 
-    static st_textlen selfTextLength(SymbolStruct *self) {
+    static st_textlen selfTextLength(SymbolStruct *) {
         return 1;
     }
 

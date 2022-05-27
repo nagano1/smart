@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+﻿#include <cstdio>
 #include <iostream>
 #include <string>
 #include <array>
@@ -24,12 +24,12 @@ namespace smart {
         currentCodeLine->appendNode(self);
 
         return currentCodeLine;
-    };
+    }
 
     static const char *self_text(TypeNodeStruct *self) {
         auto *node = self;//Cast::downcast<NameNodeStruct *>((NodeBase *) self);
         return node->name;
-    };
+    }
 
     static st_textlen selfTextLength(TypeNodeStruct *self) {
         auto *node = self;//Cast::downcast<NameNodeStruct *>((NodeBase *) self);
@@ -39,7 +39,7 @@ namespace smart {
 
 
     int Tokenizers::typeTokenizer(TokenizerParams_parent_ch_start_context) {
-        unsigned int found_count = 0;
+        int found_count = 0;
         for (uint_fast32_t i = start; i < context->length; i++) {
             if (ParseUtil::isIdentifierLetter(context->chars[i])) {
                 found_count++;
