@@ -97,11 +97,11 @@ namespace smart {
         st_textlen nameLength;
     };
 
-    using TypeNodeStruct = struct {
+    using TypeNodeStruct = struct _TypeNodeStruct {
         NODE_HEADER;
 
-        char *name;
-        st_textlen nameLength;
+        NameNodeStruct nameNode;
+        _TypeNodeStruct *typeNode;
     };
 
     using StatementNodeStruct = struct {
@@ -728,7 +728,6 @@ namespace smart {
     struct Init {
         static void initNameNode(NameNodeStruct *name, ParseContext *context, void *parentNode);
         static void initBodyNode(BodyNodeStruct *name, ParseContext *context, void *parentNode);
-        static void initTypeNode(TypeNodeStruct *name, ParseContext *context, void *parentNode);
         static void initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context,
                                           NodeBase *parentNode);
 
@@ -736,6 +735,9 @@ namespace smart {
     };
 
     struct Alloc {
+
+        static TypeNodeStruct *newTypeNode(ParseContext *context, NodeBase *parentNode);
+
         static NumberNodeStruct *newNumberNode(ParseContext *context, NodeBase *parentNode);
         static BoolNodeStruct *newBoolNode(ParseContext *context, NodeBase *parentNode);
         static LineBreakNodeStruct *newLineBreakNode(ParseContext *context, NodeBase *parentNode);

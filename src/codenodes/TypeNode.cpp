@@ -17,7 +17,8 @@
 
 #include "code_nodes.hpp"
 
-namespace smart {
+namespace smart
+{
 
     static CodeLine *appendToLine(TypeNodeStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
@@ -27,16 +28,24 @@ namespace smart {
     }
 
     static const char *self_text(TypeNodeStruct *self) {
-        return self->name;
+        return VTableCall::selfText(&self->nameNode);
     }
 
     static st_textlen selfTextLength(TypeNodeStruct *self) {
-        return self->nameLength;
+        return VTableCall::selfTextLength(Cast::upcast(&self->nameNode));
     }
 
 
     int Tokenizers::typeTokenizer(TokenizerParams_parent_ch_start_context) {
-        return Tokenizers::nameTokenizer(TokenizerParams_pass);
+        auto *typeNode  = Alloc::newTypeNode(context, parent);
+
+        auto returnPos = Tokenizers::nameTokenizer(Cast::upcast(&typeNode->nameNode), ch, start, context);
+        if (returnPos > -1) {
+            //if (context->codeNode) {
+                context->codeNode = Cast::upcast(typeNode);
+            //}
+        }
+        return returnPos;
     }
 
     static constexpr const char typeTypeText[] = "<Type>";
@@ -46,21 +55,15 @@ namespace smart {
                                                          appendToLine, typeTypeText, NodeTypeId::Type);
     const node_vtable *const VTables::TypeVTable = &_typeVTable;
 
+    TypeNodeStruct *Alloc::newTypeNode(ParseContext *context, NodeBase *parentNode) {
+        auto *node = context->newMem<TypeNodeStruct>();
+        INIT_NODE(node, context, parentNode, VTables::TypeVTable);
 
-    void Init::initTypeNode(TypeNodeStruct *name, ParseContext *context, void *parentNode) {
-        INIT_NODE(name, context, parentNode, VTables::TypeVTable);
-        name->name = nullptr;
-        name->nameLength = 0;
-    }
+        node->typeNode = nullptr;
 
-    /*
-    Not used
-    NameNodeStruct *Allocator::newNameNode(ParseContext *context, NodeBase *parentNode) {
-        auto *node = (NameNodeStruct *) malloc(sizeof(NameNodeStruct));
-        INIT_NODE(node, context, VTables::NameVTable);
-        node->parentNode = parentNode;
+        Init::initNameNode(&node->nameNode, context, node);
+
         return node;
     }
-    */
 
 }
