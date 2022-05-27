@@ -111,7 +111,7 @@ namespace smart {
             bool escapeMode = false;
             int strLength = 0;
             int currentStrIndex = 0;
-            for (uint_fast32_t i = 1; i < found_count-1; i++) {
+            for (int_fast32_t i = 1; i < found_count-1; i++) {
                 /* \uXXXX		4s, 16unit Unicode char */
                 if (escapeMode) {
                     escapeMode = false;
@@ -135,8 +135,7 @@ namespace smart {
                     escapeMode = true;
                 }
                 else {
-                    auto ch = strLiteralNode->text[i];
-                    str[currentStrIndex++] = ch;
+                    str[currentStrIndex++] = strLiteralNode->text[i];
                 }
 
                 strLength++;
