@@ -159,6 +159,7 @@ namespace smart {
     }
 
 
+    // scan until scanEnd==true
     int Scanner::scanMulti(void *parentNode,
         TokenizerFunction tokenizer,
         int start,

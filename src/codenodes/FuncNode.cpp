@@ -113,7 +113,7 @@ namespace smart {
     }
  */
 
-    static int inner_bodyTokenizer(TokenizerParams_parent_ch_start_context) {
+    static int inner_bodyTokenizerMulti(TokenizerParams_parent_ch_start_context) {
         auto *body = Cast::downcast<BodyNodeStruct *>(parent);
         if (ch == '}') {
             context->scanEnd = true;
@@ -145,9 +145,9 @@ namespace smart {
 
             auto *bodyNode = Cast::downcast<BodyNodeStruct *>(parent);
             int result = Scanner::scanMulti(bodyNode,
-                                       inner_bodyTokenizer,
-                                       returnPosition,
-                                       context);
+                                            inner_bodyTokenizerMulti,
+                                            returnPosition,
+                                            context);
 
             if (result > -1) {
                 context->codeNode = Cast::upcast(bodyNode);
@@ -298,7 +298,7 @@ namespace smart {
     }
  */
 
-    static int inner_fnBodyTokenizer(TokenizerParams_parent_ch_start_context) {
+    static int inner_fnBodyTokenizerMulti(TokenizerParams_parent_ch_start_context) {
         auto *fnNode = Cast::downcast<FuncNodeStruct *>(parent);
 
         //console_log(std::string(""+ch).c_str());
@@ -340,8 +340,6 @@ namespace smart {
 
 
     int Tokenizers::fnTokenizer(TokenizerParams_parent_ch_start_context) {
-
-
         if (fn_first_char == ch) {
             auto idx = ParseUtil::matchFirstWithTrim(context->chars, fn_chars, start);
             if (idx > -1) {
@@ -371,8 +369,8 @@ namespace smart {
 
                     // Parse body
                     currentPos = resultPos;
-                    if (-1 == (resultPos = Scanner::scanMulti(fnNode, inner_fnBodyTokenizer,
-                                                         currentPos, context))) {
+                    if (-1 == (resultPos = Scanner::scanMulti(fnNode, inner_fnBodyTokenizerMulti,
+                                                              currentPos, context))) {
                         context->codeNode = Cast::upcast(fnNode);
                         return currentPos;
                     }
@@ -383,66 +381,5 @@ namespace smart {
             }
         }
         return -1;
-    };
-
-/*
-int FuncTokenizer::tryTokenize(CodeNodeBase *parentNode,utf8byte first_ch,int i, ParseContext *context) {
-    if ('f' == first_ch) {
-        auto idx = Tokenizer::matchFirstWithTrim(context->chars, fn_chars, i);
-        if (idx > -1) {
-            if (Tokenizer::isSpace(context->chars[idx + fn_chars_length])) {
-                int returnPosition = idx + fn_chars_length;
-
-                // "class " came, generate ClassNode
-                funcNode = new FuncNode(parentNode);
-                context->codeNode = funcNode;
-
-                {
-                    // Tokenize class Name, class AClass
-                    NameNode<FuncNode>::NameTokenizer nameTokenizer;
-                    int result = scanChars(funcNode, nameTokenizer, returnPosition, context, false);
-                    if (result == -1) {
-                        context->codeNode = funcNode;
-                        return returnPosition;
-                    }
-                    funcNode->funcName = nameTokenizer.nameNode;
-                    returnPosition = result;
-                }
-
-
-                {
-                    //  Tokenize body  {}
-                    FuncBodyTokenizer bodyTokenizer;
-                    int result = scanChars(funcNode, bodyTokenizer, returnPosition, context, false);
-                    if (result == -1) {
-                        context->codeNode = funcNode;
-                        return returnPosition;
-                    }
-
-                    funcNode->bodyNode = bodyTokenizer.bodyNode;
-                    returnPosition = result;
-                }
-
-                context->codeNode = funcNode;
-                return returnPosition;
-            }
-        }
     }
-
-    return -1;
-};
-
-CodeLine *FuncNode::appendToLine(CodeLine *currentCodeLine) {
-    currentCodeLine = addLineBreakNode(currentCodeLine);
-    currentCodeLine->nodes.push_back(this);
-    if (funcName) {
-        currentCodeLine = funcName->appendToLine(currentCodeLine);
-    }
-    if (bodyNode) {
-        currentCodeLine = bodyNode->appendToLine(currentCodeLine);
-    }
-    return currentCodeLine;
-
-}
-*/
 }
