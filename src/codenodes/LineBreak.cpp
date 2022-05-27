@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+﻿#include <cstdio>
 #include <iostream>
 #include <string>
 #include <array>
@@ -22,13 +22,13 @@ namespace smart {
 
     // Line Break Node implementation
 
-    static st_textlen selfTextLength(LineBreakNodeStruct *self) {
+    static st_textlen selfTextLength(LineBreakNodeStruct *) {
         return 1;
     }
 
     static const char *self_text(LineBreakNodeStruct *self) {
         return self->text;
-    };
+    }
 
 
     static CodeLine *appendToLine(LineBreakNodeStruct *self, CodeLine *currentCodeLine) {
@@ -51,7 +51,7 @@ namespace smart {
         }
 
         return currentCodeLine;
-    };
+    }
 
     static constexpr const char lineBreakTypeText[] = "<lineBreak>";
 

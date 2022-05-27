@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+﻿#include <cstdio>
 #include <iostream>
 #include <string>
 #include <array>
@@ -69,7 +69,7 @@ namespace smart {
         }
 
         return -1;
-    };
+    }
 
 
     static constexpr const char boolNodeTypeText[] = "<bool>";
@@ -123,7 +123,7 @@ namespace smart {
 
     static constexpr const char numberNodeTypeText[] = "<number>";
     int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context) {
-        unsigned int found_count = 0;
+        int found_count = 0;
         for (uint_fast32_t i = start; i < context->length; i++) {
             if (!ParseUtil::isNumberLetter(context->chars[i])) {
                 break;
@@ -146,7 +146,7 @@ namespace smart {
         }
 
         return -1;
-    };
+    }
 
 
     static const node_vtable _numberVTable_ = CREATE_VTABLE(NumberNodeStruct, selfTextLength,

@@ -78,11 +78,11 @@ namespace smart {
     //
     // -----------------------------------------------------------------------------------
 
-    static const utf8byte *selfText(JsonArrayStruct *node) {
+    static const utf8byte *selfText(JsonArrayStruct *) {
         return "[";
     }
 
-    static st_textlen selfTextLength(JsonArrayStruct *self) {
+    static st_textlen selfTextLength(JsonArrayStruct *) {
         return 1;
     }
 
@@ -103,7 +103,7 @@ namespace smart {
         self->context->parentDepth -= 1;
 
         return VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
-    };
+    }
 
 
 

@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+﻿#include <cstdio>
 #include <iostream>
 #include <array>
 #include <algorithm>
@@ -12,7 +12,7 @@
 
 #include <cstdint>
 #include <ctime>
-#include <string.h>
+#include <cstring>
 
 #include "code_nodes.hpp"
 
@@ -50,14 +50,14 @@ namespace smart {
         }
 
         return currentCodeLine;
-    };
+    }
 
 
-    static const utf8byte *selfText_JsonKeyValueItemStruct(JsonKeyValueItemStruct *self) {
+    static const utf8byte *selfText_JsonKeyValueItemStruct(JsonKeyValueItemStruct *) {
         return "";
     }
 
-    static st_textlen selfTextLength2(JsonKeyValueItemStruct *self) {
+    static st_textlen selfTextLength2(JsonKeyValueItemStruct *) {
         return 0;
     }
 
@@ -98,7 +98,7 @@ namespace smart {
     // -----------------------------------------------------------------------------------
     static CodeLine *appendToLine3(JsonObjectKeyNodeStruct *self, CodeLine *currentCodeLine) {
         return currentCodeLine->addPrevLineBreakNode(self)->appendNode(self);
-    };
+    }
 
 
     static const utf8byte *selfText3(JsonObjectKeyNodeStruct *self) {
@@ -127,7 +127,7 @@ namespace smart {
     }
 
     int Tokenizers::jsonObjectNameTokenizer(TokenizerParams_parent_ch_start_context) {
-        unsigned int found_count = 0;
+        int found_count = 0;
 
         // starts with "
         bool startsWithDQuote = false;
@@ -179,11 +179,11 @@ namespace smart {
     //                              JsonObjectStruct
     //
     // -----------------------------------------------------------------------------------
-    static st_textlen selfTextLength(JsonObjectStruct *self) {
+    static st_textlen selfTextLength(JsonObjectStruct *) {
         return 1;
     }
 
-    static const utf8byte *selfText(JsonObjectStruct *node) {
+    static const utf8byte *selfText(JsonObjectStruct *) {
         return "{";
     }
 
@@ -215,7 +215,7 @@ namespace smart {
 
 
         return currentCodeLine;
-    };
+    }
 
 
     static const node_vtable _jsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,

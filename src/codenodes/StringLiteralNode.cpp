@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+﻿#include <cstdio>
 #include <iostream>
 #include <string>
 #include <array>
@@ -36,7 +36,7 @@ namespace smart {
 
 
     int Tokenizers::stringLiteralTokenizer(TokenizerParams_parent_ch_start_context) {
-        unsigned int found_count = 0;
+        int found_count = 0;
 
         // starts with "
         bool startsWithDQuote = false;
@@ -50,38 +50,40 @@ namespace smart {
             return -1;
         }
 
-        int letterStart = startsWithDQuote ? start + 1 : start;
-        bool escapeMode = false;
+        {
 
-        for (uint_fast32_t i = letterStart; i < context->length; i++) {
-            /*if (ParseUtil::isIdentifierLetter(context->chars[i])) {
-                found_count++;
-            }
-            else 
-            */
-            if (startsWithDQuote) {
-                found_count++;
+            int letterStart = startsWithDQuote ? start + 1 : start;
+            bool escapeMode = false;
 
-                if (escapeMode) {
-                    escapeMode = false;
-                    continue;
+            for (uint_fast32_t i = letterStart; i < context->length; i++) {
+                /*if (ParseUtil::isIdentifierLetter(context->chars[i])) {
+                    found_count++;
                 }
+                else
+                */
+                if (startsWithDQuote) {
+                    found_count++;
 
-                if (context->chars[i] == '\\') {
-                    escapeMode = true;
-                    continue;
-                }
+                    if (escapeMode) {
+                        escapeMode = false;
+                        continue;
+                    }
 
-                if (context->chars[i] == '"') {
-                    endsWithDQuote = true;
+                    if (context->chars[i] == '\\') {
+                        escapeMode = true;
+                        continue;
+                    }
+
+                    if (context->chars[i] == '"') {
+                        endsWithDQuote = true;
+                        break;
+                    }
+                } else {
                     break;
                 }
-            } else {
-                break;
             }
+
         }
-
-
 
 
 
@@ -113,8 +115,7 @@ namespace smart {
                 /* \uXXXX		4s, 16unit Unicode char */
                 if (escapeMode) {
                     escapeMode = false;
-                    auto ch = strLiteralNode->text[i];
-                    when(ch) {
+                    when(strLiteralNode->text[i]) {
                         wfor_noop('r');
                         wfor('n', str[currentStrIndex++] = '\n');
                         wfor('t', str[currentStrIndex++] = '\t');
