@@ -27,44 +27,17 @@ namespace smart {
     }
 
     static const char *self_text(TypeNodeStruct *self) {
-        auto *node = self;//Cast::downcast<NameNodeStruct *>((NodeBase *) self);
-        return node->name;
+        return self->name;
     }
 
     static st_textlen selfTextLength(TypeNodeStruct *self) {
-        auto *node = self;//Cast::downcast<NameNodeStruct *>((NodeBase *) self);
-
-        return node->nameLength;
+        return self->nameLength;
     }
 
 
     int Tokenizers::typeTokenizer(TokenizerParams_parent_ch_start_context) {
-        int found_count = 0;
-        for (uint_fast32_t i = start; i < context->length; i++) {
-            if (ParseUtil::isIdentifierLetter(context->chars[i])) {
-                found_count++;
-            } else {
-                break;
-            }
-        }
-
-        if (found_count > 0) {
-            //context->scanEnd = true;
-
-            //auto *nameNode = Cast::downcast<NameNodeStruct *>(context->codeNode);
-            auto *nameNode = Cast::downcast<NameNodeStruct *>(parent);
-
-            //auto *nameNode = Allocator::newNameNode(context, parent);
-            context->codeNode = Cast::upcast(nameNode);
-            nameNode->name = context->memBuffer.newMem<char>(found_count + 1);
-            nameNode->nameLength = found_count;
-
-            memcpy(nameNode->name, context->chars + start, found_count);
-            //nameNode->name[found_count] = '\0';
-            return start + found_count;
-        }
-        return -1;
-    };
+        return Tokenizers::nameTokenizer(TokenizerParams_pass);
+    }
 
     static constexpr const char typeTypeText[] = "<Type>";
 

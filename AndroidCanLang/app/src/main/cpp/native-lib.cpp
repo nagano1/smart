@@ -77,7 +77,7 @@ namespace doorlangtest {
         }
 
 
-        auto start = std::chrono::high_resolution_clock::now();
+        auto startTime = std::chrono::high_resolution_clock::now();
 
 
         //std::thread thread1([]() {
@@ -171,7 +171,7 @@ namespace doorlangtest {
         pi = step * sum;
 
 
-        auto elapsed = std::chrono::high_resolution_clock::now() - start;
+        auto elapsed = std::chrono::high_resolution_clock::now() - startTime;
 
         long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(
                 elapsed).count();

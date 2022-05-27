@@ -49,20 +49,18 @@ namespace smart {
         }
 
         if (found_count > 0) {
-            //context->scanEnd = true;
-
-            //auto *nameNode = Cast::downcast<NameNodeStruct *>(context->codeNode);
             auto *nameNode = Cast::downcast<NameNodeStruct *>(parent);
 
-            //auto *nameNode = Allocator::newNameNode(context, parent);
             context->codeNode = Cast::upcast(nameNode);
             nameNode->name = context->memBuffer.newMem<char>(found_count + 1);
             nameNode->nameLength = found_count;
 
             memcpy(nameNode->name, context->chars + start, found_count);
-            //nameNode->name[found_count] = '\0';
+            nameNode->name[found_count] = '\0';
+
             return start + found_count;
         }
+
         return -1;
     }
 
