@@ -27,16 +27,12 @@ namespace smart {
     }
 
     static const char *self_text(NameNodeStruct *self) {
-        auto *node = self;//Cast::downcast<NameNodeStruct *>((NodeBase *) self);
-        return node->name;
+        return self->name;
     }
 
     static st_textlen selfTextLength(NameNodeStruct *self) {
-        auto *node = self;//Cast::downcast<NameNodeStruct *>((NodeBase *) self);
-
-        return node->nameLength;
+        return self->nameLength;
     }
-
 
     int Tokenizers::nameTokenizer(TokenizerParams_parent_ch_start_context) {
         int found_count = 0;
@@ -87,5 +83,4 @@ namespace smart {
         return node;
     }
     */
-
 }
