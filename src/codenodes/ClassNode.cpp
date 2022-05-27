@@ -133,7 +133,7 @@ namespace smart {
         classNode->childCount++;
     }
 
-    static int classBodyTokenizer(TokenizerParams_parent_ch_start_context) {
+    static int inner_classBodyTokenizer(TokenizerParams_parent_ch_start_context) {
         auto *classNode = Cast::downcast<ClassNodeStruct *>(parent);
 
         //console_log(std::string(""+ch).c_str());
@@ -189,7 +189,7 @@ namespace smart {
                     auto *classNode = Alloc::newClassNode(context, parent);
 
                     {
-                        resultPos = Scanner::scan(&classNode->nameNode,
+                        resultPos = Scanner::scanOnce(&classNode->nameNode,
                                                   Tokenizers::nameTokenizer,
                                                   currentPos,
                                                   context);
@@ -206,7 +206,7 @@ namespace smart {
 
                     // Parse body
                     currentPos = resultPos;
-                    if (-1 == (resultPos = Scanner::scan(classNode, classBodyTokenizer,
+                    if (-1 == (resultPos = Scanner::scanMulti(classNode, inner_classBodyTokenizer,
                                                          currentPos, context))) {
                         context->codeNode = Cast::upcast(classNode);
                         return currentPos;

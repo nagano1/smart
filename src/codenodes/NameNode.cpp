@@ -64,7 +64,8 @@ namespace smart {
 
     static const node_vtable _nameVTable = CREATE_VTABLE(NameNodeStruct, selfTextLength,
                                                          self_text,
-                                                         appendToLine, nameTypeText, NodeTypeId::Name);
+                                                         appendToLine, nameTypeText,
+                                                         NodeTypeId::Name);
     const node_vtable *const VTables::NameVTable = &_nameVTable;
 
 

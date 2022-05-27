@@ -140,7 +140,7 @@ namespace smart {
             auto *jsonArray = Alloc::newJsonArray(context, parent);
             jsonArray->parsePhase = phase::EXPECT_VALUE;
 
-            int result = Scanner::scan(jsonArray,
+            int result = Scanner::scanMulti(jsonArray,
                 internal_JsonArrayTokenizer,
                 returnPosition,
                 context);

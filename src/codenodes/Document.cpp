@@ -408,9 +408,9 @@ namespace smart {
 
 
         if (docStruct->documentType == DocumentType::CodeDocument) {
-            Scanner::scan_for_root(docStruct, tryTokenize, 0, context, /*root*/true);
+            Scanner::scan_for_root(docStruct, tryTokenize, 0, context, /*root*/true, true);
         } else {
-            Scanner::scan_for_root(docStruct, tryTokenizeJson, 0, context, /*root*/true);
+            Scanner::scan_for_root(docStruct, tryTokenizeJson, 0, context, /*root*/true, true);
         }
 
         

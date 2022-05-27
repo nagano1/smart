@@ -102,8 +102,8 @@ namespace smart {
     }
 
 
-    void HashMap::init(ParseContext *context) {
-        this->context = context;
+    void HashMap::init(ParseContext *ctx) {
+        this->context = ctx;
         this->entries = (HashNode**)context->newMemArray<HashNode>(HashNode_TABLE_SIZE);
         this->entries_length = HashNode_TABLE_SIZE;
 
@@ -150,22 +150,21 @@ namespace smart {
 
 
 
-
-    int Scanner::scanErrorNodeUntilSpace(
-        void *parentNode,
-        int start,
-        ParseContext *context
+    int Scanner::scanOnce(void *parentNode,
+                      TokenizerFunction tokenizer,
+                      int start,
+                      ParseContext *context
     ) {
-        return 3;
+        return Scanner::scan_for_root(parentNode, tokenizer, start, context, false, false);
     }
 
 
-    int Scanner::scan(void *parentNode,
+    int Scanner::scanMulti(void *parentNode,
         TokenizerFunction tokenizer,
         int start,
         ParseContext *context
     ) {
-        return Scanner::scan_for_root(parentNode, tokenizer, start, context, false);
+        return Scanner::scan_for_root(parentNode, tokenizer, start, context, false, true);
     }
 
     CodeLine *VTableCall::appendToLine(void *node, CodeLine *currentCodeLine) {
@@ -198,7 +197,7 @@ namespace smart {
         TokenizerFunction tokenizer,
         int start,
         ParseContext *context,
-        bool root
+        bool root, bool scanMulti
     ) {
         LineBreakNodeStruct *prevLineBreak = nullptr;
         LineBreakNodeStruct *lastLineBreak = nullptr;
@@ -286,7 +285,9 @@ namespace smart {
                     context->scanEnd = false;
                     break;
                 }
-                continue;
+                if (scanMulti) {
+                    continue;
+                }
             }
 
 

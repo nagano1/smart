@@ -266,7 +266,7 @@ namespace smart {
         if (ch == '{') {
             int returnPosition = start + 1;
             auto *jsonObject = Alloc::newJsonObject(context, parent);
-            int result = Scanner::scan(jsonObject,
+            int result = Scanner::scanMulti(jsonObject,
                                        internal_JsonObjectTokenizer,
                                        returnPosition,
                                        context);

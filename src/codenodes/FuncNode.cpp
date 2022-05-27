@@ -144,17 +144,14 @@ namespace smart {
             int returnPosition = start + 1;
 
             auto *bodyNode = Cast::downcast<BodyNodeStruct *>(parent);
-
-            int result = Scanner::scan(bodyNode,
+            int result = Scanner::scanMulti(bodyNode,
                                        inner_bodyTokenizer,
                                        returnPosition,
                                        context);
 
             if (result > -1) {
                 context->codeNode = Cast::upcast(bodyNode);
-
-                returnPosition = result;
-                return returnPosition;
+                return result;
             }
         }
         return -1;
@@ -301,7 +298,7 @@ namespace smart {
     }
  */
 
-    static int fnBodyTokenizer(TokenizerParams_parent_ch_start_context) {
+    static int inner_fnBodyTokenizer(TokenizerParams_parent_ch_start_context) {
         auto *fnNode = Cast::downcast<FuncNodeStruct *>(parent);
 
         //console_log(std::string(""+ch).c_str());
@@ -333,6 +330,7 @@ namespace smart {
             } else {
                 int result;
                 if (-1 < (result = Tokenizers::bodyTokenizer(Cast::upcast(&fnNode->bodyNode), ch, start, context))) {
+                    context->scanEnd = true;
                     return result;
                 }
             }
@@ -354,13 +352,10 @@ namespace smart {
                     int currentPos = idx + size_of_fn;
                     int resultPos = -1;
 
-                    // console_log(std::string("wow5").c_str());
-
                     // "fn " came here
                     auto *fnNode = Alloc::newFuncNode(context, parent);
-
                     {
-                        resultPos = Scanner::scan(&fnNode->nameNode,
+                        resultPos = Scanner::scanOnce(&fnNode->nameNode,
                                                   Tokenizers::nameTokenizer,
                                                   currentPos,
                                                   context);
@@ -372,14 +367,11 @@ namespace smart {
                             context->codeNode = Cast::upcast(fnNode);
                             return currentPos;
                         }
-
-                        //console_log("name=" + std::string(classNode->nameNode.name));
                     }
-
 
                     // Parse body
                     currentPos = resultPos;
-                    if (-1 == (resultPos = Scanner::scan(fnNode, fnBodyTokenizer,
+                    if (-1 == (resultPos = Scanner::scanMulti(fnNode, inner_fnBodyTokenizer,
                                                          currentPos, context))) {
                         context->codeNode = Cast::upcast(fnNode);
                         return currentPos;

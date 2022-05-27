@@ -837,18 +837,19 @@ namespace smart {
                 TokenizerFunction tokenizer,
                 int start,
                 ParseContext *context,
-                bool root
+                bool root, bool multi
         );
 
-        static int scan(
+        static int scanOnce(
                 void *parentNode,
                 TokenizerFunction tokenizer,
                 int start,
                 ParseContext *context
         );
 
-        static int scanErrorNodeUntilSpace(
+        static int scanMulti(
                 void *parentNode,
+                TokenizerFunction tokenizer,
                 int start,
                 ParseContext *context
         );
