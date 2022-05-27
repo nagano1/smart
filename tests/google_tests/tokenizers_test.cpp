@@ -21,44 +21,44 @@ using namespace smart;
 TEST(TokenizersTest_, StringLiteralTest) {
     auto text = const_cast<char *>(u8R"(
 {
-        "aowowo" :    21249,
-"jio fw" : null,
-            "text" : "日本語"
-            "ijofw": [2134
-                  	    ,
-                            "test", true
-                        null,
-                        {"君はどうなんだろう": [true]}
-            ]
-
+    "aowowo" : 21249,
 })");
 
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
+    auto* context = document->context;
     DocumentUtils::parseText(document, text, strlen(text));
 
+    {
+        static constexpr const char class_chars[] = "\"mytext\"";
 
-    auto testText = const_cast<char *>(u8"\"abc\"");
-    int result;
-    if (-1 < (result = Tokenizers::stringLiteralTokenizer(Cast::upcast(document), testText[0], 0, document->context))) {
+        context->length = sizeof(class_chars) - 1;;
+        context->chars = (char*)class_chars;
+        int result = Tokenizers::stringLiteralTokenizer(nullptr, class_chars[0], 0, context);
+
+        EXPECT_EQ(result, 8);
     }
 
-    EXPECT_EQ(result, -1);
-//    EXPECT_EQ(std::string{ treeText }, std::string{ codeText });
+    {
+        static constexpr const char class_chars[] = u8"\"A\\r\\n\"";
 
-    //char *typeText = DocumentUtils::getTypeTextFromTree(document);
-    //    if (typeText != nullptr) {
-    //EXPECT_EQ(std::string{ typeText }, std::string{ "fjow" });
-    //}
+        context->length = sizeof(class_chars) - 1;;
+        context->chars = (char*)class_chars;
+        int result = Tokenizers::stringLiteralTokenizer(nullptr, class_chars[0], 0, context);
 
-    //char *treeText = DocumentUtils::getTextFromTree(document);
-    DocumentUtils::generateHashTables(document);
-    /*
-    auto *jsonObject = DocumentUtils::generateHashTables(document);
-    if (jsonObject) {
-        auto *item = jsonObject->hashMap->get2("aowfowo");
-        printf("item - %d", item);
+        EXPECT_EQ(result, 7);
+        EXPECT_EQ(context->codeNode->vtable, VTables::StringLiteralVTable);
+
+        auto* stru = Cast::downcast<StringLiteralNodeStruct*>(context->codeNode);
+        EXPECT_EQ(std::string{ stru->str }, std::string{ "A\r\n"});
     }
-    */
+
+
+
+
+
+
+
+
 
     Alloc::deleteDocument(document);
 

@@ -116,7 +116,8 @@ namespace smart {
                 if (escapeMode) {
                     escapeMode = false;
                     when(strLiteralNode->text[i]) {
-                        wfor_noop('r')
+                        //wfor_noop('r')
+                        wfor('r', str[currentStrIndex++] = '\r')
                         wfor('n', str[currentStrIndex++] = '\n')
                         wfor('t', str[currentStrIndex++] = '\t')
                         wfor('\\', str[currentStrIndex++] = '\\')
