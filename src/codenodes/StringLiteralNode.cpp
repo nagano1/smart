@@ -105,8 +105,9 @@ namespace smart {
             strLiteralNode->text[found_count] = '\0';
 
 
+            // fjoawiejf<jawoefi>();
             // create actual string
-            auto *str = context->memBuffer.newMem<char>(found_count+3);
+            auto *str = context->memBuffer.newMem<char>(found_count+ 3);
             bool escapeMode = false;
             int strLength = 0;
             int currentStrIndex = 0;
