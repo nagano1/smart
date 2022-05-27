@@ -45,8 +45,7 @@ namespace smart {
         if (ch == '"') {
             startsWithDQuote = true;
             found_count++;
-        }
-        else {
+        } else {
             return -1;
         }
 
@@ -116,16 +115,16 @@ namespace smart {
                 if (escapeMode) {
                     escapeMode = false;
                     when(strLiteralNode->text[i]) {
-                        wfor_noop('r');
-                        wfor('n', str[currentStrIndex++] = '\n');
-                        wfor('t', str[currentStrIndex++] = '\t');
-                        wfor('\\', str[currentStrIndex++] = '\\');
-                        wfor('f', str[currentStrIndex++] = 'f');
-                        wfor('/', str[currentStrIndex++] = '/');
-                        wfor('"', str[currentStrIndex++] = '"');
-                        wfor('\'', str[currentStrIndex++] = '\'');
-                        wfor('u', str[currentStrIndex++] = 'u');
-                        welse(str[currentStrIndex++] = strLiteralNode->text[i]);
+                        wfor_noop('r')
+                        wfor('n', str[currentStrIndex++] = '\n')
+                        wfor('t', str[currentStrIndex++] = '\t')
+                        wfor('\\', str[currentStrIndex++] = '\\')
+                        wfor('f', str[currentStrIndex++] = 'f')
+                        wfor('/', str[currentStrIndex++] = '/')
+                        wfor('"', str[currentStrIndex++] = '"')
+                        wfor('\'', str[currentStrIndex++] = '\'')
+                        wfor('u', str[currentStrIndex++] = 'u')
+                        welse(str[currentStrIndex++] = strLiteralNode->text[i])
                     }
                     continue;
                 }

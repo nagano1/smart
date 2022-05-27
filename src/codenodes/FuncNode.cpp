@@ -100,7 +100,6 @@ namespace smart {
     }
 
 
-/*
     static void appendChildNode(BodyNodeStruct *body, NodeBase *node) {
         if (body->firstChildNode == nullptr) {
             body->firstChildNode = node;
@@ -111,7 +110,6 @@ namespace smart {
         body->lastChildNode = node;
         body->childCount++;
     }
- */
 
     static int inner_bodyTokenizerMulti(TokenizerParams_parent_ch_start_context) {
         auto *body = Cast::downcast<BodyNodeStruct *>(parent);
@@ -120,20 +118,11 @@ namespace smart {
             context->codeNode = Cast::upcast(&body->endBodyNode);
             return start + 1;
         } else {
-            //int result;
-            /*
-            if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
-                auto *innerClassNode = Cast::downcast<ClassNodeStruct *>(parent);
+            int nextPos;
+            if (-1 < (nextPos = Tokenizers::fnTokenizer(parent, ch, start, context))) {
                 appendChildNode(body, context->codeNode);
-                return result;
+                return nextPos;
             }
-
-            if (-1 < (result = Tokenizers::fnTokenizer(parent, ch, start, context))) {
-                auto* innerClassNode = Cast::downcast<ClassNodeStruct*>(parent);
-                appendChildNode(body, context->codeNode);
-                return result;
-            }
-             */
         }
 
         return -1;

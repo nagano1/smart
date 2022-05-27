@@ -836,6 +836,8 @@ class A {
             fn aFunc (
                 )
             {
+                fn bFunc() {
+                }
             }
 
         }

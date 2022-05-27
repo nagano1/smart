@@ -174,11 +174,11 @@ namespace smart {
     const struct node_vtable *const VTables::JsonObjectKeyVTable = &_jsonObjectKeyStructVTable;
 
 
-    // -----------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------
     //
     //                              JsonObjectStruct
     //
-    // -----------------------------------------------------------------------------------
+    // ---------------------------------------------------------------------------------
     static st_textlen selfTextLength(JsonObjectStruct *) {
         return 1;
     }
@@ -211,8 +211,6 @@ namespace smart {
         }
 
         self->context->parentDepth = formerParentDepth;
-
-
 
         return currentCodeLine;
     }
@@ -258,7 +256,7 @@ namespace smart {
     }
 
 
-    static int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context);
+    static int internal_JsonObjectTokenizerMulti(TokenizerParams_parent_ch_start_context);
 
     // --------------------- Implements JsonObject Parser ----------------------
     //  TODO: Add supports for new syntax like  @<MutableDict>{ awef:"fjiowe", test:true }
@@ -267,9 +265,9 @@ namespace smart {
             int returnPosition = start + 1;
             auto *jsonObject = Alloc::newJsonObject(context, parent);
             int result = Scanner::scanMulti(jsonObject,
-                                       internal_JsonObjectTokenizer,
-                                       returnPosition,
-                                       context);
+                                            internal_JsonObjectTokenizerMulti,
+                                            returnPosition,
+                                            context);
 
             if (result > -1) {
                 context->codeNode = Cast::upcast(jsonObject);
@@ -326,7 +324,7 @@ namespace smart {
         return -1;
     }
 
-    int internal_JsonObjectTokenizer(TokenizerParams_parent_ch_start_context) {
+    int internal_JsonObjectTokenizerMulti(TokenizerParams_parent_ch_start_context) {
 
         auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
 
