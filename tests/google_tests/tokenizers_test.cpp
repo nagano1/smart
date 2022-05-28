@@ -36,20 +36,23 @@ TEST(TokenizersTest_, StringLiteralTest) {
         int result = Tokenizers::stringLiteralTokenizer(nullptr, class_chars[0], 0, context);
 
         EXPECT_EQ(result, 8);
+        EXPECT_EQ(context->codeNode->vtable, VTables::StringLiteralVTable);
+        auto* stru = Cast::downcast<StringLiteralNodeStruct*>(context->codeNode);
+        EXPECT_EQ(std::string{ stru->str }, std::string{ "mytext" });
     }
 
     {
-        static constexpr const char class_chars[] = u8"\"A\\r\\n\"";
+        static constexpr const char chars[] = u8R"("A\u864e\u306e")";
 
-        context->length = sizeof(class_chars) - 1;;
-        context->chars = (char*)class_chars;
-        int result = Tokenizers::stringLiteralTokenizer(nullptr, class_chars[0], 0, context);
+        context->length = sizeof(chars) - 1;;
+        context->chars = (char*)chars;
+        int result = Tokenizers::stringLiteralTokenizer(nullptr, chars[0], 0, context);
 
-        EXPECT_EQ(result, 7);
+        EXPECT_EQ(result, 19);
         EXPECT_EQ(context->codeNode->vtable, VTables::StringLiteralVTable);
 
         auto* stru = Cast::downcast<StringLiteralNodeStruct*>(context->codeNode);
-        EXPECT_EQ(std::string{ stru->str }, std::string{ "A\r\n"});
+        EXPECT_EQ(std::string{ stru->str }, std::string{ u8R"(A虎の)"});
     }
 
 

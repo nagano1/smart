@@ -234,7 +234,70 @@ bool func(int, char) {
 
 
 
+TEST(ParserTest_, utf16escape) {
+    {
+        const char* str = u8"\\u0061"; // a
+        unsigned char ch1, ch2, ch3, ch4;
+        int utf16length = ParseUtil::parseUtf16toUtf8(str, strlen(str), 0, &ch1, &ch2, &ch3, &ch4);
+        EXPECT_EQ(utf16length, 1);
+        EXPECT_EQ(ch1, 0x61);
+    }
 
+    {
+        //%C3%9F
+        const char* str = u8"\\u00df"; // ß
+        unsigned char ch1, ch2, ch3, ch4;
+        int utf16length = ParseUtil::parseUtf16toUtf8(str, strlen(str), 0, &ch1, &ch2, &ch3, &ch4);
+        EXPECT_EQ(utf16length, 2);
+        EXPECT_EQ(ch1, 0xC3);
+        EXPECT_EQ(ch2, 0x9F);
+    }
+
+    {
+        /*
+            虎
+            u864e
+            \xE8\x99\x8E\xE3\x81\xAE
+        */
+        const char str[] = u8"\\u864e";
+        unsigned char ch1, ch2, ch3, ch4;
+        int utf16length = ParseUtil::parseUtf16toUtf8(str, strlen(str), 0, &ch1, &ch2, &ch3, &ch4);
+        EXPECT_EQ(utf16length, 3);
+        EXPECT_EQ(ch1, 0xE8);
+        EXPECT_EQ(ch2, 0x99);
+        EXPECT_EQ(ch3, 0x8E);
+    }
+    
+    {
+
+        // 𠏹
+        // {\"fwe\": \"\uD840\uDFF9\"}
+        // &#x203F9;
+        // &#132089;
+        // URL - encoded UTF8 % F0 % A0 % 8F % B9
+        const char str[] = u8"\\uD840\\uDFF9";
+        constexpr unsigned char rawStr[] = u8"𠏹";
+        unsigned char ch1, ch2, ch3, ch4;
+        int utf16length = ParseUtil::parseUtf16toUtf8(str, strlen(str), 0, &ch1, &ch2, &ch3, &ch4);
+        EXPECT_EQ(utf16length, 4);
+        EXPECT_EQ(ch1, 0xF0);
+        EXPECT_EQ(ch2, 0xA0);
+        EXPECT_EQ(ch3, 0x8F);
+        EXPECT_EQ(ch4, 0xB9);
+
+        EXPECT_EQ(ch1, rawStr[0]);
+        EXPECT_EQ(ch2, rawStr[1]);
+        EXPECT_EQ(ch3, rawStr[2]);
+        EXPECT_EQ(ch4, rawStr[3]);
+
+    }
+
+
+    int ch = (int)219;
+    EXPECT_EQ((ch >> 2) == 0x36, true);
+}
+
+ENDTEST
 
 
 TEST(ParserTest_, utf16Length) {

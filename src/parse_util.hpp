@@ -32,6 +32,13 @@ UTF-8
 at least one of the y should be 1
 */
 
+/*
+UTF-16
+
+codepoint 	UTF-16
+xxxxxxxxxxxxxxxx         	xxxxxxxxxxxxxxxx
+000uuuuuxxxxxxxxxxxxxxxx 	110110wwwwxxxxxx 110111xxxxxxxxxx 	wwww = uuuuu - 1
+*/
 static constexpr unsigned char utf8BytesTable[256]{
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -51,7 +58,120 @@ static constexpr unsigned char utf8BytesTable[256]{
     4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4
 };
 
+
+/*
+48	0x30	0
+65	0x41	A
+97	0x61	a
+*/
+static constexpr unsigned char hex_asciicode_table[256]{
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, //0 
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, //16
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,// 32
+    0,1,2,3,4,5,6,7,8,9,1,1,1,1,1,1,// 48
+    1,10,11,12,13,14,15,16,1,1,1,1,1,1,1,1, //64
+    10,11,12,13,14,15,16,1,1,1,1,1,1,1,1,1, // 80
+    1,10,11,12,13,14,15,16,1,1,1,1,1,1,1,1, // 96
+    10,11,12,13,14,15,16,1,1,1,1,1,1,1,1,1, // 112
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 128
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 144
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 160
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 176
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, // 192
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, // 
+    3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+    4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4
+};
 struct ParseUtil {
+    // \u8e60
+    // \0061 -> a
+    static int parseUtf16toUtf8(const char* utf16_chars, unsigned int len, int index, 
+        unsigned char* ch1, unsigned  char* ch2, unsigned char* ch3, unsigned char* ch4) {
+
+        // \u6382
+        if (index + 6 > (int)len) {
+            return 0;
+        }
+
+        const unsigned char* chars = (unsigned char*)(utf16_chars + index);
+
+        assert(chars[0] == '\\');
+        assert(chars[1] == 'u');
+
+        int ch = (hex_asciicode_table[(int)chars[2]] << 4) | hex_asciicode_table[(int)chars[3]];
+        bool hasPair = (ch >> 2) == 0x36; // 110110ww
+        
+        if (hasPair) {
+            // \uD840\uDFF9
+            if (index + 12 > (int)len) {
+                return 0;
+            }
+
+            assert(chars[6] == '\\');
+            assert(chars[7] == 'u');
+
+            int codePoint = (ch << 8)
+                | ((int)hex_asciicode_table[(int)chars[4]] << 4)
+                | (int)hex_asciicode_table[(int)chars[5]];
+            codePoint = codePoint & 0b0000001111111111;
+
+            int codePoint2 =
+                ((int)hex_asciicode_table[(int)chars[8]] << 12)
+                | ((int)hex_asciicode_table[(int)chars[9]] << 8)
+                | ((int)hex_asciicode_table[(int)chars[10]] << 4)
+                | (int)hex_asciicode_table[(int)chars[11]];
+            codePoint2 = codePoint2 & 0b0000001111111111;
+
+
+            // 𠏹
+            // {\"fwe\": \"\uD840\uDFF9\"}
+            // 
+            // &#x203F9;
+            // &#132089;
+            // URL - encoded UTF8 % F0 % A0 % 8F % B9
+
+            // utf16 uuuuuxxxxxxxxxxxxxxxx 	110110wwww_xxxx_xx 110111xxxx_xxxxxx 	(wwww = uuuuu - 1)
+            // utf8 11110yyy 10yyxxxx 10xxxxxx 10xxxxxx 65536 - 0x10FFFF
+            int left1 = (codePoint >> 6) + 1;
+            *ch1 = (left1 >> 3) | 0b11110000;
+            *ch2 = ((left1 & 0b11) << 4) | ((codePoint >> 2) & 0b1111) | 0x80;
+            *ch3 = ((codePoint & 0b11) << 4) | (codePoint2 >> 6) | 0x80;
+            *ch4 = (codePoint2 & 0b111111) | 0x80;
+            return 4;
+        }
+        else {
+            int codePoint = (ch << 8)
+                | ((int)hex_asciicode_table[(int)chars[4]] << 4)
+                | (int)hex_asciicode_table[(int)chars[5]];
+
+            printf("codePoint = %d\n", codePoint);
+            printf("codePoint = %x\n", codePoint);
+
+            // v = 1 << (sizeof(unsigned int)*8 - 1);
+            if (codePoint < 128) { // 0xxxxxxx 0 - 127
+                *ch1 = (unsigned char)codePoint;
+                return 1;
+            }
+            else if (codePoint < 2048) { // 110yyyyx 10xxxxxx 128 - 2047
+                *ch1 = codePoint>>6 | 0xC0;
+                *ch2 = (codePoint & 0x3F) | 0x80;
+                return 2;
+            } 
+            else if (codePoint < 65536) { // 1110yyyy 10yxxxxx 10xxxxxx 2048 - 65535
+                *ch1 = codePoint >> 12 | 0b11100000;
+                *ch2 = ((codePoint & 0b111111000000) >> 6) | 0x80;
+                *ch3 = ((codePoint & 0b111111)) | 0x80;
+
+                printf("codePoint = %d,%d,%d\n", (unsigned char) *ch1, *ch2, *ch3);
+
+                return 3;
+            }
+        }
+
+        return 0;
+    }
+
+
 
     static int utf16_length(const char *utf8_chars, unsigned int byte_len) {
         unsigned int pos = 0;
@@ -65,7 +185,6 @@ struct ParseUtil {
         }
         return length;
     }
-
 
 
     template<class T>
