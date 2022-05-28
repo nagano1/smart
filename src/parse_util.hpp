@@ -144,9 +144,6 @@ struct ParseUtil {
                 | ((int)hex_asciicode_table[(int)chars[4]] << 4)
                 | (int)hex_asciicode_table[(int)chars[5]];
 
-            printf("codePoint = %d\n", codePoint);
-            printf("codePoint = %x\n", codePoint);
-
             // v = 1 << (sizeof(unsigned int)*8 - 1);
             if (codePoint < 128) { // 0xxxxxxx 0 - 127
                 *ch1 = (unsigned char)codePoint;
@@ -161,8 +158,6 @@ struct ParseUtil {
                 *ch1 = codePoint >> 12 | 0b11100000;
                 *ch2 = ((codePoint & 0b111111000000) >> 6) | 0x80;
                 *ch3 = ((codePoint & 0b111111)) | 0x80;
-
-                printf("codePoint = %d,%d,%d\n", (unsigned char) *ch1, *ch2, *ch3);
 
                 return 3;
             }
