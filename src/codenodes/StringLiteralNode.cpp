@@ -113,8 +113,32 @@ namespace smart {
             int currentStrIndex = 0;
             for (int_fast32_t i = 1; i < found_count-1; i++) {
                 /* \uXXXX		4s, 16unit Unicode char */
+
+                printf("%c,", strLiteralNode->text[i]);
+
                 if (escapeMode) {
                     escapeMode = false;
+                    if (strLiteralNode->text[i] == 'u') {
+                        int consumed = 0;
+                        printf("AA,");
+
+                        int utf16length = ParseUtil::parseUtf16toUtf8(strLiteralNode->text, strLiteralNode->textLength
+                            , i - 1, &consumed
+                            , (unsigned char*)&str[currentStrIndex]
+                            , (unsigned char*)&str[currentStrIndex+1]
+                            , (unsigned char*)&str[currentStrIndex+2]
+                            , (unsigned char*)&str[currentStrIndex+3]);
+                        if (utf16length > 0) {
+                            printf("BBB, %d\n", utf16length);
+                            printf("consumed, %d\n", consumed);
+
+                            currentStrIndex += utf16length;
+                            i += consumed-2;
+                            strLength += utf16length;
+                            continue;
+                        }
+                    }
+
                     when(strLiteralNode->text[i]) {
                         //wfor_noop('r')
                         wfor('r', str[currentStrIndex++] = '\r')

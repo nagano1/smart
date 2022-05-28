@@ -48,7 +48,7 @@ TEST(TokenizersTest_, StringLiteralTest) {
         context->chars = (char*)chars;
         int result = Tokenizers::stringLiteralTokenizer(nullptr, chars[0], 0, context);
 
-        EXPECT_EQ(result, 19);
+        EXPECT_EQ(result, 15);
         EXPECT_EQ(context->codeNode->vtable, VTables::StringLiteralVTable);
 
         auto* stru = Cast::downcast<StringLiteralNodeStruct*>(context->codeNode);

@@ -85,7 +85,7 @@ static constexpr unsigned char hex_asciicode_table[256]{
 struct ParseUtil {
     // \u8e60
     // \0061 -> a
-    static int parseUtf16toUtf8(const char* utf16_chars, unsigned int len, int index, 
+    static int parseUtf16toUtf8(const char* utf16_chars, unsigned int len, int index, int *consumed,
         unsigned char* ch1, unsigned  char* ch2, unsigned char* ch3, unsigned char* ch4) {
 
         // \u6382
@@ -137,6 +137,7 @@ struct ParseUtil {
             *ch2 = ((left1 & 0b11) << 4) | ((codePoint >> 2) & 0b1111) | 0x80;
             *ch3 = ((codePoint & 0b11) << 4) | (codePoint2 >> 6) | 0x80;
             *ch4 = (codePoint2 & 0b111111) | 0x80;
+            *consumed = 12;
             return 4;
         }
         else {
@@ -144,7 +145,11 @@ struct ParseUtil {
                 | ((int)hex_asciicode_table[(int)chars[4]] << 4)
                 | (int)hex_asciicode_table[(int)chars[5]];
 
+            printf("codepoint = [%x]\n", codePoint);
+
             // v = 1 << (sizeof(unsigned int)*8 - 1);
+            *consumed = 6;
+
             if (codePoint < 128) { // 0xxxxxxx 0 - 127
                 *ch1 = (unsigned char)codePoint;
                 return 1;
