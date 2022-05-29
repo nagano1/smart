@@ -44,7 +44,7 @@ TEST(TokenizersTest_, StringLiteralTest) {
     {
         static constexpr const char chars[] = u8R"("A\u864e\u306e")";
 
-        static constexpr const char cs[] = u8R"(A虎の)";
+        //static constexpr const char cs[] = u8R"(A虎の)";
 
 
         context->length = sizeof(chars) - 1;;
