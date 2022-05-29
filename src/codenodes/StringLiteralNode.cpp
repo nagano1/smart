@@ -114,7 +114,7 @@ namespace smart {
             for (int_fast32_t i = 1; i < found_count-1; i++) {
                 /* \uXXXX		4s, 16unit Unicode char */
 
-                printf("%c,", strLiteralNode->text[i]);
+                //printf("%c,", strLiteralNode->text[i]);
 
                 if (escapeMode) {
                     escapeMode = false;
@@ -129,8 +129,8 @@ namespace smart {
                             , (unsigned char*)&str[currentStrIndex+2]
                             , (unsigned char*)&str[currentStrIndex+3]);
                         if (utf16length > 0) {
-                            printf("BBB, %d\n", utf16length);
-                            printf("consumed, %d\n", consumed);
+                            //printf("BBB, %d\n", utf16length);
+                            //printf("consumed, %d\n", consumed);
 
                             currentStrIndex += utf16length;
                             i += consumed-2;
