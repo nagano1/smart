@@ -112,7 +112,8 @@ static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int 
         currentCharactor++;
 
         utf8byte ch = text[i];
-        if (ParseUtil::isBreakLine(ch)) {
+        //if (ParseUtil::isBreakLine(ch)) {
+        if ('\n' == ch) {
             currentCharactor = 0;
             currentLine++;
             lineFirstPos = i;
@@ -122,6 +123,8 @@ static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int 
     
     return false;
 }
+
+static char filename[256];
 
 static void validateJson(const char *text, st_textlen textLength) {
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
@@ -211,20 +214,40 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
 
                 fprintf(stdout, "%s", responseMessage.c_str());
                 fflush(stdout);
-                return;
             }
 
-            if (strNode->textLength > 0 && 0 == strcmp(strNode->str, "textDocument/didChange")) {
-                auto *item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
-                auto *item3 = Cast::downcast<JsonArrayStruct*>(item2->hashMap->get2("contentChanges"));
-                auto *item5 = Cast::downcast<JsonObjectStruct*>(item3->firstItem->valueNode);
-                auto *item4 = Cast::downcast<StringLiteralNodeStruct*>(item5->hashMap->get2("text"));
+            if (strNode->textLength > 0) {
+                auto didChange = 0 == strcmp(strNode->str, "textDocument/didChange");
+                auto didOpen = 0 == strcmp(strNode->str, "textDocument/didOpen");
 
+                if (didOpen || didChange) {
+                    auto* item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
+                    auto* item3 = Cast::downcast<JsonObjectStruct*>(item2->hashMap->get2("textDocument"));
+                    auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("uri"));
 
-                validateJson(item4->str, item4->strLength);
-                
-                return;
+                    memcpy(filename, item4->str, item4->strLength);
+                    filename[item4->strLength] = '\0';
+
+                    fprintf(stderr, "file = %s\n", item4->str);
+                    fflush(stderr);
+
+                    if (didChange) {
+                        auto* item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
+                        auto* item3 = Cast::downcast<JsonArrayStruct*>(item2->hashMap->get2("contentChanges"));
+                        auto* item5 = Cast::downcast<JsonObjectStruct*>(item3->firstItem->valueNode);
+                        auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(item5->hashMap->get2("text"));
+
+                        validateJson(item4->str, item4->strLength);
+                    }
+                    else if (didOpen) {
+                        auto* item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
+                        auto* item3 = Cast::downcast<JsonObjectStruct*>(item2->hashMap->get2("textDocument"));
+                        auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("text"));
+                        validateJson(item4->str, item4->strLength);
+                    }
+                }
             }
+
         }
     }
 
@@ -235,6 +258,8 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
     else {
         fprintf(stderr, "different \n"); fflush(stderr);
     }
+
+    Alloc::deleteDocument(document);
 
     /*
     export const None = 0;

@@ -169,6 +169,7 @@ static void testJson(const char* codeText) {
     EXPECT_EQ(std::string{ treeText }, std::string{ codeText });
     //}
 
+    Alloc::deleteDocument(document);
 }
 
 
