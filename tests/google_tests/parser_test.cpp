@@ -282,10 +282,10 @@ TEST(ParserTest_, utf16escape) {
         int consumed;
         int utf16length = ParseUtil::parseUtf16toUtf8(str, strlen(str), 0, &consumed, &ch1, &ch2, &ch3, &ch4);
         EXPECT_EQ(utf16length, 4);
-        EXPECT_EQ((int)ch1, 0xF0);
-        EXPECT_EQ((int)ch2, 0xA0);
-        EXPECT_EQ((int)ch3, 0x8F);
-        EXPECT_EQ((int)ch4, 0xB9);
+        EXPECT_EQ((int)ch1, (int)0xF0);
+        EXPECT_EQ((int)ch2, (int)0xA0);
+        EXPECT_EQ((int)ch3, (int)0x8F);
+        EXPECT_EQ((int)ch4, (int)0xB9);
 
         EXPECT_EQ((int)ch1, (int)rawStr[0]);
         EXPECT_EQ((int)ch2, (int)rawStr[1]);
