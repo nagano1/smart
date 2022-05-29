@@ -47,7 +47,7 @@ TEST(TokenizersTest_, StringLiteralTest) {
         //static constexpr const char cs[] = u8R"(A虎の)";
 
 
-        context->length = sizeof(chars) - 1;;
+        context->length = sizeof(chars) - 1;
         context->chars = (char*)chars;
         int result = Tokenizers::stringLiteralTokenizer(nullptr, chars[0], 0, context);
 

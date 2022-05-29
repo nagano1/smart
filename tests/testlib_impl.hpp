@@ -252,8 +252,8 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
             s2 << moji;
         } else {
             s2 << t2;
-
         }
+
         std::lock_guard<std::mutex> guard(Test::log_mtx);
 
         Test::logstream <<  (ok? "\n    ✅ OK: ": "\n    ❌ NG: ")

@@ -104,8 +104,6 @@ namespace smart {
             memcpy(strLiteralNode->text, context->chars + start, found_count);
             strLiteralNode->text[found_count] = '\0';
 
-
-            // fjoawiejf<jawoefi>();
             // create actual string
             auto *str = context->memBuffer.newMem<char>(found_count+ 3);
             bool escapeMode = false;
@@ -113,8 +111,6 @@ namespace smart {
             int currentStrIndex = 0;
             for (int_fast32_t i = 1; i < found_count-1; i++) {
                 /* \uXXXX		4s, 16unit Unicode char */
-
-                //printf("%c,", strLiteralNode->text[i]);
 
                 if (escapeMode) {
                     escapeMode = false;
@@ -127,13 +123,11 @@ namespace smart {
                             , (unsigned char*)&str[currentStrIndex+1]
                             , (unsigned char*)&str[currentStrIndex+2]
                             , (unsigned char*)&str[currentStrIndex+3]);
-                        if (utf16length > 0) {
-                            //printf("BBB, %d\n", utf16length);
-                            //printf("consumed, %d\n", consumed);
 
+                        if (utf16length > 0) {
                             currentStrIndex += utf16length;
-                            i += consumed-2;
                             strLength += utf16length;
+                            i += consumed - 2;
                             continue;
                         }
                     }
