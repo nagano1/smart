@@ -238,10 +238,22 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
     template<typename T1, typename T2>
     static void test_binary_op(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars, bool ok, const std::string &op) {
         std::stringstream s;
-        s << t1;
+        if (sizeof(T1) == 1) { // for avoiding crash on android
+            char moji[8];
+            sprintf(moji, "%d", *(int*)(void*)(&t1));
+            s << moji;
+        } else {
+            s << t1;
+        }
         std::stringstream s2;
-        s2 << t2;
+        if (sizeof(T2) == 1) {
+            char moji[8];
+            sprintf(moji, "%d", *(int*)(void*)(&t1));
+            s2 << moji;
+        } else {
+            s2 << t2;
 
+        }
         std::lock_guard<std::mutex> guard(Test::log_mtx);
 
         Test::logstream <<  (ok? "\n    ✅ OK: ": "\n    ❌ NG: ")
@@ -270,6 +282,7 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
     static void ecompare_not_equal(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars) {
         test_binary_op(t1, t2, t1_chars, t2_chars, t1 != t2, "!=");
     }
+
 
     /*
     template<>
