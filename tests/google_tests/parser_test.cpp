@@ -233,7 +233,6 @@ bool func(int, char) {
 }
 
 
-
 TEST(ParserTest_, utf16escape) {
     {
         const char* str = u8"\\u0061"; // a
@@ -247,29 +246,27 @@ TEST(ParserTest_, utf16escape) {
     {
         //%C3%9F
         const char* str = u8"\\u00df"; // ß
-        unsigned char ch1, ch2, ch3, ch4;
+        unsigned char ch1=0, ch2=0, ch3=0, ch4=0;
         int consumed;
 
         int utf16length = ParseUtil::parseUtf16toUtf8(str, strlen(str), 0, &consumed, &ch1, &ch2, &ch3, &ch4);
         EXPECT_EQ(utf16length, 2);
-        EXPECT_EQ(ch1, 0xC3);
-        EXPECT_EQ(ch2, 0x9F);
+        EXPECT_EQ((int)ch1, (int)0xC3);
+        EXPECT_EQ((int)ch2, (int)0x9F);
     }
 
     {
-        /*
-            虎
-            u864e
-            \xE8\x99\x8E\xE3\x81\xAE
-        */
+            //虎
+            //u864e
+            //\xE8\x99\x8E\xE3\x81\xAE
         const char str[] = u8"\\u864e";
         unsigned char ch1, ch2, ch3, ch4;
         int consumed;
         int utf16length = ParseUtil::parseUtf16toUtf8(str, strlen(str), 0, &consumed, &ch1, &ch2, &ch3, &ch4);
         EXPECT_EQ(utf16length, 3);
-        EXPECT_EQ(ch1, 0xE8);
-        EXPECT_EQ(ch2, 0x99);
-        EXPECT_EQ(ch3, 0x8E);
+        EXPECT_EQ((int)ch1, (int)0xE8);
+        EXPECT_EQ((int)ch2, (int)0x99);
+        EXPECT_EQ((int)ch3, (int)0x8E);
     }
     
     {
@@ -285,25 +282,23 @@ TEST(ParserTest_, utf16escape) {
         int consumed;
         int utf16length = ParseUtil::parseUtf16toUtf8(str, strlen(str), 0, &consumed, &ch1, &ch2, &ch3, &ch4);
         EXPECT_EQ(utf16length, 4);
-        EXPECT_EQ(ch1, 0xF0);
-        EXPECT_EQ(ch2, 0xA0);
-        EXPECT_EQ(ch3, 0x8F);
-        EXPECT_EQ(ch4, 0xB9);
+        EXPECT_EQ((int)ch1, 0xF0);
+        EXPECT_EQ((int)ch2, 0xA0);
+        EXPECT_EQ((int)ch3, 0x8F);
+        EXPECT_EQ((int)ch4, 0xB9);
 
-        EXPECT_EQ(ch1, rawStr[0]);
-        EXPECT_EQ(ch2, rawStr[1]);
-        EXPECT_EQ(ch3, rawStr[2]);
-        EXPECT_EQ(ch4, rawStr[3]);
+        EXPECT_EQ((int)ch1, (int)rawStr[0]);
+        EXPECT_EQ((int)ch2, (int)rawStr[1]);
+        EXPECT_EQ((int)ch3, (int)rawStr[2]);
+        EXPECT_EQ((int)ch4, (int)rawStr[3]);
 
     }
-
 
     int ch = (int)219;
     EXPECT_EQ((ch >> 2) == 0x36, true);
 }
 
 ENDTEST
-
 
 TEST(ParserTest_, utf16Length) {
 
