@@ -240,7 +240,7 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
         std::stringstream s;
         if (sizeof(T1) == 1) { // for avoiding crash on android
             char moji[8];
-            sprintf(moji, "%d", *(int*)(void*)(&t1));
+            sprintf(moji, "%d", *(int*)(&t1));
             s << moji;
         } else {
             s << t1;
@@ -248,7 +248,7 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
         std::stringstream s2;
         if (sizeof(T2) == 1) {
             char moji[8];
-            sprintf(moji, "%d", *(int*)(void*)(&t1));
+            sprintf(moji, "%d", *(int*)(&t2));
             s2 << moji;
         } else {
             s2 << t2;
