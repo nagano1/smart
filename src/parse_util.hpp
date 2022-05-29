@@ -145,7 +145,7 @@ struct ParseUtil {
                 | ((int)hex_asciicode_table[(int)chars[4]] << 4)
                 | (int)hex_asciicode_table[(int)chars[5]];
 
-            printf("codepoint = [%x]\n", codePoint);
+            //printf("codepoint = [%x]\n", codePoint);
 
             // v = 1 << (sizeof(unsigned int)*8 - 1);
             *consumed = 6;

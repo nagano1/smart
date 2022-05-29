@@ -44,6 +44,9 @@ TEST(TokenizersTest_, StringLiteralTest) {
     {
         static constexpr const char chars[] = u8R"("A\u864e\u306e")";
 
+        static constexpr const char cs[] = u8R"(A虎の)";
+
+
         context->length = sizeof(chars) - 1;;
         context->chars = (char*)chars;
         int result = Tokenizers::stringLiteralTokenizer(nullptr, chars[0], 0, context);
@@ -52,6 +55,7 @@ TEST(TokenizersTest_, StringLiteralTest) {
         EXPECT_EQ(context->codeNode->vtable, VTables::StringLiteralVTable);
 
         auto* stru = Cast::downcast<StringLiteralNodeStruct*>(context->codeNode);
+        EXPECT_EQ(stru->strLength, 7);
         EXPECT_EQ(std::string{ stru->str }, std::string{ u8R"(A虎の)"});
     }
     Alloc::deleteDocument(document);

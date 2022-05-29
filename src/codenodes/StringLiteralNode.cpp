@@ -120,7 +120,6 @@ namespace smart {
                     escapeMode = false;
                     if (strLiteralNode->text[i] == 'u') {
                         int consumed = 0;
-                        printf("AA,");
 
                         int utf16length = ParseUtil::parseUtf16toUtf8(strLiteralNode->text, strLiteralNode->textLength
                             , i - 1, &consumed
@@ -152,6 +151,9 @@ namespace smart {
                         wfor('u', str[currentStrIndex++] = 'u')
                         welse(str[currentStrIndex++] = strLiteralNode->text[i])
                     }
+
+                    strLength++;
+
                     continue;
                 }
 
@@ -160,10 +162,10 @@ namespace smart {
                     escapeMode = true;
                 }
                 else {
+                    strLength++;
                     str[currentStrIndex++] = strLiteralNode->text[i];
                 }
 
-                strLength++;
             }
 
             if (startsWithDQuote) {
