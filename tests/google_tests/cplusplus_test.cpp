@@ -194,12 +194,11 @@ TEST(cplusplus_test, test1) {
     {
         char a = -122;
         unsigned char b = a;
-        if (ARM) {
-            EXPECT_TRUE((int)a == (int)b);
-        }
-        else {
-            EXPECT_TRUE((int)a != (int)b);
-        }
+#if defined(__aarch64__) && defined(__ANDROID__)
+       EXPECT_TRUE((int)a == (int)b);
+#else
+        EXPECT_TRUE((int)a != (int)b);
+#endif
 
         EXPECT_FALSE(3 == 5);
     }
@@ -249,11 +248,14 @@ struct A {
 };
 
 #ifdef __ANDROID__
-#ifdef __aarch64__
 
-static int add(int i, int j);
+#ifdef __aarch64__
+static long add(long i, long j);
+#endif
 
 TEST(cplusplus_test, ArmAssemblyTest2) {
+    #ifdef __aarch64__
+
     int a = 1;
     int b = 2;
     int c = 0;
@@ -270,16 +272,16 @@ TEST(cplusplus_test, ArmAssemblyTest2) {
 
 
     //EXPECT_EQ(sp, (void*)&p2);
+    #endif
 }
+#ifdef __aarch64__
 
-static int add(int i, int j)
+static long add(long i, long j)
 {
-    int res = 0;
-    /*
+    long res = 0;
     __asm ("ADD %[result], %[input_i], %[input_j]"
     : [result] "=r" (res) : [input_i] "r" (i), [input_j] "r" (j)
     );
-     */
 
     //int address = 0;
     /*
@@ -300,10 +302,10 @@ static int add(int i, int j)
 
     return res;
 }
+#endif
 
 ENDTEST
 
-#endif
 #endif
 
 
