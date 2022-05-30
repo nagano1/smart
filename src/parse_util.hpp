@@ -81,7 +81,6 @@ static constexpr unsigned int hex_asciicode_table[256]{
 
 struct ParseUtil {
     // \u8e60
-    // \0061 -> a
     static int parseJsonUtf16Sequense(const char* utf16_chars, unsigned int len, int index, int *consumed,
         unsigned char* ch1, unsigned  char* ch2, unsigned char* ch3, unsigned char* ch4) {
 
@@ -95,34 +94,34 @@ struct ParseUtil {
         assert(chars[0] == '\\');
         assert(chars[1] == 'u');
 
-        int ch = (hex_asciicode_table[(int)chars[2]] << 4) | hex_asciicode_table[(int)chars[3]];
-        bool hasPair = (ch >> 2) == 0x36; // 110110ww
+        int first8bit = (hex_asciicode_table[(int)chars[2]] << 4) | hex_asciicode_table[(int)chars[3]];
+        bool hasPair = (first8bit >> 2) == 0b110110; // 110110ww
 
-        int codePoint = (ch << 8)
-                        | (hex_asciicode_table[(int)chars[4]] << 4)
+        int codePoint = first8bit << 8
+                        | hex_asciicode_table[(int)chars[4]] << 4
                         | hex_asciicode_table[(int)chars[5]];
         
         if (hasPair) {
-            // \uD840\uDFF9
+            // eg. \uD840\uDFF9
             if (index + 12 > (int)len || chars[6] != '\\' || chars[7] != 'u') {
                 return 0;
             }
 
-            codePoint = codePoint & 0b0000001111111111; // 110110wwwwxxxxxx
+            int bitArray1 = codePoint & 0b0000001111111111; // 110110wwwwxxxxxx
 
-            int codePoint2 = (hex_asciicode_table[(int)chars[8]] << 12)
+            int bitArray2 = (hex_asciicode_table[(int)chars[8]] << 12)
                 | (hex_asciicode_table[(int)chars[9]] << 8)
                 | (hex_asciicode_table[(int)chars[10]] << 4)
                 | hex_asciicode_table[(int)chars[11]];
-            codePoint2 = codePoint2 & 0b0000001111111111; // 110111xxxxxxxxxx
+            bitArray2 = bitArray2 & 0b0000001111111111; // 110111xxxxxxxxxx
 
             // utf16 uuuuuxxxxxxxxxxxxxxxx 	110110wwww_xxxx_xx 110111xxxx_xxxxxx 	(wwww = uuuuu - 1)
             // utf8 11110yyy 10yyxxxx 10xxxxxx 10xxxxxx 65536 - 0x10FFFF
-            int left1 = (codePoint >> 6) + 1;
+            int left1 = (bitArray1 >> 6) + 1;
             *ch1 = (left1 >> 3) | 0b11110000;
-            *ch2 = ((left1 & 0b11) << 4) | ((codePoint >> 2) & 0b1111) | 0x80;
-            *ch3 = ((codePoint & 0b11) << 4) | (codePoint2 >> 6) | 0x80;
-            *ch4 = (codePoint2 & 0b111111) | 0x80;
+            *ch2 = ((left1 & 0b11) << 4) | ((bitArray1 >> 2) & 0b1111) | 0x80;
+            *ch3 = ((bitArray1 & 0b11) << 4) | (bitArray2 >> 6) | 0x80;
+            *ch4 = (bitArray2 & 0b111111) | 0x80;
             *consumed = 12;
             return 4;
         }
