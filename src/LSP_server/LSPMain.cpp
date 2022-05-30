@@ -124,9 +124,7 @@ static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int 
     return false;
 }
 
-static char filename[256];
-
-static void validateJson(const char *text, st_textlen textLength) {
+static void validateJson(const char *text, st_textlen textLength, const char * const filePath) {
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, text, textLength);
 
@@ -140,7 +138,7 @@ static void validateJson(const char *text, st_textlen textLength) {
         }
 
         char moji[1024];
-        sprintf(moji, u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c:/Users/wikihow/Desktop/AAA.txt","diagnostics": [{"severity": 1,"range": { "start": { "character": %d, "line": %d }, "end": { "character": %d, "line": %d } },"message": "%s","source": "ex"}]}})", charactor, line, 0, line+1, document->context->syntaxErrorInfo.reason);
+        sprintf(moji, u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"%s","diagnostics": [{"severity": 1,"range": { "start": { "character": %d, "line": %d }, "end": { "character": %d, "line": %d } },"message": "%s","source": "ex"}]}})",filePath ,charactor, line, 0, line+1, document->context->syntaxErrorInfo.reason);
         fprintf(stderr, "\n\n[%s]\n\n", moji);
         fflush(stderr);
 
@@ -150,9 +148,16 @@ static void validateJson(const char *text, st_textlen textLength) {
         fflush(stdout);
     }
     else {
-        const char body[] = u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"file:///c%3A/Users/wikihow/Desktop/AAA.txt","diagnostics": []}})";
+        //const char body[] = u8R"({
+//"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"%s","diagnostics": []}})";
 
-        std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(body)) + "\n\n" + std::string{ body };
+        char moji[1024];
+        sprintf(moji, u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"%s","diagnostics": []}})", filePath);
+        fprintf(stderr, "\n\n[%s]\n\n", moji);
+        fflush(stderr);
+
+
+        std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(moji)) + "\n\n" + std::string{ moji };
 
         fprintf(stdout, "%s", responseMessage.c_str());
         fflush(stdout);
@@ -200,12 +205,12 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
     if (rootJson) {
         auto *item = rootJson->hashMap->get2("method");
         if (item) {
-            auto *strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
+            auto *methodNode = Cast::downcast<StringLiteralNodeStruct*>(item);
 
-            fprintf(stderr, "here5: [%s]", strNode->str);
+            fprintf(stderr, "here5: [%s]", methodNode->str);
             fflush(stderr);
 
-            if (strNode->textLength > 0 && 0 == strcmp(strNode->str, "initialize")) {
+            if (methodNode->textLength > 0 && 0 == strcmp(methodNode->str, "initialize")) {
                 const char body[] = u8R"({"jsonrpc": "2.0","id" : "0","result" : {"capabilities": {"textDocumentSync": 1,"completionProvider": { "resolveProvider": true }}}})";
 
                 std::string responseMessage = std::string{ "Content-Length: " } +std::to_string( + strlen(body)) + std::string{ "\n\n" }+std::string{ body };
@@ -216,19 +221,16 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
                 fflush(stdout);
             }
 
-            if (strNode->textLength > 0) {
-                auto didChange = 0 == strcmp(strNode->str, "textDocument/didChange");
-                auto didOpen = 0 == strcmp(strNode->str, "textDocument/didOpen");
+            if (methodNode->textLength > 0) {
+                auto didChange = 0 == strcmp(methodNode->str, "textDocument/didChange");
+                auto didOpen = 0 == strcmp(methodNode->str, "textDocument/didOpen");
 
                 if (didOpen || didChange) {
                     auto* item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
                     auto* item3 = Cast::downcast<JsonObjectStruct*>(item2->hashMap->get2("textDocument"));
-                    auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("uri"));
+                    auto* fileUri = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("uri"));
 
-                    memcpy(filename, item4->str, item4->strLength);
-                    filename[item4->strLength] = '\0';
-
-                    fprintf(stderr, "file = %s\n", item4->str);
+                    fprintf(stderr, "file = %s\n", fileUri->str);
                     fflush(stderr);
 
                     if (didChange) {
@@ -237,13 +239,14 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
                         auto* item5 = Cast::downcast<JsonObjectStruct*>(item3->firstItem->valueNode);
                         auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(item5->hashMap->get2("text"));
 
-                        validateJson(item4->str, item4->strLength);
+                        validateJson(item4->str, item4->strLength, fileUri->str);
                     }
                     else if (didOpen) {
                         auto* item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
                         auto* item3 = Cast::downcast<JsonObjectStruct*>(item2->hashMap->get2("textDocument"));
                         auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("text"));
-                        validateJson(item4->str, item4->strLength);
+                    
+                        validateJson(item4->str, item4->strLength, fileUri->str);
                     }
                 }
             }
