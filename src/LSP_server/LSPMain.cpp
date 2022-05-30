@@ -170,11 +170,13 @@ static void validateJson(const char *text, st_textlen textLength, const char * c
         fflush(stderr);
     }
     else {
-        //const char body[] = u8R"({
-//"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"%s","diagnostics": []}})";
-
         char moji[1024];
-        sprintf(moji, u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"%s","diagnostics": []}})", filePath);
+        sprintf(moji, u8R"(
+{
+    "jsonrpc": "2.0"
+    , "method": "textDocument/publishDiagnostics"
+    , "params": {"uri":"%s","diagnostics": []}
+})", filePath);
         fprintf(stderr, "\n\n[%s]\n\n", moji);
         fflush(stderr);
 
@@ -233,7 +235,17 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
             fflush(stderr);
 
             if (methodNode->textLength > 0 && 0 == strcmp(methodNode->str, "initialize")) {
-                const char body[] = u8R"({"jsonrpc": "2.0","id" : "0","result" : {"capabilities": {"textDocumentSync": 1,"completionProvider": { "resolveProvider": true }}}})";
+                const char body[] = u8R"(
+{
+    "jsonrpc": "2.0"
+    ,"id" : "0"
+    ,"result" : {
+        "capabilities": {
+            "textDocumentSync": 1
+            ,"completionProvider": { "resolveProvider": true }
+        }
+    }
+})";
 
                 std::string responseMessage = std::string{ "Content-Length: " } +std::to_string(strlen(body)) + std::string{ "\r\n\r\n" }+std::string{ body };
 
