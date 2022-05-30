@@ -110,18 +110,11 @@ struct ParseUtil {
 
             codePoint = codePoint & 0b0000001111111111; // 110110wwwwxxxxxx
 
-            int codePoint2 =
-                (hex_asciicode_table[(int)chars[8]] << 12)
+            int codePoint2 = (hex_asciicode_table[(int)chars[8]] << 12)
                 | (hex_asciicode_table[(int)chars[9]] << 8)
                 | (hex_asciicode_table[(int)chars[10]] << 4)
                 | hex_asciicode_table[(int)chars[11]];
             codePoint2 = codePoint2 & 0b0000001111111111; // 110111xxxxxxxxxx
-
-
-            // 𠏹
-            // \uD840\uDFF9
-            // &#x203F9;
-            // URL - encoded UTF8 %F0 %A0 %8F %B9
 
             // utf16 uuuuuxxxxxxxxxxxxxxxx 	110110wwww_xxxx_xx 110111xxxx_xxxxxx 	(wwww = uuuuu - 1)
             // utf8 11110yyy 10yyxxxx 10xxxxxx 10xxxxxx 65536 - 0x10FFFF
@@ -137,16 +130,16 @@ struct ParseUtil {
             //printf("codepoint = [%x]\n", codePoint);
             *consumed = 6;
 
-            if (codePoint < 128) { // 0xxxxxxx 0 - 127
+            if (codePoint <= 127) { // 0xxxxxxx 0 - 127
                 *ch1 = codePoint;
                 return 1;
             }
-            else if (codePoint < 2048) { // 110yyyyx 10xxxxxx 128 - 2047
+            else if (codePoint <= 2047) { // 110yyyyx 10xxxxxx 128 - 2047
                 *ch1 = codePoint>>6 | 0xC0;
                 *ch2 = (codePoint & 0x3F) | 0x80;
                 return 2;
             } 
-            else if (codePoint < 65536) { // 1110yyyy 10yxxxxx 10xxxxxx 2048 - 65535
+            else if (codePoint <= 65535) { // 1110yyyy 10yxxxxx 10xxxxxx 2048 - 65535
                 *ch1 = codePoint >> 12 | 0b11100000;
                 *ch2 = ((codePoint & 0b111111000000) >> 6) | 0x80;
                 *ch3 = ((codePoint & 0b111111)) | 0x80;
