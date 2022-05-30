@@ -234,7 +234,7 @@ bool func(int, char) {
 }
 
 
-TEST(ParserTest_, utf16escape) {
+TEST(ParserTest_, escapeJsonUtf16) {
     {
         const char* str = u8"\\u0061"; // a
         unsigned char ch1, ch2, ch3, ch4;
@@ -258,9 +258,9 @@ TEST(ParserTest_, utf16escape) {
     }
 
     {
-            //虎
-            //u864e
-            //\xE8\x99\x8E\xE3\x81\xAE
+        //虎
+        //u864e
+        //\xE8\x99\x8E\xE3\x81\xAE
         const char str[] = u8"\\u864e";
         unsigned char ch1, ch2, ch3, ch4;
         int consumed;

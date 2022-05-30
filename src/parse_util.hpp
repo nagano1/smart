@@ -21,7 +21,6 @@ using letterCheckerType = bool(*)(int, char);
 
 
 /*
-
 UTF-8
 
 0xxxxxxx                            0 - 127
@@ -82,6 +81,7 @@ static constexpr unsigned int hex_asciicode_table[256]{
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 };
+
 struct ParseUtil {
     // \u8e60
     // \0061 -> a
