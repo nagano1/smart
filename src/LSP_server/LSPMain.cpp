@@ -22,6 +22,8 @@
 #include <ctime>
 //#include <emmintrin.h>
 
+
+
 #include "./LSPMain.hpp"
 #include "./LSPLocalServer.hpp"
 
@@ -53,7 +55,7 @@ void LSPManager::LSP_main() {
 
     while (true) {
         int n = 0;
-        scanf("Content-Length: %d", &n);
+        auto _ = scanf("Content-Length: %d", &n);
 
         fprintf(stderr, "n: %d\n", n);
         fflush(stderr);
@@ -124,6 +126,7 @@ static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int 
     return false;
 }
 
+
 static void validateJson(const char *text, st_textlen textLength, const char * const filePath) {
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, text, textLength);
@@ -138,14 +141,33 @@ static void validateJson(const char *text, st_textlen textLength, const char * c
         }
 
         char moji[1024];
-        sprintf(moji, u8R"({"jsonrpc": "2.0","method": "textDocument/publishDiagnostics","params": {"uri":"%s","diagnostics": [{"severity": 1,"range": { "start": { "character": %d, "line": %d }, "end": { "character": %d, "line": %d } },"message": "%s","source": "ex"}]}})",filePath ,charactor, line, 0, line+1, document->context->syntaxErrorInfo.reason);
-        fprintf(stderr, "\n\n[%s]\n\n", moji);
-        fflush(stderr);
+        int len = sprintf(moji, R"(
+{
+    "jsonrpc": "2.0"
+    ,"method": "textDocument/publishDiagnostics"
+    ,"params": {
+        "uri":"%s"
+        ,"diagnostics": [
+            {
+                "severity": 1
+                ,"range": { 
+                    "start": { "character": %d, "line": %d }
+                    , "end": { "character": %d, "line": %d }
+                }
+                ,"message": "%s"
+                ,"source": "ex"
+            }
+        ]
+    }
+})", filePath ,charactor, line, 0, line+1, document->context->syntaxErrorInfo.reason);
 
-        std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(moji)) + "\n\n" + std::string{ moji };
+
+        std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(len) + "\r\n\r\n" + std::string{ moji };
 
         fprintf(stdout, "%s", responseMessage.c_str());
         fflush(stdout);
+        fprintf(stderr, "[%s]", responseMessage.c_str());
+        fflush(stderr);
     }
     else {
         //const char body[] = u8R"({
@@ -157,7 +179,7 @@ static void validateJson(const char *text, st_textlen textLength, const char * c
         fflush(stderr);
 
 
-        std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(moji)) + "\n\n" + std::string{ moji };
+        std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(moji)) + "\r\n\r\n" + std::string{ moji };
 
         fprintf(stdout, "%s", responseMessage.c_str());
         fflush(stdout);
@@ -213,7 +235,7 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
             if (methodNode->textLength > 0 && 0 == strcmp(methodNode->str, "initialize")) {
                 const char body[] = u8R"({"jsonrpc": "2.0","id" : "0","result" : {"capabilities": {"textDocumentSync": 1,"completionProvider": { "resolveProvider": true }}}})";
 
-                std::string responseMessage = std::string{ "Content-Length: " } +std::to_string( + strlen(body)) + std::string{ "\n\n" }+std::string{ body };
+                std::string responseMessage = std::string{ "Content-Length: " } +std::to_string(strlen(body)) + std::string{ "\r\n\r\n" }+std::string{ body };
 
                 fprintf(stderr, "[%s]", responseMessage.c_str()); fflush(stderr);
 

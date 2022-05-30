@@ -20,6 +20,11 @@
 #include <ctime>
 #include <emmintrin.h>
 
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <io.h>
+
 #include "thread_pool.hpp"
 #include "LSP_Server/LSPMain.hpp"
 
@@ -52,6 +57,7 @@ int main() {
     */
 
     //test_central_job_queues();
+    auto _ = _setmode(_fileno(stdout), 0x8000); // binmode
     LSPManager::LSP_main();
 
     return 0;
