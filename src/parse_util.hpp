@@ -59,18 +59,15 @@ static constexpr unsigned char utf8BytesTable[256]{
 
 
 /*
-48	0x30	0
-65	0x41	A
-97	0x61	a
 */
 static constexpr unsigned int hex_asciicode_table[256]{
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    0,1,2,3,4,5,6,7,8,9,1,1,1,1,1,1, // 48
-    1,10,11,12,13,14,15,16,1,1,1,1,1,1,1,1, // 64
+    0,1,2,3,4,5,6,7,8,9,1,1,1,1,1,1, // 48, 48	0x30	0
+    1,10,11,12,13,14,15,16,1,1,1,1,1,1,1,1, // 64, , 65	0x41	A 
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 80
-    1,10,11,12,13,14,15,16,1,1,1,1,1,1,1,1, // 96
+    1,10,11,12,13,14,15,16,1,1,1,1,1,1,1,1, // 96, 97	0x61	a
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -85,7 +82,7 @@ static constexpr unsigned int hex_asciicode_table[256]{
 struct ParseUtil {
     // \u8e60
     // \0061 -> a
-    static int parseUtf16toUtf8(const char* utf16_chars, unsigned int len, int index, int *consumed,
+    static int parseJsonUtf16Sequense(const char* utf16_chars, unsigned int len, int index, int *consumed,
         unsigned char* ch1, unsigned  char* ch2, unsigned char* ch3, unsigned char* ch4) {
 
         // \u6382
@@ -100,19 +97,17 @@ struct ParseUtil {
 
         int ch = (hex_asciicode_table[(int)chars[2]] << 4) | hex_asciicode_table[(int)chars[3]];
         bool hasPair = (ch >> 2) == 0x36; // 110110ww
+
+        int codePoint = (ch << 8)
+                        | (hex_asciicode_table[(int)chars[4]] << 4)
+                        | hex_asciicode_table[(int)chars[5]];
         
         if (hasPair) {
             // \uD840\uDFF9
-            if (index + 12 > (int)len) {
+            if (index + 12 > (int)len || chars[6] != '\\' || chars[7] != 'u') {
                 return 0;
             }
 
-            assert(chars[6] == '\\');
-            assert(chars[7] == 'u');
-
-            int codePoint = (ch << 8)
-                | (hex_asciicode_table[(int)chars[4]] << 4)
-                | hex_asciicode_table[(int)chars[5]];
             codePoint = codePoint & 0b0000001111111111; // 110110wwwwxxxxxx
 
             int codePoint2 =
@@ -124,10 +119,9 @@ struct ParseUtil {
 
 
             // 𠏹
-            // {\"fwe\": \"\uD840\uDFF9\"}
-            // 
+            // \uD840\uDFF9
             // &#x203F9;
-            // URL - encoded UTF8 % F0 % A0 % 8F % B9
+            // URL - encoded UTF8 %F0 %A0 %8F %B9
 
             // utf16 uuuuuxxxxxxxxxxxxxxxx 	110110wwww_xxxx_xx 110111xxxx_xxxxxx 	(wwww = uuuuu - 1)
             // utf8 11110yyy 10yyxxxx 10xxxxxx 10xxxxxx 65536 - 0x10FFFF
@@ -140,10 +134,6 @@ struct ParseUtil {
             return 4;
         }
         else {
-            int codePoint = (ch << 8)
-                | (hex_asciicode_table[(int)chars[4]] << 4)
-                | hex_asciicode_table[(int)chars[5]];
-
             //printf("codepoint = [%x]\n", codePoint);
             *consumed = 6;
 
@@ -160,7 +150,6 @@ struct ParseUtil {
                 *ch1 = codePoint >> 12 | 0b11100000;
                 *ch2 = ((codePoint & 0b111111000000) >> 6) | 0x80;
                 *ch3 = ((codePoint & 0b111111)) | 0x80;
-
                 return 3;
             }
         }

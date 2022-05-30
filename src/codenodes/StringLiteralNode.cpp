@@ -117,7 +117,7 @@ namespace smart {
                     if (strLiteralNode->text[i] == 'u') {
                         int consumed = 0;
 
-                        int utf16length = ParseUtil::parseUtf16toUtf8(strLiteralNode->text, strLiteralNode->textLength
+                        int utf16length = ParseUtil::parseJsonUtf16Sequense(strLiteralNode->text, strLiteralNode->textLength
                             , i - 1, &consumed
                             , (unsigned char*)&str[currentStrIndex]
                             , (unsigned char*)&str[currentStrIndex+1]

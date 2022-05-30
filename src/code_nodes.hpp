@@ -114,7 +114,7 @@ namespace smart {
 
     using StringLiteralNodeStruct = struct {
         NODE_HEADER;
-        char *text;
+        char *text; // unparsed, includes ""
         st_textlen textLength;
 
         char *str;
