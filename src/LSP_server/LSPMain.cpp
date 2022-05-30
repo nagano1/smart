@@ -226,26 +226,23 @@ void LSPManager::nextRequest(char *chars, st_textlen length) {
                 auto didOpen = 0 == strcmp(methodNode->str, "textDocument/didOpen");
 
                 if (didOpen || didChange) {
-                    auto* item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
-                    auto* item3 = Cast::downcast<JsonObjectStruct*>(item2->hashMap->get2("textDocument"));
-                    auto* fileUri = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("uri"));
+                    auto* params = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
+                    auto* textDocument = Cast::downcast<JsonObjectStruct*>(params->hashMap->get2("textDocument"));
+                    auto* fileUri = Cast::downcast<StringLiteralNodeStruct*>(textDocument->hashMap->get2("uri"));
 
                     fprintf(stderr, "file = %s\n", fileUri->str);
                     fflush(stderr);
 
                     if (didChange) {
-                        auto* item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
-                        auto* item3 = Cast::downcast<JsonArrayStruct*>(item2->hashMap->get2("contentChanges"));
+                        auto* item3 = Cast::downcast<JsonArrayStruct*>(params->hashMap->get2("contentChanges"));
                         auto* item5 = Cast::downcast<JsonObjectStruct*>(item3->firstItem->valueNode);
                         auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(item5->hashMap->get2("text"));
 
                         validateJson(item4->str, item4->strLength, fileUri->str);
                     }
                     else if (didOpen) {
-                        auto* item2 = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
-                        auto* item3 = Cast::downcast<JsonObjectStruct*>(item2->hashMap->get2("textDocument"));
-                        auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(item3->hashMap->get2("text"));
-                    
+                        auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(textDocument->hashMap->get2("text"));
+
                         validateJson(item4->str, item4->strLength, fileUri->str);
                     }
                 }
