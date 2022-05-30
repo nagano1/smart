@@ -64,21 +64,21 @@ static constexpr unsigned char utf8BytesTable[256]{
 65	0x41	A
 97	0x61	a
 */
-static constexpr unsigned char hex_asciicode_table[256]{
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, //0 
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, //16
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,// 32
-    0,1,2,3,4,5,6,7,8,9,1,1,1,1,1,1,// 48
-    1,10,11,12,13,14,15,16,1,1,1,1,1,1,1,1, //64
+static constexpr unsigned int hex_asciicode_table[256]{
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    0,1,2,3,4,5,6,7,8,9,1,1,1,1,1,1, // 48
+    1,10,11,12,13,14,15,16,1,1,1,1,1,1,1,1, // 64
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 80
     1,10,11,12,13,14,15,16,1,1,1,1,1,1,1,1, // 96
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 112
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 128
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 144
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 160
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 176
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 192
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // 
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 };
@@ -111,23 +111,22 @@ struct ParseUtil {
             assert(chars[7] == 'u');
 
             int codePoint = (ch << 8)
-                | ((int)hex_asciicode_table[(int)chars[4]] << 4)
-                | (int)hex_asciicode_table[(int)chars[5]];
-            codePoint = codePoint & 0b0000001111111111;
+                | (hex_asciicode_table[(int)chars[4]] << 4)
+                | hex_asciicode_table[(int)chars[5]];
+            codePoint = codePoint & 0b0000001111111111; // 110110wwwwxxxxxx
 
             int codePoint2 =
-                ((int)hex_asciicode_table[(int)chars[8]] << 12)
-                | ((int)hex_asciicode_table[(int)chars[9]] << 8)
-                | ((int)hex_asciicode_table[(int)chars[10]] << 4)
-                | (int)hex_asciicode_table[(int)chars[11]];
-            codePoint2 = codePoint2 & 0b0000001111111111;
+                (hex_asciicode_table[(int)chars[8]] << 12)
+                | (hex_asciicode_table[(int)chars[9]] << 8)
+                | (hex_asciicode_table[(int)chars[10]] << 4)
+                | hex_asciicode_table[(int)chars[11]];
+            codePoint2 = codePoint2 & 0b0000001111111111; // 110111xxxxxxxxxx
 
 
             // 𠏹
             // {\"fwe\": \"\uD840\uDFF9\"}
             // 
             // &#x203F9;
-            // &#132089;
             // URL - encoded UTF8 % F0 % A0 % 8F % B9
 
             // utf16 uuuuuxxxxxxxxxxxxxxxx 	110110wwww_xxxx_xx 110111xxxx_xxxxxx 	(wwww = uuuuu - 1)
@@ -142,16 +141,14 @@ struct ParseUtil {
         }
         else {
             int codePoint = (ch << 8)
-                | ((int)hex_asciicode_table[(int)chars[4]] << 4)
-                | (int)hex_asciicode_table[(int)chars[5]];
+                | (hex_asciicode_table[(int)chars[4]] << 4)
+                | hex_asciicode_table[(int)chars[5]];
 
             //printf("codepoint = [%x]\n", codePoint);
-
-            // v = 1 << (sizeof(unsigned int)*8 - 1);
             *consumed = 6;
 
             if (codePoint < 128) { // 0xxxxxxx 0 - 127
-                *ch1 = (unsigned char)codePoint;
+                *ch1 = codePoint;
                 return 1;
             }
             else if (codePoint < 2048) { // 110yyyyx 10xxxxxx 128 - 2047
