@@ -58,7 +58,8 @@ namespace smart {
         (node)->nextNodeInLine = nullptr; \
         (node)->prevSpaceNode = nullptr; \
         (node)->prevLineBreakNode = nullptr; \
-
+        (0)
+                                                        \
     #define TEXT_MEMCPY(dst, src, len) \
         memcpy((dst), (src), (len))
 
@@ -211,7 +212,7 @@ namespace smart {
     };
 
 
-    /* ($ point: Point) */
+    /* (mut point: Point) */
     using FuncParameterItemStruct = struct {
         NODE_HEADER;
 
@@ -371,12 +372,6 @@ namespace smart {
         SpaceNodeStruct *remainedSpaceNode;
 
         MemBuffer memBuffer;
-        /*
-        NodeBufferList<SimpleTextNodeStruct> spaceBufferList;
-        NodeBufferList<CodeLine> codeLineBufferList;
-        NodeBufferList<LineBreakNodeStruct> lineBreakBufferList;
-        CharBuffer<char> charBuffer;
-         */
 
         template<typename T>
         T *newMem() {
@@ -396,19 +391,15 @@ namespace smart {
 
         LineBreakNodeStruct *newLineBreakNode() {
             return memBuffer.newMem<LineBreakNodeStruct>(1);
-            /*
-            return lineBreakBufferList.newNode();
-             */
         }
 
         CodeLine *newCodeLine() {
             return memBuffer.newMem<CodeLine>(1);
-
-            //return codeLineBufferList.newNode();
         }
 
-        SpaceNodeStruct *newSpaceNode() {
-            return memBuffer.newMem<SpaceNodeStruct>(1);
+        template<typename T>
+        SpaceNodeStruct *newMemForNode() {
+            return memBuffer.newMem<T>(1);
             //return spaceBufferList.newNode();
         }
 
@@ -806,11 +797,9 @@ namespace smart {
                         || ParseUtil::isNonIdentifierChar(
                             context->chars[start + length])) { // otherwise,
 
-                        //context->scanEnd = true;
                         auto *boolNode = Alloc::newSpaceNode(context, parent);
 
-                        boolNode->text = context->memBuffer.newMem<char>(
-                                length + 1);// context->charBuffer.newChars(length + 1);
+                        boolNode->text = context->memBuffer.newMem<char>(length + 1);
                         boolNode->textLength = length;
 
                         TEXT_MEMCPY(boolNode->text, context->chars + start, length);
