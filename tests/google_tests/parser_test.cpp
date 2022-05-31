@@ -669,16 +669,20 @@ class jips {
 
     const char *chars = text.c_str();
     int nodeCount = 0;
+    bool parsedGood = false;
     for (unsigned long long i = 0; i < loopCount; i++) {
         auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
         DocumentUtils::parseText(document, chars, text.size());
         nodeCount = document->nodeCount;
+
+        parsedGood = !document->context->syntaxErrorInfo.hasError;
 
         //console_log(("i:" + std::to_string()).c_str());
         Alloc::deleteDocument(document);
     }
     
     EXPECT_EQ(nodeCount, 4);
+    EXPECT_EQ(parsedGood, true);
 
     auto elapsed = std::chrono::high_resolution_clock::now().time_since_epoch() - start;
     auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
