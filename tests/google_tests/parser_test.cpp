@@ -643,8 +643,9 @@ TEST(ParserTest_, parser_benchmark) {
     //std::string text = "   class           A   {    }   ";
     std::string text = u8R"(
 class TestCl😂日本語10234ass {
+    fn func() {
 
-
+    }
 }
 
 
@@ -667,15 +668,17 @@ class jips {
   )";
 
     const char *chars = text.c_str();
+    int nodeCount = 0;
     for (unsigned long long i = 0; i < loopCount; i++) {
         auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
-        //VTables::DocumentVTable->init((NodeBase*)&document);
         DocumentUtils::parseText(document, chars, text.size());
+        nodeCount = document->nodeCount;
 
-        //EXPECT_EQ(document->nodeCount, 4);
+        //console_log(("i:" + std::to_string()).c_str());
         Alloc::deleteDocument(document);
-        //console_log("i:"+ std::to_string(i));
     }
+    
+    EXPECT_EQ(nodeCount, 4);
 
     auto elapsed = std::chrono::high_resolution_clock::now().time_since_epoch() - start;
     auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
