@@ -58,7 +58,6 @@ namespace smart {
         (node)->nextNodeInLine = nullptr; \
         (node)->prevSpaceNode = nullptr; \
         (node)->prevLineBreakNode = nullptr; \
-        32\
 
     #define TEXT_MEMCPY(dst, src, len) \
         memcpy((dst), (src), (len))

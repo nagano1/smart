@@ -84,8 +84,6 @@ namespace smart {
 
         }
 
-
-
         if (startsWithDQuote && !endsWithDQuote) {
             SyntaxErrorInfo::setError(&context->syntaxErrorInfo, ErrorCode::missing_closing_quote, start);
             return -1;
