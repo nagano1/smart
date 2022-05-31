@@ -113,9 +113,9 @@ struct ParseUtil {
 
             // utf16 uuuuuxxxxxxxxxxxxxxxx 	110110wwww_xxxx_xx 110111xxxx_xxxxxx 	(wwww = uuuuu - 1)
             // utf8 11110yyy 10yyxxxx 10xxxxxx 10xxxxxx 65536 - 0x10FFFF
-            int u5 = (bitArray1 >> 6) + 1;
-            *ch1 = u5 >> 3 | 0b11110000;
-            *ch2 = (u5 & 0b11) << 4 | ((bitArray1 >> 2) & 0b1111) | 0x80;
+            int u5bit = (bitArray1 >> 6) + 1;
+            *ch1 = u5bit >> 3 | 0b11110000;
+            *ch2 = (u5bit & 0b11) << 4 | ((bitArray1 >> 2) & 0b1111) | 0x80;
             *ch3 = (bitArray1 & 0b11) << 4 | bitArray2 >> 6 | 0x80;
             *ch4 = (bitArray2 & 0b111111) | 0x80;
             *consumed = 12;

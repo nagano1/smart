@@ -183,7 +183,7 @@ namespace smart {
 
         return -1;
 
-    };
+    }
 
     static constexpr const char nameTypeText[] = "<string>";
 
