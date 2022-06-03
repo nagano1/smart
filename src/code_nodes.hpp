@@ -101,15 +101,9 @@ namespace smart {
         NODE_HEADER;
 
         NameNodeStruct nameNode;
-        _TypeNodeStruct *typeNode;
+        _TypeNodeStruct *typeNode; // generics
     };
 
-    using StatementNodeStruct = struct {
-        NODE_HEADER;
-
-        char *name;
-        st_textlen nameLength;
-    };
 
 
     using StringLiteralNodeStruct = struct {
@@ -148,17 +142,17 @@ namespace smart {
         utf8byte symbol[2];
     };
 
-    //    using ClassBodyStruct = struct {
-    //        NODE_HEADER
-    //
-    //        bool isChecked;
-    //        utf8byte body[2];
-    //        // expressionNodes;
-    //        SymbolStruct endBodyNode;
-    //
-    //        NodeBase *firstChildNode;
-    //        NodeBase *lastChildNode;
-    //    };
+    using AssignStatementNodeStruct = struct {
+        NODE_HEADER;
+
+        bool useMut;
+        SimpleTextNodeStruct letOrMut;
+        NameNodeStruct nameNode;
+        SymbolStruct equalSymbol;
+        NodeBase *valueNode;
+
+        bool startFound;
+    };
 
     using ClassNodeStruct = struct {
         NODE_HEADER;
@@ -412,12 +406,6 @@ namespace smart {
 
     static inline void deleteContext(ParseContext *context) {
         context->memBuffer.freeAll();
-        /*
-        deleteNodeBufferList(context->lineBreakBufferList.firstBufferList);
-        deleteNodeBufferList(context->codeLineBufferList.firstBufferList);
-        deleteNodeBufferList(context->spaceBufferList.firstBufferList);
-        deleteCharBuffer(context->charBuffer.firstBufferList);
-*/
         free(context);
     }
 
@@ -462,7 +450,8 @@ namespace smart {
         NULLId = 16,
 
         Type = 18,
-        Body = 19
+        Body = 19,
+        AssignStatement = 20
     };
 
     #define VTABLE_DEF(T) \
@@ -520,8 +509,9 @@ namespace smart {
         static const node_vtable
                 *const DocumentVTable,
 
+                *const AssignStatementVTable,
+
                 *const ClassVTable,
-                *const ClassBodyVTable,
 
                 *const FnVTable,
 
@@ -721,7 +711,10 @@ namespace smart {
         static void initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context,
                                           NodeBase *parentNode);
 
-        static void initSymbolNode(SymbolStruct *self, ParseContext *context, void *parent, utf8byte letter);
+        static void
+        initSymbolNode(SymbolStruct *self, ParseContext *context, void *parent, utf8byte letter);
+
+        static void initSimpleTextNode(SimpleTextNodeStruct *name, ParseContext *context, void *parentNode, int charLen);
     };
 
     struct Alloc {
@@ -736,6 +729,7 @@ namespace smart {
         static NullNodeStruct *newNullNode(ParseContext *context, NodeBase *parentNode);
 
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
+        static AssignStatementNodeStruct *newAssignStatement(ParseContext *context, NodeBase *parentNode);
 
         static FuncNodeStruct *newFuncNode(ParseContext *context, NodeBase *parentNode);
 
@@ -784,20 +778,25 @@ namespace smart {
         static int jsonValueTokenizer(TokenizerParams_parent_ch_start_context);
 
 
+        static int assignStatementTokenizer(TokenizerParams_parent_ch_start_context);
+
         // SimpleTextNodeStruct
         template<typename TYPE, std::size_t SIZE>
         static inline int
-        WordTokenizer(TokenizerParams_parent_ch_start_context, utf8byte capitalLetter,
-                      const TYPE(&word)[SIZE]) {
+        WordTokenizer(TokenizerParams_parent_ch_start_context
+                      , utf8byte capitalLetter
+                      , const TYPE(&word)[SIZE])
+        {
             if (capitalLetter == ch) {
                 st_size length = st_size_of(word) - 1;
                 if (ParseUtil::matchWord(context->chars, context->length, word, length, start)) {
 
                     if (start + length == context->length // allowed to be the last char of the file
-                        || ParseUtil::isNonIdentifierChar(
-                            context->chars[start + length])) { // otherwise,
+                        || ParseUtil::isNonIdentifierChar(context->chars[start + length])
+                    ) { // otherwise,
 
-                        auto *boolNode = Alloc::newSpaceNode(context, parent);
+                        auto *boolNode = Alloc::newSimpleTextNode(context, parent);
+                        Init::initSimpleTextNode(boolNode, context, parent, 3);
 
                         boolNode->text = context->memBuffer.newMem<char>(length + 1);
                         boolNode->textLength = length;

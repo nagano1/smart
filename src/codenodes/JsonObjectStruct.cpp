@@ -274,7 +274,6 @@ namespace smart {
 
                 returnPosition = result;
                 return returnPosition;
-
             }
         }
 
@@ -320,9 +319,9 @@ namespace smart {
             return result;
         }
 
-
         return -1;
     }
+
 
     int internal_JsonObjectTokenizerMulti(TokenizerParams_parent_ch_start_context) {
 
@@ -360,7 +359,6 @@ namespace smart {
                                                               start, context))) {
                 currentKeyValueItem->valueNode = context->codeNode;
                 jsonObject->parsePhase = phase::EXPECT_COMMA;
-                //context->scanEnd = false;
                 return result;
             }
             return -1;

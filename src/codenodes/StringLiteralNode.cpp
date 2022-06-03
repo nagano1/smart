@@ -39,52 +39,59 @@ namespace smart {
         int found_count = 0;
 
         // starts with "
-        bool startsWithDQuote = false;
-        bool endsWithDQuote = false;
+        bool startsWithQuote = false;
+        bool endsWithQuote = false;
+
+
+        char quote;
 
         if (ch == '"') {
-            startsWithDQuote = true;
+            startsWithQuote = true;
             found_count++;
+            quote = '"';
+        } else if (ch == '`'){
+            startsWithQuote = true;
+            found_count++;
+            quote = '`';
         } else {
             return -1;
         }
 
-        {
 
-            int letterStart = startsWithDQuote ? start + 1 : start;
+
+        {
+            int letterStart = (startsWithQuote) ? start + 1 : start;
             bool escapeMode = false;
 
             for (uint_fast32_t i = letterStart; i < context->length; i++) {
-                /*if (ParseUtil::isIdentifierLetter(context->chars[i])) {
-                    found_count++;
+                found_count++;
+
+                if (escapeMode) {
+                    escapeMode = false;
+                    continue;
                 }
-                else
-                */
-                if (startsWithDQuote) {
-                    found_count++;
 
-                    if (escapeMode) {
-                        escapeMode = false;
-                        continue;
-                    }
+                if (context->chars[i] == '\\') {
+                    escapeMode = true;
+                    continue;
+                }
 
-                    if (context->chars[i] == '\\') {
-                        escapeMode = true;
-                        continue;
-                    }
-
-                    if (context->chars[i] == '"') {
-                        endsWithDQuote = true;
+                if (startsWithQuote) {
+                    if (context->chars[i] == quote) {
+                        endsWithQuote = true;
                         break;
                     }
-                } else {
-                    break;
                 }
+
+//                if (startsWithDQuote) {
+//                } else {
+//                    break;
+//                }
             }
 
         }
 
-        if (startsWithDQuote && !endsWithDQuote) {
+        if (startsWithQuote &&  !endsWithQuote) {
             SyntaxErrorInfo::setError(&context->syntaxErrorInfo, ErrorCode::missing_closing_quote, start);
             return -1;
         }
@@ -152,30 +159,20 @@ namespace smart {
 
                 if (strLiteralNode->text[i] == '\\') {
                     escapeMode = true;
-                }
-                else {
+                } else {
                     strLength++;
                     str[currentStrIndex++] = strLiteralNode->text[i];
                 }
-
             }
 
-            if (startsWithDQuote) {
-                strLiteralNode->literalType = 0;
-
+            if (startsWithQuote) {
+                strLiteralNode->literalType = quote == '"' ? 0 : 1;
                 strLiteralNode->str = str;
                 strLiteralNode->strLength = strLength;
                 strLiteralNode->str[strLength] = '\0';
 
             }
-            else {
-                strLiteralNode->literalType = 1;
-                
-                strLiteralNode->str = strLiteralNode->text;
-                strLiteralNode->strLength = strLiteralNode->textLength;
-            }
 
-            
             return start + found_count;
         }
 

@@ -40,9 +40,7 @@ namespace smart {
     static CodeLine *appendToLine(ClassNodeStruct *self, CodeLine *currentCodeLine) {
         auto *classNode = self;
 
-
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(classNode);
-
         currentCodeLine->appendNode(classNode);
 
 
@@ -51,9 +49,7 @@ namespace smart {
         currentCodeLine = VTableCall::appendToLine(&classNode->nameNode, currentCodeLine);
         self->context->parentDepth = formerParentDepth;
 
-
         currentCodeLine = VTableCall::appendToLine(&classNode->bodyStartNode, currentCodeLine);
-        
 
         formerParentDepth = self->context->parentDepth;
         self->context->parentDepth += 1;
@@ -180,9 +176,8 @@ namespace smart {
             if (idx > -1) {
                 if (idx + size_of_class < context->length
                     && ParseUtil::isSpaceOrLineBreak(context->chars[idx + size_of_class])
-                        ) {
-
-                    int currentPos = idx + size_of_class;
+                ) {
+                    int currentPos = idx + (int)size_of_class;
                     int resultPos;
 
                     // "class " came here

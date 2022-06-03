@@ -1088,7 +1088,7 @@ ENDTEST
     }
 
     {
-        std::string class_text(u8" class");
+        std::string class_text(u8" class"); //space
         auto result = ParseUtil::matchWord(class_text.c_str(), class_text.length(), "class", 5, 0);
         EXPECT_EQ(result, false);
     }

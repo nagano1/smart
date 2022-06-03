@@ -32,7 +32,7 @@ namespace smart {
 
 
     static CodeLine *appendToLine(LineBreakNodeStruct *self, CodeLine *currentCodeLine) {
-        auto *lineBreakNode = self;//Cast::downcast<LineBreakNodeStruct *>(self);
+        auto *lineBreakNode = self; // Cast::downcast<LineBreakNodeStruct *>(self);
 
         auto* next = lineBreakNode;
         while (next) {
@@ -56,8 +56,11 @@ namespace smart {
     static constexpr const char lineBreakTypeText[] = "<lineBreak>";
 
     static const node_vtable _lineBreakVTable = CREATE_VTABLE(LineBreakNodeStruct,
-                                                              selfTextLength, self_text,
-                                                              appendToLine, lineBreakTypeText, NodeTypeId::LineBreak);
+                                                              selfTextLength,
+                                                              self_text,
+                                                              appendToLine,
+                                                              lineBreakTypeText,
+                                                              NodeTypeId::LineBreak);
 
     const node_vtable *const VTables::LineBreakVTable = &_lineBreakVTable;
 
@@ -72,5 +75,4 @@ namespace smart {
 
         return lineNode;
     }
-
 }

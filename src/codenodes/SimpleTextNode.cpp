@@ -60,16 +60,26 @@ namespace smart {
                                                            self_text,
                                                            appendToLine, "<NULL>", NodeTypeId::NULLId, 2
     );
+
     const struct node_vtable *const VTables::NullVTable = &_nullVTable;
 
 
-    SimpleTextNodeStruct *
-    Alloc::newSimpleTextNode(ParseContext *context, NodeBase *parentNode) {
-        auto *spaceNode = context->newMemForNode<SimpleTextNodeStruct>();
-        auto *node = Cast::upcast(spaceNode);
+    SimpleTextNodeStruct *Alloc::newSimpleTextNode(ParseContext *context, NodeBase *parentNode) {
+        auto *node = context->newMemForNode<SimpleTextNodeStruct>();
+        Init::initSimpleTextNode(node, context, parentNode, 0);
+        return node;
+    }
 
-        INIT_NODE(node, context, parentNode, VTables::SimpleTextVTable);
-        return spaceNode;
+
+    void Init::initSimpleTextNode(SimpleTextNodeStruct *textNode, ParseContext *context, void *parentNode, int charLen)
+    {
+        INIT_NODE(textNode, context, parentNode, VTables::SimpleTextVTable);
+
+        textNode->text = context->memBuffer.newMem<char>(charLen + 1);
+        textNode->textLength = charLen;
+
+        //TEXT_MEMCPY(boolNode->text, context->chars + start, length);
+        textNode->text[charLen] = '\0';
     }
 
 

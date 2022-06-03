@@ -65,5 +65,4 @@ namespace smart
 
         return node;
     }
-
 }

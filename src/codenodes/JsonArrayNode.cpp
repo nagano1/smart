@@ -57,7 +57,9 @@ namespace smart {
     static const node_vtable _jsonArrayItemVTable = CREATE_VTABLE(JsonArrayItemStruct,
                                                                   selfTextLength2,
                                                                   selfText_JsonKeyValueItemStruct,
-                                                                  appendToLine2, "<JsonArrayItem>", NodeTypeId::JsonArrayItem);
+                                                                  appendToLine2,
+                                                                  "<JsonArrayItem>",
+                                                                  NodeTypeId::JsonArrayItem);
 
     const struct node_vtable *const VTables::JsonArrayItemVTable = &_jsonArrayItemVTable;
 
@@ -155,9 +157,6 @@ namespace smart {
     }
 
 
-
-
-
     JsonArrayItemStruct *Alloc::newJsonArrayItem(ParseContext *context, NodeBase *parentNode) {
         auto *keyValueItem = context->newMem<JsonArrayItemStruct>();
 
@@ -170,6 +169,7 @@ namespace smart {
 
         return keyValueItem;
     }
+
 
 
     static inline void appendRootNode(JsonArrayStruct *arr, JsonArrayItemStruct *arrayItem) {
@@ -200,6 +200,7 @@ namespace smart {
         return -1;
     }
 
+
     int internal_JsonArrayTokenizer(TokenizerParams_parent_ch_start_context) {
         auto *jsonArray = Cast::downcast<JsonArrayStruct *>(parent);
 
@@ -227,8 +228,6 @@ namespace smart {
             }
             return -1;
         }
-
         return -1;
     }
-
 }
