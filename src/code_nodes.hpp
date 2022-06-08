@@ -146,10 +146,10 @@ namespace smart {
         NODE_HEADER;
 
         bool useMut;
-        SimpleTextNodeStruct letOrMut;
-        NameNodeStruct nameNode;
-        SymbolStruct equalSymbol;
-        NodeBase *valueNode;
+        SimpleTextNodeStruct letOrMut; // let
+        NameNodeStruct nameNode; // varName
+        SymbolStruct equalSymbol; // =
+        NodeBase *valueNode; // 32
 
         bool startFound;
     };
@@ -323,7 +323,7 @@ namespace smart {
     };
 
 
-    enum DocumentType {
+    enum class DocumentType {
         CodeDocument,
         JsonDocument
     };

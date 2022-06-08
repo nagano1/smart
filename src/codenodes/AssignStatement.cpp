@@ -175,12 +175,14 @@ namespace smart {
                 if (idx > -1) {
                     currentPos = idx + size_of_mut;
                     hasMut = true;
+
                 }
             }
         }
 
         if (hasMut || hasLet) {
             auto *assignStatement = Alloc::newAssignStatement(context, parent);
+            assignStatement->useMut = hasMut;
 
             context->codeNode = Cast::upcast(&assignStatement->letOrMut);
             context->virtualCodeNode = Cast::upcast(assignStatement);
