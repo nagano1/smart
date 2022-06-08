@@ -265,7 +265,7 @@ struct ParseUtil {
     };
 
 
-    template<std::size_t SIZE>
+    template<int SIZE>
     static int matchWith(const char *chars, int charsLength, int startIndex, const char(&target)[SIZE])
     {
         int pos = _matchFirstWithTrim(chars, charsLength, target, startIndex);
