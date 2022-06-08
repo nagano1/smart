@@ -400,6 +400,8 @@ namespace smart {
         context->scanEnd = false;
         context->length = length;
         context->codeNode = nullptr;
+        context->virtualCodeNode = nullptr;
+
         context->remainedLineBreakNode = nullptr;
         context->remainedSpaceNode = nullptr;
         context->baseIndent = 4;

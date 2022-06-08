@@ -30,10 +30,11 @@ namespace smart {
     }
 
     static CodeLine *appendToLine(AssignStatementNodeStruct *self, CodeLine *currentCodeLine) {
-        auto *classNode = self;
 
-        currentCodeLine = currentCodeLine->addPrevLineBreakNode(classNode);
-        currentCodeLine->appendNode(classNode);
+
+        currentCodeLine = VTableCall::appendToLine(&self->letOrMut, currentCodeLine);
+
+        //currentCodeLine->appendNode(self);
 
 //
 //        auto formerParentDepth = self->context->parentDepth;
@@ -107,6 +108,7 @@ namespace smart {
         return assignStatement;
     }
 
+    /*
 
     // --------------------- Implements ClassNode Parser ----------------------
     static int inner_classBodyTokenizerMulti(TokenizerParams_parent_ch_start_context) {
@@ -142,57 +144,90 @@ namespace smart {
         return -1;
     }
 
+     */
 
+    // let a = 3
+    // mut m = 5
+    // m = 8
     int Tokenizers::assignStatementTokenizer(TokenizerParams_parent_ch_start_context) {
         static constexpr const char let_chars[] = "let";
         static constexpr unsigned int size_of_let = sizeof(let_chars) - 1;
 
-        //static constexpr const char mut_chars[] = "mut";
-        //static constexpr unsigned int size_of_mut = sizeof(mut_chars) - 1;
+        static constexpr const char mut_chars[] = "mut";
+        static constexpr unsigned int size_of_mut = sizeof(mut_chars) - 1;
 
 
-        if ('l' == ch || 'm' == ch) { //
-            auto idx = ParseUtil::matchFirstWithTrim(context->chars, let_chars, start);
+        bool hasLet = false;
+        bool hasMut = false;
+        int currentPos = start;
+
+        // let
+        if ('l' == ch) { //
+            auto idx = ParseUtil::matchWith(context->chars, context->length, start, let_chars);
             if (idx > -1) {
-                if (idx + size_of_let < context->length
-                    && ParseUtil::isSpaceOrLineBreak(context->chars[idx + size_of_let])
-                ) {
+                currentPos = idx + size_of_let;
+                hasLet = true;
+            }
+        }
 
-                    int currentPos = idx + size_of_let;
-                    int resultPos;
-
-                    // "class " came here
-                    auto *assignStatement = Alloc::newAssignStatement(context, parent);
-
-                    {
-                        resultPos = Scanner::scanOnce(&assignStatement->nameNode,
-                                                  Tokenizers::nameTokenizer,
-                                                  currentPos,
-                                                  context);
-
-                        if (resultPos == -1) {
-                            // the class should have a class name
-                            //console_log(std::string(assignStatement->nameNode.name).c_str());
-
-                            context->codeNode = Cast::upcast(assignStatement);
-                            return currentPos;
-                        }
-                    }
-
-
-                    // Parse body
-                    currentPos = resultPos;
-                    if (-1 == (resultPos = Scanner::scanMulti(assignStatement, inner_classBodyTokenizerMulti,
-                                                              currentPos, context))) {
-                        context->codeNode = Cast::upcast(assignStatement);
-                        return currentPos;
-                    }
-
-                    context->codeNode = Cast::upcast(assignStatement);
-                    return resultPos;
+        if (!hasLet) {
+            // mut
+            if ('m' == ch) { //
+                auto idx = ParseUtil::matchWith(context->chars, context->length, start, mut_chars);
+                if (idx > -1) {
+                    currentPos = idx + size_of_mut;
+                    hasMut = true;
                 }
             }
         }
+
+
+
+        if (hasMut || hasLet)
+        {
+            auto *assignStatement = Alloc::newAssignStatement(context, parent);
+
+            context->codeNode = Cast::upcast(&assignStatement->letOrMut);
+            context->virtualCodeNode = Cast::upcast(assignStatement);
+
+            assignStatement->letOrMut.text = context->memBuffer.newMem<char>(3 + 1);
+            assignStatement->letOrMut.textLength = 3;
+
+            memcpy((char*)assignStatement->letOrMut.text, hasMut?(char*)"mut":(char*)"let", 3);
+            assignStatement->letOrMut.text[3] = '\0';
+
+            return currentPos;
+
+
+            /*
+            if (hasMut) {
+
+            } else {
+
+            }
+
+            int resultPos;
+            if (-1 ==
+                (resultPos = Scanner::scanMulti(assignStatement, inner_classBodyTokenizerMulti,
+                                                currentPos, context))) {
+                context->codeNode = Cast::upcast(&assignStatement->letOrMut);
+                context->virtualCodeNode = Cast::upcast(assignStatement);
+                return currentPos;
+            }
+
+           // context->codeNode = Cast::upcast(assignStatement);
+            return resultPos;
+             */
+        }
+
+
+
+
+
+
+
+
+
         return -1;
     }
 }

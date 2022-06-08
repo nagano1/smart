@@ -119,9 +119,14 @@ namespace smart {
             return start + 1;
         } else {
             int nextPos;
-            if (-1 < (nextPos = Tokenizers::fnTokenizer(parent, ch, start, context))) {
-                appendChildNode(body, context->codeNode);
+            if (-1 < (nextPos = Tokenizers::assignStatementTokenizer(parent, ch, start, context))) {
+                appendChildNode(body, context->virtualCodeNode);
                 return nextPos;
+            } else {
+                if (-1 < (nextPos = Tokenizers::fnTokenizer(parent, ch, start, context))) {
+                    appendChildNode(body, context->codeNode);
+                    return nextPos;
+                }
             }
         }
 
@@ -330,43 +335,38 @@ namespace smart {
 
     int Tokenizers::fnTokenizer(TokenizerParams_parent_ch_start_context) {
         if (fn_first_char == ch) {
-            auto idx = ParseUtil::matchFirstWithTrim(context->chars, fn_chars, start);
+            auto idx = ParseUtil::matchWith(context->chars, context->length, start, fn_chars);
             if (idx > -1) {
-                if (idx + size_of_fn < context->length
-                    && ParseUtil::isSpaceOrLineBreak(context->chars[idx + size_of_fn])
-                        ) {
+                int currentPos = idx + size_of_fn;
+                int resultPos = -1;
 
-                    int currentPos = idx + size_of_fn;
-                    int resultPos = -1;
+                // "fn " came here
+                auto *fnNode = Alloc::newFuncNode(context, parent);
+                {
+                    resultPos = Scanner::scanOnce(&fnNode->nameNode,
+                                              Tokenizers::nameTokenizer,
+                                              currentPos,
+                                              context);
 
-                    // "fn " came here
-                    auto *fnNode = Alloc::newFuncNode(context, parent);
-                    {
-                        resultPos = Scanner::scanOnce(&fnNode->nameNode,
-                                                  Tokenizers::nameTokenizer,
-                                                  currentPos,
-                                                  context);
+                    if (resultPos == -1) {
+                        // the class should have a class name
+                        //console_log(std::string(classNode->nameNode.name).c_str());
 
-                        if (resultPos == -1) {
-                            // the class should have a class name
-                            //console_log(std::string(classNode->nameNode.name).c_str());
-
-                            context->codeNode = Cast::upcast(fnNode);
-                            return currentPos;
-                        }
-                    }
-
-                    // Parse body
-                    currentPos = resultPos;
-                    if (-1 == (resultPos = Scanner::scanMulti(fnNode, inner_fnBodyTokenizerMulti,
-                                                              currentPos, context))) {
                         context->codeNode = Cast::upcast(fnNode);
                         return currentPos;
                     }
-
-                    context->codeNode = Cast::upcast(fnNode);
-                    return resultPos;
                 }
+
+                // Parse body
+                currentPos = resultPos;
+                if (-1 == (resultPos = Scanner::scanMulti(fnNode, inner_fnBodyTokenizerMulti,
+                                                          currentPos, context))) {
+                    context->codeNode = Cast::upcast(fnNode);
+                    return currentPos;
+                }
+
+                context->codeNode = Cast::upcast(fnNode);
+                return resultPos;
             }
         }
         return -1;

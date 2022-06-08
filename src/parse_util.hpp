@@ -189,11 +189,12 @@ struct ParseUtil {
         return letterChecker(3, 'b');
     };
 
+    /*
     static inline int
         matchFirstWithTrim(const std::string &&class_text, const std::string &&target) {
-        return ParseUtil::matchFirstWithTrim(class_text.c_str(), target.c_str(), 0);
+        return ParseUtil::matchWith(class_text.c_str(), target.c_str(), 0);
     };
-
+*/
 
     static inline bool matchWord(const utf8byte *text,
         st_size text_length,
@@ -214,8 +215,8 @@ struct ParseUtil {
 
 
 
-    // EXPECT_EQ(0, Tokenizer::matchFirstWithTrim("class A{}", "class"));
-    static int matchFirstWithTrim(const char *chars, const char *target, int start)
+    // EXPECT_EQ(0, Tokenizer::matchWith("class A{}", "class"));
+    static int _matchFirstWithTrim(const char *chars, int charsLength, const char *target, int start)
     {
         //  return -1 if it fails
         int currentTargetIndex = 0;
@@ -262,6 +263,21 @@ struct ParseUtil {
             return matchStartIndex;
         }
     };
+
+
+    template<std::size_t SIZE>
+    static int matchWith(const char *chars, int charsLength, int startIndex, const char(&target)[SIZE])
+    {
+        int pos = _matchFirstWithTrim(chars, charsLength, target, startIndex);
+
+        if (startIndex + SIZE - 1 < charsLength
+            && ParseUtil::isSpaceOrLineBreak(chars[startIndex + SIZE - 1])
+        ){
+            return pos;
+        }
+
+        return -1;
+    }
 
 
     static inline bool isSpaceOrLineBreak(utf8byte ch)

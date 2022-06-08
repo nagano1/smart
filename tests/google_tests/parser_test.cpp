@@ -801,6 +801,13 @@ TEST(ParserTest_, SameLength_01) {
 class A {
     class B {
         class TestCl😂日本語10234ass {
+            fn a() {
+                let
+                mut
+                let
+                mut
+
+            }
 
         }
     }
@@ -1060,21 +1067,22 @@ ENDTEST
     EXPECT_EQ(false, ParseUtil::isIdentifierLetter('\n'));
 
 
-    EXPECT_EQ(0, ParseUtil::matchFirstWithTrim("class A{}", "class"));
+    static constexpr char chars[] = "class A{}";
+    EXPECT_EQ(0, ParseUtil::matchWith(chars, sizeof(chars) - 1, 0, "class"));
 
-    EXPECT_EQ(-1, ParseUtil::matchFirstWithTrim("", "class"));
-    EXPECT_EQ(-1, ParseUtil::matchFirstWithTrim("", ""));
+    EXPECT_EQ(-1, ParseUtil::matchWith("", 0, 0, "class"));
+    EXPECT_EQ(-1, ParseUtil::matchWith("", 0, 0, ""));
 
     {
         std::string class_text(u8"     \tclassauto * 😂日本語=10234;");
-        int index = ParseUtil::matchFirstWithTrim(class_text.c_str(), "class", 0);
+        int index = ParseUtil::matchWith(class_text.c_str(), class_text.length(), 0, "class");
         EXPECT_EQ(index, 6);
     }
 
 
     {
         std::string class_text(u8"😂classauto;");
-        int index = ParseUtil::matchFirstWithTrim(class_text.c_str(), "class", 0);
+        int index = ParseUtil::matchWith(class_text.c_str(), class_text.length(), 0, "class");
         EXPECT_EQ(index, -1);
     }
 

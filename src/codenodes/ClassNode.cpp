@@ -172,11 +172,8 @@ namespace smart {
         static constexpr unsigned int size_of_class = sizeof(class_chars) - 1;
 
         if ('c' == ch) {
-            auto idx = ParseUtil::matchFirstWithTrim(context->chars, class_chars, start);
+            auto idx = ParseUtil::matchWith(context->chars, context->length, start, class_chars);
             if (idx > -1) {
-                if (idx + size_of_class < context->length
-                    && ParseUtil::isSpaceOrLineBreak(context->chars[idx + size_of_class])
-                ) {
                     int currentPos = idx + (int)size_of_class;
                     int resultPos;
 
@@ -209,7 +206,6 @@ namespace smart {
 
                     context->codeNode = Cast::upcast(classNode);
                     return resultPos;
-                }
             }
         }
         return -1;

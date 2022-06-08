@@ -350,6 +350,7 @@ namespace smart {
         bool scanEnd;
         bool afterLineBreak;
         NodeBase *codeNode;
+        NodeBase *virtualCodeNode;
         // int former_start;
         st_uint baseIndent;
         utf8byte *chars;

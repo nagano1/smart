@@ -172,6 +172,7 @@
     <ClInclude Include="..\..\src\thread_pool.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\codenodes\AssignStatement.cpp" />
     <ClCompile Include="..\..\src\codenodes\ClassNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\code_nodes.cpp" />
     <ClCompile Include="..\..\src\codenodes\coding_operations.cpp" />
