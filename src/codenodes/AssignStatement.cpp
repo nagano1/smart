@@ -156,13 +156,12 @@ namespace smart {
         static constexpr const char mut_chars[] = "mut";
         static constexpr unsigned int size_of_mut = sizeof(mut_chars) - 1;
 
-
         bool hasLet = false;
         bool hasMut = false;
         int currentPos = start;
 
         // let
-        if ('l' == ch) { //
+        if ('l' == ch) {
             auto idx = ParseUtil::matchWith(context->chars, context->length, start, let_chars);
             if (idx > -1) {
                 currentPos = idx + size_of_let;
@@ -170,9 +169,8 @@ namespace smart {
             }
         }
 
-        if (!hasLet) {
-            // mut
-            if ('m' == ch) { //
+        if (!hasLet) { // mut
+            if ('m' == ch) {
                 auto idx = ParseUtil::matchWith(context->chars, context->length, start, mut_chars);
                 if (idx > -1) {
                     currentPos = idx + size_of_mut;
@@ -181,10 +179,7 @@ namespace smart {
             }
         }
 
-
-
-        if (hasMut || hasLet)
-        {
+        if (hasMut || hasLet) {
             auto *assignStatement = Alloc::newAssignStatement(context, parent);
 
             context->codeNode = Cast::upcast(&assignStatement->letOrMut);
@@ -200,12 +195,6 @@ namespace smart {
 
 
             /*
-            if (hasMut) {
-
-            } else {
-
-            }
-
             int resultPos;
             if (-1 ==
                 (resultPos = Scanner::scanMulti(assignStatement, inner_classBodyTokenizerMulti,
