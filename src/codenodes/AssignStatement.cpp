@@ -30,49 +30,18 @@ namespace smart {
     }
 
     static CodeLine *appendToLine(AssignStatementNodeStruct *self, CodeLine *currentCodeLine) {
-
-
         currentCodeLine = VTableCall::appendToLine(&self->letOrMut, currentCodeLine);
         currentCodeLine = VTableCall::appendToLine(&self->nameNode, currentCodeLine);
         if (self->equalSymbol.found) {
             currentCodeLine = VTableCall::appendToLine(&self->equalSymbol, currentCodeLine);
+
+            if (self->valueNode) {
+                currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+            }
         }
 
-        //currentCodeLine->appendNode(self);
-
-//
-//        auto formerParentDepth = self->context->parentDepth;
-//        self->context->parentDepth += 1;
-//        currentCodeLine = VTableCall::appendToLine(&classNode->nameNode, currentCodeLine);
-//        self->context->parentDepth = formerParentDepth;
-//
-//        currentCodeLine = VTableCall::appendToLine(&classNode->bodyStartNode, currentCodeLine);
-//
-//        formerParentDepth = self->context->parentDepth;
-//        self->context->parentDepth += 1;
-//
-//        {
-//            auto *child = classNode->firstChildNode;
-//            while (child) {
-//                currentCodeLine = VTableCall::appendToLine(child, currentCodeLine);
-//                child = child->nextNode;
-//            }
-//        }
-//
-//
-//
-//        auto* prevCodeLine = currentCodeLine;
-//        currentCodeLine = VTableCall::appendToLine(&classNode->endBodyNode, currentCodeLine);
-//
-//        if (prevCodeLine != currentCodeLine) {
-//            currentCodeLine->depth = formerParentDepth+1;
-//        }
-//
-//        self->context->parentDepth = formerParentDepth;
-
-
         return currentCodeLine;
-    };
+    }
 
 
     static constexpr const char assignTypeText[] = "<AssignStatement>";
@@ -127,10 +96,9 @@ namespace smart {
 
                 return result;
             }
-        } else {
+        } else if (!assignment->equalSymbol.found) {
             if (ch == '=') {
                 assignment->equalSymbol.found = true;
-                context->scanEnd = true;
                 context->codeNode = Cast::upcast(&assignment->equalSymbol);
                 return start+1;
             } else {
@@ -139,6 +107,15 @@ namespace smart {
                 context->scanEnd = true;
 
                 return context->prevFoundPos; // revert to name
+            }
+        } else {
+            int result;
+            if (-1 < (result = Tokenizers::jsonValueTokenizer(Cast::upcast(assignment), ch,
+                                                              start, context))) {
+                assignment->valueNode = context->codeNode;
+                context->scanEnd = true;
+
+                return result;
             }
         }
 

@@ -802,10 +802,10 @@ class A {
     class B {
         class TestCl😂日本語10234ass {
             fn a() {
-                let  b 
-                         =
-                mut a = 
-                let b = 
+                let  b = 3
+                mut a =  "fjiowjeiow"
+                let  b = false
+                let b = null
                 mut a
 
             }
