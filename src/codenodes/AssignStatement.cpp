@@ -86,7 +86,7 @@ namespace smart {
     static int inner_assignStatementTokenizerMulti(TokenizerParams_parent_ch_start_context) {
         auto *assignment = Cast::downcast<AssignStatementNodeStruct *>(parent);
 
-        console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
+        //console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
 
         if (!assignment->nameNode.found) {
             int result;
@@ -178,14 +178,6 @@ namespace smart {
                 return resultPos;
             }
         }
-
-
-
-
-
-
-
-
 
         return -1;
     }
