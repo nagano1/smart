@@ -192,7 +192,7 @@ struct ParseUtil {
     /*
     static inline int
         matchFirstWithTrim(const std::string &&class_text, const std::string &&target) {
-        return ParseUtil::matchWith(class_text.c_str(), target.c_str(), 0);
+        return ParseUtil::matchAt(class_text.c_str(), target.c_str(), 0);
     };
 */
 
@@ -215,7 +215,7 @@ struct ParseUtil {
 
 
 
-    // EXPECT_EQ(0, Tokenizer::matchWith("class A{}", "class"));
+    // EXPECT_EQ(0, Tokenizer::matchAt("class A{}", "class"));
     static int _matchFirstWithTrim(const char *chars, int charsLength, const char *target, int start)
     {
         //  return -1 if it fails
@@ -266,7 +266,7 @@ struct ParseUtil {
 
 
     template<int SIZE>
-    static int matchWith(const char *chars, int charsLength, int startIndex, const char(&target)[SIZE])
+    static int matchAt(const char *chars, int charsLength, int startIndex, const char(&target)[SIZE])
     {
         int pos = _matchFirstWithTrim(chars, charsLength, target, startIndex);
 

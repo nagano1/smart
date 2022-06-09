@@ -162,7 +162,7 @@ namespace smart {
 
         // let
         if ('l' == ch) {
-            auto idx = ParseUtil::matchWith(context->chars, context->length, start, let_chars);
+            auto idx = ParseUtil::matchAt(context->chars, context->length, start, let_chars);
             if (idx > -1) {
                 currentPos = idx + size_of_let;
                 hasLet = true;
@@ -171,11 +171,10 @@ namespace smart {
 
         if (!hasLet) { // mut
             if ('m' == ch) {
-                auto idx = ParseUtil::matchWith(context->chars, context->length, start, mut_chars);
+                auto idx = ParseUtil::matchAt(context->chars, context->length, start, mut_chars);
                 if (idx > -1) {
                     currentPos = idx + size_of_mut;
                     hasMut = true;
-
                 }
             }
         }

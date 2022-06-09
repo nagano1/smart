@@ -1068,21 +1068,21 @@ ENDTEST
 
 
     static constexpr char chars[] = "class A{}";
-    EXPECT_EQ(0, ParseUtil::matchWith(chars, sizeof(chars) - 1, 0, "class"));
+    EXPECT_EQ(0, ParseUtil::matchAt(chars, sizeof(chars) - 1, 0, "class"));
 
-    EXPECT_EQ(-1, ParseUtil::matchWith("", 0, 0, "class"));
-    EXPECT_EQ(-1, ParseUtil::matchWith("", 0, 0, ""));
+    EXPECT_EQ(-1, ParseUtil::matchAt("", 0, 0, "class"));
+    EXPECT_EQ(-1, ParseUtil::matchAt("", 0, 0, ""));
 
     {
         std::string class_text(u8"     \tclassauto * 😂日本語=10234;");
-        int index = ParseUtil::matchWith(class_text.c_str(), class_text.length(), 0, "class");
+        int index = ParseUtil::matchAt(class_text.c_str(), class_text.length(), 0, "class");
         EXPECT_EQ(index, 6);
     }
 
 
     {
         std::string class_text(u8"😂classauto;");
-        int index = ParseUtil::matchWith(class_text.c_str(), class_text.length(), 0, "class");
+        int index = ParseUtil::matchAt(class_text.c_str(), class_text.length(), 0, "class");
         EXPECT_EQ(index, -1);
     }
 

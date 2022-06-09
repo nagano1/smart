@@ -335,7 +335,7 @@ namespace smart {
 
     int Tokenizers::fnTokenizer(TokenizerParams_parent_ch_start_context) {
         if (fn_first_char == ch) {
-            auto idx = ParseUtil::matchWith(context->chars, context->length, start, fn_chars);
+            auto idx = ParseUtil::matchAt(context->chars, context->length, start, fn_chars);
             if (idx > -1) {
                 int currentPos = idx + size_of_fn;
                 int resultPos = -1;
