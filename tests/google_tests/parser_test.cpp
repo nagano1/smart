@@ -802,10 +802,11 @@ class A {
     class B {
         class TestCl😂日本語10234ass {
             fn a() {
-                let
-                mut
-                let
-                mut
+                let  b 
+                         =
+                mut a = 
+                let b = 
+                mut a
 
             }
 

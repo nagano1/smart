@@ -33,6 +33,10 @@ namespace smart {
 
 
         currentCodeLine = VTableCall::appendToLine(&self->letOrMut, currentCodeLine);
+        currentCodeLine = VTableCall::appendToLine(&self->nameNode, currentCodeLine);
+        if (self->equalSymbol.found) {
+            currentCodeLine = VTableCall::appendToLine(&self->equalSymbol, currentCodeLine);
+        }
 
         //currentCodeLine->appendNode(self);
 
@@ -108,43 +112,39 @@ namespace smart {
         return assignStatement;
     }
 
-    /*
 
     // --------------------- Implements ClassNode Parser ----------------------
-    static int inner_classBodyTokenizerMulti(TokenizerParams_parent_ch_start_context) {
-        auto *classNode = Cast::downcast<ClassNodeStruct *>(parent);
+    static int inner_assignStatementTokenizerMulti(TokenizerParams_parent_ch_start_context) {
+        auto *assignment = Cast::downcast<AssignStatementNodeStruct *>(parent);
 
-        //console_log(std::string(""+ch).c_str());
-        //console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
+        console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
 
-
-        if (!classNode->startFound) {
-            if (ch == '{') {
-                classNode->startFound = true;
-                context->codeNode = Cast::upcast(&classNode->bodyStartNode);
-                return start + 1;
-            }
-        } else if (ch == '}') {
-            context->scanEnd = true;
-            context->codeNode = Cast::upcast(&classNode->endBodyNode);
-            return start + 1;
-        } else {
+        if (!assignment->nameNode.found) {
             int result;
-            if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
-                // auto *innerClassNode = Cast::downcast<ClassNodeStruct *>(parent);
+            if (-1 < (result = Tokenizers::nameTokenizer(Cast::upcast(&assignment->nameNode), ch, start, context))) {
+                context->codeNode = Cast::upcast(&assignment->nameNode);
+                assignment->nameNode.found = true;
+
                 return result;
             }
+        } else {
+            if (ch == '=') {
+                assignment->equalSymbol.found = true;
+                context->scanEnd = true;
+                context->codeNode = Cast::upcast(&assignment->equalSymbol);
+                return start+1;
+            } else {
 
-            if (-1 < (result = Tokenizers::fnTokenizer(parent, ch, start, context))) {
-                // auto* innerClassNode = Cast::downcast<ClassNodeStruct*>(parent);
-                return result;
+                context->codeNode = nullptr;
+                context->scanEnd = true;
+
+                return context->prevFoundPos; // revert to name
             }
         }
 
         return -1;
     }
 
-     */
 
     // let a = 3
     // mut m = 5
@@ -179,35 +179,27 @@ namespace smart {
             }
         }
 
+
         if (hasMut || hasLet) {
             auto *assignStatement = Alloc::newAssignStatement(context, parent);
             assignStatement->useMut = hasMut;
 
-            context->codeNode = Cast::upcast(&assignStatement->letOrMut);
-            context->virtualCodeNode = Cast::upcast(assignStatement);
-
-            assignStatement->letOrMut.text = context->memBuffer.newMem<char>(3 + 1);
-            assignStatement->letOrMut.textLength = 3;
-
-            memcpy((char*)assignStatement->letOrMut.text, hasMut?(char*)"mut":(char*)"let", 3);
-            assignStatement->letOrMut.text[3] = '\0';
-
-            return currentPos;
-
-
-            /*
             int resultPos;
-            if (-1 ==
-                (resultPos = Scanner::scanMulti(assignStatement, inner_classBodyTokenizerMulti,
+            if (-1 < (resultPos = Scanner::scanMulti(assignStatement, inner_assignStatementTokenizerMulti,
                                                 currentPos, context))) {
+
                 context->codeNode = Cast::upcast(&assignStatement->letOrMut);
                 context->virtualCodeNode = Cast::upcast(assignStatement);
-                return currentPos;
-            }
 
-           // context->codeNode = Cast::upcast(assignStatement);
-            return resultPos;
-             */
+
+                assignStatement->letOrMut.text = context->memBuffer.newMem<char>(3 + 1);
+                assignStatement->letOrMut.textLength = 3;
+
+                memcpy((char*)assignStatement->letOrMut.text, hasMut?(char*)"mut":(char*)"let", 3);
+                assignStatement->letOrMut.text[3] = '\0';
+
+                return resultPos;
+            }
         }
 
 

@@ -45,6 +45,7 @@ namespace smart {
         struct _SimpleTextNodeStruct *prevSpaceNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
         ParseContext *context; \
+        bool found; \
         char prev_char
 
 
@@ -54,6 +55,7 @@ namespace smart {
         (node)->context = (context); \
         (node)->parentNode = (NodeBase*)(parent); \
         (node)->line = nullptr; \
+        (node)->found = false; \
         (node)->nextNode = nullptr; \
         (node)->nextNodeInLine = nullptr; \
         (node)->prevSpaceNode = nullptr; \
@@ -348,6 +350,9 @@ namespace smart {
         st_uint start;
         st_textlen length;
         bool scanEnd;
+        int prevFoundPos;
+
+
         bool afterLineBreak;
         NodeBase *codeNode;
         NodeBase *virtualCodeNode;

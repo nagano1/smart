@@ -262,23 +262,28 @@ namespace smart {
             }
 
             if (result > -1) {
+                context->prevFoundPos = result;
                 //console_log(":try:" + std::to_string(result));
 
                 // Attach a space node
                 if (whitespace_startpos != -1) {
-                    if (context->chars[whitespace_startpos] == ' ' && i - whitespace_startpos == 1) {
-                        context->codeNode->prev_char = ' ';
+                    if (context->codeNode != nullptr) {
+                        if (context->chars[whitespace_startpos] == ' ' &&
+                            i - whitespace_startpos == 1) {
+                            context->codeNode->prev_char = ' ';
+                        } else {
+                            context->codeNode->prevSpaceNode = genSpaceNode(context, parentNode,
+                                                                            whitespace_startpos, i);
+                        }
                     }
-                    else {
-                        context->codeNode->prevSpaceNode = genSpaceNode(context, parentNode, whitespace_startpos, i);
-                    }
-
                     whitespace_startpos = -1;
                 }
 
                 returnResult = i = result;
 
-                context->codeNode->prevLineBreakNode = prevLineBreak;
+                if (context->codeNode != nullptr) {
+                    context->codeNode->prevLineBreakNode = prevLineBreak;
+                }
                 prevLineBreak = nullptr;
                 lastLineBreak = nullptr;
 
