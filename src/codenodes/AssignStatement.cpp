@@ -30,8 +30,13 @@ namespace smart {
     }
 
     static CodeLine *appendToLine(AssignStatementNodeStruct *self, CodeLine *currentCodeLine) {
-        currentCodeLine = VTableCall::appendToLine(&self->letOrMut, currentCodeLine);
+
+        if (self->useMut || self->useLet) {
+            currentCodeLine = VTableCall::appendToLine(&self->letOrMut, currentCodeLine);
+        }
+
         currentCodeLine = VTableCall::appendToLine(&self->nameNode, currentCodeLine);
+
         if (self->equalSymbol.found) {
             currentCodeLine = VTableCall::appendToLine(&self->equalSymbol, currentCodeLine);
 
@@ -70,9 +75,8 @@ namespace smart {
 
 
         assignStatement->useMut = false;
+        assignStatement->useLet = false;
         assignStatement->valueNode = nullptr;
-        assignStatement->startFound = false;
-
 
         Init::initNameNode(&assignStatement->nameNode, context, assignStatement);
         Init::initSymbolNode(&assignStatement->equalSymbol, context, assignStatement, '=');
@@ -87,13 +91,12 @@ namespace smart {
         auto *assignment = Cast::downcast<AssignStatementNodeStruct *>(parent);
 
         //console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
-
         if (!assignment->nameNode.found) {
             int result;
-            if (-1 < (result = Tokenizers::nameTokenizer(Cast::upcast(&assignment->nameNode), ch, start, context))) {
+            if (-1 < (result = Tokenizers::nameTokenizer(Cast::upcast(&assignment->nameNode)
+                                                        , ch, start, context))
+            ) {
                 context->codeNode = Cast::upcast(&assignment->nameNode);
-                assignment->nameNode.found = true;
-
                 return result;
             }
         } else if (!assignment->equalSymbol.found) {
@@ -102,11 +105,15 @@ namespace smart {
                 context->codeNode = Cast::upcast(&assignment->equalSymbol);
                 return start+1;
             } else {
+                if (assignment->useMut || assignment->useLet) {
+                    context->codeNode = nullptr;
+                    context->scanEnd = true;
 
-                context->codeNode = nullptr;
-                context->scanEnd = true;
+                    return context->prevFoundPos; // revert to name
+                } else {
+                    return -1;
+                }
 
-                return context->prevFoundPos; // revert to name
             }
         } else {
             int result;
@@ -122,6 +129,37 @@ namespace smart {
         return -1;
     }
 
+
+
+    int Tokenizers::assignStatementWithoutLetTokenizer(TokenizerParams_parent_ch_start_context)
+    {
+        AssignStatementNodeStruct *assignment;
+
+        if (context->unusedAssignment == nullptr) {
+            assignment = Alloc::newAssignStatement(context, parent);
+        } else {
+            assignment = context->unusedAssignment;
+            context->unusedAssignment = nullptr;
+        }
+
+        int resultPos;
+        if (-1 < (resultPos = Scanner::scanMulti(assignment, inner_assignStatementTokenizerMulti,
+                                                 start, context))) {
+
+            assignment->useMut = false;
+            assignment->useLet = false;
+
+            context->codeNode = Cast::upcast(&assignment->nameNode);
+            context->virtualCodeNode = Cast::upcast(assignment);
+
+            return resultPos;
+
+        }
+
+        context->unusedAssignment = assignment;
+
+        return -1;
+    }
 
     // let a = 3
     // mut m = 5
@@ -158,8 +196,16 @@ namespace smart {
 
 
         if (hasMut || hasLet) {
-            auto *assignStatement = Alloc::newAssignStatement(context, parent);
+            AssignStatementNodeStruct *assignStatement;
+            if (context->unusedAssignment == nullptr) {
+                assignStatement = Alloc::newAssignStatement(context, parent);
+            } else {
+                assignStatement = context->unusedAssignment;
+                context->unusedAssignment = nullptr;
+            }
+
             assignStatement->useMut = hasMut;
+            assignStatement->useLet = hasLet;
 
             int resultPos;
             if (-1 < (resultPos = Scanner::scanMulti(assignStatement, inner_assignStatementTokenizerMulti,
@@ -176,6 +222,9 @@ namespace smart {
                 assignStatement->letOrMut.text[3] = '\0';
 
                 return resultPos;
+            } else {
+                context->unusedAssignment = assignStatement;
+                return -1;
             }
         }
 

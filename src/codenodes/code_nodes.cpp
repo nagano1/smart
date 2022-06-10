@@ -255,13 +255,15 @@ namespace smart {
             }
 
             int result = tokenizer(Cast::upcast(parentNode), ch, i, context);
-            context->afterLineBreak = false;
 
             if (context->syntaxErrorInfo.hasError) {
                 return -1;
             }
 
+            returnResult = result;
             if (result > -1) {
+                context->afterLineBreak = false;
+
                 context->prevFoundPos = result;
                 //console_log(":try:" + std::to_string(result));
 
@@ -320,6 +322,7 @@ namespace smart {
                 //delete prevLineBreak;
             }
         }
+        context->scanEnd = false;
 
         //context->former_start = start;
         return returnResult;

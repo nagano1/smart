@@ -50,6 +50,7 @@ namespace smart {
             context->codeNode = Cast::upcast(nameNode);
             nameNode->name = context->memBuffer.newMem<char>(found_count + 1);
             nameNode->nameLength = found_count;
+            nameNode->found = true;
 
             memcpy(nameNode->name, context->chars + start, found_count);
             nameNode->name[found_count] = '\0';

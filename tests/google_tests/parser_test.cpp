@@ -807,6 +807,14 @@ class A {
                 let  b = false
                 let b = null
                 mut a
+                b = "fjoiwe"
+                c   =   true
+                10923
+                123423
+                    null    
+                false
+                "jofiwjio"
+
 
             }
 

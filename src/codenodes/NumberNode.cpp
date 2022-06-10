@@ -132,6 +132,7 @@ namespace smart {
             if (!ParseUtil::isNumberLetter(context->chars[i])) {
                 break;
             }
+
             found_count++;
         }
 

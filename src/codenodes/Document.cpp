@@ -408,6 +408,9 @@ namespace smart {
         context->parentDepth = -1;
         context->afterLineBreak = false;
 
+        context->unusedAssignment = nullptr;
+
+
 
         if (docStruct->documentType == DocumentType::CodeDocument) {
             Scanner::scan_for_root(docStruct, tryTokenize, 0, context, /*root*/true, true);

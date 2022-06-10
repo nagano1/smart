@@ -148,12 +148,11 @@ namespace smart {
         NODE_HEADER;
 
         bool useMut;
+        bool useLet;
         SimpleTextNodeStruct letOrMut; // let
         NameNodeStruct nameNode; // varName
         SymbolStruct equalSymbol; // =
         NodeBase *valueNode; // 32
-
-        bool startFound;
     };
 
     using ClassNodeStruct = struct {
@@ -363,6 +362,9 @@ namespace smart {
         bool has_cancel_request{false};
         bool has_depth_error{false};
         st_int parentDepth{ -1 };
+
+        // node caches
+        AssignStatementNodeStruct *unusedAssignment;
 
 
         void (*actionCreator)(void *node1, void *node2, int actionRequest);
@@ -785,6 +787,7 @@ namespace smart {
 
 
         static int assignStatementTokenizer(TokenizerParams_parent_ch_start_context);
+        static int assignStatementWithoutLetTokenizer(TokenizerParams_parent_ch_start_context);
 
         // SimpleTextNodeStruct
         template<typename TYPE, std::size_t SIZE>
