@@ -808,7 +808,7 @@ class A {
                 $let ba = 2342
 
                 int a = 55
-                int k
+                $int k
 
                 let aw = 242
                 
