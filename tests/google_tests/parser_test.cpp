@@ -802,16 +802,22 @@ class A {
     class B {
         class TestCl😂日本語10234ass {
             fn a() {
-                let  b = 3
-                mut a =  "fjiowjeiow"
-                let  b = false
+                $int a = 32
+                $int b = 2431
+
+                $let ba = 2342
+
+                int a = 55
+                int k
+
+                let aw = 242
+                
+                let k = 32
                 let b = null
-                mut a
                 b = "fjoiwe"
                 c   =   true
-                10923
-                123423
-                    null    
+                
+
                 false
                 "jofiwjio"
 

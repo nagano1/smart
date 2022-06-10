@@ -82,6 +82,16 @@ namespace smart {
         textNode->text[charLen] = '\0';
     }
 
+    void Init::assignText_SimpleTextNode(SimpleTextNodeStruct *textNode, ParseContext *context, int pos, int charLen)
+    {
+        textNode->text = context->memBuffer.newMem<char>(charLen + 1);
+        textNode->textLength = charLen;
+
+        TEXT_MEMCPY(textNode->text, context->chars + pos, charLen);
+        textNode->text[charLen] = '\0';
+    }
+
+
 
     SpaceNodeStruct *Alloc::newSpaceNode(ParseContext *context, NodeBase *parentNode) {
         auto *spaceNode = context->newMemForNode<SpaceNodeStruct>();

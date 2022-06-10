@@ -22,16 +22,18 @@ namespace smart {
     // --------------------- Defines AssignStatement VTable ---------------------- /
 
     static st_textlen selfTextLength(AssignStatementNodeStruct *) {
-        return 3;
+        // virtual node
+        return 0;
     }
 
     static const utf8byte *selfText(AssignStatementNodeStruct *self) {
-        return self->useMut ? "mut" : "let";
+        // virtual node
+        return ""; // self->useMut ? "mut" : "let";
     }
 
     static CodeLine *appendToLine(AssignStatementNodeStruct *self, CodeLine *currentCodeLine) {
 
-        if (self->useMut || self->useLet) {
+        if (!self->onlyAssign) {
             currentCodeLine = VTableCall::appendToLine(&self->letOrMut, currentCodeLine);
         }
 
@@ -74,8 +76,10 @@ namespace smart {
         INIT_NODE(assignStatement, context, parentNode, &_assignVTable);
 
 
-        assignStatement->useMut = false;
+        assignStatement->hasMutMark = false;
         assignStatement->useLet = false;
+        assignStatement->onlyAssign = false;
+
         assignStatement->valueNode = nullptr;
 
         Init::initNameNode(&assignStatement->nameNode, context, assignStatement);
@@ -105,14 +109,14 @@ namespace smart {
                 context->codeNode = Cast::upcast(&assignment->equalSymbol);
                 return start+1;
             } else {
-                if (assignment->useMut || assignment->useLet) {
+                //if (assignment->assignment->useLet) {
                     context->codeNode = nullptr;
                     context->scanEnd = true;
 
                     return context->prevFoundPos; // revert to name
-                } else {
-                    return -1;
-                }
+                //} else {
+//                    return -1;
+//                }
 
             }
         } else {
@@ -130,7 +134,7 @@ namespace smart {
     }
 
 
-
+    // b = 32
     int Tokenizers::assignStatementWithoutLetTokenizer(TokenizerParams_parent_ch_start_context)
     {
         AssignStatementNodeStruct *assignment;
@@ -146,7 +150,7 @@ namespace smart {
         if (-1 < (resultPos = Scanner::scanMulti(assignment, inner_assignStatementTokenizerMulti,
                                                  start, context))) {
 
-            assignment->useMut = false;
+            assignment->onlyAssign = true;
             assignment->useLet = false;
 
             context->codeNode = Cast::upcast(&assignment->nameNode);
@@ -168,65 +172,80 @@ namespace smart {
         static constexpr const char let_chars[] = "let";
         static constexpr unsigned int size_of_let = sizeof(let_chars) - 1;
 
-        static constexpr const char mut_chars[] = "mut";
-        static constexpr unsigned int size_of_mut = sizeof(mut_chars) - 1;
-
         bool hasLet = false;
-        bool hasMut = false;
         int currentPos = start;
+
+        bool hasMutMark = false;
+
+        AssignStatementNodeStruct *assignStatement;
+        if (context->unusedAssignment == nullptr) {
+            assignStatement = Alloc::newAssignStatement(context, parent);
+        } else {
+            assignStatement = context->unusedAssignment;
+            context->unusedAssignment = nullptr;
+        }
+
+
+
+        // $ is mutable mark
+        if ('$' == ch) {
+            hasMutMark = true;
+            currentPos += 1;
+        }
+
+        int found_count = 0;
 
         // let
         if ('l' == ch) {
-            auto idx = ParseUtil::matchAt(context->chars, context->length, start, let_chars);
+            auto idx = ParseUtil::matchAt(context->chars, context->length, currentPos, let_chars);
             if (idx > -1) {
                 currentPos = idx + size_of_let;
                 hasLet = true;
+                found_count = 3;
             }
         }
 
-        if (!hasLet) { // mut
-            if ('m' == ch) {
-                auto idx = ParseUtil::matchAt(context->chars, context->length, start, mut_chars);
-                if (idx > -1) {
-                    currentPos = idx + size_of_mut;
-                    hasMut = true;
+        if (!hasLet) {
+            for (uint_fast32_t i = currentPos; i < context->length; i++) {
+                if (ParseUtil::isIdentifierLetter(context->chars[i])) {
+                    found_count++;
+                } else {
+                    break;
                 }
             }
+
+            if (found_count > 0) {
+                if (currentPos + found_count < context->length
+                    && ParseUtil::isSpaceOrLineBreak(context->chars[currentPos + found_count])
+                        ){
+            } else {
+                    found_count = 0;
+                }
+            }
+            currentPos += found_count;
         }
 
+        if (found_count > 0) {
+            Init::assignText_SimpleTextNode(&assignStatement->letOrMut, context, start,
+                                            found_count + (hasMutMark ? 1 : 0));
 
-        if (hasMut || hasLet) {
-            AssignStatementNodeStruct *assignStatement;
-            if (context->unusedAssignment == nullptr) {
-                assignStatement = Alloc::newAssignStatement(context, parent);
-            } else {
-                assignStatement = context->unusedAssignment;
-                context->unusedAssignment = nullptr;
-            }
-
-            assignStatement->useMut = hasMut;
+            assignStatement->onlyAssign = false;
             assignStatement->useLet = hasLet;
 
             int resultPos;
-            if (-1 < (resultPos = Scanner::scanMulti(assignStatement, inner_assignStatementTokenizerMulti,
-                                                currentPos, context))) {
+            if (-1 < (resultPos = Scanner::scanMulti(assignStatement,
+                                                     inner_assignStatementTokenizerMulti,
+                                                     currentPos, context))) {
+
 
                 context->codeNode = Cast::upcast(&assignStatement->letOrMut);
                 context->virtualCodeNode = Cast::upcast(assignStatement);
 
-
-                assignStatement->letOrMut.text = context->memBuffer.newMem<char>(3 + 1);
-                assignStatement->letOrMut.textLength = 3;
-
-                memcpy((char*)assignStatement->letOrMut.text, hasMut?(char*)"mut":(char*)"let", 3);
-                assignStatement->letOrMut.text[3] = '\0';
-
                 return resultPos;
-            } else {
-                context->unusedAssignment = assignStatement;
-                return -1;
             }
         }
+
+        context->unusedAssignment = assignStatement;
 
         return -1;
     }

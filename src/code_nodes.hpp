@@ -147,9 +147,10 @@ namespace smart {
     using AssignStatementNodeStruct = struct {
         NODE_HEADER;
 
-        bool useMut;
-        bool useLet;
-        SimpleTextNodeStruct letOrMut; // let
+        bool hasMutMark;
+        bool useLet; // or has type
+        bool onlyAssign;
+        SimpleTextNodeStruct letOrMut; // $let, int, etc..
         NameNodeStruct nameNode; // varName
         SymbolStruct equalSymbol; // =
         NodeBase *valueNode; // 32
@@ -723,6 +724,7 @@ namespace smart {
         initSymbolNode(SymbolStruct *self, ParseContext *context, void *parent, utf8byte letter);
 
         static void initSimpleTextNode(SimpleTextNodeStruct *name, ParseContext *context, void *parentNode, int charLen);
+        static void assignText_SimpleTextNode(SimpleTextNodeStruct *name, ParseContext *context, int pos, int charLen);
     };
 
     struct Alloc {

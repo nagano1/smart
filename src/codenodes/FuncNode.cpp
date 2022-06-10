@@ -122,13 +122,19 @@ namespace smart {
             if (-1 < (nextPos = Tokenizers::assignStatementTokenizer(parent, ch, start, context))) {
                 appendChildNode(body, context->virtualCodeNode);
                 return nextPos;
-            } else if (-1 < (nextPos = Tokenizers::fnTokenizer(parent, ch, start, context))) {
+            }
+            /*
+            // fn a() {}
+            else if (-1 < (nextPos = Tokenizers::fnTokenizer(parent, ch, start, context))) {
                     appendChildNode(body, context->codeNode);
                     return nextPos;
-            } else if (-1 < (nextPos = Tokenizers::assignStatementWithoutLetTokenizer(parent, ch, start, context))) {
+            }*/
+            // b = 3
+            else if (-1 < (nextPos = Tokenizers::assignStatementWithoutLetTokenizer(parent, ch, start, context))) {
                 appendChildNode(body, context->virtualCodeNode);
                 return nextPos;
             } else {
+                // value as a statement
                 if (context->afterLineBreak) {
                     int result;
                     if (-1 < (result = Tokenizers::jsonValueTokenizer(TokenizerParams_pass))) {
