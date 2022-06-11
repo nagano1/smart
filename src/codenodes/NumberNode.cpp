@@ -137,7 +137,6 @@ namespace smart {
         }
 
         if (found_count > 0) {
-            //context->scanEnd = true;
             auto *numberNode = Alloc::newNumberNode(context, parent);
 
             context->codeNode = Cast::upcast(numberNode);

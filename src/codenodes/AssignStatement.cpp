@@ -215,7 +215,7 @@ namespace smart {
             }
 
             if (found_count > 0) {
-                if (currentPos + found_count < (int)context->length
+                if (currentPos + found_count < context->length
                     && ParseUtil::isSpaceOrLineBreak(context->chars[currentPos + found_count])
                         ){
                 } else {

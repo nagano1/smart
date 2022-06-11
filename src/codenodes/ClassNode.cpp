@@ -169,12 +169,12 @@ namespace smart {
 
     int Tokenizers::classTokenizer(TokenizerParams_parent_ch_start_context) {
         static constexpr const char class_chars[] = "class";
-        static constexpr unsigned int size_of_class = sizeof(class_chars) - 1;
+        static constexpr int size_of_class = sizeof(class_chars) - 1;
 
         if ('c' == ch) {
             auto idx = ParseUtil::matchAt(context->chars, context->length, start, class_chars);
             if (idx > -1) {
-                    int currentPos = idx + (int)size_of_class;
+                    int currentPos = idx + size_of_class;
                     int resultPos;
 
                     // "class " came here
