@@ -21,7 +21,7 @@ namespace smart {
 
     // --------------------- Defines AssignStatement VTable ---------------------- /
 
-    static st_textlen selfTextLength(AssignStatementNodeStruct *) {
+    static int selfTextLength(AssignStatementNodeStruct *) {
         // virtual node
         return 0;
     }
@@ -34,7 +34,7 @@ namespace smart {
     static CodeLine *appendToLine(AssignStatementNodeStruct *self, CodeLine *currentCodeLine) {
 
         if (!self->onlyAssign) {
-            currentCodeLine = VTableCall::appendToLine(&self->letOrMut, currentCodeLine);
+            currentCodeLine = VTableCall::appendToLine(&self->letOrType, currentCodeLine);
         }
 
         currentCodeLine = VTableCall::appendToLine(&self->nameNode, currentCodeLine);
@@ -84,7 +84,7 @@ namespace smart {
 
         Init::initNameNode(&assignStatement->nameNode, context, assignStatement);
         Init::initSymbolNode(&assignStatement->equalSymbol, context, assignStatement, '=');
-        Init::initSimpleTextNode(&assignStatement->letOrMut, context, assignStatement, 3);
+        Init::initSimpleTextNode(&assignStatement->letOrType, context, assignStatement, 3);
 
         return assignStatement;
     }
@@ -109,14 +109,14 @@ namespace smart {
                 context->codeNode = Cast::upcast(&assignment->equalSymbol);
                 return start+1;
             } else {
-                //if (assignment->assignment->useLet) {
+                if (assignment->hasMutMark) {
                     context->codeNode = nullptr;
                     context->scanEnd = true;
 
                     return context->prevFoundPos; // revert to name
-                //} else {
-//                    return -1;
-//                }
+                } else {
+                    return -1;
+                }
 
             }
         } else {
@@ -170,7 +170,7 @@ namespace smart {
     // m = 8
     int Tokenizers::assignStatementTokenizer(TokenizerParams_parent_ch_start_context) {
         static constexpr const char let_chars[] = "let";
-        static constexpr unsigned int size_of_let = sizeof(let_chars) - 1;
+        static constexpr int size_of_let = sizeof(let_chars) - 1;
 
         bool hasLet = false;
         int currentPos = start;
@@ -186,12 +186,12 @@ namespace smart {
         }
 
 
-
         // $ is mutable mark
         if ('$' == ch) {
             hasMutMark = true;
             currentPos += 1;
         }
+        assignStatement->hasMutMark = hasMutMark;
 
         int found_count = 0;
 
@@ -218,7 +218,7 @@ namespace smart {
                 if (currentPos + found_count < (int)context->length
                     && ParseUtil::isSpaceOrLineBreak(context->chars[currentPos + found_count])
                         ){
-            } else {
+                } else {
                     found_count = 0;
                 }
             }
@@ -226,7 +226,7 @@ namespace smart {
         }
 
         if (found_count > 0) {
-            Init::assignText_SimpleTextNode(&assignStatement->letOrMut, context, start,
+            Init::assignText_SimpleTextNode(&assignStatement->letOrType, context, start,
                                             found_count + (hasMutMark ? 1 : 0));
 
             assignStatement->onlyAssign = false;
@@ -235,10 +235,9 @@ namespace smart {
             int resultPos;
             if (-1 < (resultPos = Scanner::scanMulti(assignStatement,
                                                      inner_assignStatementTokenizerMulti,
-                                                     currentPos, context))) {
-
-
-                context->codeNode = Cast::upcast(&assignStatement->letOrMut);
+                                                     currentPos, context))
+            ) {
+                context->codeNode = Cast::upcast(&assignStatement->letOrType);
                 context->virtualCodeNode = Cast::upcast(assignStatement);
 
                 return resultPos;

@@ -30,7 +30,7 @@ namespace smart {
         return self->text;
     }
 
-    static st_textlen selfTextLength(StringLiteralNodeStruct *self) {
+    static int selfTextLength(StringLiteralNodeStruct *self) {
         return self->textLength;
     }
 

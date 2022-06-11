@@ -24,7 +24,7 @@ namespace smart {
         return self->text;
     }
 
-    static st_textlen selfTextLength(SimpleTextNodeStruct *self) {
+    static int selfTextLength(SimpleTextNodeStruct *self) {
         return self->textLength;
     }
 

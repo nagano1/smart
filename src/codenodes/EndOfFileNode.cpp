@@ -31,7 +31,7 @@ namespace smart {
         return "";
     }
 
-    static st_textlen selfTextLength(EndOfFileNodeStruct *) {
+    static int selfTextLength(EndOfFileNodeStruct *) {
         return 0;
     }
 

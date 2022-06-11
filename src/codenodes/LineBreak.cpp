@@ -22,7 +22,7 @@ namespace smart {
 
     // Line Break Node implementation
 
-    static st_textlen selfTextLength(LineBreakNodeStruct *) {
+    static int selfTextLength(LineBreakNodeStruct *) {
         return 1;
     }
 

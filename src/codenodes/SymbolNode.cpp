@@ -27,7 +27,7 @@ namespace smart {
         return self->symbol;
     }
 
-    static st_textlen selfTextLength(SymbolStruct *) {
+    static int selfTextLength(SymbolStruct *) {
         return 1;
     }
 

@@ -53,7 +53,7 @@ namespace smart {
         return self->text;
     }
 
-    static st_textlen selfTextLength2(BoolNodeStruct*self) {
+    static int selfTextLength2(BoolNodeStruct*self) {
         return self->textLength;
     }
 
@@ -120,7 +120,7 @@ namespace smart {
         return self->text;
     }
 
-    static st_textlen selfTextLength(NumberNodeStruct *self) {
+    static int selfTextLength(NumberNodeStruct *self) {
         return self->textLength;
     }
 

@@ -74,7 +74,7 @@ namespace smart {
         NODE_HEADER;
 
         utf8byte *text;
-        uint_fast32_t textLength;
+        int_fast32_t textLength;
     };
 
     using SpaceNodeStruct = SimpleTextNodeStruct;
@@ -96,7 +96,7 @@ namespace smart {
         NODE_HEADER;
 
         char *name;
-        st_textlen nameLength;
+        int_fast32_t nameLength;
     };
 
     using TypeNodeStruct = struct _TypeNodeStruct {
@@ -111,10 +111,10 @@ namespace smart {
     using StringLiteralNodeStruct = struct {
         NODE_HEADER;
         char *text; // unparsed, includes ""
-        st_textlen textLength;
+        int_fast32_t textLength;
 
         char *str;
-        st_textlen strLength;
+        int strLength;
 
         int literalType; // 0: "text", 1: `wjfeiofw`, 2: r"testfaojiwe"
     };
@@ -123,7 +123,7 @@ namespace smart {
         NODE_HEADER;
 
         char *text;
-        st_textlen textLength;
+        int textLength;
         bool boolValue;
     };
 
@@ -132,7 +132,7 @@ namespace smart {
         NODE_HEADER;
 
         char *text;
-        st_textlen textLength;
+        int textLength;
         int num;
         int unit;
     };
@@ -150,7 +150,7 @@ namespace smart {
         bool hasMutMark;
         bool useLet; // or has type
         bool onlyAssign;
-        SimpleTextNodeStruct letOrMut; // $let, int, etc..
+        SimpleTextNodeStruct letOrType; // $let, int, etc..
         NameNodeStruct nameNode; // varName
         SymbolStruct equalSymbol; // =
         NodeBase *valueNode; // 32
@@ -227,10 +227,10 @@ namespace smart {
         NODE_HEADER;
 
         char *text;
-        st_textlen textLength;
+        int_fast32_t textLength;
 
         int namePos;
-        st_textlen nameLength;
+        int nameLength;
     };
 
     using JsonKeyValueItemStruct = struct {
@@ -252,7 +252,7 @@ namespace smart {
     struct HashNode {
         HashNode *next;
         char *key;
-        st_textlen keyLength;
+        int keyLength;
         NodeBase *nodeBase;
     };
 
@@ -272,8 +272,8 @@ namespace smart {
             return HashMap::calc_hash(key, keyLength, this->entries_length);
         }
         static int calc_hash(const char *key, int keyLength, size_t max);
-        void put(const char *keyA, st_textlen keyLength, NodeBase *val) const;
-        NodeBase *get(const char *key, st_textlen keyLength);
+        void put(const char *keyA, int keyLength, NodeBase *val) const;
+        NodeBase *get(const char *key, int keyLength);
         bool has(const char *key, int keyLength);
         void deleteKey(const char *key, int keyLength);
 
@@ -325,7 +325,7 @@ namespace smart {
     };
 
 
-    enum class DocumentType {
+    enum DocumentType {
         CodeDocument,
         JsonDocument
     };
@@ -348,7 +348,7 @@ namespace smart {
 
     struct ParseContext {
         st_uint start;
-        st_textlen length;
+        int length;
         bool scanEnd;
         int prevFoundPos;
 
@@ -464,7 +464,7 @@ namespace smart {
     };
 
     #define VTABLE_DEF(T) \
-        st_textlen (*selfTextLength)(T *self); \
+        int (*selfTextLength)(T *self); \
         const utf8byte *(*selfText)(T *self); \
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
         const char *typeChars; \
@@ -550,7 +550,7 @@ namespace smart {
 
     struct VTableCall {
 
-        static st_textlen selfTextLength(NodeBase *node) {
+        static int selfTextLength(NodeBase *node) {
             assert(node);
             assert(node->vtable);
             assert(node->vtable->selfTextLength);
@@ -568,7 +568,7 @@ namespace smart {
             };
         }
 
-        static st_textlen typeTextLength(NodeBase *node) {
+        static int typeTextLength(NodeBase *node) {
             assert(node);
             assert(node->vtable);
             return node->vtable->typeCharsLength;
@@ -685,7 +685,7 @@ namespace smart {
 
     struct JsonUtils {
         static void
-        put(JsonObjectStruct *json, utf8byte *key, st_textlen keyLength, NodeBase *node);
+        put(JsonObjectStruct *json, utf8byte *key, int keyLength, NodeBase *node);
     };
 
 
@@ -698,7 +698,7 @@ namespace smart {
             NodeBase* endNode
         );
 
-        static void parseText(DocumentStruct *docStruct, const utf8byte *text, st_textlen length);
+        static void parseText(DocumentStruct *docStruct, const utf8byte *text, int length);
         static JsonObjectStruct *generateHashTables(DocumentStruct *doc);
 
 

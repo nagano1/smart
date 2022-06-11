@@ -31,7 +31,7 @@ namespace smart
         return VTableCall::selfText(&self->nameNode);
     }
 
-    static st_textlen selfTextLength(TypeNodeStruct *self) {
+    static int selfTextLength(TypeNodeStruct *self) {
         return VTableCall::selfTextLength(Cast::upcast(&self->nameNode));
     }
 

@@ -24,7 +24,7 @@ using st_size = unsigned long;
 using st_uint = unsigned long;
 using st_int = long;
 
-using st_textlen = st_size;
+//using st_textlen = long;
 using st_byte = unsigned char;
 
 #define UNUSED(x) (void)(x)

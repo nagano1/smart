@@ -30,7 +30,7 @@ namespace smart {
         return self->name;
     }
 
-    static st_textlen selfTextLength(NameNodeStruct *self) {
+    static int selfTextLength(NameNodeStruct *self) {
         return self->nameLength;
     }
 

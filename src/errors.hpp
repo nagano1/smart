@@ -171,7 +171,7 @@ namespace smart {
 
         ErrorCode errorCode;
         char reason[MAX_REASON_LENGTH + 1];
-        st_textlen reasonLength = 0;
+        int reasonLength = 0;
 
         st_uint charPosition;
         int charEndPosition;
@@ -191,7 +191,7 @@ namespace smart {
             if (reason == nullptr) {
                 reason = "";
             }
-            st_textlen len = (st_textlen) strlen(reason);
+            int len = strlen(reason);
             error->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
             memcpy(error->reason, reason, error->reasonLength);
             error->reason[error->reasonLength] = '\0';

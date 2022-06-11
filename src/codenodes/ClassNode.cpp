@@ -29,7 +29,7 @@ namespace smart {
 
     // --------------------- Defines Class VTable ---------------------- /
 
-    static st_textlen selfTextLength(ClassNodeStruct *) {
+    static int selfTextLength(ClassNodeStruct *) {
         return 5;
     }
 

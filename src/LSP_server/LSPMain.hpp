@@ -26,7 +26,7 @@
 struct LSPManager {
     static void LSP_main();
     
-    void nextRequest(char *str, st_textlen length);
+    void nextRequest(char *str, int length);
 };
 
 

@@ -57,7 +57,7 @@ namespace smart {
         return "";
     }
 
-    static st_textlen selfTextLength2(JsonKeyValueItemStruct *) {
+    static int selfTextLength2(JsonKeyValueItemStruct *) {
         return 0;
     }
 
@@ -105,7 +105,7 @@ namespace smart {
         return self->text;
     }
 
-    static st_textlen selfTextLength3(JsonObjectKeyNodeStruct *self) {
+    static int selfTextLength3(JsonObjectKeyNodeStruct *self) {
         return self->textLength;
     }
 
@@ -179,7 +179,7 @@ namespace smart {
     //                              JsonObjectStruct
     //
     // ---------------------------------------------------------------------------------
-    static st_textlen selfTextLength(JsonObjectStruct *) {
+    static int selfTextLength(JsonObjectStruct *) {
         return 1;
     }
 
@@ -248,7 +248,7 @@ namespace smart {
         doc->lastKeyValueItem = node;
     }
 
-    void JsonUtils::put(JsonObjectStruct *json, utf8byte *key, st_textlen keyLength, NodeBase *node) {
+    void JsonUtils::put(JsonObjectStruct *json, utf8byte *key, int keyLength, NodeBase *node) {
         json->hashMap->put((const char *) key, keyLength, node);
 
         auto *newItem = Alloc::newJsonKeyValueItemNode(json->context, Cast::upcast(json));

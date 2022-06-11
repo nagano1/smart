@@ -29,7 +29,7 @@ namespace smart {
      *
      */
 
-    static st_textlen selfTextLength2(BodyNodeStruct *) {
+    static int selfTextLength2(BodyNodeStruct *) {
         return 1;
     }
 
@@ -188,7 +188,7 @@ namespace smart {
 
 // --------------------- Defines FuncNode VTable ---------------------- /
 
-    static st_textlen selfTextLength(FuncNodeStruct *) {
+    static int selfTextLength(FuncNodeStruct *) {
         return size_of_fn;
     }
 

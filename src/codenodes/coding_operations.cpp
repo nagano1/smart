@@ -115,7 +115,7 @@ namespace smart {
 				firstElement->line->insertNode(Cast::upcast(space), nullptr);
 			}
 
-			unsigned int textLen = line->depth * baseIndent;
+			int textLen = static_cast<int>(line->depth * baseIndent);
 			line->indent = textLen;
 			space->textLength = textLen;
 			space->text = context->memBuffer.newMem<char>(textLen + 1);
