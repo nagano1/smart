@@ -799,7 +799,7 @@ namespace smart {
                       , const TYPE(&word)[SIZE])
         {
             if (capitalLetter == ch) {
-                st_size length = st_size_of(word) - 1;
+                int length = st_size_of(word) - 1;
                 if (ParseUtil::matchWord(context->chars, context->length, word, length, start)) {
 
                     if (start + length == context->length // allowed to be the last char of the file

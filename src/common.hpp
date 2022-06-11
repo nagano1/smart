@@ -29,7 +29,8 @@ using st_byte = unsigned char;
 
 #define UNUSED(x) (void)(x)
 
-#define st_size_of(T) ((st_size)sizeof(T))
+#define st_size_of(T) ((int)sizeof(T))
+//#define st_size_of(T) ((st_size)sizeof(T))
 
 #ifdef __x86_64__
 // do x64 stuff
