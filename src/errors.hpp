@@ -38,6 +38,18 @@ namespace smart {
         last_keeper
     };
 
+    template
+        <
+        typename tEnum,
+        typename std::enable_if<std::is_enum<tEnum>::value, std::nullptr_t>::type = nullptr
+        >
+        std::ostream& operator<<(std::ostream& iOStream, tEnum iEnum)
+    {
+        typedef typename std::underlying_type<tEnum>::type  Type;
+        iOStream << static_cast<Type>(iEnum);
+        return iOStream;
+    }
+
     static constexpr int errorListSize = 1 + static_cast<int>(ErrorCode::last_keeper);
 
     struct ErrorInfo {

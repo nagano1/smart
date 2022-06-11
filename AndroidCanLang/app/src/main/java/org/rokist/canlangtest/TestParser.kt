@@ -35,6 +35,10 @@ class TestParser {
                 val speedGroup = TestGroup("SpeedTest")
                 topTestGroup.addTest(speedGroup)
 
+                val syntaxErrorGroup = TestGroup("SyntaxErrors")
+                topTestGroup.addTest(syntaxErrorGroup)
+
+
                 val parserGroup =  TestGroup("Parser Tests")
                 topTestGroup.addTest(parserGroup)
 
@@ -60,6 +64,8 @@ class TestParser {
                         speedGroup.addTest(testEntry)
                     } else if (filename.startsWith("parser_test")) {
                         parserGroup.addTest(testEntry)
+                    } else if (filename.startsWith("syntax_error")) {
+                        syntaxErrorGroup.addTest(testEntry)
                     } else {
                         topTestGroup.addTest(testEntry)
                     }

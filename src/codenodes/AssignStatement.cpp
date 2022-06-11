@@ -143,13 +143,13 @@ namespace smart {
             assignment = Alloc::newAssignStatement(context, parent);
         } else {
             assignment = context->unusedAssignment;
+            assignment->parentNode = parent;
             context->unusedAssignment = nullptr;
         }
 
         int resultPos;
         if (-1 < (resultPos = Scanner::scanMulti(assignment, inner_assignStatementTokenizerMulti,
                                                  start, context))) {
-
             assignment->onlyAssign = true;
             assignment->useLet = false;
 
@@ -182,6 +182,7 @@ namespace smart {
             assignStatement = Alloc::newAssignStatement(context, parent);
         } else {
             assignStatement = context->unusedAssignment;
+            assignStatement->parentNode = parent;
             context->unusedAssignment = nullptr;
         }
 

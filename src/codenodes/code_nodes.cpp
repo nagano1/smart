@@ -22,6 +22,7 @@ namespace smart {
     bool errorInfoInitialized{false};
     static int ab = initErrorInfoList();
 
+
     int HashMap::calc_hash(const char *key, int keyLength, size_t max) {
         unsigned int sum = keyLength;
         int border = 128;

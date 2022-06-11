@@ -801,7 +801,7 @@ TEST(ParserTest_, SameLength_01) {
 class A {
     class B {
         class TestCl😂日本語10234ass {
-            fn a() {
+            fn func() {
                 $int a = 32
                 $int b = 2431
 
@@ -820,10 +820,7 @@ class A {
 
                 false
                 "jofiwjio"
-
-
             }
-
         }
     }
 }
