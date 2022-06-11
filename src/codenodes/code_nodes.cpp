@@ -56,7 +56,7 @@ namespace smart {
 
 
             char *keyB = context->memBuffer.newMem<char>(keyLength + 1);
-            for (st_uint i = 0; i < keyLength; i++) {
+            for (int i = 0; i < keyLength; i++) {
                 keyB[i] = keyA[i];
             }
             newHashNode->key = keyB;
@@ -69,7 +69,7 @@ namespace smart {
             // find same key
             if (hashNode->keyLength == keyLength) {
                 bool sameKey = true;
-                for (st_uint i = 0; i < keyLength; i++) {
+                for (int i = 0; i < keyLength; i++) {
                     if (hashNode->key[i] != keyA[i]) {
                         sameKey = false;
                         break;
@@ -90,7 +90,7 @@ namespace smart {
 
         auto *newHashNode = context->newMem<HashNode>();
         char *keyB =  context->newMemArray<char>(keyLength + 1);
-        for (st_uint i = 0; i < keyLength; i++) {
+        for (int i = 0; i < keyLength; i++) {
             keyB[i] = keyA[i];
         }
         newHashNode->key = keyB;
@@ -130,7 +130,7 @@ namespace smart {
             while (hashNode) {
                 if (hashNode->keyLength == keyLength) {
                     bool sameKey = true;
-                    for (st_uint i = 0; i < keyLength; i++) {
+                    for (int i = 0; i < keyLength; i++) {
                         if (hashNode->key[i] != key[i]) {
                             sameKey = false;
                             break;
@@ -209,7 +209,7 @@ namespace smart {
         int32_t whitespace_startpos = -1;
 
         //context->scanEnd = false;
-        for (uint32_t i = start; i < context->length;) {
+        for (int32_t i = start; i < context->length;) {
             ch = context->chars[i];
             // fprintf(stderr, "%c ,", ch);
             // fflush(stderr);
@@ -228,7 +228,7 @@ namespace smart {
                     lastLineBreak = newLineBreak;
                 }
 
-                if (whitespace_startpos != -1 && (uint32_t)whitespace_startpos < i) {
+                if (whitespace_startpos != -1 && whitespace_startpos < i) {
                     lastLineBreak->prevSpaceNode = genSpaceNode(context, parentNode, whitespace_startpos, i);
                     whitespace_startpos = -1;
                 }
@@ -237,7 +237,7 @@ namespace smart {
                 continue;
             }
             else if (ParseUtil::isSpace(ch)) {
-                uint32_t spaceEndIndex = i + 1;
+                int spaceEndIndex = i + 1;
 
                 for (; spaceEndIndex < context->length; spaceEndIndex++) {
                     if (!ParseUtil::isSpace(context->chars[spaceEndIndex])) {
@@ -312,7 +312,7 @@ namespace smart {
 
         if (root) {
             context->remainedLineBreakNode = prevLineBreak;
-            if (whitespace_startpos > -1 && (uint32_t)whitespace_startpos < context->length) {
+            if (whitespace_startpos > -1 && whitespace_startpos < context->length) {
                 context->remainedSpaceNode = genSpaceNode(context, parentNode,
                     whitespace_startpos, context->length);
             }

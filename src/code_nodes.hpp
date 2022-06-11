@@ -357,7 +357,7 @@ namespace smart {
         NodeBase *codeNode;
         NodeBase *virtualCodeNode;
         // int former_start;
-        st_uint baseIndent;
+        int baseIndent;
         utf8byte *chars;
         SyntaxErrorInfo syntaxErrorInfo;
         bool has_cancel_request{false};
@@ -595,8 +595,8 @@ namespace smart {
         CodeLine *prev;
         NodeBase *firstNode;
         NodeBase *lastNode;
-        st_uint indent;
-        st_uint depth;
+        int indent;
+        int depth;
 
         void init(ParseContext *context) {
             this->firstNode = nullptr;

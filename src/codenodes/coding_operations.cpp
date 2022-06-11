@@ -120,7 +120,7 @@ namespace smart {
 			space->textLength = textLen;
 			space->text = context->memBuffer.newMem<char>(textLen + 1);
 
-			for (unsigned int i = 0; i < textLen; i++) {
+			for (int i = 0; i < textLen; i++) {
 				space->text[i] = ' ';
 			}
 			space->text[textLen] = '\0';

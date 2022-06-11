@@ -191,7 +191,7 @@ namespace smart {
             if (reason == nullptr) {
                 reason = "";
             }
-            int len = strlen(reason);
+            int len = (int)strlen(reason);
             error->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
             memcpy(error->reason, reason, error->reasonLength);
             error->reason[error->reasonLength] = '\0';
