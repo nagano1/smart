@@ -405,18 +405,7 @@ namespace smart {
             return memBuffer.newMem<T>(1);
             //return spaceBufferList.newNode();
         }
-
-        NullNodeStruct *newNullNode() {
-            return memBuffer.newMem<SimpleTextNodeStruct>(1);
-            //return spaceBufferList.newNode();
-        }
     };
-
-
-    static inline void deleteContext(ParseContext *context) {
-        context->memBuffer.freeAll();
-        free(context);
-    }
 
 
     struct Cast {
@@ -565,7 +554,7 @@ namespace smart {
             } else {
                 auto *nodeBase = Cast::upcast(node);
                 return nodeBase->vtable->selfText(nodeBase);
-            };
+            }
         }
 
         static int typeTextLength(NodeBase *node) {
@@ -581,7 +570,7 @@ namespace smart {
             } else {
                 auto *nodeBase = Cast::upcast(node);
                 return nodeBase->vtable->typeChars;
-            };
+            }
         }
 
 
@@ -592,7 +581,7 @@ namespace smart {
 
     struct CodeLine {
         CodeLine *nextLine;
-        CodeLine *prev;
+        //CodeLine *prev;
         NodeBase *firstNode;
         NodeBase *lastNode;
         int indent;
@@ -602,7 +591,7 @@ namespace smart {
             this->firstNode = nullptr;
             this->lastNode = nullptr;
             this->nextLine = nullptr;
-            this->prev = nullptr;
+            ///this->prev = nullptr;
             this->depth = 0;
 
             // context->actionCreator(Cast::upcast(doc), 1);

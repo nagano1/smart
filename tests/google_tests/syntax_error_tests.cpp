@@ -28,14 +28,14 @@ TEST(SyntaxErrors_, AssignmentSyntaxError) {
 
     {
         constexpr char text2[] = u8R"(
-            {"jfoiwew": "fjoiweijow }
+            {"key": "value }
 )";
 
         TEST_SYNTAX_ERROR(text2, sizeof(text2) - 1, ErrorCode::missing_closing_quote);
     }
     {
         constexpr char text2[] = u8R"(
-            {"jfoiwew" "fjoiweijow" }
+            {"key" "value" }
 )";
 
         TEST_SYNTAX_ERROR(text2, sizeof(text2) - 1, ErrorCode::missing_object_delemeter);
@@ -51,8 +51,10 @@ static void testSyntaxError(const char* codeText, int textlen, ErrorCode errorCo
     DocumentUtils::parseText(document, codeText, textlen);
 
 
-    GLOG << std::endl  << " --------------------------- --------------------------- ";
-    GLOG << codeText << std::endl << errorCodeText << std::endl;
+    GLOG << std::endl  << " ------------------------------------------------------ ";
+    GLOG << errorCodeText << std::endl;
+    GLOG << codeText << std::endl;
+
     auto* context = document->context;
     EXPECT_EQ(context->syntaxErrorInfo.hasError, true);
     EXPECT_EQ(context->syntaxErrorInfo.errorCode, errorCode);

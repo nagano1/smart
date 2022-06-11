@@ -108,7 +108,9 @@ namespace smart {
             node = nextNode;
         }
 */
-        deleteContext(doc->context);
+
+        doc->context->memBuffer.freeAll();
+        free(doc->context);
         free(doc);
     }
 
