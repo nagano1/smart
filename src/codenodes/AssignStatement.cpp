@@ -206,7 +206,7 @@ namespace smart {
         }
 
         if (!hasLet) {
-            for (uint_fast32_t i = currentPos; i < context->length; i++) {
+            for (int_fast32_t i = currentPos; i < context->length; i++) {
                 if (ParseUtil::isIdentifierLetter(context->chars[i])) {
                     found_count++;
                 } else {

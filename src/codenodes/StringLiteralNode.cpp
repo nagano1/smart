@@ -63,7 +63,7 @@ namespace smart {
             int letterStart = (startsWithQuote) ? start + 1 : start;
             bool escapeMode = false;
 
-            for (uint_fast32_t i = letterStart; i < context->length; i++) {
+            for (int_fast32_t i = letterStart; i < context->length; i++) {
                 found_count++;
 
                 if (escapeMode) {

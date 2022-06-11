@@ -128,7 +128,7 @@ namespace smart {
     static constexpr const char numberNodeTypeText[] = "<number>";
     int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context) {
         int found_count = 0;
-        for (uint_fast32_t i = start; i < context->length; i++) {
+        for (int_fast32_t i = start; i < context->length; i++) {
             if (!ParseUtil::isNumberLetter(context->chars[i])) {
                 break;
             }

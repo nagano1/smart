@@ -556,7 +556,7 @@ class jips {
     char ch = 'a';
     for (unsigned long long i = 0; i < loopCount; i++) {
         if (i > 5) {
-            for (uint_fast32_t k = 0; k < text.size(); k++) {
+            for (int_fast32_t k = 0; k < text.size(); k++) {
                 ch = chars[k];
                 if (ch == ' ') {
                     count = i;
