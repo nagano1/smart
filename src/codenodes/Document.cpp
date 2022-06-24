@@ -411,6 +411,7 @@ namespace smart {
         context->afterLineBreak = false;
 
         context->unusedAssignment = nullptr;
+        context->unusedClassNode = nullptr;
 
 
 

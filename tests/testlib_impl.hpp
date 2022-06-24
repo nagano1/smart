@@ -238,7 +238,12 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
     template<typename T1, typename T2>
     static void test_binary_op(T1 t1, T2 t2, const char *t1_chars, const char *t2_chars, bool ok, const std::string &op) {
         std::stringstream s;
-        if (sizeof(T1) == 1) { // for avoiding crash on android
+
+        if (std::is_same<T1, bool>::value) {
+            s << (*(bool*)&t1 ? "true" : "false");
+        }  // optimizable...
+
+        else if (sizeof(T1) == 1) { // for avoiding crash on android
             char moji[8];
             sprintf(moji, "%d", *(int*)(&t1));
             s << moji;
@@ -246,7 +251,11 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
             s << t1;
         }
         std::stringstream s2;
-        if (sizeof(T2) == 1) {
+
+        if (std::is_same<T2, bool>::value) {
+            s2 << (*(bool*)&t2 ? "true" : "false");
+
+        } else if (sizeof(T2) == 1) {
             char moji[8];
             sprintf(moji, "%d", *(int*)(&t2));
             s2 << moji;

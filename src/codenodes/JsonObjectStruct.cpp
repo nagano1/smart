@@ -348,7 +348,7 @@ namespace smart {
                 return start + 1;
             }
 
-            SyntaxErrorInfo::setError(&context->syntaxErrorInfo, ErrorCode::missing_object_delemeter, start);
+            context->setError(ErrorCode::missing_object_delemeter, start);
             return SyntaxErrorInfo::SYNTAX_ERROR_RETURN;
         }
 

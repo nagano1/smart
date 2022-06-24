@@ -234,8 +234,11 @@ namespace smart {
                     whitespace_startpos = -1;
                 }
 
+                bool isLastChar = i ==  context->length - 1;
                 i++;
-                continue;
+                if (!isLastChar) {
+                    continue;
+                }
             }
             else if (ParseUtil::isSpace(ch)) {
                 int spaceEndIndex = i + 1;
@@ -247,8 +250,11 @@ namespace smart {
                 }
 
                 whitespace_startpos = i;
+                bool isLastChar = i ==  context->length - 1;
                 i = spaceEndIndex;
-                continue;
+                if (!isLastChar) {
+                    continue;
+                }
             }
 
             if (ch == '\0') {

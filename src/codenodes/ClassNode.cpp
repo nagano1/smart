@@ -135,12 +135,13 @@ namespace smart {
         //console_log(std::string(""+ch).c_str());
         //console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
 
-
         if (!classNode->startFound) {
             if (ch == '{') {
                 classNode->startFound = true;
                 context->codeNode = Cast::upcast(&classNode->bodyStartNode);
                 return start + 1;
+            } else {
+                context->setError(ErrorCode::no_brace_for_class, start);
             }
         } else if (ch == '}') {
             context->scanEnd = true;
@@ -159,6 +160,8 @@ namespace smart {
                 appendChildNode(innerClassNode, context->codeNode);
                 return result;
             }
+
+            context->setError(ErrorCode::no_brace_of_end_for_class, start);
         }
 
         return -1;
@@ -189,9 +192,8 @@ namespace smart {
                         if (resultPos == -1) {
                             // the class should have a class name
                             //console_log(std::string(classNode->nameNode.name).c_str());
-
-                            context->codeNode = Cast::upcast(classNode);
-                            return currentPos;
+                            context->setError(ErrorCode::invalid_class_name, start);
+                            return -1;
                         }
                     }
 
@@ -200,8 +202,9 @@ namespace smart {
                     currentPos = resultPos;
                     if (-1 == (resultPos = Scanner::scanMulti(classNode, inner_classBodyTokenizer,
                                                          currentPos, context))) {
-                        context->codeNode = Cast::upcast(classNode);
-                        return currentPos;
+                        //context->codeNode = Cast::upcast(classNode);
+                        //return currentPos;
+                        return -1;
                     }
 
                     context->codeNode = Cast::upcast(classNode);

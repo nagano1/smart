@@ -37,6 +37,10 @@ namespace smart {
             currentCodeLine = VTableCall::appendToLine(&self->letOrType, currentCodeLine);
         }
 
+        if (self->pointerAsterisk.found) {
+            currentCodeLine = VTableCall::appendToLine(&self->pointerAsterisk, currentCodeLine);
+        }
+
         currentCodeLine = VTableCall::appendToLine(&self->nameNode, currentCodeLine);
 
         if (self->equalSymbol.found) {
@@ -77,10 +81,14 @@ namespace smart {
 
 
         assignStatement->hasMutMark = false;
+        assignStatement->hasNullableMark = false;
         assignStatement->useLet = false;
         assignStatement->onlyAssign = false;
 
         assignStatement->valueNode = nullptr;
+
+
+        Init::initSymbolNode(&assignStatement->pointerAsterisk, context, assignStatement, '*');
 
         Init::initNameNode(&assignStatement->nameNode, context, assignStatement);
         Init::initSymbolNode(&assignStatement->equalSymbol, context, assignStatement, '=');
@@ -95,7 +103,16 @@ namespace smart {
         auto *assignment = Cast::downcast<AssignStatementNodeStruct *>(parent);
 
         //console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
+
         if (!assignment->nameNode.found) {
+            if (!assignment->pointerAsterisk.found) {
+                if (ch == '*') {
+                    assignment->pointerAsterisk.found = true;
+                    context->codeNode = Cast::upcast(&assignment->pointerAsterisk);
+                    return start + 1;
+                }
+            }
+
             int result;
             if (-1 < (result = Tokenizers::nameTokenizer(Cast::upcast(&assignment->nameNode)
                                                         , ch, start, context))
@@ -176,6 +193,7 @@ namespace smart {
         int currentPos = start;
 
         bool hasMutMark = false;
+        bool hasNullableMark = false;
 
         AssignStatementNodeStruct *assignStatement;
         if (context->unusedAssignment == nullptr) {
@@ -187,11 +205,14 @@ namespace smart {
         }
 
 
-        // $ is mutable mark
-        if ('$' == ch) {
+        if ('$' == ch) { // $ is mutable mark
             hasMutMark = true;
             currentPos += 1;
+        } else if ('?' == ch) { // ? is nullable mark
+            hasNullableMark = true;
+            currentPos += 1;
         }
+        assignStatement->hasNullableMark = hasNullableMark;
         assignStatement->hasMutMark = hasMutMark;
 
         int found_count = 0;
@@ -232,6 +253,7 @@ namespace smart {
 
             assignStatement->onlyAssign = false;
             assignStatement->useLet = hasLet;
+
 
             int resultPos;
             if (-1 < (resultPos = Scanner::scanMulti(assignStatement,

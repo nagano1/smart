@@ -793,17 +793,64 @@ TEST(ParserTest_, charBuffer) {
 
 ENDTEST
 
+// stack class ClassA
+// {
 
+
+// }
+
+
+
+// heap class string {
+
+//}
 
 TEST(ParserTest_, SameLength_01) {
-    // std::string text = "   class           A   {    }   ";
-    std::string text = u8R"(
+    std::string futuretext = u8R"(
 class A {
     class B {
-        class TestCl😂日本語10234ass {
-            fn func() {
-                $int a = 32
-                $int b = 2431
+        heap class ObjA {
+
+        }
+        
+        stack class valueA {
+            int a = 3
+            int b
+        }
+
+        class TestCl😂日本語10234ass
+        {
+            fn func($int a) -> or<string, int> *parseInfo
+            {
+                $int a, b, c, d, e, f = 0
+                $double dbl = 24.0
+                int twice = dbl .take( 24.0)
+
+                let *obj = new{a=3,b=false}
+                obj->a = 5
+                
+                let anonym = init{fact=3,yos=5}
+                anonym.5 = 32
+
+                string *str = "jfoiwe"
+                
+                let *subStr = str ->substring( 0, 5)
+
+                $byte bt = 255 as byte
+                bool b = not( true)
+                
+                $let mutPointer = 3
+                
+                let *imm = func( a, b)
+                $let *pointer = new int( 3)
+
+                int va = *pointer
+
+                $or< string, list< int>> *str = "fjiwo"
+
+                string *str = "fjiwo"
+                ?string *str2 = null
+
 
                 $let ba = 2342
 
@@ -818,6 +865,51 @@ class A {
                 c   =   true
                 
 
+                false
+                "jofiwjio"
+            }
+        }
+    }
+}
+class A {}
+class A {}
+class A {}
+class BDD{}
+
+
+
+
+class AABC  {  }
+
+)";
+    // std::string text = "   class           A   {    }   ";
+    //            $let *list: string* | null = null As string* | null
+    // 
+    std::string text = u8R"(
+class A {
+    class B {
+        class TestCl😂日本語10234ass
+        {
+            fn func()
+            {
+                $double dbl = 24
+
+                
+                string *str = "jfoiwe"
+                
+                $let mutPointer = 3
+                
+                $let ba = 2342
+                int a = 55
+                $int k
+
+                let aw = 242
+                
+                let k = 32
+                let b = null
+                b = "fjoiwe"
+                c   =   true
+                
                 false
                 "jofiwjio"
             }

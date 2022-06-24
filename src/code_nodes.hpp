@@ -61,7 +61,7 @@ namespace smart {
         (node)->prevSpaceNode = nullptr; \
         (node)->prevLineBreakNode = nullptr; \
         (0)
-                                                        \
+
     #define TEXT_MEMCPY(dst, src, len) \
         memcpy((dst), (src), (len))
 
@@ -147,10 +147,17 @@ namespace smart {
     using AssignStatementNodeStruct = struct {
         NODE_HEADER;
 
-        bool hasMutMark;
+        // $int a = 5
+        // ?let *ptr = "jfwio"
+
+        bool hasMutMark; // $
+        bool hasNullableMark; // ?
+
         bool useLet; // or has type
-        bool onlyAssign;
-        SimpleTextNodeStruct letOrType; // $let, int, etc..
+        bool onlyAssign; // has not declare
+        SimpleTextNodeStruct letOrType; // $let, int, ?string, etc..
+        SymbolStruct pointerAsterisk; // *
+
         NameNodeStruct nameNode; // varName
         SymbolStruct equalSymbol; // =
         NodeBase *valueNode; // 32
@@ -366,6 +373,7 @@ namespace smart {
 
         // node caches
         AssignStatementNodeStruct *unusedAssignment;
+        ClassNodeStruct *unusedClassNode;
 
 
         void (*actionCreator)(void *node1, void *node2, int actionRequest);
@@ -404,6 +412,23 @@ namespace smart {
         SpaceNodeStruct *newMemForNode() {
             return memBuffer.newMem<T>(1);
             //return spaceBufferList.newNode();
+        }
+
+        void setError(ErrorCode errorCode, st_uint startPos) {
+            auto &errorInfo = this->syntaxErrorInfo;
+            errorInfo.hasError = true;
+            errorInfo.errorCode = errorCode;
+            errorInfo.charPosition = startPos;
+
+            errorInfo.errorId = getErrorId(errorCode);
+            const char* reason = getErrorMessage(errorCode);
+            if (reason == nullptr) {
+                reason = "";
+            }
+            int len = (int)strlen(reason);
+            errorInfo.reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
+            memcpy(errorInfo.reason, reason, errorInfo.reasonLength);
+            errorInfo.reason[errorInfo.reasonLength] = '\0';
         }
     };
 
@@ -699,7 +724,6 @@ namespace smart {
         static utf8byte *getTextFromLine(CodeLine *line);
         static utf8byte *getTextFromNode(NodeBase *line);
 
-
     };
 
 
@@ -715,6 +739,7 @@ namespace smart {
         static void initSimpleTextNode(SimpleTextNodeStruct *name, ParseContext *context, void *parentNode, int charLen);
         static void assignText_SimpleTextNode(SimpleTextNodeStruct *name, ParseContext *context, int pos, int charLen);
     };
+
 
     struct Alloc {
 
@@ -782,8 +807,7 @@ namespace smart {
 
         // SimpleTextNodeStruct
         template<typename TYPE, std::size_t SIZE>
-        static inline int
-        WordTokenizer(TokenizerParams_parent_ch_start_context
+        static inline int WordTokenizer(TokenizerParams_parent_ch_start_context
                       , utf8byte capitalLetter
                       , const TYPE(&word)[SIZE])
         {

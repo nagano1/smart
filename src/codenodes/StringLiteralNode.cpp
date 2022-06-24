@@ -92,7 +92,7 @@ namespace smart {
         }
 
         if (startsWithQuote &&  !endsWithQuote) {
-            SyntaxErrorInfo::setError(&context->syntaxErrorInfo, ErrorCode::missing_closing_quote, start);
+            context->setError(ErrorCode::missing_closing_quote, start);
             return -1;
         }
 

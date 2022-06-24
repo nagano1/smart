@@ -35,6 +35,10 @@ namespace smart {
         missing_closing_quote2,
         missing_object_delemeter,
 
+        invalid_class_name,
+        no_brace_for_class,
+        no_brace_of_end_for_class,
+
         last_keeper
     };
 
@@ -113,6 +117,10 @@ namespace smart {
 
             ErrorInfo{ ErrorCode::missing_object_delemeter, 7777812, "missing object delimeter"},
 
+            ErrorInfo{ ErrorCode::invalid_class_name, 7777813, "Invalid class name"},
+            ErrorInfo{ ErrorCode::no_brace_for_class, 7777814, "no brace for class"},
+            ErrorInfo{ ErrorCode::no_brace_of_end_for_class, 7777815, "no brace of end for class"},
+
             ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
         };
 
@@ -154,9 +162,18 @@ namespace smart {
         return nullptr;
     }
 
+    static int getErrorId(ErrorCode errorCode) {
+        if (!errorInfoInitialized) {
+            initErrorInfoList();
+        }
+
+        auto&& errorInfo = ErrorInfoList[static_cast<int>(errorCode)];
+        return errorInfo.errorCode;
+    }
+
 
     static const char *getErrorMessage(ErrorCode errorCode) {
-        if (errorInfoInitialized == false) {
+        if (!errorInfoInitialized) {
             initErrorInfoList();
         }
 
@@ -186,6 +203,7 @@ namespace smart {
         int reasonLength = 0;
 
         st_uint charPosition;
+        int errorId;
         int charEndPosition;
 
         // 0: "between start and  end"
@@ -194,20 +212,7 @@ namespace smart {
 
         static const int SYNTAX_ERROR_RETURN = -1;
 
-        static void setError(_errorInfo *error, ErrorCode errorCode, st_uint start) {
-            error->hasError = true;
-            error->errorCode = errorCode;
-            error->charPosition = start;
 
-            const char* reason = getErrorMessage(errorCode);
-            if (reason == nullptr) {
-                reason = "";
-            }
-            int len = (int)strlen(reason);
-            error->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
-            memcpy(error->reason, reason, error->reasonLength);
-            error->reason[error->reasonLength] = '\0';
-        }
     };
 
 }
