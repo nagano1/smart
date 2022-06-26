@@ -892,7 +892,7 @@ class A {
         {
             fn func()
             {
-                $double dbl = 24.0
+                $double dbl = 24
                 
                 string *str = "jfoiwe"
                 
