@@ -892,12 +892,12 @@ class A {
         {
             fn func()
             {
-                $double dbl = 24
-
+                $double dbl = 24.0
                 
                 string *str = "jfoiwe"
                 
                 $let mutPointer = 3
+
                 
                 $let ba = 2342
                 int a = 55
@@ -933,6 +933,8 @@ class AABC  {  }
     DocumentUtils::parseText(document, chars, text.size());
 
     char *treeText = DocumentUtils::getTextFromTree(document);
+
+    EXPECT_EQ(treeText != nullptr, true);
     EXPECT_EQ(std::string{ treeText }, std::string{ chars });
     EXPECT_EQ(strlen(treeText), strlen(chars));
 
