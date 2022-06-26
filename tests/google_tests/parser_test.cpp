@@ -893,7 +893,7 @@ class A {
             fn func()
             {
                 $double dbl = 24
-                
+        s                                
                 string *str = "jfoiwe"
                 
                 $let mutPointer = 3
@@ -1224,6 +1224,27 @@ ENDTEST
         EXPECT_EQ(result, false);
     }
 
+
+
+    {
+        // endsWith
+        {
+            std::string text(u8"ab");
+            auto result = ParseUtil::endsWith2(text.c_str(), text.length(), "ab");
+            EXPECT_EQ(result, true);
+        }
+
+        {
+            std::string text(u8"abcdefg");
+            auto result = ParseUtil::endsWith2(text.c_str(), text.length(), "efg");
+            EXPECT_EQ(result, true);
+        }
+        {
+            std::string text(u8"abcd");
+            auto result = ParseUtil::endsWith2(text.c_str(), text.length(), "aabcd");
+            EXPECT_EQ(result, false);
+        }
+    }
 }
 
 ENDTEST

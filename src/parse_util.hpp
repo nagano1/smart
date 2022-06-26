@@ -291,6 +291,30 @@ struct ParseUtil {
         return ' ' == ch || '\t' == ch;
     }
 
+    
+    static inline bool endsWith(const char* chars, int charsLength, const char* suffix, int suffixLength)
+    {
+        if (charsLength < suffixLength) {
+            return false;
+        }
+
+        for (int i = 0; i < suffixLength; i++) {
+            int idx = charsLength - (suffixLength - i);
+            if (chars[idx] != suffix[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    template<int SIZE>
+    static inline bool endsWith2(const char* chars, int charsLength, const char(&suffix)[SIZE])
+    {
+        int suffixLength = SIZE - 1;
+        return endsWith(chars, charsLength, suffix, suffixLength);
+    }
+
 
     static inline bool isNonIdentifierChar(utf8byte ch)
     {

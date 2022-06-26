@@ -127,8 +127,12 @@ static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int 
 }
 
 
-static void validateJson(const char *text, int textLength, const char * const filePath) {
-    auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
+static void validateJson(const char *text, int textLength, const char * const filePath, int filePathLength) {
+
+    auto isCode= ParseUtil::endsWith2(filePath, filePathLength, ".pls");
+    auto isJson = ParseUtil::endsWith2(filePath, filePathLength, ".txt");
+
+    auto *document = Alloc::newDocument(isCode ? DocumentType::CodeDocument : DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, text, textLength);
 
     if (document->context->syntaxErrorInfo.hasError) {
@@ -272,12 +276,12 @@ void LSPManager::nextRequest(char *chars, int length) {
                         auto* item5 = Cast::downcast<JsonObjectStruct*>(item3->firstItem->valueNode);
                         auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(item5->hashMap->get2("text"));
 
-                        validateJson(item4->str, item4->strLength, fileUri->str);
+                        validateJson(item4->str, item4->strLength, fileUri->str, fileUri->strLength);
                     }
                     else if (didOpen) {
                         auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(textDocument->hashMap->get2("text"));
 
-                        validateJson(item4->str, item4->strLength, fileUri->str);
+                        validateJson(item4->str, item4->strLength, fileUri->str, fileUri->strLength);
                     }
                 }
             }
