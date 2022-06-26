@@ -129,7 +129,7 @@ static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int 
 
 static void validateJson(const char *text, int textLength, const char * const filePath, int filePathLength) {
 
-    auto isCode= ParseUtil::endsWith2(filePath, filePathLength, ".pls");
+    auto isCode= ParseUtil::endsWith2(filePath, filePathLength, ".smt");//pls
     auto isJson = ParseUtil::endsWith2(filePath, filePathLength, ".txt");
 
     auto *document = Alloc::newDocument(isCode ? DocumentType::CodeDocument : DocumentType::JsonDocument, nullptr);

@@ -17,11 +17,19 @@
 			"patterns": [
                 {
                     "name": "keyword.control.smartlang",
-                    "match": "\\b(float|int|auto|::|if|while|for|return|fn)\\b"
+                    "match": "\\b($$|::|if|while|for|return|fn)\\b"
+                },
+                {
+                    "name": "entity.name.type.smartlang",
+                    "match": "\\b(string|double|float|int)\\b"
                 },
                 {
                     "name": "keyword.operator.arithmetic.smartlang",
-                    "match": "\\;|=|\\+|-|\\*|/|\\*\\*|\\!"
+                    "match": "\\;|\\+|-|\\*|/|\\*\\*|\\!"
+                },
+                {
+                    "name": "comment.block",
+                    "match": "\\$"
                 },
                 {
                     "name":"entity.name.smartlang",

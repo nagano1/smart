@@ -893,7 +893,6 @@ class A {
             fn func()
             {
                 $double dbl = 24
-        s                                
                 string *str = "jfoiwe"
                 
                 $let mutPointer = 3
