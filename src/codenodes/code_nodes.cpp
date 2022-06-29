@@ -318,6 +318,7 @@ namespace smart {
         }
 
         if (root) {
+
             context->remainedLineBreakNode = prevLineBreak;
             if (whitespace_startpos > -1 && whitespace_startpos < context->length) {
                 context->remainedSpaceNode = genSpaceNode(context, parentNode,

@@ -123,17 +123,11 @@ namespace smart {
                 appendChildNode(body, context->virtualCodeNode);
                 return nextPos;
             }
-            /*
-            // fn a() {}
-            else if (-1 < (nextPos = Tokenizers::fnTokenizer(parent, ch, start, context))) {
-                    appendChildNode(body, context->codeNode);
-                    return nextPos;
-            }*/
-            // b = 3
             else if (-1 < (nextPos = Tokenizers::assignStatementWithoutLetTokenizer(parent, ch, start, context))) {
                 appendChildNode(body, context->virtualCodeNode);
                 return nextPos;
-            } else {
+            }
+            else {
                 // value as a statement
                 if (context->afterLineBreak) {
                     int result;
@@ -141,12 +135,11 @@ namespace smart {
                         appendChildNode(body, context->codeNode);
                         return result;
                     }
-                } else {
-
                 }
             }
         }
-
+        context->setError(ErrorCode::syntax_error, start);
+        context->scanEnd = true;
         return -1;
     }
 

@@ -905,7 +905,6 @@ class A {
                 let aw = 242
                 
                 let k = 32
-                let b = null
                 b = "fjoiwe"
                 c   =   true
                 
@@ -931,7 +930,8 @@ class AABC  {  }
     auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
     DocumentUtils::parseText(document, chars, text.size());
 
-    char *treeText = DocumentUtils::getTextFromTree(document);
+    char* treeText = DocumentUtils::getTextFromTree(document);
+    //char *typeTreeText = DocumentUtils::getTypeTextFromTree(document);
 
     EXPECT_EQ(treeText != nullptr, true);
     EXPECT_EQ(std::string{ treeText }, std::string{ chars });

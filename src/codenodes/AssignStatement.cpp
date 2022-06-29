@@ -120,6 +120,7 @@ namespace smart {
                 context->codeNode = Cast::upcast(&assignment->nameNode);
                 return result;
             }
+
         } else if (!assignment->equalSymbol.found) {
             if (ch == '=') {
                 assignment->equalSymbol.found = true;
@@ -132,9 +133,8 @@ namespace smart {
 
                     return context->prevFoundPos; // revert to name
                 } else {
-                    return -1;
+                    //return -1;
                 }
-
             }
         } else {
             int result;
@@ -146,6 +146,9 @@ namespace smart {
                 return result;
             }
         }
+
+        context->scanEnd = true;
+        context->setError(ErrorCode::syntax_error, start);
 
         return -1;
     }

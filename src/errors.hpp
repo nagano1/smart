@@ -31,6 +31,9 @@ namespace smart {
     enum class ErrorCode {
         first_keeper,
 
+        syntax_error,
+        syntax_error2,
+
         missing_closing_quote,
         missing_closing_quote2,
         missing_object_delemeter,
@@ -111,6 +114,9 @@ namespace smart {
 
         ErrorInfo tempList[] = {
             ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
+
+            ErrorInfo{ ErrorCode::syntax_error, 1800, "syntax error" },
+            ErrorInfo{ ErrorCode::syntax_error2, 1801, "syntax error2" },
 
             ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
             ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },
