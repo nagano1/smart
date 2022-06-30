@@ -118,26 +118,33 @@ namespace smart {
             context->codeNode = Cast::upcast(&body->endBodyNode);
             return start + 1;
         } else {
-            int nextPos;
-            if (-1 < (nextPos = Tokenizers::assignStatementTokenizer(parent, ch, start, context))) {
-                appendChildNode(body, context->virtualCodeNode);
-                return nextPos;
-            }
-            else if (-1 < (nextPos = Tokenizers::assignStatementWithoutLetTokenizer(parent, ch, start, context))) {
-                appendChildNode(body, context->virtualCodeNode);
-                return nextPos;
-            }
-            else {
-                // value as a statement
-                if (context->afterLineBreak) {
-                    int result;
-                    if (-1 < (result = Tokenizers::jsonValueTokenizer(TokenizerParams_pass))) {
-                        appendChildNode(body, context->codeNode);
-                        return result;
+            if (context->afterLineBreak) {
+                int nextPos;
+                if (-1 <
+                    (nextPos = Tokenizers::assignStatementTokenizer(parent, ch, start, context))) {
+                    appendChildNode(body, context->virtualCodeNode);
+                    return nextPos;
+                }
+                else if (-1 <
+                           (nextPos = Tokenizers::assignStatementWithoutLetTokenizer(parent, ch,
+                                                                                     start,
+                                                                                     context))) {
+                    appendChildNode(body, context->virtualCodeNode);
+                    return nextPos;
+                }
+                else {
+                    // value as a statement
+                    if (context->afterLineBreak) {
+                        int result;
+                        if (-1 < (result = Tokenizers::jsonValueTokenizer(TokenizerParams_pass))) {
+                            appendChildNode(body, context->codeNode);
+                            return result;
+                        }
                     }
                 }
             }
         }
+
         context->setError(ErrorCode::syntax_error, start);
         context->scanEnd = true;
         return -1;

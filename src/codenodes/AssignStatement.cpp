@@ -119,6 +119,10 @@ namespace smart {
             ) {
                 context->codeNode = Cast::upcast(&assignment->nameNode);
                 return result;
+            } else {
+                //context->scanEnd = true;
+                //context->setError(ErrorCode::syntax_error, start);
+
             }
 
         } else if (!assignment->equalSymbol.found) {
@@ -133,7 +137,10 @@ namespace smart {
 
                     return context->prevFoundPos; // revert to name
                 } else {
-                    //return -1;
+                    //context->scanEnd = true;
+                    //context->setError(ErrorCode::syntax_error, start);
+
+                    return -1;
                 }
             }
         } else {
@@ -144,14 +151,16 @@ namespace smart {
                 context->scanEnd = true;
 
                 return result;
+            } else {
+                //context->scanEnd = true;
+                //context->setError(ErrorCode::syntax_error, start);
             }
         }
 
-        context->scanEnd = true;
-        context->setError(ErrorCode::syntax_error, start);
 
         return -1;
     }
+
 
 
     // b = 32

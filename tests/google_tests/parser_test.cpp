@@ -931,11 +931,52 @@ class AABC  {  }
     DocumentUtils::parseText(document, chars, text.size());
 
     char* treeText = DocumentUtils::getTextFromTree(document);
-    //char *typeTreeText = DocumentUtils::getTypeTextFromTree(document);
 
     EXPECT_EQ(treeText != nullptr, true);
     EXPECT_EQ(std::string{ treeText }, std::string{ chars });
     EXPECT_EQ(strlen(treeText), strlen(chars));
+
+    Alloc::deleteDocument(document);
+}
+
+ENDTEST
+
+
+TEST(ParserTest_, TypeTreeTest) {
+    std::string text = u8R"(
+        class TestCl😂日本語10234ass
+        {
+            fn func()
+            {
+                let aw = 242
+            }
+        }
+)";
+
+    const char* chars = text.c_str();
+    auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
+    DocumentUtils::parseText(document, chars, text.size());
+
+    char* treeText = DocumentUtils::getTextFromTree(document);
+    char* typeTreeText = DocumentUtils::getTypeTextFromTree(document);
+
+    EXPECT_EQ(treeText != nullptr, true);
+    EXPECT_EQ(typeTreeText != nullptr, true);
+    EXPECT_EQ(std::string{ treeText }, std::string{ chars });
+    EXPECT_EQ(strlen(treeText), strlen(chars));
+
+
+    auto&& typeTree = u8R"(<lineBreak>
+<SpaceText>        <Class>class<Name> TestCl😂日本語10234ass<lineBreak>
+<SpaceText>        <Symbol>{<lineBreak>
+<SpaceText>            <fn>fn<Name> func<Symbol>(<Symbol>)<lineBreak>
+<SpaceText>            <body>{<lineBreak>
+<SpaceText>                <SimpleText>let<Name> aw<Symbol> =<number> 242<lineBreak>
+<SpaceText>            <Symbol>}<lineBreak>
+<SpaceText>        <Symbol>}<lineBreak>
+<EndOfFile>)";
+
+    EXPECT_EQ(std::string{ typeTreeText }, std::string{ typeTree });
 
     Alloc::deleteDocument(document);
 }

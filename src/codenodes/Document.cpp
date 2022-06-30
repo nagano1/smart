@@ -193,7 +193,6 @@ namespace smart {
 
         // malloc and copy text
         auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
-        text[totalCount] = '\0';
         {
             auto *line = doc->firstCodeLine;
             size_t currentOffset = 0;
@@ -202,14 +201,8 @@ namespace smart {
                 while (node) {
                     {
                         auto *chs = VTableCall::typeText(node);
-                        if (node->prev_char != '\0') {
-                            text[currentOffset] = node->prev_char;
-                            currentOffset++;
-                        }
-
                         size_t len = VTableCall::typeTextLength(node);
                         memcpy(text + currentOffset, chs, len);
-
                         currentOffset += len;
                     }
 
@@ -221,10 +214,10 @@ namespace smart {
                         }
 
                         size_t len = VTableCall::selfTextLength(node);
-                        memcpy(text + currentOffset, chs, len);
-
+                        if (len > 0) {
+                            memcpy(text + currentOffset, chs, len);
+                        }
                         currentOffset += len;
-
                     }
 
                     node = node->nextNodeInLine;
@@ -233,6 +226,8 @@ namespace smart {
                 line = line->nextLine;
             }
         }
+
+        text[totalCount] = '\0';
 
         return text;
     }

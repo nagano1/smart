@@ -417,7 +417,7 @@ namespace smart {
         void setError(ErrorCode errorCode, st_uint startPos) {
             auto &errorInfo = this->syntaxErrorInfo;
             if (errorInfo.hasError) {
-//                return;
+                return;
             }
             errorInfo.hasError = true;
             errorInfo.errorCode = errorCode;
