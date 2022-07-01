@@ -741,6 +741,12 @@ namespace smart {
 
         static void initSimpleTextNode(SimpleTextNodeStruct *name, ParseContext *context, void *parentNode, int charLen);
         static void assignText_SimpleTextNode(SimpleTextNodeStruct *name, ParseContext *context, int pos, int charLen);
+
+
+        static void initAssignStatement(ParseContext *context, NodeBase *parentNode,
+                                       AssignStatementNodeStruct *assignStatement
+        );
+
     };
 
 

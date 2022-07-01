@@ -76,9 +76,12 @@ namespace smart {
     // -------------------- Implements AssignStatement Allocator --------------------- //
     AssignStatementNodeStruct *Alloc::newAssignStatement(ParseContext *context, NodeBase *parentNode) {
         auto *assignStatement = context->newMem<AssignStatementNodeStruct>();
+        Init::initAssignStatement(context, parentNode,  assignStatement);
+        return assignStatement;
+    }
 
+    void Init::initAssignStatement(ParseContext *context, NodeBase *parentNode, AssignStatementNodeStruct *assignStatement) {
         INIT_NODE(assignStatement, context, parentNode, &_assignVTable);
-
 
         assignStatement->hasMutMark = false;
         assignStatement->hasNullableMark = false;
@@ -93,8 +96,6 @@ namespace smart {
         Init::initNameNode(&assignStatement->nameNode, context, assignStatement);
         Init::initSymbolNode(&assignStatement->equalSymbol, context, assignStatement, '=');
         Init::initSimpleTextNode(&assignStatement->letOrType, context, assignStatement, 3);
-
-        return assignStatement;
     }
 
 
@@ -102,7 +103,7 @@ namespace smart {
     static int inner_assignStatementTokenizerMulti(TokenizerParams_parent_ch_start_context) {
         auto *assignment = Cast::downcast<AssignStatementNodeStruct *>(parent);
 
-        //console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
+        // console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
 
         if (!assignment->nameNode.found) {
             if (!assignment->pointerAsterisk.found) {
@@ -172,7 +173,7 @@ namespace smart {
             assignment = Alloc::newAssignStatement(context, parent);
         } else {
             assignment = context->unusedAssignment;
-            assignment->parentNode = parent;
+            Init::initAssignStatement(context, parent, assignment);
             context->unusedAssignment = nullptr;
         }
 
