@@ -892,24 +892,21 @@ class A {
         {
             fn func()
             {
-                $double dbl = 24
-                string *str = "jfoiwe"
-                
-                $let mutPointer = 3
+                1234123
+                "jfoiwaejio"
+                null
+                2134123
 
-                
-                $let ba = 2342
-                int a = 55
-                $int k
+                1234123
+                "jfoiwaejio"
+                2134123
 
-                let aw = 242
-                
-                let k = 32
-                b = "fjoiwe"
-                c   =   true
-                
-                false
-                "jofiwjio"
+                let c = 0
+                let d = 893214
+                $let intA = 314
+
+                let c = 0
+                let d = 893214
             }
         }
     }

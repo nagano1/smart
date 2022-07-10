@@ -187,7 +187,6 @@ namespace smart {
             context->virtualCodeNode = Cast::upcast(assignment);
 
             return resultPos;
-
         }
 
         context->unusedAssignment = assignment;
@@ -213,7 +212,7 @@ namespace smart {
             assignStatement = Alloc::newAssignStatement(context, parent);
         } else {
             assignStatement = context->unusedAssignment;
-            assignStatement->parentNode = parent;
+            Init::initAssignStatement(context, parent, assignStatement);
             context->unusedAssignment = nullptr;
         }
 

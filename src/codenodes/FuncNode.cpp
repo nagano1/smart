@@ -94,6 +94,7 @@ namespace smart {
         node->firstChildNode = nullptr;
         node->childCount = 0;
         node->startFound = false;
+        node->firstStatementFound = false;
 
         Init::initSymbolNode(&node->bodyStartNode, context, node, '{');
         Init::initSymbolNode(&node->endBodyNode, context, node, '}');
@@ -118,7 +119,8 @@ namespace smart {
             context->codeNode = Cast::upcast(&body->endBodyNode);
             return start + 1;
         } else {
-            if (context->afterLineBreak) {
+            if (!body->firstStatementFound || context->afterLineBreak) {
+                body->firstStatementFound = true;
                 int nextPos;
                 if (-1 <
                     (nextPos = Tokenizers::assignStatementTokenizer(parent, ch, start, context))) {
@@ -134,18 +136,18 @@ namespace smart {
                 }
                 else {
                     // value as a statement
-                    if (context->afterLineBreak) {
-                        int result;
-                        if (-1 < (result = Tokenizers::jsonValueTokenizer(TokenizerParams_pass))) {
-                            appendChildNode(body, context->codeNode);
-                            return result;
-                        }
+                    int result;
+                    if (-1 < (result = Tokenizers::jsonValueTokenizer(TokenizerParams_pass))) {
+                        appendChildNode(body, context->codeNode);
+                        return result;
                     }
                 }
+            } else {
+                context->setError(ErrorCode::should_break_line, start);
             }
         }
 
-        context->setError(ErrorCode::syntax_error, start);
+        context->setError(ErrorCode::syntax_error2, start);
         context->scanEnd = true;
         return -1;
     }

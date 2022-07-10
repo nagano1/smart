@@ -33,6 +33,7 @@ namespace smart {
 
         syntax_error,
         syntax_error2,
+        should_break_line,
 
         missing_closing_quote,
         missing_closing_quote2,
@@ -117,6 +118,7 @@ namespace smart {
 
             ErrorInfo{ ErrorCode::syntax_error, 1800, "syntax error" },
             ErrorInfo{ ErrorCode::syntax_error2, 1801, "syntax error2" },
+            ErrorInfo{ ErrorCode::should_break_line, 1802, "should have a line break" },
 
             ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
             ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },

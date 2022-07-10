@@ -270,10 +270,12 @@ struct ParseUtil {
     {
         int pos = _matchFirstWithTrim(chars, charsLength, target, startIndex);
 
-        if (startIndex + SIZE - 1 < charsLength
-            && ParseUtil::isSpaceOrLineBreak(chars[startIndex + SIZE - 1])
-        ){
-            return pos;
+        if (pos > -1) {
+            if (startIndex + SIZE - 1 < charsLength
+                && ParseUtil::isSpaceOrLineBreak(chars[startIndex + SIZE - 1])
+                    ) {
+                return pos;
+            }
         }
 
         return -1;
@@ -282,7 +284,7 @@ struct ParseUtil {
 
     static inline bool isSpaceOrLineBreak(utf8byte ch)
     {
-        return ' ' == ch || ch == '\n' || '\t' == ch;
+        return ' ' == ch || ch == '\n' || '\t' == ch;// || '\r' == ch;
     }
 
 

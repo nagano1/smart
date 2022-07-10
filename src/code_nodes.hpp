@@ -186,6 +186,7 @@ namespace smart {
         NODE_HEADER;
 
         bool startFound;
+        bool firstStatementFound;
 
         SymbolStruct bodyStartNode;
         SymbolStruct endBodyNode;
@@ -822,12 +823,8 @@ namespace smart {
         {
             if (capitalLetter == ch) {
                 int length = st_size_of(word) - 1;
-                if (ParseUtil::matchWord(context->chars, context->length, word, length, start)) {
-
-                    if (start + length == context->length // allowed to be the last char of the file
-                        || ParseUtil::isNonIdentifierChar(context->chars[start + length])
-                    ) { // otherwise,
-
+                if (ParseUtil::matchAt(context->chars, context->length, start, word)
+                    ) {
                         auto *boolNode = Alloc::newSimpleTextNode(context, parent);
                         Init::initSimpleTextNode(boolNode, context, parent, 3);
 
@@ -839,7 +836,6 @@ namespace smart {
 
                         context->codeNode = Cast::upcast(boolNode);
                         return start + length;
-                    }
                 }
             }
 
