@@ -1,6 +1,10 @@
 name: 👺 Wasm test, build file, upload it and test it
 
-on: [push]
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '15 0 * * *' # 分 時 日 月 曜日
 
 jobs:
   mybuild:
