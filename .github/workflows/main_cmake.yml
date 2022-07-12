@@ -1,6 +1,11 @@
 name: 🌕 CMake Build Matrix
 
-on: [push]
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '15 0 * * *' # 分 時 日 月 曜日
+
 
 jobs:
   mybuild:
