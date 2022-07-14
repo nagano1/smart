@@ -15,7 +15,8 @@ using namespace smart;
 
 int main()
 {
-    printf("fwe");
+    printf("Smart Lang v0.0.1\n");
+
     std::string text = u8R"(
 class A {
     class B {
@@ -57,9 +58,21 @@ class AABC  {  }
     auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
     DocumentUtils::parseText(document, chars, text.size());
 
-    char* treeText = DocumentUtils::getTextFromTree(document);
+    DocumentUtils::generateHashTables(document);
+
+    /*
+    auto* item = document->hashMap->get2("method");
+
+//    item->vtable, VTables::StringLiteralVTable
+
+    auto* strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
+    strNode->strLength;
+    strNode->textLength;
+
+    //char* treeText = DocumentUtils::getTextFromTree(document);
 
     Alloc::deleteDocument(document);
-    printf("[fwe2]");
+    */
 
+    printf("[fwe2]");
 }

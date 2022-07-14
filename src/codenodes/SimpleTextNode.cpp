@@ -64,6 +64,15 @@ namespace smart {
     const struct node_vtable *const VTables::NullVTable = &_nullVTable;
 
 
+    static const struct node_vtable _lineCommentVTable = CREATE_VTABLE2(LineCommentNodeStruct,
+                                                           selfTextLength,
+                                                           self_text,
+                                                           appendToLine, "<NULL>", NodeTypeId::NULLId, 3
+    );
+
+    const struct node_vtable *const VTables::LineDommentVTable = &_lineCommentVTable;
+
+
     SimpleTextNodeStruct *Alloc::newSimpleTextNode(ParseContext *context, NodeBase *parentNode) {
         auto *node = context->newMemForNode<SimpleTextNodeStruct>();
         Init::initSimpleTextNode(node, context, parentNode, 0);

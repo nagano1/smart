@@ -79,6 +79,7 @@ namespace smart {
 
     using SpaceNodeStruct = SimpleTextNodeStruct;
     using NullNodeStruct = SimpleTextNodeStruct;
+    using LineCommentNodeStruct = SimpleTextNodeStruct;
 
     using LineBreakNodeStruct = struct _LineBreakNodeStruct {
         NODE_HEADER;
@@ -567,7 +568,10 @@ namespace smart {
                 *const SpaceVTable,
                 *const LineBreakVTable,
 
-                *const JsonObjectVTable,
+                *const LineDommentVTable,
+
+
+        *const JsonObjectVTable,
                 *const JsonArrayVTable,
                 *const JsonKeyValueItemVTable,
                 *const JsonArrayItemVTable,

@@ -217,6 +217,11 @@ namespace smart {
             // __android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
             // console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
 
+            // line comment with "//"
+            if (ch == '/' && '/' == context->chars[i+1]) {
+
+            }
+
             if (ParseUtil::isBreakLine(ch)) {
                 context->afterLineBreak = true;
                 auto *newLineBreak = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
