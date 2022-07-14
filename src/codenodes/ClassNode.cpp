@@ -141,7 +141,7 @@ namespace smart {
                 context->codeNode = Cast::upcast(&classNode->bodyStartNode);
                 return start + 1;
             } else {
-                context->setError(ErrorCode::no_brace_for_class, start);
+                context->setError(ErrorCode::no_brace_for_class, classNode->found);
             }
         } else if (ch == '}') {
             context->scanEnd = true;
@@ -161,7 +161,7 @@ namespace smart {
                 return result;
             }
 
-            context->setError(ErrorCode::no_brace_of_end_for_class, start);
+            context->setError2(ErrorCode::no_brace_of_end_for_class, classNode->found, start);
         }
 
         return -1;
@@ -177,38 +177,39 @@ namespace smart {
         if ('c' == ch) {
             auto idx = ParseUtil::matchAt(context->chars, context->length, start, class_chars);
             if (idx > -1) {
-                    int currentPos = idx + size_of_class;
-                    int resultPos;
+                int currentPos = idx + size_of_class;
+                int resultPos;
 
-                    // "class " came here
-                    auto *classNode = Alloc::newClassNode(context, parent);
+                // "class " came here
+                auto *classNode = Alloc::newClassNode(context, parent);
+                classNode->found = start;
 
-                    {
-                        resultPos = Scanner::scanOnce(&classNode->nameNode,
-                                                  Tokenizers::nameTokenizer,
-                                                  currentPos,
-                                                  context);
+                {
+                    resultPos = Scanner::scanOnce(&classNode->nameNode,
+                                              Tokenizers::nameTokenizer,
+                                              currentPos,
+                                              context);
 
-                        if (resultPos == -1) {
-                            // the class should have a class name
-                            //console_log(std::string(classNode->nameNode.name).c_str());
-                            context->setError(ErrorCode::invalid_class_name, start);
-                            return -1;
-                        }
-                    }
-
-
-                    // Parse body
-                    currentPos = resultPos;
-                    if (-1 == (resultPos = Scanner::scanMulti(classNode, inner_classBodyTokenizer,
-                                                         currentPos, context))) {
-                        //context->codeNode = Cast::upcast(classNode);
-                        //return currentPos;
+                    if (resultPos == -1) {
+                        // the class should have a class name
+                        //console_log(std::string(classNode->nameNode.name).c_str());
+                        context->setError(ErrorCode::invalid_class_name, start);
                         return -1;
                     }
+                }
 
-                    context->codeNode = Cast::upcast(classNode);
-                    return resultPos;
+
+                // Parse body
+                currentPos = resultPos;
+                if (-1 == (resultPos = Scanner::scanMulti(classNode, inner_classBodyTokenizer,
+                                                     currentPos, context))) {
+                    //context->codeNode = Cast::upcast(classNode);
+                    //return currentPos;
+                    return -1;
+                }
+
+                context->codeNode = Cast::upcast(classNode);
+                return resultPos;
             }
         }
         return -1;

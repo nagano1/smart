@@ -392,6 +392,8 @@ namespace smart {
 
         auto *context = docStruct->context;
         context->syntaxErrorInfo.hasError = false;
+        context->syntaxErrorInfo.charPosition = -1;
+        context->syntaxErrorInfo.charPosition2 = -1;
         context->chars = const_cast<utf8byte *>(text);
         context->start = 0;
         context->scanEnd = false;

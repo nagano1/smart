@@ -37,13 +37,13 @@ namespace smart {
             currentCodeLine = VTableCall::appendToLine(&self->letOrType, currentCodeLine);
         }
 
-        if (self->pointerAsterisk.found) {
+        if (self->pointerAsterisk.found > -1) {
             currentCodeLine = VTableCall::appendToLine(&self->pointerAsterisk, currentCodeLine);
         }
 
         currentCodeLine = VTableCall::appendToLine(&self->nameNode, currentCodeLine);
 
-        if (self->equalSymbol.found) {
+        if (self->equalSymbol.found > -1) {
             currentCodeLine = VTableCall::appendToLine(&self->equalSymbol, currentCodeLine);
 
             if (self->valueNode) {
@@ -105,10 +105,10 @@ namespace smart {
 
         // console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
 
-        if (!assignment->nameNode.found) {
-            if (!assignment->pointerAsterisk.found) {
+        if (assignment->nameNode.found == -1) {
+            if (assignment->pointerAsterisk.found == -1) {
                 if (ch == '*') {
-                    assignment->pointerAsterisk.found = true;
+                    assignment->pointerAsterisk.found = start;
                     context->codeNode = Cast::upcast(&assignment->pointerAsterisk);
                     return start + 1;
                 }
@@ -126,9 +126,9 @@ namespace smart {
 
             }
 
-        } else if (!assignment->equalSymbol.found) {
+        } else if (assignment->equalSymbol.found == -1) {
             if (ch == '=') {
-                assignment->equalSymbol.found = true;
+                assignment->equalSymbol.found = start;
                 context->codeNode = Cast::upcast(&assignment->equalSymbol);
                 return start+1;
             } else {

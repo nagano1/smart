@@ -68,7 +68,7 @@ namespace smart {
 
         if (result > -1) {
             auto *boolNode = Cast::downcast<BoolNodeStruct*>(context->codeNode);
-            boolNode->found = true;
+            boolNode->found = start;
             boolNode->boolValue = isTrue;
             return result;
         }

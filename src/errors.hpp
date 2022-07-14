@@ -31,17 +31,25 @@ namespace smart {
     enum class ErrorCode {
         first_keeper,
 
+        // common
         syntax_error,
         syntax_error2,
         should_break_line,
 
+        // string
         missing_closing_quote,
         missing_closing_quote2,
         missing_object_delemeter,
 
+        // class
         invalid_class_name,
         no_brace_for_class,
         no_brace_of_end_for_class,
+
+        // fn
+        expect_bracket_for_fn_body,
+        expect_parenthesis_for_fn_params,
+        expect_end_parenthesis_for_fn_params,
 
         last_keeper
     };
@@ -116,18 +124,26 @@ namespace smart {
         ErrorInfo tempList[] = {
             ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
 
-            ErrorInfo{ ErrorCode::syntax_error, 1800, "syntax error" },
-            ErrorInfo{ ErrorCode::syntax_error2, 1801, "syntax error2" },
-            ErrorInfo{ ErrorCode::should_break_line, 1802, "should have a line break" },
+            // common
+            ErrorInfo{ ErrorCode::syntax_error, 418030, "syntax error" },
+            ErrorInfo{ ErrorCode::syntax_error2, 418031, "syntax error2" },
+            ErrorInfo{ ErrorCode::should_break_line, 418032, "should have a line break" },
 
+            // string
             ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
             ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },
 
             ErrorInfo{ ErrorCode::missing_object_delemeter, 7777812, "missing object delimeter"},
 
+            // class
             ErrorInfo{ ErrorCode::invalid_class_name, 7777813, "Invalid class name"},
             ErrorInfo{ ErrorCode::no_brace_for_class, 7777814, "no brace for class"},
             ErrorInfo{ ErrorCode::no_brace_of_end_for_class, 7777815, "no brace of end for class"},
+
+            // fn
+            ErrorInfo{ ErrorCode::expect_bracket_for_fn_body, 7777816, "expect_bracket_for_fn_body"},
+            ErrorInfo{ ErrorCode::expect_parenthesis_for_fn_params, 7777817, "expect '(' for fn parameters"},
+            ErrorInfo{ ErrorCode::expect_end_parenthesis_for_fn_params, 7777818, "expect ')' for fn parameters"},
 
             ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
         };
@@ -211,6 +227,7 @@ namespace smart {
         int reasonLength = 0;
 
         st_uint charPosition;
+        st_uint charPosition2;
         int errorId;
         int charEndPosition;
 

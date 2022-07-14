@@ -45,7 +45,7 @@ namespace smart {
         struct _SimpleTextNodeStruct *prevSpaceNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
         ParseContext *context; \
-        bool found; \
+        int found; \
         char prev_char
 
 
@@ -55,7 +55,7 @@ namespace smart {
         (node)->context = (context); \
         (node)->parentNode = (NodeBase*)(parent); \
         (node)->line = nullptr; \
-        (node)->found = false; \
+        (node)->found = -1; \
         (node)->nextNode = nullptr; \
         (node)->nextNodeInLine = nullptr; \
         (node)->prevSpaceNode = nullptr; \
@@ -416,13 +416,26 @@ namespace smart {
         }
 
         void setError(ErrorCode errorCode, st_uint startPos) {
+            this->setError2(errorCode, startPos, -1);
+        }
+
+        void setError2(ErrorCode errorCode, st_uint startPos, st_uint startPos2) {
             auto &errorInfo = this->syntaxErrorInfo;
             if (errorInfo.hasError) {
                 return;
             }
+
+            if (this->length == startPos) {
+                startPos--;
+            }
+            if (this->length == startPos2) {
+                startPos2--;
+            }
+
             errorInfo.hasError = true;
             errorInfo.errorCode = errorCode;
             errorInfo.charPosition = startPos;
+            errorInfo.charPosition2 = startPos2;
 
             errorInfo.errorId = getErrorId(errorCode);
             const char* reason = getErrorMessage(errorCode);

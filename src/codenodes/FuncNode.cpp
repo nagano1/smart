@@ -153,10 +153,10 @@ namespace smart {
     }
 
     int Tokenizers::bodyTokenizer(TokenizerParams_parent_ch_start_context) {
+        auto *bodyNode = Cast::downcast<BodyNodeStruct *>(parent);
+
         if (ch == '{') {
             int returnPosition = start + 1;
-
-            auto *bodyNode = Cast::downcast<BodyNodeStruct *>(parent);
             int result = Scanner::scanMulti(bodyNode,
                                             inner_bodyTokenizerMulti,
                                             returnPosition,
@@ -166,6 +166,8 @@ namespace smart {
                 context->codeNode = Cast::upcast(bodyNode);
                 return result;
             }
+        } else {
+            context->setError(ErrorCode::expect_bracket_for_fn_body, context->prevFoundPos);
         }
         return -1;
     };
@@ -322,6 +324,8 @@ namespace smart {
                 fnNode->parameterStartFound = true;
                 context->codeNode = Cast::upcast(&fnNode->parameterStartNode);
                 return start + 1;
+            } else {
+                context->setError(ErrorCode::expect_parenthesis_for_fn_params, context->prevFoundPos);
             }
         } else {
             if (!fnNode->parameterEndFound) {
@@ -330,6 +334,8 @@ namespace smart {
                     context->codeNode = Cast::upcast(&fnNode->parameterEndNode);
                     return start + 1;
                 } else {
+                    context->setError(ErrorCode::expect_end_parenthesis_for_fn_params, context->prevFoundPos);
+
                     /*
                         int result;
                         if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
@@ -337,7 +343,7 @@ namespace smart {
                             appendChildNode(innerClassNode, context->codeNode);
                             return result;
                         }
-                         */
+                    */
 
                 }
             } else {

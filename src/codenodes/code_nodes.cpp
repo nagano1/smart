@@ -210,7 +210,7 @@ namespace smart {
         int32_t whitespace_startpos = -1;
 
         //context->scanEnd = false;
-        for (int32_t i = start; i < context->length;) {
+        for (int32_t i = start; i <= context->length;) {
             ch = context->chars[i];
             // fprintf(stderr, "%c ,", ch);
             // fflush(stderr);
@@ -257,9 +257,7 @@ namespace smart {
                 }
             }
 
-            if (ch == '\0') {
-                break;
-            }
+
 
             int result = tokenizer(Cast::upcast(parentNode), ch, i, context);
 
@@ -304,7 +302,9 @@ namespace smart {
                     continue;
                 }
             }
-
+            if (ch == '\0') {
+                break;
+            }
 
             if ((ch & 0x80) != 0x80) {
 

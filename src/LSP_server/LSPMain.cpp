@@ -98,7 +98,7 @@ void LSPManager::LSP_main() {
 }
 
 
-static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int &line, int &charactor) {
+static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int *line, int *charactor) {
     int currentLine = 0;
     int currentCharactor = 0;
     int lineFirstPos = 0;
@@ -106,8 +106,8 @@ static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int 
     for (uint32_t i = 0; i < textLength; i++) {
 
         if (i == pos) {
-            line = currentLine;
-            charactor = ParseUtil::utf16_length(text + lineFirstPos, currentCharactor);
+            *line = currentLine;
+            *charactor = ParseUtil::utf16_length(text + lineFirstPos, currentCharactor);
             return true;
         }
         
@@ -139,10 +139,40 @@ static void validateJson(const char *text, int textLength, const char * const fi
 
         int line = 0;
         int charactor = 0;
-        bool ok = getLineAndPos(document->context->syntaxErrorInfo.charPosition, text, textLength, line, charactor);
+        bool ok = getLineAndPos(document->context->syntaxErrorInfo.charPosition, text, textLength, &line, &charactor);
         if (!ok) {
             line = 0;
         }
+
+
+        char error2[1024];
+        error2[0] = '\0';
+
+        int pos2 = document->context->syntaxErrorInfo.charPosition2;
+        if (pos2 > -1) {
+            int line2 = 0;
+            int charactor2 = 0;
+
+            bool ok2 = getLineAndPos(pos2, text, textLength, &line2, &charactor2);
+            if (!ok2) {
+                line2 = 0;
+            }
+
+            sprintf(error2, R"(
+            ,{
+                "severity": 1
+                ,"range": { 
+                    "start": { "character": %d, "line": %d }
+                    , "end": { "character": %d, "line": %d }
+                }
+                ,"message": "%s"
+                ,"source": "ex"
+            }
+)", charactor2, line2, 0, line2 + 1, document->context->syntaxErrorInfo.reason);
+
+            //error2[len2] = '\0';
+        }
+
 
         char moji[1024];
         int len = sprintf(moji, R"(
@@ -160,10 +190,10 @@ static void validateJson(const char *text, int textLength, const char * const fi
                 }
                 ,"message": "%s"
                 ,"source": "ex"
-            }
+            }%s
         ]
     }
-})", filePath ,charactor, line, 0, line+1, document->context->syntaxErrorInfo.reason);
+})", filePath ,charactor, line, 0, line+1, document->context->syntaxErrorInfo.reason, error2);
 
 
         std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(len) + "\r\n\r\n" + std::string{ moji };

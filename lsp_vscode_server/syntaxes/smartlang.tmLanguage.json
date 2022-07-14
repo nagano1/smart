@@ -218,25 +218,28 @@
                     "name": "keyword.control.smartlang",
                     "match": "\\b(class|:|if|while|for|return|fn)\\b"
                 },
-
                 {
-                    "name": "support.constant",
+                    "name": "constant.character",
                     "match": "\\$|\\?"
                 },
                 
                 {
                     "name": "constant.language",
-                    "match": "\\b(\\$|\\?|null|true|false)\\b"
+                    "match": "\\b(null|true|false)\\b"
                 },
                 {
                     "old": {
                         "name": "entity.name.type.smartlang",
-                        "match": "\\b(bool|string|double|float)\\b"
+                        "match": "\\b(let|bool|string|double|float)\\b"
                     }
                 },
                 {
                     "name": "entity.name.tag.smartlang",
-                    "match": "\\b(let|init|\\=)\\b"
+                    "match": "\\b(init|\\=)\\b"
+                },
+                {
+                    "namelet": "entity.name.function",
+                    "matchlet": "\\b(let)\\b"
                 },
                 {
                     "name": "keyword.operator.arithmetic.smartlang",
@@ -252,16 +255,15 @@
                 },
                 {
                     "name": "storage.type",
-                    "match": "\\b(int|bool|String|float|double)\\b"
-                },
-                {
-                    "name": "entity.name.function",
-                    "name2": "constant.numeric.smartlang",
-                    "match": "\\b(string|double|float)\\b"
+                    "match": "\\b(let|int|bool|String|float|double)\\b"
                 },
                 {
                     "name":"entity.name.smartlang",
                     "match": "[^\\s\\=\"0-9][^\\s\\=\"]*"
+                },
+                {
+                    "name_old":"support.variable",
+                    "match_old": "[^\\s\\=\"0-9][^\\s\\=\"]*"
                 },
                 {
                     "name":"constant.numeric.smartlang",

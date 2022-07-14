@@ -114,7 +114,8 @@ class A
 )";
 
         TEST_SYNTAX_ERROR(code, sizeof(code) - 1, ErrorCode::no_brace_for_class);
-   }
+    }
+
 
     // no_brace_of_end_for_class
     {
@@ -124,6 +125,14 @@ class A {
 
 )";
         TEST_SYNTAX_ERROR(code, sizeof(code) - 1, ErrorCode::no_brace_of_end_for_class);
+
+        constexpr char code2[] = u8R"(
+class A {
+    class B {
+    }
+)";
+        TEST_SYNTAX_ERROR(code2, sizeof(code2) - 1, ErrorCode::no_brace_of_end_for_class);
+
     }
 
 

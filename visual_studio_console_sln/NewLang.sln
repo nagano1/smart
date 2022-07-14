@@ -13,6 +13,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StaticLib1", "StaticLib1\StaticLib1.vcxproj", "{56ADD32B-B949-4A6B-A7D6-3329BF90AD89}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScriptLangImpl", "ScriptLangImpl\ScriptLangImpl.vcxproj", "{2BE44C0D-662B-4295-A92E-2EB20A4A825C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{56ADD32B-B949-4A6B-A7D6-3329BF90AD89} = {56ADD32B-B949-4A6B-A7D6-3329BF90AD89}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
