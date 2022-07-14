@@ -415,11 +415,11 @@ namespace smart {
             //return spaceBufferList.newNode();
         }
 
-        void setError(ErrorCode errorCode, st_uint startPos) {
+        void setError(ErrorCode errorCode, st_int startPos) {
             this->setError2(errorCode, startPos, -1);
         }
 
-        void setError2(ErrorCode errorCode, st_uint startPos, st_uint startPos2) {
+        void setError2(ErrorCode errorCode, st_int startPos, st_int startPos2) {
             auto &errorInfo = this->syntaxErrorInfo;
             if (errorInfo.hasError) {
                 return;
