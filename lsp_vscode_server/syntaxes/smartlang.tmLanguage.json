@@ -3,7 +3,7 @@
 	"name": "smartlang",
 	"patterns": [
 		{
-			"include_old": "#value"
+			"include": "#value"
 		},
         {
 			"include": "#keywords"
@@ -14,6 +14,7 @@
         {
 			"include": "#strings2"
         }
+
 	],
 	"repository": {
 		"array": {
@@ -67,13 +68,13 @@
 					"name": "comment.block.json"
 				},
 				{
-					"captures": {
+					"disable_captures": {
 						"1": {
 							"name": "punctuation.definition.comment.json"
 						}
 					},
 					"match": "(//).*$\\n?",
-					"name": "comment.line.double-slash.js"
+					"name": "comment.line.double-slash.smartlang"
 				}
 			]
 		},
@@ -192,6 +193,11 @@
 		},
 		"value": {
 			"patterns": [
+				{
+					"include": "#comments"
+				}
+			],
+            "old_patterns": [
 				{
 					"include": "#constant"
 				},

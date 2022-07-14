@@ -85,11 +85,15 @@ namespace smart {
         NODE_HEADER;
 
         utf8byte text[3]; // "\r\n" or "\n" or "\r" plus "\0"
-        _LineBreakNodeStruct *nextLineBreakNode = nullptr;
+        _LineBreakNodeStruct *nextLineBreakNode;
+
+        LineCommentNodeStruct *prevLineCommentNode;
     };
 
     using EndOfFileNodeStruct = struct {
         NODE_HEADER;
+
+        LineCommentNodeStruct *prevLineCommentNode;
     };
 
 
@@ -568,7 +572,7 @@ namespace smart {
                 *const SpaceVTable,
                 *const LineBreakVTable,
 
-                *const LineDommentVTable,
+                *const LineCommentVTable,
 
 
         *const JsonObjectVTable,
@@ -778,6 +782,12 @@ namespace smart {
         static SimpleTextNodeStruct *newSimpleTextNode(ParseContext *context, NodeBase *parentNode);
         static SpaceNodeStruct *newSpaceNode(ParseContext *context, NodeBase *parentNode);
         static NullNodeStruct *newNullNode(ParseContext *context, NodeBase *parentNode);
+
+        // comment
+        static LineCommentNodeStruct *newLineCommentNode(ParseContext *context, NodeBase *parentNode);
+
+
+
 
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
         static AssignStatementNodeStruct *newAssignStatement(ParseContext *context, NodeBase *parentNode);

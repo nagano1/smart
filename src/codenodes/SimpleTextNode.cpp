@@ -34,7 +34,7 @@ namespace smart {
 
     static constexpr const char simpleTextTypeText[] = "<SimpleText>";
 
-    static struct node_vtable simpleTextVTABLE = CREATE_VTABLE2(SimpleTextNodeStruct,
+    static const struct node_vtable simpleTextVTABLE = CREATE_VTABLE2(SimpleTextNodeStruct,
                                                                 selfTextLength,
                                                                 self_text,
                                                                 appendToLine, simpleTextTypeText
@@ -47,7 +47,7 @@ namespace smart {
 
     static constexpr const char spaceTextTypeText[] = "<SpaceText>";
 
-    static struct node_vtable _spaceVTable = CREATE_VTABLE2(SpaceNodeStruct,
+    static const node_vtable _spaceVTable = CREATE_VTABLE2(SpaceNodeStruct,
                                                             selfTextLength,
                                                             self_text,
                                                             appendToLine, spaceTextTypeText, NodeTypeId::Space, 1
@@ -55,7 +55,7 @@ namespace smart {
     const struct node_vtable *const VTables::SpaceVTable = &_spaceVTable;
 
 
-    static struct node_vtable _nullVTable = CREATE_VTABLE2(NullNodeStruct,
+    static const node_vtable _nullVTable = CREATE_VTABLE2(NullNodeStruct,
                                                            selfTextLength,
                                                            self_text,
                                                            appendToLine, "<NULL>", NodeTypeId::NULLId, 2
@@ -64,13 +64,13 @@ namespace smart {
     const struct node_vtable *const VTables::NullVTable = &_nullVTable;
 
 
-    static const struct node_vtable _lineCommentVTable = CREATE_VTABLE2(LineCommentNodeStruct,
+    static const node_vtable _lineCommentVTable = CREATE_VTABLE2(LineCommentNodeStruct,
                                                            selfTextLength,
                                                            self_text,
                                                            appendToLine, "<NULL>", NodeTypeId::NULLId, 3
     );
 
-    const struct node_vtable *const VTables::LineDommentVTable = &_lineCommentVTable;
+    const struct node_vtable *const VTables::LineCommentVTable = &_lineCommentVTable;
 
 
     SimpleTextNodeStruct *Alloc::newSimpleTextNode(ParseContext *context, NodeBase *parentNode) {
@@ -100,9 +100,18 @@ namespace smart {
         textNode->text[charLen] = '\0';
     }
 
+    LineCommentNodeStruct *Alloc::newLineCommentNode(ParseContext *context, NodeBase *parentNode)
+    {
+        auto *lineComment = context->newMemForNode<LineCommentNodeStruct>();
+        auto *node = Cast::upcast(lineComment);
+
+        INIT_NODE(node, context, parentNode, VTables::LineCommentVTable);
+        return lineComment;
+    }
 
 
-    SpaceNodeStruct *Alloc::newSpaceNode(ParseContext *context, NodeBase *parentNode) {
+    SpaceNodeStruct *Alloc::newSpaceNode(ParseContext *context, NodeBase *parentNode)
+    {
         auto *spaceNode = context->newMemForNode<SpaceNodeStruct>();
         auto *node = Cast::upcast(spaceNode);
 
@@ -110,7 +119,8 @@ namespace smart {
         return spaceNode;
     }
 
-    NullNodeStruct *Alloc::newNullNode(ParseContext *context, NodeBase *parentNode) {
+    NullNodeStruct *Alloc::newNullNode(ParseContext *context, NodeBase *parentNode)
+    {
         auto *nullNode = context->newMemForNode<NullNodeStruct>();
         auto *node = Cast::upcast(nullNode);
 

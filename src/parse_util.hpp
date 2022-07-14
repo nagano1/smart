@@ -288,6 +288,17 @@ struct ParseUtil {
     }
 
 
+    static inline int indexOfBreakOrEnd(const char *chars, int charsLength, int startIndex)
+    {
+        for (int i = startIndex; i < charsLength; i++) {
+            if ('\r' == chars[i] || '\0' == chars[i] || '\n' == chars[i]) {
+                return i;
+            }
+        }
+        return charsLength;
+    }
+
+
     static inline bool isSpace(utf8byte ch)
     {
         return ' ' == ch || '\t' == ch;

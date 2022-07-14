@@ -127,7 +127,7 @@ namespace smart {
             // common
             ErrorInfo{ ErrorCode::syntax_error, 418030, "syntax error" },
             ErrorInfo{ ErrorCode::syntax_error2, 418031, "syntax error2" },
-            ErrorInfo{ ErrorCode::should_break_line, 418032, "should have a line break" },
+            ErrorInfo{ ErrorCode::should_break_line, 418032, "should have a line break2" },
 
             // string
             ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },

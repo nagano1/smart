@@ -212,19 +212,34 @@ namespace smart {
         //context->scanEnd = false;
         for (int32_t i = start; i <= context->length;) {
             ch = context->chars[i];
-            // fprintf(stderr, "%c ,", ch);
-            // fflush(stderr);
+//             fprintf(stderr, "%c ,", ch);
+//             fflush(stderr);
             // __android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
-            // console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
+            //console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
 
             // line comment with "//"
+            LineCommentNodeStruct *lineComment = nullptr;
             if (ch == '/' && '/' == context->chars[i+1]) {
+                //console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
+                lineComment = Alloc::newLineCommentNode(context, Cast::upcast(parentNode));
+                int idxEnd = ParseUtil::indexOfBreakOrEnd(context->chars, context->length, i);
+                Init::assignText_SimpleTextNode(lineComment,  context,  i, idxEnd - i);
 
+                if (whitespace_startpos != -1 && whitespace_startpos < i) {
+                    lineComment->prevSpaceNode = genSpaceNode(context, parentNode, whitespace_startpos, i);
+                    whitespace_startpos = -1;
+                }
+
+                i = idxEnd;
+                ch = context->chars[i];
             }
 
             if (ParseUtil::isBreakLine(ch)) {
                 context->afterLineBreak = true;
                 auto *newLineBreak = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
+                if (lineComment != nullptr) {
+                    newLineBreak->prevLineCommentNode = lineComment;
+                }
 
                 if (prevLineBreak == nullptr) {
                     lastLineBreak = prevLineBreak = newLineBreak;
@@ -239,8 +254,16 @@ namespace smart {
                     whitespace_startpos = -1;
                 }
 
+                bool rn = ch == '\r' && context->chars[i+1] == '\n';
                 bool isLastChar = i ==  context->length - 1;
-                i++;
+                if (rn) { // \r\n
+                    newLineBreak->text[0] = '\r';
+                    newLineBreak->text[1] = '\n';
+                    newLineBreak->text[2] = '\0';
+                    i += 2;
+                } else {
+                    i++;
+                }
                 if (!isLastChar) {
                     continue;
                 }

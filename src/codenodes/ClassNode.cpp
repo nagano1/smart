@@ -37,22 +37,21 @@ namespace smart {
         return "class";
     }
 
-    static CodeLine *appendToLine(ClassNodeStruct *self, CodeLine *currentCodeLine) {
-        auto *classNode = self;
+    static CodeLine *appendToLine(ClassNodeStruct *classNode, CodeLine *currentCodeLine) {
 
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(classNode);
         currentCodeLine->appendNode(classNode);
 
 
-        auto formerParentDepth = self->context->parentDepth;
-        self->context->parentDepth += 1;
+        auto formerParentDepth = classNode->context->parentDepth;
+        classNode->context->parentDepth += 1;
         currentCodeLine = VTableCall::appendToLine(&classNode->nameNode, currentCodeLine);
-        self->context->parentDepth = formerParentDepth;
+        classNode->context->parentDepth = formerParentDepth;
 
         currentCodeLine = VTableCall::appendToLine(&classNode->bodyStartNode, currentCodeLine);
 
-        formerParentDepth = self->context->parentDepth;
-        self->context->parentDepth += 1;
+        formerParentDepth = classNode->context->parentDepth;
+        classNode->context->parentDepth += 1;
 
         {
             auto *child = classNode->firstChildNode;
@@ -70,8 +69,8 @@ namespace smart {
         if (prevCodeLine != currentCodeLine) {
             currentCodeLine->depth = formerParentDepth+1;
         }
-        
-        self->context->parentDepth = formerParentDepth;
+
+        classNode->context->parentDepth = formerParentDepth;
 
 
         return currentCodeLine;

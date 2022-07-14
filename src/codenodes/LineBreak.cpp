@@ -22,8 +22,8 @@ namespace smart {
 
     // Line Break Node implementation
 
-    static int selfTextLength(LineBreakNodeStruct *) {
-        return 1;
+    static int selfTextLength(LineBreakNodeStruct *self) {
+        return self->text[1] == '\0' ? 1 : 2;
     }
 
     static const char *self_text(LineBreakNodeStruct *self) {
@@ -36,8 +36,12 @@ namespace smart {
 
         auto* next = lineBreakNode;
         while (next) {
-            currentCodeLine = currentCodeLine->addPrevLineBreakNode(next);
+            currentCodeLine = currentCodeLine->addPrevLineBreakNode(next); // add space before break
+            if (next->prevLineCommentNode) {
+                currentCodeLine = VTableCall::appendToLine(next->prevLineCommentNode, currentCodeLine);
+            }
             currentCodeLine->appendNode(Cast::upcast(next));
+
             
             auto *newNextLine = lineBreakNode->context->newCodeLine();
             newNextLine->init(lineBreakNode->context);
@@ -70,6 +74,7 @@ namespace smart {
 
         INIT_NODE(node, context, parentNode, VTables::LineBreakVTable);
         lineNode->nextLineBreakNode = nullptr;
+        lineNode->prevLineCommentNode = nullptr;
         lineNode->text[0] = '\n';
         lineNode->text[1] = '\0';
 

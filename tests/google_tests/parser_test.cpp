@@ -906,7 +906,7 @@ class A {
                 $let intA = 314
 
                 let c = 0
-                let d = 893214
+                let d = 893214 // comment test
             }
         }
     }
@@ -936,6 +936,28 @@ class AABC  {  }
 }
 
 ENDTEST
+
+
+
+TEST(ParserTest_, TestSeveralLines) {
+    
+    std::string text = "class A \r\n // comment \r\n {}";
+
+    const char* chars = text.c_str();
+    auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
+    DocumentUtils::parseText(document, chars, text.size());
+
+    char* treeText = DocumentUtils::getTextFromTree(document);
+
+    EXPECT_EQ(treeText != nullptr, true);
+    EXPECT_EQ(std::string{ treeText }, std::string{ chars });
+    EXPECT_EQ(strlen(treeText), strlen(chars));
+
+    Alloc::deleteDocument(document);
+}
+
+ENDTEST
+
 
 
 TEST(ParserTest_, TypeTreeTest) {
@@ -1194,14 +1216,23 @@ ENDTEST
 
 
 
-
-    TEST(ParserTest_, ParseUtil) {
+TEST(ParserTest_, ParseUtil) {
 
     EXPECT_EQ(true, ParseUtil::isIdentifierLetter('a'));
 
     ParseUtil::letterCheck(&func);
 
+    // static inline int indexOfBreakOrEnd(const char *chars, int charsLength, int startIndex)
+    {
+        static constexpr char chars[] = "class\n A{}";
+        EXPECT_EQ(5, ParseUtil::indexOfBreakOrEnd(chars, sizeof(chars)-1, 0));
 
+        static constexpr char chars2[] = "class\0 A{}";
+        EXPECT_EQ(5, ParseUtil::indexOfBreakOrEnd(chars2, sizeof(chars2) - 1, 3));
+
+        static constexpr char chars3[] = "class\0 A{}";
+        EXPECT_EQ(10, ParseUtil::indexOfBreakOrEnd(chars3, sizeof(chars3) - 1, 7));
+    }
 
     EXPECT_EQ(true, ParseUtil::isIdentifierLetter('a'));
     EXPECT_EQ(true, ParseUtil::isIdentifierLetter(std::string{ u8"😂" }.c_str()[0]));
