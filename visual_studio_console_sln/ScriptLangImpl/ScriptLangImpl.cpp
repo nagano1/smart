@@ -52,13 +52,47 @@ class BDD{}
 
 class AABC  {  }
 
+fn doWhateverYouWant() {
+    let a = 0
+    int b = 0
+
+}
 )";
 
     const char* chars = text.c_str();
     auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
     DocumentUtils::parseText(document, chars, text.size());
-
     DocumentUtils::generateHashTables(document);
+
+    char* treeText = DocumentUtils::getTextFromTree(document);
+    printf("%s\n", treeText);
+
+
+    auto* rootNode = document->firstRootNode;
+    while (rootNode != nullptr) {
+        
+        printf("%s\n", rootNode->vtable->typeChars);
+        
+        if (rootNode->vtable == VTables::ClassVTable) {
+            // class
+
+        }
+        else if (rootNode->vtable == VTables::FnVTable) {
+            // fn
+            auto* fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
+            printf("<%s()>", fnNode->nameNode.name);
+            auto* childNode = fnNode->bodyNode.firstChildNode;
+            while (childNode) {
+                printf("<%s>", childNode->vtable->typeChars);
+
+                childNode = childNode->nextNode;
+            }
+        }
+
+        rootNode = rootNode->nextNode;
+    }
+
+    Alloc::deleteDocument(document);
 
     /*
     auto* item = document->hashMap->get2("method");
@@ -69,10 +103,8 @@ class AABC  {  }
     strNode->strLength;
     strNode->textLength;
 
-    //char* treeText = DocumentUtils::getTextFromTree(document);
 
-    Alloc::deleteDocument(document);
     */
 
-    printf("[fwe2]");
+    printf("\n\n...end\n");
 }

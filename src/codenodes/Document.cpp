@@ -343,6 +343,10 @@ namespace smart {
             auto *doc = Cast::downcast<DocumentStruct *>(parent);
             appendRootNode(doc, context->codeNode);
             return result;
+        } else if (-1 < (result = Tokenizers::fnTokenizer(parent, ch, start, context))) {
+            auto* doc = Cast::downcast<DocumentStruct*>(parent);
+            appendRootNode(doc, context->codeNode);
+            return result;
         }
 
         if (context->syntaxErrorInfo.hasError) {
