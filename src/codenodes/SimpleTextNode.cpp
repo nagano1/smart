@@ -72,6 +72,14 @@ namespace smart {
 
     const struct node_vtable *const VTables::LineCommentVTable = &_lineCommentVTable;
 
+    static const node_vtable _blockCommentVTable = CREATE_VTABLE2(LineCommentNodeStruct,
+                                                                 selfTextLength,
+                                                                 self_text,
+                                                                 appendToLine, "<NULL>", NodeTypeId::NULLId, 4
+    );
+
+    const struct node_vtable *const VTables::BlockCommentVTable = &_blockCommentVTable;
+
 
     SimpleTextNodeStruct *Alloc::newSimpleTextNode(ParseContext *context, NodeBase *parentNode) {
         auto *node = context->newMemForNode<SimpleTextNodeStruct>();
@@ -106,6 +114,15 @@ namespace smart {
         auto *node = Cast::upcast(lineComment);
 
         INIT_NODE(node, context, parentNode, VTables::LineCommentVTable);
+        return lineComment;
+    }
+
+    LineCommentNodeStruct *Alloc::newBlockCommentNode(ParseContext *context, NodeBase *parentNode)
+    {
+        auto *lineComment = context->newMemForNode<LineCommentNodeStruct>();
+        auto *node = Cast::upcast(lineComment);
+
+        INIT_NODE(node, context, parentNode, VTables::BlockCommentVTable);
         return lineComment;
     }
 

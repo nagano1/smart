@@ -37,9 +37,7 @@ namespace smart {
         auto* next = lineBreakNode;
         while (next) {
             currentCodeLine = currentCodeLine->addPrevLineBreakNode(next); // add space before break
-            if (next->prevLineCommentNode) {
-                currentCodeLine = VTableCall::appendToLine(next->prevLineCommentNode, currentCodeLine);
-            }
+
             currentCodeLine->appendNode(Cast::upcast(next));
 
             
@@ -74,7 +72,6 @@ namespace smart {
 
         INIT_NODE(node, context, parentNode, VTables::LineBreakVTable);
         lineNode->nextLineBreakNode = nullptr;
-        lineNode->prevLineCommentNode = nullptr;
         lineNode->text[0] = '\n';
         lineNode->text[1] = '\0';
 

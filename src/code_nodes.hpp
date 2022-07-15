@@ -43,6 +43,7 @@ namespace smart {
         CodeLine *line; \
         int indentType; \
         struct _SimpleTextNodeStruct *prevSpaceNode; \
+        struct _SimpleTextNodeStruct *prevBlockCommentNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
         ParseContext *context; \
         int found; \
@@ -60,6 +61,7 @@ namespace smart {
         (node)->nextNodeInLine = nullptr; \
         (node)->prevSpaceNode = nullptr; \
         (node)->prevLineBreakNode = nullptr; \
+        (node)->prevBlockCommentNode = nullptr; \
         (0)
 
     #define TEXT_MEMCPY(dst, src, len) \
@@ -86,8 +88,6 @@ namespace smart {
 
         utf8byte text[3]; // "\r\n" or "\n" or "\r" plus "\0"
         _LineBreakNodeStruct *nextLineBreakNode;
-
-        LineCommentNodeStruct *prevLineCommentNode;
     };
 
     using EndOfFileNodeStruct = struct {
@@ -573,6 +573,7 @@ namespace smart {
                 *const LineBreakVTable,
 
                 *const LineCommentVTable,
+                *const BlockCommentVTable,
 
 
         *const JsonObjectVTable,
@@ -691,6 +692,10 @@ namespace smart {
                                                        currentCodeLine);
             currentCodeLine = VTableCall::appendToLine(((NodeBase *) node)->prevSpaceNode,
                                                        currentCodeLine);
+            currentCodeLine = VTableCall::appendToLine(((NodeBase *) node)->prevBlockCommentNode,
+                                                       currentCodeLine);
+
+
             return currentCodeLine;
         }
 
@@ -785,6 +790,7 @@ namespace smart {
 
         // comment
         static LineCommentNodeStruct *newLineCommentNode(ParseContext *context, NodeBase *parentNode);
+        static LineCommentNodeStruct *newBlockCommentNode(ParseContext *context, NodeBase *parentNode);
 
 
 

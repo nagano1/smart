@@ -208,6 +208,7 @@ namespace smart {
         int returnResult = -1;
 
         int32_t whitespace_startpos = -1;
+        LineCommentNodeStruct *commentNode = nullptr;
 
         //context->scanEnd = false;
         for (int32_t i = start; i <= context->length;) {
@@ -217,29 +218,77 @@ namespace smart {
             // __android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
             //console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
 
-            // line comment with "//"
-            LineCommentNodeStruct *lineComment = nullptr;
-            if (ch == '/' && '/' == context->chars[i+1]) {
-                //console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
-                lineComment = Alloc::newLineCommentNode(context, Cast::upcast(parentNode));
-                int idxEnd = ParseUtil::indexOfBreakOrEnd(context->chars, context->length, i);
-                Init::assignText_SimpleTextNode(lineComment,  context,  i, idxEnd - i);
 
-                if (whitespace_startpos != -1 && whitespace_startpos < i) {
-                    lineComment->prevSpaceNode = genSpaceNode(context, parentNode, whitespace_startpos, i);
-                    whitespace_startpos = -1;
+            if (ch == '/') {
+                int idxEnd = -1;
+                bool isLineComment = false;
+
+                // line comment with "//"
+                if ('/' == context->chars[i+1]) {
+                    idxEnd = ParseUtil::indexOfBreakOrEnd(context->chars, context->length, i);
+                    isLineComment = true;
+
+                } // block comment /* */
+                else if ('*' == context->chars[i+1]) {
+                    // try to find "*/"
+                    int currentIdx = i + 2;
+                    while (true) {
+                        if (currentIdx >= context->length) {
+                            idxEnd = context->length;
+                            break;
+                        }
+
+                        int asteriskIdx = ParseUtil::indexOf(context->chars, context->length, currentIdx, '*');
+                        if (asteriskIdx > -1) {
+                            int slashIdx = ParseUtil::indexOf(context->chars, context->length, asteriskIdx + 1, '/');
+                            if (slashIdx > -1) {
+                                idxEnd = slashIdx + 1;
+                                break;
+                            }
+                            currentIdx += 2;
+
+                        } else {
+                            idxEnd = context->length;
+                            break;
+                        }
+                    }
                 }
 
-                i = idxEnd;
-                ch = context->chars[i];
+                if (idxEnd > -1) {
+                    auto *prevCommentNode = commentNode;
+
+                    if (isLineComment) {
+                        commentNode = Alloc::newLineCommentNode(context, Cast::upcast(parentNode));
+                    }
+                    else {
+                        commentNode = Alloc::newBlockCommentNode(context, Cast::upcast(parentNode));
+                    }
+
+
+                    Init::assignText_SimpleTextNode(commentNode, context, i, idxEnd - i);
+
+                    if (whitespace_startpos != -1 && whitespace_startpos < i) {
+                        commentNode->prevSpaceNode = genSpaceNode(context, parentNode, whitespace_startpos, i);
+
+                        if (prevCommentNode != nullptr) {
+                            commentNode->prevSpaceNode->prevBlockCommentNode = prevCommentNode;
+                        }
+
+                        whitespace_startpos = -1;
+                    } else {
+                        if (prevCommentNode != nullptr) {
+                            commentNode->prevBlockCommentNode = prevCommentNode;
+                        }
+                    }
+
+                    i = idxEnd;
+                    continue;
+                }
             }
 
             if (ParseUtil::isBreakLine(ch)) {
                 context->afterLineBreak = true;
                 auto *newLineBreak = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
-                if (lineComment != nullptr) {
-                    newLineBreak->prevLineCommentNode = lineComment;
-                }
 
                 if (prevLineBreak == nullptr) {
                     lastLineBreak = prevLineBreak = newLineBreak;
@@ -250,8 +299,20 @@ namespace smart {
                 }
 
                 if (whitespace_startpos != -1 && whitespace_startpos < i) {
-                    lastLineBreak->prevSpaceNode = genSpaceNode(context, parentNode, whitespace_startpos, i);
+                    auto *spaceNode = genSpaceNode(context, parentNode, whitespace_startpos, i);
+                    lastLineBreak->prevSpaceNode = spaceNode;
+
+                    if (commentNode != nullptr) {
+                        spaceNode->prevBlockCommentNode = commentNode;
+                        commentNode = nullptr;
+                    }
+
                     whitespace_startpos = -1;
+                } else {
+                    if (commentNode != nullptr) {
+                        newLineBreak->prevBlockCommentNode = commentNode;
+                        commentNode = nullptr;
+                    }
                 }
 
                 bool rn = ch == '\r' && context->chars[i+1] == '\n';
@@ -306,9 +367,20 @@ namespace smart {
                         if (context->chars[whitespace_startpos] == ' ' &&
                             i - whitespace_startpos == 1) {
                             context->codeNode->prev_char = ' ';
+
+                            if (commentNode != nullptr) {
+                                context->codeNode->prevBlockCommentNode = commentNode;
+                                commentNode = nullptr;
+                            }
+
                         } else {
                             context->codeNode->prevSpaceNode = genSpaceNode(context, parentNode,
                                                                             whitespace_startpos, i);
+
+                            if (commentNode != nullptr) {
+                                context->codeNode->prevSpaceNode->prevBlockCommentNode = commentNode;
+                                commentNode = nullptr;
+                            }
                         }
                     }
                     whitespace_startpos = -1;

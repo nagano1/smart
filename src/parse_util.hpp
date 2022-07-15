@@ -298,10 +298,21 @@ struct ParseUtil {
         return charsLength;
     }
 
+    static inline int indexOf(const char *chars, int charsLength, int startIndex, char ch)
+    {
+        for (int i = startIndex; i < charsLength; i++) {
+            if (ch == chars[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
 
     static inline bool isSpace(utf8byte ch)
     {
-        return ' ' == ch || '\t' == ch;
+        return ' ' == ch; // || '\t' == ch;
     }
 
     

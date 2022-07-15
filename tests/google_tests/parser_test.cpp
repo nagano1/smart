@@ -86,7 +86,7 @@ TEST(ParserTest_, JsonParseTest) {
 "jio fw" : null,
             "text" : "日本語"
             "ijofw": [2134
-                  	    ,
+                      ,
                             "test", true
                         null,
                         {"君はどうなんだろう": [true]}
@@ -907,6 +907,12 @@ class A {
 
                 let c = 0
                 let d = 893214 // comment test
+// comment
+                // comment
+                int a = 3
+                /*
+                    kcomfoawej // jfiowae
+                */ // fjwieo
             }
         }
     }
@@ -917,9 +923,9 @@ class A {}
 class BDD{}
 
 
-
+/*
+*/
 class AABC  {  }
-
 )";
 
     const char *chars = text.c_str();
@@ -1232,6 +1238,15 @@ TEST(ParserTest_, ParseUtil) {
 
         static constexpr char chars3[] = "class\0 A{}";
         EXPECT_EQ(10, ParseUtil::indexOfBreakOrEnd(chars3, sizeof(chars3) - 1, 7));
+    }
+
+    {
+        static constexpr char chars[] = "class\n A{}";
+        EXPECT_EQ(7, ParseUtil::indexOf(chars, sizeof(chars)-1, 0, 'A'));
+
+        static constexpr char chars2[] = "class\n A{}";
+        EXPECT_EQ(-1, ParseUtil::indexOf(chars2, sizeof(chars2)-1, 0, 'G'));
+
     }
 
     EXPECT_EQ(true, ParseUtil::isIdentifierLetter('a'));

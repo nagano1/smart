@@ -68,7 +68,7 @@
 					"name": "comment.block.json"
 				},
 				{
-					"disable_captures": {
+					"captures": {
 						"1": {
 							"name": "punctuation.definition.comment.json"
 						}
@@ -265,7 +265,7 @@
                 },
                 {
                     "name":"entity.name.smartlang",
-                    "match": "[^\\s\\=\"0-9][^\\s\\=\"]*"
+                    "match": "[^\\s\\=\"0-9\/][^\\s\\=\"\/]*"
                 },
                 {
                     "name_old":"support.variable",
