@@ -78,6 +78,7 @@ void LSPManager::LSP_main() {
             if (rsize > 0) {
                 chars[rsize] = '\0';
                 lspManager.nextRequest(chars, (int)rsize);
+                LSPHttpServer::passText(chars, rsize);
             }
 
             free(chars);

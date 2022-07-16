@@ -26,5 +26,6 @@
 struct LSPHttpServer{
     static void LSP_server();
     static void close();
+    static void passText(char *text, int textLen);
 };
 
