@@ -194,6 +194,27 @@ namespace smart {
         return prevSpaceNode;
     }
 
+    // support nest
+    static int searchEndBlockCommentPos(int currentIdx, char *chars, int charLength) {
+        int idxEnd = charLength;
+
+        // /*
+         /* */
+        // */
+        int commentStartPos = ParseUtil::indexOf2(chars, charLength, currentIdx, '/', '*');
+        int commentEndPos = ParseUtil::indexOf2(chars, charLength, currentIdx, '*', '/');
+        if (commentEndPos > -1) {
+            if (commentStartPos > - 1 && commentStartPos < commentEndPos) { // nested block comment found
+                int nestedClosePos = searchEndBlockCommentPos(commentStartPos + 2, chars, charLength);
+                idxEnd = searchEndBlockCommentPos(nestedClosePos, chars, charLength);
+
+            } else {
+                idxEnd = commentEndPos + 2;
+            }
+        }
+
+        return idxEnd;
+    }
 
     int Scanner::scan_for_root(void *parentNode,
         TokenizerFunction tokenizer,
@@ -231,27 +252,7 @@ namespace smart {
                 } // block comment /* */
                 else if ('*' == context->chars[i+1]) {
                     // try to find "*/"
-                    int currentIdx = i + 2;
-                    while (true) {
-                        if (currentIdx >= context->length) {
-                            idxEnd = context->length;
-                            break;
-                        }
-
-                        int asteriskIdx = ParseUtil::indexOf(context->chars, context->length, currentIdx, '*');
-                        if (asteriskIdx > -1) {
-                            int slashIdx = ParseUtil::indexOf(context->chars, context->length, asteriskIdx + 1, '/');
-                            if (slashIdx > -1) {
-                                idxEnd = slashIdx + 1;
-                                break;
-                            }
-                            currentIdx += 2;
-
-                        } else {
-                            idxEnd = context->length;
-                            break;
-                        }
-                    }
+                    idxEnd = searchEndBlockCommentPos(i + 2, context->chars, context->length);
                 }
 
                 if (idxEnd > -1) {

@@ -47,7 +47,7 @@ void LSPHttpServer::LSP_server() {
 
 	svr.Get("/stream", [&](const httplib::Request& req, httplib::Response& res) {
 		res.set_content_provider(
-			"text/html", // Content type
+			"text/html",
 			[&](size_t offset, httplib::DataSink& sink) {
 				int count = 5;
 
@@ -68,7 +68,6 @@ void LSPHttpServer::LSP_server() {
 		});
 
 	svr.listen("0.0.0.0", 8080);
-
 }
 
 void LSPHttpServer::passText(char* text, int textLen) {

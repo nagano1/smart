@@ -911,6 +911,10 @@ class A {
                 // comment
                 int a = 3
                 /*
+                    /* 
+
+/* */
+*/ /* */
                     kcomfoawej // jfiowae
                 */ // fjwieo
             }
