@@ -55,7 +55,6 @@ class AABC  {  }
 fn doWhateverYouWant() {
     let a = 0
     int b = 0
-
 }
 )";
 
