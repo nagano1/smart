@@ -51,12 +51,13 @@ void LSPHttpServer::LSP_server() {
 			[&](size_t offset, httplib::DataSink& sink) {
 				int count = 5;
 
-				while (count > 0/* there is still data */) {
+				while (count > 0) {
 					count--;
-					Sleep(1000);
-					printf("aa");
+					std::this_thread::sleep_for(std::chrono::milliseconds{1000});
+
+					printf(",aa,");
 					// prepare data...
-					sink.write("aaa", 3);
+					sink.write("aa,", 3);
 				}
 				
 				printf("end");
