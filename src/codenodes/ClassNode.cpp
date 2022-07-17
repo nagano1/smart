@@ -160,6 +160,7 @@ namespace smart {
                 return result;
             }
 
+            context->scanEnd = true;
             context->setError2(ErrorCode::no_brace_of_end_for_class, classNode->found, start);
         }
 

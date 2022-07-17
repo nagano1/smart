@@ -234,8 +234,8 @@ namespace smart {
         //context->scanEnd = false;
         for (int32_t i = start; i <= context->length;) {
             ch = context->chars[i];
-//             fprintf(stderr, "%c ,", ch);
-//             fflush(stderr);
+            //fprintf(stderr, "%c ,", ch);
+            // fflush(stderr);
             // __android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
             //console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
 
@@ -251,7 +251,7 @@ namespace smart {
 
                 } // block comment /* */
                 else if ('*' == context->chars[i+1]) {
-                    // try to find "*/"
+                    //  find "*/"
                     idxEnd = searchEndBlockCommentPos(i + 2, context->chars, context->length);
                 }
 
@@ -317,7 +317,6 @@ namespace smart {
                 }
 
                 bool rn = ch == '\r' && context->chars[i+1] == '\n';
-                bool isLastChar = i ==  context->length - 1;
                 if (rn) { // \r\n
                     newLineBreak->text[0] = '\r';
                     newLineBreak->text[1] = '\n';
@@ -326,9 +325,7 @@ namespace smart {
                 } else {
                     i++;
                 }
-                if (!isLastChar) {
-                    continue;
-                }
+                continue;
             }
             else if (ParseUtil::isSpace(ch)) {
                 int spaceEndIndex = i + 1;
@@ -340,11 +337,8 @@ namespace smart {
                 }
 
                 whitespace_startpos = i;
-                bool isLastChar = i ==  context->length - 1;
                 i = spaceEndIndex;
-                if (!isLastChar) {
-                    continue;
-                }
+                continue;
             }
 
 

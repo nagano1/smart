@@ -360,6 +360,7 @@ namespace smart {
 
     int Tokenizers::fnTokenizer(TokenizerParams_parent_ch_start_context) {
         if (fn_first_char == ch) {
+            // fn
             auto idx = ParseUtil::matchAt(context->chars, context->length, start, fn_chars);
             if (idx > -1) {
                 int currentPos = idx + size_of_fn;
@@ -376,6 +377,7 @@ namespace smart {
                     if (resultPos == -1) {
                         // the class should have a class name
                         //console_log(std::string(classNode->nameNode.name).c_str());
+                        context->setError(ErrorCode::invalid_fn_name, start);
 
                         context->codeNode = Cast::upcast(fnNode);
                         return currentPos;
@@ -386,6 +388,9 @@ namespace smart {
                 currentPos = resultPos;
                 if (-1 == (resultPos = Scanner::scanMulti(fnNode, inner_fnBodyTokenizerMulti,
                                                           currentPos, context))) {
+
+                    context->setError(ErrorCode::invalid_fn_name, context->prevFoundPos);
+
                     context->codeNode = Cast::upcast(fnNode);
                     return currentPos;
                 }

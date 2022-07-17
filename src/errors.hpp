@@ -47,6 +47,7 @@ namespace smart {
         no_brace_of_end_for_class,
 
         // fn
+        invalid_fn_name,
         expect_bracket_for_fn_body,
         expect_parenthesis_for_fn_params,
         expect_end_parenthesis_for_fn_params,
@@ -133,14 +134,15 @@ namespace smart {
             ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
             ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },
 
-            ErrorInfo{ ErrorCode::missing_object_delemeter, 7777812, "missing object delimeter"},
+            ErrorInfo{ ErrorCode::missing_object_delemeter, 7677812, "missing object delimeter"},
 
             // class
-            ErrorInfo{ ErrorCode::invalid_class_name, 7777813, "Invalid class name"},
-            ErrorInfo{ ErrorCode::no_brace_for_class, 7777814, "no brace for class"},
-            ErrorInfo{ ErrorCode::no_brace_of_end_for_class, 7777815, "no brace of end for class"},
+            ErrorInfo{ ErrorCode::invalid_class_name, 7777413, "Invalid class name"},
+            ErrorInfo{ ErrorCode::no_brace_for_class, 7777414, "no brace for class"},
+            ErrorInfo{ ErrorCode::no_brace_of_end_for_class, 7777415, "no brace of end for class"},
 
             // fn
+            ErrorInfo{ ErrorCode::invalid_fn_name, 7777815, "invalid fn name"},
             ErrorInfo{ ErrorCode::expect_bracket_for_fn_body, 7777816, "expect_bracket_for_fn_body"},
             ErrorInfo{ ErrorCode::expect_parenthesis_for_fn_params, 7777817, "expect '(' for fn parameters"},
             ErrorInfo{ ErrorCode::expect_end_parenthesis_for_fn_params, 7777818, "expect ')' for fn parameters"},

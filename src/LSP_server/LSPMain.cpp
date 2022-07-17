@@ -205,6 +205,16 @@ static void validateJson(const char *text, int textLength, const char * const fi
         fflush(stderr);
     }
     else {
+
+        char* treeText = DocumentUtils::getTextFromTree(document);
+
+        if (strcmp(treeText, text) != 0) {
+            // check equality
+            exit(0);
+            // EXPECT_EQ(strlen(treeText), strlen(chars));
+        }
+
+
         char moji[1024];
         sprintf(moji, u8R"(
 {

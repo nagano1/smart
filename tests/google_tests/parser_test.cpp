@@ -886,50 +886,41 @@ class AABC  {  }
     //            $let *list: string* | null = null As string* | null
     // 
     std::string text = u8R"(
-class A {
-    class B {
-        class TestCl😂日本語10234ass
-        {
-            fn func()
-            {
-                1234123
-                "jfoiwaejio"
-                null
-                2134123
+class fjawioejap
+{
+    fn funcB()
+    {
+        // comment
+        let a = 893214 // fawoiefjiawo
+        let *str = "0jfoiwjoie" // comment
+        int a = 123412
+        float f = 4503
 
-                1234123
-                "jfoiwaejio"
-                2134123
+        let f = null
+        let g = true
+        "jfoiwjeioaf"
+        /*
+            /*
 
-                let c = 0
-                let d = 893214
-                $let intA = 314
+                /*fajowefjao 
+                    /*
+                    */
+                */  /*ajowiefaiow 
+                    */
+            */
 
-                let c = 0
-                let d = 893214 // comment test
-// comment
-                // comment
-                int a = 3
-                /*
-                    /* 
+            /*
+            */
 
-/* */
-*/ /* */
-                    kcomfoawej // jfiowae
-                */ // fjwieo
-            }
-        }
+        */
+
+        let f = 3
+    }
+
+    
+
     }
 }
-class A {}
-class A {}
-class A {}
-class BDD{}
-
-
-/*
-*/
-class AABC  {  }
 )";
 
     const char *chars = text.c_str();

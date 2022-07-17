@@ -349,6 +349,10 @@ namespace smart {
             return result;
         }
 
+        if (ch != '\0') {
+            context->setError(ErrorCode::syntax_error, start);
+        }
+
         if (context->syntaxErrorInfo.hasError) {
             //throw 3;
         }
