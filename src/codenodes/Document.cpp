@@ -290,14 +290,10 @@ namespace smart {
             }
         }
 
-        if (totalCount == 0) {
-            return nullptr;
-        }
-
         // malloc and copy text
         auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
         text[totalCount] = '\0';
-        {
+        if (totalCount > 0) {
             CodeLine *line = doc->firstCodeLine;
             size_t currentOffset = 0;
             while (line) {

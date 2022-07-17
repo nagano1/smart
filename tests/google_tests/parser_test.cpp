@@ -17,6 +17,8 @@ using namespace smart;
 
 
 static void testJson(const char* codeText);
+static void testCodeEquality(const char* codeText, int length);
+
 
 TEST(ParserTest_, JsonParseTest) {
 
@@ -917,23 +919,42 @@ class fjawioejap
         let f = 3
     }
 }
+
 )";
 
-    const char *chars = text.c_str();
-    auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
-    DocumentUtils::parseText(document, chars, text.size());
-
-    char* treeText = DocumentUtils::getTextFromTree(document);
-
-    EXPECT_EQ(treeText != nullptr, true);
-    EXPECT_EQ(std::string{ treeText }, std::string{ chars });
-    EXPECT_EQ(strlen(treeText), strlen(chars));
-
-    Alloc::deleteDocument(document);
+    testCodeEquality(text.c_str(), text.length());
 }
 
 ENDTEST
 
+
+TEST(ParserTest_, SameLength_Empty) {
+    testCodeEquality("", 0);
+}
+
+ENDTEST
+
+TEST(ParserTest_, SameLength_Empty2) {
+    testCodeEquality(" \r\n ", 4);
+}
+
+ENDTEST
+
+
+
+void testCodeEquality(const char* codeText, int length) {
+    auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
+    DocumentUtils::parseText(document, codeText, length);
+
+    char* treeText = DocumentUtils::getTextFromTree(document);
+
+    EXPECT_EQ(treeText != nullptr, true);
+    EXPECT_EQ(std::string{ treeText }, std::string{ codeText });
+    EXPECT_EQ(strlen(treeText), length);
+
+    Alloc::deleteDocument(document);
+
+}
 
 
 TEST(ParserTest_, TestSeveralLines) {

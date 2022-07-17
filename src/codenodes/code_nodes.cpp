@@ -234,7 +234,7 @@ namespace smart {
         //context->scanEnd = false;
         for (int32_t i = start; i <= context->length;) {
             ch = context->chars[i];
-            //fprintf(stderr, "%c ,", ch);
+            // fprintf(stderr, "%c ,", ch);
             // fflush(stderr);
             // __android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
             //console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
@@ -367,8 +367,8 @@ namespace smart {
                                 context->codeNode->prevBlockCommentNode = commentNode;
                                 commentNode = nullptr;
                             }
-
-                        } else {
+                        }
+                        else {
                             context->codeNode->prevSpaceNode = genSpaceNode(context, parentNode,
                                                                             whitespace_startpos, i);
 
@@ -405,9 +405,9 @@ namespace smart {
 
             }
 
-            if (!root) {
+            //if (!root) {
                 break;
-            }
+            //}
 
             i++;
         }
