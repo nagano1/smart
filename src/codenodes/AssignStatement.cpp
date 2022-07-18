@@ -261,7 +261,7 @@ namespace smart {
 
         if (found_count > 0) {
             Init::assignText_SimpleTextNode(&assignStatement->letOrType, context, start,
-                                            found_count + (hasMutMark ? 1 : 0));
+                                            found_count + (hasMutMark||hasNullableMark ? 1 : 0));
 
             assignStatement->onlyAssign = false;
             assignStatement->useLet = hasLet;

@@ -251,7 +251,7 @@ namespace smart {
 
                 } // block comment /* */
                 else if ('*' == context->chars[i+1]) {
-                    //  find "*/"
+                    //  find the correspond "*/"
                     idxEnd = searchEndBlockCommentPos(i + 2, context->chars, context->length);
                 }
 
@@ -285,9 +285,7 @@ namespace smart {
                     i = idxEnd;
                     continue;
                 }
-            }
-
-            if (ParseUtil::isBreakLine(ch)) {
+            } else if (ParseUtil::isBreakLine(ch)) {
                 context->afterLineBreak = true;
                 auto *newLineBreak = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
 

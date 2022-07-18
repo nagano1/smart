@@ -890,18 +890,18 @@ class AABC  {  }
     std::string text = u8R"(
 class fjawioejap
 {
-    fn funcB()
+fn funcB()
     {
         // comment
         let a = 893214 // fawoiefjiawo
         let *str = "0jfoiwjoie" // comment
         int a = 123412
-        float f = 4503
 
-        let f = null
-        let g = true
+        $float f = 4503
+        ?let f = null
+        $let g = true
+        
         "jfoiwjeioaf"
-        /*
             /*
 
                 /*fajowefjao 
@@ -912,11 +912,19 @@ class fjawioejap
             */
 
             /*
+            comment here
             */
 
-        */
-
         let f = 3
+    }
+}
+
+/// <summary>fjoiawjefaoiwf</summary>
+class A
+{
+    fn a () {
+
+
     }
 }
 
@@ -935,7 +943,7 @@ TEST(ParserTest_, SameLength_Empty) {
 ENDTEST
 
 TEST(ParserTest_, SameLength_Empty2) {
-    testCodeEquality(" \r\n ", 4);
+    testCodeEquality(" \r\n \n\n  ", 8);
 }
 
 ENDTEST
