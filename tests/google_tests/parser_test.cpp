@@ -890,7 +890,7 @@ class AABC  {  }
     std::string text = u8R"(
 class fjawioejap
 {
-fn funcB()
+    fn funcB()
     {
         // comment
         let a = 893214 // fawoiefjiawo
@@ -898,17 +898,19 @@ fn funcB()
         int a = 123412
 
         $float f = 4503
-        ?let f = null
+        ?let *f = null
         $let g = true
         
         "jfoiwjeioaf"
             /*
-
                 /*fajowefjao 
                     /*
                     */
-                */  /*ajowiefaiow 
-                    */
+                */
+
+                 /*ajowiefaiow  
+                 joafwieコメント張りさん
+                 */
             */
 
             /*
@@ -919,15 +921,9 @@ fn funcB()
     }
 }
 
-/// <summary>fjoiawjefaoiwf</summary>
-class A
-{
-    fn a () {
+class/**/A {
 
-
-    }
 }
-
 )";
 
     testCodeEquality(text.c_str(), text.length());
@@ -1011,13 +1007,13 @@ TEST(ParserTest_, TypeTreeTest) {
 
 
     auto&& typeTree = u8R"(<lineBreak>
-<SpaceText>        <Class>class<Name> TestCl😂日本語10234ass<lineBreak>
-<SpaceText>        <Symbol>{<lineBreak>
-<SpaceText>            <fn>fn<Name> func<Symbol>(<Symbol>)<lineBreak>
-<SpaceText>            <body>{<lineBreak>
-<SpaceText>                <SimpleText>let<Name> aw<Symbol> =<number> 242<lineBreak>
-<SpaceText>            <Symbol>}<lineBreak>
-<SpaceText>        <Symbol>}<lineBreak>
+<Class>        class<Name> TestCl😂日本語10234ass<lineBreak>
+<Symbol>        {<lineBreak>
+<fn>            fn<Name> func<Symbol>(<Symbol>)<lineBreak>
+<body>            {<lineBreak>
+<SimpleText>                let<Name> aw<Symbol> =<number> 242<lineBreak>
+<Symbol>            }<lineBreak>
+<Symbol>        }<lineBreak>
 <EndOfFile>)";
 
     EXPECT_EQ(std::string{ typeTreeText }, std::string{ typeTree });
@@ -1131,14 +1127,6 @@ class A {
     EXPECT_EQ(document->firstCodeLine->firstNode->vtable, VTables::LineBreakVTable);
     EXPECT_EQ(document->firstCodeLine->nextLine->firstNode->vtable, VTables::LineBreakVTable);
 
-
-    auto* maybeSpaceNode = document->firstCodeLine->nextLine->nextLine->nextLine->firstNode;
-    EXPECT_EQ(maybeSpaceNode->vtable, VTables::SpaceVTable);
-
-    auto *spaceNode = Cast::downcast<SpaceNodeStruct *>(maybeSpaceNode);
-    EXPECT_EQ(spaceNode->textLength, 4);
-    
-    EXPECT_EQ(spaceNode->nextNodeInLine->vtable, VTables::ClassVTable);
 
     Alloc::deleteDocument(document);
 }

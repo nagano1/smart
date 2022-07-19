@@ -118,14 +118,14 @@ namespace smart {
     utf8byte *DocumentUtils::getTextFromNode(NodeBase *node) {
         int len = VTableCall::selfTextLength(node);
 
-        st_uint prev_char = node->prev_char != '\0' ? 1 : 0;
+        int prev_char = node->prev_chars;// = '\0' ? 1 : 0;
 
         auto *text = (char *) node->context->newMemArray<char>(len + 1 + prev_char);
         text[len + prev_char] = '\0';
 
         int offset = 0;
-        if (prev_char == 1) {
-            text[0] = node->prev_char;
+        for (int i = 0; i < prev_char; i++) {
+            text[i] = ' ';
             offset++;
         }
 
@@ -175,8 +175,8 @@ namespace smart {
             while (line) {
                 auto *node = line->firstNode;
                 while (node) {
-                    if (node->prev_char != '\0') {
-                        totalCount++;
+                    if (node->prev_chars > 0) {
+                        totalCount += node->prev_chars;
                     }
                     int len = VTableCall::typeTextLength(node) + VTableCall::selfTextLength(node);
                     totalCount += len;
@@ -208,9 +208,11 @@ namespace smart {
 
                     {
                         auto *chs = VTableCall::selfText(node);
-                        if (node->prev_char != '\0') {
-                            text[currentOffset] = node->prev_char;
-                            currentOffset++;
+                        if (node->prev_chars >0 ) {
+                            for (int i = 0; i < node->prev_chars; i++) {
+                                text[currentOffset] = ' ';
+                                currentOffset++;
+                            }
                         }
 
                         size_t len = VTableCall::selfTextLength(node);
@@ -278,8 +280,8 @@ namespace smart {
             while (line) {
                 auto *node = line->firstNode;
                 while (node) {
-                    if (node->prev_char != '\0') {
-                        totalCount++;
+                    if (node->prev_chars > 0) {
+                        totalCount += node->prev_chars;
                     }
                     int len = VTableCall::selfTextLength(node);
                     totalCount += len;
@@ -300,9 +302,11 @@ namespace smart {
                 auto *node = line->firstNode;
                 while (node) {
                     auto *chs = VTableCall::selfText(node);
-                    if (node->prev_char != '\0') {
-                        text[currentOffset] = node->prev_char;
-                        currentOffset++;
+                    if (node->prev_chars > 0) {
+                        for (int i = 0; i < node->prev_chars; i++ ) {
+                            text[currentOffset] = ' ';//node->prev_char;
+                            currentOffset++;
+                        }
                     }
 
                     size_t len = VTableCall::selfTextLength(node);
@@ -406,7 +410,9 @@ namespace smart {
         context->virtualCodeNode = nullptr;
 
         context->remainedLineBreakNode = nullptr;
-        context->remainedSpaceNode = nullptr;
+        context->remainedCommentNode = nullptr;
+
+        context->remaindPrevChars = 0;
         context->baseIndent = 4;
         context->parentDepth = -1;
         context->afterLineBreak = false;
@@ -429,8 +435,9 @@ namespace smart {
             }
 
             docStruct->lastRootNode = Cast::upcast(&docStruct->endOfFile);
-            docStruct->lastRootNode->prevSpaceNode = context->remainedSpaceNode;
+            docStruct->lastRootNode->prev_chars = context->remaindPrevChars;
             docStruct->lastRootNode->prevLineBreakNode = context->remainedLineBreakNode;
+            docStruct->lastRootNode->prevBlockCommentNode = context->remainedCommentNode;
 
             docStruct->firstCodeLine = context->newCodeLine();// simpleMalloc<CodeLine>();
             docStruct->firstCodeLine->init(context);

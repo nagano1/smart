@@ -178,22 +178,6 @@ namespace smart {
     }
 
 
-    static SpaceNodeStruct *genSpaceNode(ParseContext *context, void *parentNode, int start, int end) {
-
-        auto *prevSpaceNode = Alloc::newSpaceNode(context, Cast::upcast(parentNode));
-        prevSpaceNode->text =  context->memBuffer.newMem<char>(end - start + 1);
-        memcpy(prevSpaceNode->text, context->chars + start, (end - start));
-        prevSpaceNode->textLength = end - start;
-/*
-        for (int i = 0; i < end - start; i++) {
-            prevSpaceNode->text[i] = ' ';
-        }
-        prevSpaceNode->text[(end - start)] = '\0';
-*/
-
-        return prevSpaceNode;
-    }
-
     // support nest
     static int searchEndBlockCommentPos(int currentIdx, char *chars, int charLength) {
         int idxEnd = charLength;
@@ -265,14 +249,13 @@ namespace smart {
                         commentNode = Alloc::newBlockCommentNode(context, Cast::upcast(parentNode));
                     }
 
-
                     Init::assignText_SimpleTextNode(commentNode, context, i, idxEnd - i);
 
                     if (whitespace_startpos != -1 && whitespace_startpos < i) {
-                        commentNode->prevSpaceNode = genSpaceNode(context, parentNode, whitespace_startpos, i);
+                        commentNode->prev_chars = i - whitespace_startpos;
 
                         if (prevCommentNode != nullptr) {
-                            commentNode->prevSpaceNode->prevBlockCommentNode = prevCommentNode;
+                            commentNode->prevBlockCommentNode = prevCommentNode;
                         }
 
                         whitespace_startpos = -1;
@@ -298,11 +281,10 @@ namespace smart {
                 }
 
                 if (whitespace_startpos != -1 && whitespace_startpos < i) {
-                    auto *spaceNode = genSpaceNode(context, parentNode, whitespace_startpos, i);
-                    lastLineBreak->prevSpaceNode = spaceNode;
+                    lastLineBreak->prev_chars = i - whitespace_startpos;
 
                     if (commentNode != nullptr) {
-                        spaceNode->prevBlockCommentNode = commentNode;
+                        lastLineBreak->prevBlockCommentNode = commentNode;
                         commentNode = nullptr;
                     }
 
@@ -354,29 +336,17 @@ namespace smart {
                 context->prevFoundPos = result;
                 //console_log(":try:" + std::to_string(result));
 
-                // Attach a space node
-                if (whitespace_startpos != -1) {
-                    if (context->codeNode != nullptr) {
-                        if (context->chars[whitespace_startpos] == ' ' &&
-                            i - whitespace_startpos == 1) {
-                            context->codeNode->prev_char = ' ';
-
-                            if (commentNode != nullptr) {
-                                context->codeNode->prevBlockCommentNode = commentNode;
-                                commentNode = nullptr;
-                            }
-                        }
-                        else {
-                            context->codeNode->prevSpaceNode = genSpaceNode(context, parentNode,
-                                                                            whitespace_startpos, i);
-
-                            if (commentNode != nullptr) {
-                                context->codeNode->prevSpaceNode->prevBlockCommentNode = commentNode;
-                                commentNode = nullptr;
-                            }
-                        }
+                // assign spaces
+                if (context->codeNode != nullptr) {
+                    if (whitespace_startpos != -1) {
+                        context->codeNode->prev_chars = i - whitespace_startpos;
+                        whitespace_startpos = -1;
                     }
-                    whitespace_startpos = -1;
+
+                    if (commentNode != nullptr) {
+                        context->codeNode->prevBlockCommentNode = commentNode;
+                        commentNode = nullptr;
+                    }
                 }
 
                 returnResult = i = result;
@@ -413,9 +383,9 @@ namespace smart {
         if (root) {
 
             context->remainedLineBreakNode = prevLineBreak;
+            context->remainedCommentNode = commentNode;
             if (whitespace_startpos > -1 && whitespace_startpos < context->length) {
-                context->remainedSpaceNode = genSpaceNode(context, parentNode,
-                    whitespace_startpos, context->length);
+                context->remaindPrevChars = context->length - whitespace_startpos;
             }
         }
         else {

@@ -66,20 +66,7 @@ namespace smart {
 		auto* line = doc->firstCodeLine;
 		while (line) {
 			auto* node = line->firstNode;
-
-			if (node->vtable == VTables::SpaceVTable)
-			{
-				auto* space = Cast::downcast<SpaceNodeStruct*>(node);
-				line->indent = space->textLength;
-			}
-			else if (node->prev_char == ' ')
-			{
-				line->indent = 1;
-			}
-			else
-			{
-				line->indent = 0;
-			}
+			line->indent = node->prev_chars;
 
 			line = line->nextLine;
 		}
@@ -98,32 +85,16 @@ namespace smart {
 			auto& baseIndent = context->baseIndent;
 
 			// modify indent
-			SpaceNodeStruct* space;
-			if (firstElement->prevSpaceNode) {
-				if (justKeepRule) {
-					if (firstElement->prevSpaceNode->textLength >= line->depth * baseIndent) {
-						return;
-					}
-				}
-				space = firstElement->prevSpaceNode;
-			}
-			else {
+            // if (firstElement->prevSpaceNode->textLength >= line->depth * baseIndent) {
 
-				space = Alloc::newSpaceNode(context, firstElement);
-				firstElement->prev_char = '\0';
-				firstElement->prevSpaceNode = space;
-				firstElement->line->insertNode(Cast::upcast(space), nullptr);
-			}
+//				if (justKeepRule) {
+//					if (firstElement->prevSpaceNode->textLength >= line->depth * baseIndent) {
+//						return;
+//					}
+//				}
 
 			int textLen = static_cast<int>(line->depth * baseIndent);
-			line->indent = textLen;
-			space->textLength = textLen;
-			space->text = context->memBuffer.newMem<char>(textLen + 1);
-
-			for (int i = 0; i < textLen; i++) {
-				space->text[i] = ' ';
-			}
-			space->text[textLen] = '\0';
+			firstElement->prev_chars = textLen;
 		}
 	}
 

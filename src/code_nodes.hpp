@@ -42,24 +42,22 @@ namespace smart {
         _NodeBase *nextNodeInLine; \
         CodeLine *line; \
         int indentType; \
-        struct _SimpleTextNodeStruct *prevSpaceNode; \
         struct _SimpleTextNodeStruct *prevBlockCommentNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
         ParseContext *context; \
         int found; \
-        char prev_char
+        int prev_chars
 
 
     #define INIT_NODE(node, context, parent, argvtable) \
         (node)->vtable = (argvtable); \
-        (node)->prev_char = '\0'; \
+        (node)->prev_chars = 0; \
         (node)->context = (context); \
         (node)->parentNode = (NodeBase*)(parent); \
         (node)->line = nullptr; \
         (node)->found = -1; \
         (node)->nextNode = nullptr; \
         (node)->nextNodeInLine = nullptr; \
-        (node)->prevSpaceNode = nullptr; \
         (node)->prevLineBreakNode = nullptr; \
         (node)->prevBlockCommentNode = nullptr; \
         (0)
@@ -386,7 +384,8 @@ namespace smart {
 
 
         LineBreakNodeStruct *remainedLineBreakNode;
-        SpaceNodeStruct *remainedSpaceNode;
+        LineCommentNodeStruct *remainedCommentNode;
+        int remaindPrevChars{0};
 
         MemBuffer memBuffer;
 
@@ -690,8 +689,8 @@ namespace smart {
             CodeLine *currentCodeLine = this;
             currentCodeLine = VTableCall::appendToLine(((NodeBase *) node)->prevLineBreakNode,
                                                        currentCodeLine);
-            currentCodeLine = VTableCall::appendToLine(((NodeBase *) node)->prevSpaceNode,
-                                                       currentCodeLine);
+
+
             currentCodeLine = VTableCall::appendToLine(((NodeBase *) node)->prevBlockCommentNode,
                                                        currentCodeLine);
 

@@ -284,7 +284,7 @@ struct ParseUtil {
 
     static inline bool isSpaceOrLineBreak(utf8byte ch)
     {
-        return ' ' == ch || ch == '\n' || '\t' == ch;// || '\r' == ch;
+        return ' ' == ch || ch == '\n' || '\t' == ch || '/' == ch;// || '\r' == ch;
     }
 
 
