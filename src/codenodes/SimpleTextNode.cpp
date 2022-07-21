@@ -126,16 +126,6 @@ namespace smart {
         return lineComment;
     }
 
-
-    SpaceNodeStruct *Alloc::newSpaceNode(ParseContext *context, NodeBase *parentNode)
-    {
-        auto *spaceNode = context->newMemForNode<SpaceNodeStruct>();
-        auto *node = Cast::upcast(spaceNode);
-
-        INIT_NODE(node, context, parentNode, VTables::SpaceVTable);
-        return spaceNode;
-    }
-
     NullNodeStruct *Alloc::newNullNode(ParseContext *context, NodeBase *parentNode)
     {
         auto *nullNode = context->newMemForNode<NullNodeStruct>();

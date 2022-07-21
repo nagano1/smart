@@ -85,14 +85,11 @@ namespace smart {
 			auto& baseIndent = context->baseIndent;
 
 			// modify indent
-            // if (firstElement->prevSpaceNode->textLength >= line->depth * baseIndent) {
-
-//				if (justKeepRule) {
-//					if (firstElement->prevSpaceNode->textLength >= line->depth * baseIndent) {
-//						return;
-//					}
-//				}
-
+			if (justKeepRule) {
+				if (firstElement->prev_chars >= line->depth * baseIndent) {
+					return;
+				}
+			}
 			int textLen = static_cast<int>(line->depth * baseIndent);
 			firstElement->prev_chars = textLen;
 		}
@@ -160,6 +157,7 @@ namespace smart {
 		while (line) {
 			auto* firstElement = findFirstElementNode(line);
 			if (firstElement) {
+
 
 			}
 			line = line->nextLine;
