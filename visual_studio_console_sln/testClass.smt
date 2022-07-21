@@ -1,16 +1,12 @@
+class fjawioejap
+{
+    fn funcB( )
+    {
+        let a = 893214
+        let *str = "0jfoiwjoie"
+        int ab = 123412
 
-class fjawioejap/**/
-/**/{/**/
-    fn funcB(/**/)
-    {/**/
-        let a = 893214 // fawoiefjiawo
-        let *str/*
-        */=/*
-        
-        */"0jfoiwjoie" // comment
-        int ab = 123412/**/
-
-        $float f = 4503/**/
+        $float f = 4503
         ?let *f = null
         $let g = true
         
@@ -21,9 +17,10 @@ class fjawioejap/**/
                 */
             */
 
-                /*ajowiefaiow  
-                joafwieコメント張りさん
-                */
+                /**
+                 * ajowiefaiow  
+                 * ajoafwieコメント張りさん
+                 **/
         */
 
         /*
@@ -33,12 +30,17 @@ class fjawioejap/**/
     }
 }
 
-class A
+class AClass
 {
     fn ffanc()
     {
 
     }
-}
 
-/*fwaei*/
+    fn a() // ja oajiwe
+    { // afjiowe
+
+    } // afweo
+}
+// joiwafjoefwa 
+// /*fwaei*/
