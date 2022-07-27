@@ -28,9 +28,11 @@ namespace smart {
         return self->textLength;
     }
 
+
     static CodeLine *appendToLine(SimpleTextNodeStruct *self, CodeLine *currentCodeLine) {
         return currentCodeLine->addPrevLineBreakNode(self)->appendNode(self);
     }
+
 
     static constexpr const char simpleTextTypeText[] = "<SimpleText>";
 
@@ -67,18 +69,62 @@ namespace smart {
     static const node_vtable _lineCommentVTable = CREATE_VTABLE2(LineCommentNodeStruct,
                                                            selfTextLength,
                                                            self_text,
-                                                           appendToLine, "<NULL>", NodeTypeId::NULLId, 3
+                                                           appendToLine, "<Line Comment>", NodeTypeId::LineComment, 3
     );
 
     const struct node_vtable *const VTables::LineCommentVTable = &_lineCommentVTable;
 
-    static const node_vtable _blockCommentVTable = CREATE_VTABLE2(LineCommentNodeStruct,
+
+    static const node_vtable _blockCommentFragmentVTable = CREATE_VTABLE2(LineCommentNodeStruct,
                                                                  selfTextLength,
                                                                  self_text,
-                                                                 appendToLine, "<NULL>", NodeTypeId::NULLId, 4
+                                                                 appendToLine, "<Comment Fragment>", NodeTypeId::BlockCommentFragment, 4
+    );
+
+    const struct node_vtable *const VTables::BlockCommentFragmentVTable = &_blockCommentFragmentVTable;
+
+
+
+
+    static const char *self_text_blockcomment(BlockCommentNodeStruct *self) {
+        return "";
+    }
+
+    static int selfTextLength_blockcomment(BlockCommentNodeStruct *self) {
+        return 0; //self->textLength;
+    }
+
+
+    static CodeLine *appendToLineForBlockComment(BlockCommentNodeStruct *self, CodeLine *currentCodeLine)
+    {
+        currentCodeLine =  currentCodeLine->addPrevLineBreakNode(self)->appendNode(self);
+
+        auto *commentFragment = self->firstCommentFragment;
+        while (commentFragment) {
+            currentCodeLine = VTableCall::appendToLine(commentFragment, currentCodeLine);
+
+            commentFragment = Cast::downcast<BlockCommentFragmentStruct*>(commentFragment->nextNode);
+        }
+        return currentCodeLine;
+    }
+
+
+    static const node_vtable _blockCommentVTable = CREATE_VTABLE(BlockCommentNodeStruct,
+                                                                  selfTextLength_blockcomment,
+                                                                  self_text_blockcomment,
+                                                                 appendToLineForBlockComment, "<BlockComment>", NodeTypeId::BlockComment
     );
 
     const struct node_vtable *const VTables::BlockCommentVTable = &_blockCommentVTable;
+
+
+
+
+
+
+
+
+
 
 
     SimpleTextNodeStruct *Alloc::newSimpleTextNode(ParseContext *context, NodeBase *parentNode) {
@@ -104,7 +150,9 @@ namespace smart {
         textNode->text = context->memBuffer.newMem<char>(charLen + 1);
         textNode->textLength = charLen;
 
-        TEXT_MEMCPY(textNode->text, context->chars + pos, charLen);
+        if (charLen > 0) {
+            TEXT_MEMCPY(textNode->text, context->chars + pos, charLen);
+        }
         textNode->text[charLen] = '\0';
     }
 
@@ -117,13 +165,23 @@ namespace smart {
         return lineComment;
     }
 
-    LineCommentNodeStruct *Alloc::newBlockCommentNode(ParseContext *context, NodeBase *parentNode)
-    {
-        auto *lineComment = context->newMemForNode<LineCommentNodeStruct>();
-        auto *node = Cast::upcast(lineComment);
 
+    BlockCommentFragmentStruct *Alloc::newBlockCommentFragmentNode(ParseContext *context, NodeBase *parentNode)
+    {
+        auto *comment = context->newMemForNode<BlockCommentFragmentStruct>();
+        auto *node = Cast::upcast(comment);
+
+        INIT_NODE(node, context, parentNode, VTables::BlockCommentFragmentVTable);
+        return comment;
+    }
+
+    BlockCommentNodeStruct *Alloc::newBlockCommentNode(ParseContext *context, NodeBase *parentNode)
+    {
+        auto *node = context->newMem<BlockCommentNodeStruct>();
         INIT_NODE(node, context, parentNode, VTables::BlockCommentVTable);
-        return lineComment;
+
+        node->firstCommentFragment = nullptr;
+        return node;
     }
 
     NullNodeStruct *Alloc::newNullNode(ParseContext *context, NodeBase *parentNode)

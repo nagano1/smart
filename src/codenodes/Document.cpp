@@ -430,23 +430,24 @@ namespace smart {
 
         
         if (!context->syntaxErrorInfo.hasError) {
-            if (docStruct->lastRootNode) {
-                //docStruct->lastRootNode->nextNode = Cast::upcast(&docStruct->endOfFile);
-            }
+                if (docStruct->lastRootNode) {
+                    //docStruct->lastRootNode->nextNode = Cast::upcast(&docStruct->endOfFile);
+                }
 
-            docStruct->lastRootNode = Cast::upcast(&docStruct->endOfFile);
-            docStruct->lastRootNode->prev_chars = context->remaindPrevChars;
-            docStruct->lastRootNode->prevLineBreakNode = context->remainedLineBreakNode;
-            docStruct->lastRootNode->prevBlockCommentNode = context->remainedCommentNode;
+                docStruct->lastRootNode = Cast::upcast(&docStruct->endOfFile);
+                docStruct->lastRootNode->prev_chars = context->remaindPrevChars;
+                docStruct->lastRootNode->prevLineBreakNode = context->remainedLineBreakNode;
+                docStruct->lastRootNode->prevCommentNode = context->remainedCommentNode;
 
-            docStruct->firstCodeLine = context->newCodeLine();// simpleMalloc<CodeLine>();
-            docStruct->firstCodeLine->init(context);
+                docStruct->firstCodeLine = context->newCodeLine();// simpleMalloc<CodeLine>();
+                docStruct->firstCodeLine->init(context);
 
-            VTableCall::appendToLine(docStruct, docStruct->firstCodeLine);
+                VTableCall::appendToLine(docStruct, docStruct->firstCodeLine);
 
-            DocumentUtils::assignIndents(docStruct);
+                DocumentUtils::assignIndents(docStruct);
+                DocumentUtils::checkIndentSyntaxErrors(docStruct);
 
-            callAllLineEvent(docStruct, docStruct->firstCodeLine, context);
+                callAllLineEvent(docStruct, docStruct->firstCodeLine, context);
         }
 
     }

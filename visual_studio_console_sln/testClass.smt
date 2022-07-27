@@ -1,3 +1,4 @@
+// jfoawjoiefwa
 class fjawioejap
 {
     fn funcB( )
@@ -10,31 +11,35 @@ class fjawioejap
         ?let *f = null
         $let g = true
         
-        "jfoiwjeioaf"
-        /*
-            /*fajowefjao 
-                /*
-                */
-            */
-
-                /**
-                 * ajowiefaiow  
-                 * ajoafwieコメント張りさん
-                 **/
-        */
+        "abcdefg"
+        3142
+        true
+        null
+        false
 
         /*
-        comment here // ajfoiewjaoiwjfoa 
+        ofijaweifaow 
+        aiwjeofijaw
+        jioawjeifoaw
+        fawjfoeijaiwoef
+        ajoiwejfioawe
+        jofijeiowajiwa
         */
-        let f = 3
+
+        // joiwfaejfowaijoiawjjiawjefiowa 
+        // joijweoifjaw oiaoiwjfoijwaioji
+        let abc = "joifwjoe01234"
+        let f = 343214213
+
+        int a = 3124
     }
 }
 
-class AClass
+class/**/AClass/**/
 {
-    fn ffanc()
+    /**/fn ffanc()
     {
-
+        // fawifoaw
     }
 
     fn a() // ja oajiwe

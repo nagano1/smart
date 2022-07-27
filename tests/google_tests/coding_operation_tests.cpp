@@ -40,7 +40,7 @@ TEST(CodingOp, IndentSelection) {
 )");
         auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
         DocumentUtils::parseText(document, text, strlen(text));
-        EXPECT_EQ(document->context->syntaxErrorInfo.hasError, false);
+        EXPECT_EQ(document->context->syntaxErrorInfo.hasError, true);
 
         DocumentUtils::generateHashTables(document);
 
@@ -88,7 +88,7 @@ TEST(CodingOp, IndentSelection) {
 
             auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
             DocumentUtils::parseText(document, text, strlen(text));
-            EXPECT_EQ(document->context->syntaxErrorInfo.hasError, false);
+            EXPECT_EQ(document->context->syntaxErrorInfo.hasError, true);
 
             DocumentUtils::generateHashTables(document);
 

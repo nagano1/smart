@@ -140,3 +140,28 @@ class A {
 
 
 ENDTEST
+
+
+
+
+
+TEST(SyntaxErrors, IndentSyntaxError) {
+
+    // indent syntax errors
+    {
+        constexpr char text[] = u8R"(
+class A {
+    /*
+   aa
+
+    */
+
+}
+)";
+        TEST_SYNTAX_ERROR(text, sizeof(text) - 1, ErrorCode::indent_error);
+    }
+}
+
+
+ENDTEST
+

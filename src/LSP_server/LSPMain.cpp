@@ -98,36 +98,6 @@ void LSPManager::LSP_main() {
     //th.detach();
 }
 
-
-static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int *line, int *charactor) {
-    int currentLine = 0;
-    int currentCharactor = 0;
-    int lineFirstPos = 0;
-
-    for (uint32_t i = 0; i < textLength; i++) {
-
-        if (i == pos) {
-            *line = currentLine;
-            *charactor = ParseUtil::utf16_length(text + lineFirstPos, currentCharactor);
-            return true;
-        }
-        
-        currentCharactor++;
-
-        utf8byte ch = text[i];
-        //if (ParseUtil::isBreakLine(ch)) {
-        if ('\n' == ch) {
-            currentCharactor = 0;
-            currentLine++;
-            lineFirstPos = i;
-        }
-    }
-
-    
-    return false;
-}
-
-
 static void validateJson(const char *text, int textLength, const char * const filePath, int filePathLength) {
 
     auto isCode= ParseUtil::endsWith2(filePath, filePathLength, ".smt");//pls
@@ -137,28 +107,16 @@ static void validateJson(const char *text, int textLength, const char * const fi
     DocumentUtils::parseText(document, text, textLength);
 
     if (document->context->syntaxErrorInfo.hasError) {
-
-        int line = 0;
-        int charactor = 0;
-        bool ok = getLineAndPos(document->context->syntaxErrorInfo.charPosition, text, textLength, &line, &charactor);
-        if (!ok) {
-            line = 0;
-        }
-
+        int line = document->context->syntaxErrorInfo.linePos1;
+        int charactor = document->context->syntaxErrorInfo.charPos1;
 
         char error2[1024];
         error2[0] = '\0';
 
-        int pos2 = document->context->syntaxErrorInfo.charPosition2;
+        int pos2 = document->context->syntaxErrorInfo.linePos2;
         if (pos2 > -1) {
-            int line2 = 0;
-            int charactor2 = 0;
-
-            bool ok2 = getLineAndPos(pos2, text, textLength, &line2, &charactor2);
-            if (!ok2) {
-                line2 = 0;
-            }
-
+            int line2 = document->context->syntaxErrorInfo.linePos2;
+            int charactor2 = document->context->syntaxErrorInfo.charPos2;
             sprintf(error2, R"(
             ,{
                 "severity": 1

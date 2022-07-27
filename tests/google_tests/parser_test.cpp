@@ -921,7 +921,7 @@ class fjawioejap
     }
 }
 
-class/**/A {
+class/**/A/**/{
 
 }
 )";
@@ -944,6 +944,13 @@ TEST(ParserTest_, SameLength_Empty2) {
 
 ENDTEST
 
+
+TEST(ParserTest_, SameLength_blockComment) {
+    const char text[] = " /* \r\n /**/ bck\r\n\n*/";
+    testCodeEquality(text, sizeof(text) - 1);
+}
+
+ENDTEST
 
 
 void testCodeEquality(const char* codeText, int length) {
@@ -1022,6 +1029,38 @@ TEST(ParserTest_, TypeTreeTest) {
 }
 
 ENDTEST
+
+
+
+TEST(ParserTest_, DepthTest) {
+    std::string text = u8R"(
+class TestCl
+{
+    fn func()
+    {
+        let aw = 242
+    }
+}
+)";
+
+    const char* chars = text.c_str();
+    auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
+    DocumentUtils::parseText(document, chars, text.size());
+
+    auto* line = document->firstCodeLine;
+    int i = 0;
+    int depthList[] = {0,0,0,1,1,2,1,0,0};
+    while (line) {
+        EXPECT_EQ(line->depth, depthList[i]);
+        line = line->nextLine;
+        i++;
+    }
+
+    Alloc::deleteDocument(document);
+}
+
+ENDTEST
+
 
 
 /*

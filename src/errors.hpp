@@ -35,6 +35,7 @@ namespace smart {
         syntax_error,
         syntax_error2,
         should_break_line,
+        indent_error,
 
         // string
         missing_closing_quote,
@@ -129,6 +130,7 @@ namespace smart {
             ErrorInfo{ ErrorCode::syntax_error, 418030, "syntax error" },
             ErrorInfo{ ErrorCode::syntax_error2, 418031, "syntax error2" },
             ErrorInfo{ ErrorCode::should_break_line, 418032, "should have a line break2" },
+            ErrorInfo{ ErrorCode::indent_error, 418033, "indent error" },
 
             // string
             ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
@@ -230,6 +232,13 @@ namespace smart {
 
         st_uint charPosition;
         st_uint charPosition2;
+
+        st_uint linePos1;
+        st_uint charPos1;
+        st_uint linePos2;
+        st_uint charPos2;
+
+
         int errorId;
         int charEndPosition;
 

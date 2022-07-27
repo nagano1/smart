@@ -65,13 +65,63 @@ namespace smart {
 		// assign indent
 		auto* line = doc->firstCodeLine;
 		while (line) {
-			auto* node = line->firstNode;
-			line->indent = node->prev_chars;
+			//auto* node = line->firstNode;
+			//line->indent = node->prev_chars;
 
 			line = line->nextLine;
 		}
 	}
 
+
+	int getIndent(char *text, int textLen) {
+		int indent = 0;
+
+		for (int i = 0; i < textLen; i++) {
+			if (text[i] != ' ') {
+				break;
+			}
+			indent++;
+		}
+
+		return indent;
+
+	}
+
+	void DocumentUtils::checkIndentSyntaxErrors(DocumentStruct* doc)
+	{
+		doc->context->has_depth_error = false;
+
+		// assign indent
+		auto* line = doc->firstCodeLine;
+		int i = 0;
+		while (line) {
+			auto* node = line->firstNode;
+			if (node->vtable != VTables::LineBreakVTable) {
+				if (line->depth > 0) {
+
+					int nodeIndent = node->prev_chars;
+					if (node->vtable == VTables::BlockCommentFragmentVTable) {
+						auto fragment = Cast::downcast<BlockCommentFragmentStruct*>(node);
+						nodeIndent = getIndent(fragment->text, fragment->textLength);
+
+						if (nodeIndent == 0 && fragment->textLength == 0) {
+							line = line->nextLine;
+							i++;
+							continue;
+						}
+					}
+
+					if (line->depth * doc->context->baseIndent > nodeIndent) {
+						doc->context->setIndentError(ErrorCode::indent_error, i, 0, i, nodeIndent);
+						return;
+					}
+				}
+			}
+
+			line = line->nextLine;
+			i++;
+		}
+	}
 
 	/*
 	* if justKeepRule is specified,  only rightward indent fix is gonna be performed.
@@ -157,7 +207,6 @@ namespace smart {
 		while (line) {
 			auto* firstElement = findFirstElementNode(line);
 			if (firstElement) {
-
 
 			}
 			line = line->nextLine;
