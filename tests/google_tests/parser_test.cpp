@@ -909,6 +909,10 @@ class fjawioejap
                     */
                 */
 
+(32412 +
+
+    32412
+)
                  /*ajowiefaiow  
                  joafwieコメント張りさん
                  */
@@ -919,6 +923,9 @@ class fjawioejap
             */
 
         let f = 3
+
+        return
+        return 3421
     }
 }
 
@@ -1294,6 +1301,17 @@ TEST(ParserTest_, ParseUtil) {
 
         static constexpr char chars2[] = "class\n A{}";
         EXPECT_EQ(-1, ParseUtil::indexOf(chars2, sizeof(chars2)-1, 0, 'G'));
+
+    }
+
+
+
+    {
+        static constexpr char chars[] = "return    \n";
+        EXPECT_EQ(false, ParseUtil::hasCharBeforeLineBreak(chars, sizeof(chars)-1, 6));
+
+        static constexpr char chars2[] = "return    a\n";
+        EXPECT_EQ(true, ParseUtil::hasCharBeforeLineBreak(chars2, sizeof(chars2)-1, 6));
 
     }
 

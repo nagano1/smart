@@ -40,6 +40,7 @@ class fjawioejap
         let *abc = "joifwjoe01234"
         let f = 343214213
         int a = 3124
+
     }
 }
 
@@ -51,9 +52,12 @@ class AClass
         3142314
         false
         // jfoiaweoifaw
+        
         /*
 
         */
+
+        return "3214"
     }
 
     fn a()

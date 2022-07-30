@@ -280,6 +280,19 @@ struct ParseUtil {
 
         return -1;
     }
+    static bool hasCharBeforeLineBreak(const char *chars, int charsLength, int startIndex) {
+        for (int i = startIndex; i < charsLength; i++) {
+            if (chars[i] == ' ') {
+                continue;
+            } else  if (chars[i] == '\n' || chars[i] == '\0') {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 
     static inline bool isSpaceOrLineBreak(utf8byte ch)

@@ -34,9 +34,18 @@ namespace smart {
     static CodeLine *appendToLine(ReturnStatementNodeStruct*self, CodeLine *currentCodeLine) {
         currentCodeLine = VTableCall::appendToLine(&self->returnText, currentCodeLine);
 
+        auto *prevCodeLine = currentCodeLine;
+        auto formerParentDepth = self->context->parentDepth;
+
         if (self->valueNode) {
             currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+
+            if (prevCodeLine != currentCodeLine) {
+                currentCodeLine->depth = formerParentDepth + 1;
+            }
         }
+
+        self->context->parentDepth = formerParentDepth;
 
         return currentCodeLine;
     }
@@ -79,20 +88,19 @@ namespace smart {
     }
 
     // --------------------- Implements ClassNode Parser ----------------------
-    static int inner_assignStatementTokenizerMulti(TokenizerParams_parent_ch_start_context) {
+    static int inner_returnStatementTokenizerMulti(TokenizerParams_parent_ch_start_context) {
         auto *returnNode = Cast::downcast<ReturnStatementNodeStruct *>(parent);
-            int result;
-            if (-1 < (result = Tokenizers::jsonValueTokenizer(Cast::upcast(returnNode), ch,
-                                                              start, context))) {
-                returnNode->valueNode = context->codeNode;
-                context->scanEnd = true;
+        int result;
+        if (-1 < (result = Tokenizers::jsonValueTokenizer(Cast::upcast(returnNode), ch,
+                                                          start, context))) {
+            returnNode->valueNode = context->codeNode;
+            context->scanEnd = true;
 
-                return result;
-            } else {
-                //context->scanEnd = true;
-                //context->setError(ErrorCode::syntax_error, start);
-            }
-
+            return result;
+        } else {
+            //context->scanEnd = true;
+            //context->setError(ErrorCode::syntax_error, start);
+        }
 
         return -1;
     }
@@ -106,10 +114,21 @@ namespace smart {
                 auto *returnNode = Alloc::newReturnStatement(context, parent);
                 Init::assignText_SimpleTextNode(&returnNode->returnText, context, start, returnTextSize);
 
-                int currentPos = idx;
+                context->codeNode = Cast::upcast(&returnNode->returnText);
+                context->virtualCodeNode = Cast::upcast(returnNode);
+
+
+                int currentPos = idx + returnTextSize;
+
+                // return only
+                if (!ParseUtil::hasCharBeforeLineBreak(context->chars, context->length, currentPos)) {
+                    return currentPos;
+                }
+
                 int resultPos;
+                // return 3421
                 if (-1 < (resultPos = Scanner::scanMulti(returnNode,
-                                                         inner_assignStatementTokenizerMulti,
+                                                         inner_returnStatementTokenizerMulti,
                                                          currentPos, context))) {
                     context->codeNode = Cast::upcast(&returnNode->returnText);
                     context->virtualCodeNode = Cast::upcast(returnNode);
