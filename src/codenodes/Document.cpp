@@ -118,20 +118,17 @@ namespace smart {
     utf8byte *DocumentUtils::getTextFromNode(NodeBase *node) {
         int len = VTableCall::selfTextLength(node);
 
-        int prev_char = node->prev_chars;// = '\0' ? 1 : 0;
-
+        int prev_char = node->prev_chars; // = '\0' ? 1 : 0;
         auto *text = (char *) node->context->newMemArray<char>(len + 1 + prev_char);
         text[len + prev_char] = '\0';
 
-        int offset = 0;
         for (int i = 0; i < prev_char; i++) {
             text[i] = ' ';
-            offset++;
         }
 
         if (len > 0) {
             auto *chs = VTableCall::selfText(node);
-            memcpy(text + offset, chs, len);
+            memcpy(text + prev_char, chs, len);
         }
 
         return text;
