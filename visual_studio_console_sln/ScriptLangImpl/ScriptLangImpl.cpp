@@ -64,17 +64,16 @@ fn doWhateverYouWant() {
     DocumentUtils::generateHashTables(document);
 
     char* treeText = DocumentUtils::getTextFromTree(document);
-    printf("%s\n", treeText);
+    //printf("%s\n", treeText);
 
 
     auto* rootNode = document->firstRootNode;
     while (rootNode != nullptr) {
-        
-        printf("%s\n", rootNode->vtable->typeChars);
+
+        // printf("%s\n", rootNode->vtable->typeChars);
         
         if (rootNode->vtable == VTables::ClassVTable) {
             // class
-
         }
         else if (rootNode->vtable == VTables::FnVTable) {
             // fn

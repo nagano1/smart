@@ -82,10 +82,18 @@ namespace smart {
 			}
 			indent++;
 		}
-
 		return indent;
-
 	}
+
+	bool allSpace(char *text, int textLen) {
+		for (int i = 0; i < textLen; i++) {
+			if (text[i] != ' ') {
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 	void DocumentUtils::checkIndentSyntaxErrors(DocumentStruct* doc)
 	{
@@ -96,26 +104,23 @@ namespace smart {
 		int i = 0;
 		while (line) {
 			auto* node = line->firstNode;
-			if (node->vtable != VTables::LineBreakVTable) {
-				if (line->depth > 0) {
+			if (line->depth > 0 && node->vtable != VTables::LineBreakVTable) {
+				int nodeIndent = node->prev_chars;
+				bool ok = false;
+				if (node->vtable == VTables::BlockCommentFragmentVTable) {
+					auto fragment = Cast::downcast<BlockCommentFragmentStruct*>(node);
+					nodeIndent = getIndent(fragment->text, fragment->textLength);
 
-					int nodeIndent = node->prev_chars;
-					if (node->vtable == VTables::BlockCommentFragmentVTable) {
-						auto fragment = Cast::downcast<BlockCommentFragmentStruct*>(node);
-						nodeIndent = getIndent(fragment->text, fragment->textLength);
-
-						if (nodeIndent == 0 && fragment->textLength == 0) {
-							line = line->nextLine;
-							i++;
-							continue;
-						}
-					}
-
-					if (line->depth * doc->context->baseIndent > nodeIndent) {
-						doc->context->setIndentError(ErrorCode::indent_error, i, 0, i, nodeIndent);
-						return;
+					if (allSpace(fragment->text, fragment->textLength)) {
+						ok = true;
 					}
 				}
+
+				if (!ok && line->depth * doc->context->baseIndent > nodeIndent) {
+					doc->context->setIndentError(ErrorCode::indent_error, i, line->depth * doc->context->baseIndent);
+					return;
+				}
+
 			}
 
 			line = line->nextLine;

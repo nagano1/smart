@@ -184,6 +184,7 @@
     <ClCompile Include="..\..\src\codenodes\LineBreak.cpp" />
     <ClCompile Include="..\..\src\codenodes\NameNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\NumberNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\ReturnStatement.cpp" />
     <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />

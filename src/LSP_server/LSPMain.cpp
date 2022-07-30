@@ -117,6 +117,7 @@ static void validateJson(const char *text, int textLength, const char * const fi
         if (pos2 > -1) {
             int line2 = document->context->syntaxErrorInfo.linePos2;
             int charactor2 = document->context->syntaxErrorInfo.charPos2;
+
             sprintf(error2, R"(
             ,{
                 "severity": 1
@@ -132,6 +133,17 @@ static void validateJson(const char *text, int textLength, const char * const fi
             //error2[len2] = '\0';
         }
 
+
+
+        int char1 = charactor;
+        int char2 = 0;
+        int line1 = line;
+        int line2 = line + 1;
+        if (document->context->syntaxErrorInfo.errorCode == ErrorCode::indent_error) {
+            line2 = line;
+            char2 = char1;
+            char1 = 0;
+        }
 
         char moji[1024];
         int len = sprintf(moji, R"(
@@ -152,7 +164,7 @@ static void validateJson(const char *text, int textLength, const char * const fi
             }%s
         ]
     }
-})", filePath ,charactor, line, 0, line+1, document->context->syntaxErrorInfo.reason, error2);
+})", filePath ,char1, line1, char2, line2, document->context->syntaxErrorInfo.reason, error2);
 
 
         std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(len) + "\r\n\r\n" + std::string{ moji };

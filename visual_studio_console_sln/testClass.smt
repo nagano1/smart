@@ -1,11 +1,13 @@
-// jfoawjoiefwa
 class fjawioejap
 {
-    fn funcB( )
+    fn funcB()
     {
         let a = 893214
         let *str = "0jfoiwjoie"
         int ab = 123412
+        "fjoiiw" // u889u98u
+
+
 
         $float f = 4503
         ?let *f = null
@@ -17,35 +19,53 @@ class fjawioejap
         null
         false
 
+        "jfiowjaoie"
+        123490
+        false
+        null
+        true
+
+        
         /*
         ofijaweifaow 
-        aiwjeofijaw
+        aiwjeofijaw jpawijfw4213
         jioawjeifoaw
-        fawjfoeijaiwoef
-        ajoiwejfioawe
+        jfaiwejfiwoajoijw
         jofijeiowajiwa
         */
 
-        // joiwfaejfowaijoiawjjiawjefiowa 
+        // joiwfaejfo
         // joijweoifjaw oiaoiwjfoijwaioji
-        let abc = "joifwjoe01234"
-        let f = 343214213
 
+        let *abc = "joifwjoe01234"
+        let f = 343214213
         int a = 3124
     }
 }
 
-class/**/AClass/**/
+class AClass
 {
-    /**/fn ffanc()
+    // awef
+    fn ffanc()
     {
-        // fawifoaw
+        3142314
+        false
+        // jfoiaweoifaw
+        /*
+
+        */
     }
 
-    fn a() // ja oajiwe
-    { // afjiowe
+    fn a()
+    {
+        // afjiowe
+
+
+
+
+
 
     } // afweo
-}
-// joiwafjoefwa 
-// /*fwaei*/
+} // joiwafjoefwa 
+//
+/* fwaei */

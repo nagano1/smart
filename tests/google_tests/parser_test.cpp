@@ -869,6 +869,7 @@ class A {
 
                 false
                 "jofiwjio"
+                return  1234
             }
         }
     }

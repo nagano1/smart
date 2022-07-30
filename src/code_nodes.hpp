@@ -174,6 +174,15 @@ namespace smart {
         NodeBase *valueNode; // 32
     };
 
+    using ReturnStatementNodeStruct = struct {
+        NODE_HEADER;
+
+        // return "jfoiewjaoiejw"
+
+        SimpleTextNodeStruct returnText; // $let, int, ?string, etc..
+        NodeBase *valueNode; // 32
+    };
+
     using ClassNodeStruct = struct {
         NODE_HEADER;
 
@@ -439,6 +448,10 @@ namespace smart {
                 startPos--;
             }
 
+            getLineAndPos(startPos, this->chars, this->length,
+                          reinterpret_cast<int *>(&a),
+                          reinterpret_cast<int *>(&b));
+
             errorInfo.charPosition = startPos;
 
 
@@ -475,12 +488,12 @@ namespace smart {
         }
 
 
-        void setIndentError(ErrorCode errorCode, st_int line1, st_int charPos1, st_int line2, st_int charPos2) {
+        void setIndentError(ErrorCode errorCode, st_int line1, st_int charPos1) {
             auto &errorInfo = this->syntaxErrorInfo;
             if (errorInfo.hasError) {
                 return;
             }
-            this->setError3(errorCode, line1, charPos1, line2, charPos2);
+            this->setError3(errorCode, line1, charPos1, -1, -1);
         }
 
         void setError3(ErrorCode errorCode, st_int line1, st_int charPos1, st_int line2, st_int charPos2) {
@@ -582,6 +595,7 @@ namespace smart {
         Type = 18,
         Body = 19,
         AssignStatement = 20,
+        ReturnStatement = 24,
 
         LineComment = 21,
         BlockComment = 22,
@@ -645,6 +659,7 @@ namespace smart {
                 *const DocumentVTable,
 
                 *const AssignStatementVTable,
+                *const ReturnStatementVTable,
 
                 *const ClassVTable,
 
@@ -865,6 +880,10 @@ namespace smart {
                                        AssignStatementNodeStruct *assignStatement
         );
 
+        static void initReturnStatement(ParseContext *context, NodeBase *parentNode,
+                                        ReturnStatementNodeStruct *returnStatement
+        );
+
     };
 
 
@@ -888,7 +907,10 @@ namespace smart {
 
 
         static ClassNodeStruct *newClassNode(ParseContext *context, NodeBase *parentNode);
+
+        // statement
         static AssignStatementNodeStruct *newAssignStatement(ParseContext *context, NodeBase *parentNode);
+        static ReturnStatementNodeStruct *newReturnStatement(ParseContext *context, NodeBase *parentNode);
 
         static FuncNodeStruct *newFuncNode(ParseContext *context, NodeBase *parentNode);
 
@@ -939,6 +961,7 @@ namespace smart {
 
         static int assignStatementTokenizer(TokenizerParams_parent_ch_start_context);
         static int assignStatementWithoutLetTokenizer(TokenizerParams_parent_ch_start_context);
+        static int returnStatementTokenizer(TokenizerParams_parent_ch_start_context);
 
         // SimpleTextNodeStruct
         template<typename TYPE, std::size_t SIZE>

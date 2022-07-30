@@ -77,5 +77,8 @@
     <ClCompile Include="..\..\src\codenodes\AssignStatement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\codenodes\ReturnStatement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

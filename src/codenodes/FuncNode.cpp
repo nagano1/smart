@@ -134,6 +134,11 @@ namespace smart {
                     appendChildNode(body, context->virtualCodeNode);
                     return nextPos;
                 }
+                else if (-1 <
+                         (nextPos = Tokenizers::returnStatementTokenizer(parent, ch, start, context))) {
+                    appendChildNode(body, context->virtualCodeNode);
+                    return nextPos;
+                }
                 else {
                     // value as a statement
                     int result;
