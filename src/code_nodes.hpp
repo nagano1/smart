@@ -527,7 +527,7 @@ namespace smart {
             int currentCharactor = 0;
             int lineFirstPos = 0;
 
-            for (uint32_t i = 0; i < textLength; i++) {
+            for (int32_t i = 0; i < textLength; i++) {
 
                 if (i == pos) {
                     *line = currentLine;
