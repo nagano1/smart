@@ -119,14 +119,13 @@ namespace smart {
 
 
                 int currentPos = idx + returnTextSize;
-
                 // return only
-                if (not ParseUtil::hasCharBeforeLineBreak(context->chars, context->length, currentPos)) {
+                if (!ParseUtil::hasCharBeforeLineBreak(context->chars, context->length, currentPos)) {
                     return currentPos;
                 }
 
-                int resultPos;
                 // return 3421
+                int resultPos;
                 if (-1 < (resultPos = Scanner::scanMulti(returnNode,
                                                          inner_returnStatementTokenizerMulti,
                                                          currentPos, context))) {
