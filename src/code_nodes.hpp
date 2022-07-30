@@ -522,7 +522,7 @@ namespace smart {
             errorInfo.reason[errorInfo.reasonLength] = '\0';
         }
 
-        static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int *line, int *charactor) {
+        static bool getLineAndPos(int pos, const utf8byte *text, int textLength, int *line, int *charactor) {
             int currentLine = 0;
             int currentCharactor = 0;
             int lineFirstPos = 0;
