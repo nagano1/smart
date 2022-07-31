@@ -42,7 +42,7 @@ namespace smart {
         _NodeBase *nextNodeInLine; \
         CodeLine *line; \
         int indentType; \
-        struct _SimpleTextNodeStruct *prevBlockCommentNode; \
+        void *prevCommentNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
         ParseContext *context; \
         int found; \
@@ -59,7 +59,7 @@ namespace smart {
         (node)->nextNode = nullptr; \
         (node)->nextNodeInLine = nullptr; \
         (node)->prevLineBreakNode = nullptr; \
-        (node)->prevBlockCommentNode = nullptr; \
+        (node)->prevCommentNode = nullptr; \
         (0)
 
     #define TEXT_MEMCPY(dst, src, len) \
@@ -80,6 +80,7 @@ namespace smart {
     using SpaceNodeStruct = SimpleTextNodeStruct;
     using NullNodeStruct = SimpleTextNodeStruct;
     using LineCommentNodeStruct = SimpleTextNodeStruct;
+    using BlockCommentFragmentStruct = SimpleTextNodeStruct;
 
     using LineBreakNodeStruct = struct _LineBreakNodeStruct {
         NODE_HEADER;
@@ -87,6 +88,13 @@ namespace smart {
         utf8byte text[3]; // "\r\n" or "\n" or "\r" plus "\0"
         _LineBreakNodeStruct *nextLineBreakNode;
     };
+
+    using BlockCommentNodeStruct = struct {
+        NODE_HEADER;
+
+        BlockCommentFragmentStruct *firstCommentFragment;
+    };
+
 
     using EndOfFileNodeStruct = struct {
         NODE_HEADER;
@@ -384,7 +392,7 @@ namespace smart {
 
 
         LineBreakNodeStruct *remainedLineBreakNode;
-        LineCommentNodeStruct *remainedCommentNode;
+        void *remainedCommentNode;
         int remaindPrevChars{0};
 
         MemBuffer memBuffer;
@@ -420,7 +428,21 @@ namespace smart {
         }
 
         void setError(ErrorCode errorCode, st_int startPos) {
-            this->setError2(errorCode, startPos, -1);
+
+            auto &errorInfo = this->syntaxErrorInfo;
+            if (errorInfo.hasError) {
+                return;
+            }
+
+            int a = 0, b = 0;
+            if (this->length == startPos) {
+                startPos--;
+            }
+
+            errorInfo.charPosition = startPos;
+
+
+            this->setError3(errorCode, a, b, -1, -1);
         }
 
         void setError2(ErrorCode errorCode, st_int startPos, st_int startPos2) {
@@ -436,10 +458,45 @@ namespace smart {
                 startPos2--;
             }
 
-            errorInfo.hasError = true;
-            errorInfo.errorCode = errorCode;
+            int a, b, c, d;
+            getLineAndPos(startPos, this->chars, this->length,
+                          reinterpret_cast<int *>(&a),
+                          reinterpret_cast<int *>(&b));
+
+            getLineAndPos(startPos2, this->chars, this->length,
+                          reinterpret_cast<int *>(&c),
+                          reinterpret_cast<int *>(&d));
+
+
             errorInfo.charPosition = startPos;
             errorInfo.charPosition2 = startPos2;
+
+            this->setError3(errorCode, a, b, c, d);
+        }
+
+
+        void setIndentError(ErrorCode errorCode, st_int line1, st_int charPos1, st_int line2, st_int charPos2) {
+            auto &errorInfo = this->syntaxErrorInfo;
+            if (errorInfo.hasError) {
+                return;
+            }
+            this->setError3(errorCode, line1, charPos1, line2, charPos2);
+        }
+
+        void setError3(ErrorCode errorCode, st_int line1, st_int charPos1, st_int line2, st_int charPos2) {
+            auto &errorInfo = this->syntaxErrorInfo;
+            if (errorInfo.hasError) {
+                return;
+            }
+
+            errorInfo.linePos1 = line1;
+            errorInfo.linePos2 = line2;
+            errorInfo.charPos1 = charPos1;
+            errorInfo.charPos2 = charPos2;
+
+
+            errorInfo.hasError = true;
+            errorInfo.errorCode = errorCode;
 
             errorInfo.errorId = getErrorId(errorCode);
             const char* reason = getErrorMessage(errorCode);
@@ -451,6 +508,35 @@ namespace smart {
             memcpy(errorInfo.reason, reason, errorInfo.reasonLength);
             errorInfo.reason[errorInfo.reasonLength] = '\0';
         }
+
+        static bool getLineAndPos(int pos, const utf8byte *text, size_t textLength, int *line, int *charactor) {
+            int currentLine = 0;
+            int currentCharactor = 0;
+            int lineFirstPos = 0;
+
+            for (uint32_t i = 0; i < textLength; i++) {
+
+                if (i == pos) {
+                    *line = currentLine;
+                    *charactor = ParseUtil::utf16_length(text + lineFirstPos, currentCharactor);
+                    return true;
+                }
+
+                currentCharactor++;
+
+                utf8byte ch = text[i];
+                //if (ParseUtil::isBreakLine(ch)) {
+                if ('\n' == ch) {
+                    currentCharactor = 0;
+                    currentLine++;
+                    lineFirstPos = i;
+                }
+            }
+
+
+            return false;
+        }
+
     };
 
 
