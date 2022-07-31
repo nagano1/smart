@@ -168,7 +168,7 @@ namespace smart {
             auto &&errorInfo = tempList[i];
             if (static_cast<int>(errorInfo.errorIndex) != i) {
                 // printf("error info index\n");
-                exit(0);
+                exit(8943210);
             }
 
             ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
