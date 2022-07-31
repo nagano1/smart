@@ -909,10 +909,7 @@ class fjawioejap
                     */
                 */
 
-(32412 +
 
-    32412
-)
                  /*ajowiefaiow  
                  joafwieコメント張りさん
                  */
@@ -1310,7 +1307,7 @@ TEST(ParserTest_, ParseUtil) {
         static constexpr char chars[] = "return    \n";
         EXPECT_EQ(false, ParseUtil::hasCharBeforeLineBreak(chars, sizeof(chars)-1, 6));
 
-        static constexpr char chars2[] = "return    a\n";
+        static constexpr char chars2[] = "return    a\r\n";
         EXPECT_EQ(true, ParseUtil::hasCharBeforeLineBreak(chars2, sizeof(chars2)-1, 6));
 
     }

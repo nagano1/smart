@@ -53,6 +53,9 @@ namespace smart {
         expect_parenthesis_for_fn_params,
         expect_end_parenthesis_for_fn_params,
 
+        // return
+        no_value_for_return,
+
         last_keeper
     };
 
@@ -148,6 +151,9 @@ namespace smart {
             ErrorInfo{ ErrorCode::expect_bracket_for_fn_body, 7777816, "expect_bracket_for_fn_body"},
             ErrorInfo{ ErrorCode::expect_parenthesis_for_fn_params, 7777817, "expect '(' for fn parameters"},
             ErrorInfo{ ErrorCode::expect_end_parenthesis_for_fn_params, 7777818, "expect ')' for fn parameters"},
+
+            // return
+            ErrorInfo{ ErrorCode::no_value_for_return, 7778818, "no_value_for_return"},
 
             ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
         };

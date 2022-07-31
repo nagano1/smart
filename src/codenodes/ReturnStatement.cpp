@@ -54,7 +54,7 @@ namespace smart {
     static constexpr const char assignTypeText[] = "<ReturnStatement>";
 
     /*
-     * return "jfoaw"
+     * return statement
      */
     static const node_vtable _returnVTable = CREATE_VTABLE(ReturnStatementNodeStruct,
                                                           selfTextLength,
@@ -87,8 +87,13 @@ namespace smart {
         Init::initSimpleTextNode(&returnStatement->returnText, context, returnStatement, returnTextSize);
     }
 
-    // --------------------- Implements ClassNode Parser ----------------------
+    // --------------------- Implements Return Sttement Parser ----------------------
     static int inner_returnStatementTokenizerMulti(TokenizerParams_parent_ch_start_context) {
+
+        if (context->afterLineBreak) {
+            return -1;
+        }
+
         auto *returnNode = Cast::downcast<ReturnStatementNodeStruct *>(parent);
         int result;
         if (-1 < (result = Tokenizers::jsonValueTokenizer(Cast::upcast(returnNode), ch,
@@ -114,24 +119,20 @@ namespace smart {
                 auto *returnNode = Alloc::newReturnStatement(context, parent);
                 Init::assignText_SimpleTextNode(&returnNode->returnText, context, start, returnTextSize);
 
-                context->codeNode = Cast::upcast(&returnNode->returnText);
-                context->virtualCodeNode = Cast::upcast(returnNode);
-
 
                 int currentPos = idx + returnTextSize;
-                // return only
-                if (!ParseUtil::hasCharBeforeLineBreak(context->chars, context->length, currentPos)) {
-                    return currentPos;
-                }
-
-                // return 3421
                 int resultPos;
                 if (-1 < (resultPos = Scanner::scanMulti(returnNode,
                                                          inner_returnStatementTokenizerMulti,
                                                          currentPos, context))) {
+
                     context->codeNode = Cast::upcast(&returnNode->returnText);
                     context->virtualCodeNode = Cast::upcast(returnNode);
                     return resultPos;
+                } else {
+                    context->codeNode = Cast::upcast(&returnNode->returnText);
+                    context->virtualCodeNode = Cast::upcast(returnNode);
+                    return currentPos;
                 }
             }
         }
