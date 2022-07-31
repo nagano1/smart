@@ -174,14 +174,14 @@ namespace smart {
         NodeBase *valueNode; // 32
     };
 
-    using ReturnStatementNodeStruct = struct {
+    using KeywordAndValueStruct = struct {
         NODE_HEADER;
 
-        // return "jfoiewjaoiejw"
-
-        SimpleTextNodeStruct returnText; // $let, int, ?string, etc..
+        SimpleTextNodeStruct returnText;
         NodeBase *valueNode; // 32
     };
+
+    using ReturnStatementNodeStruct = KeywordAndValueStruct; // return 32
 
     using ClassNodeStruct = struct {
         NODE_HEADER;
