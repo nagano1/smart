@@ -36,11 +36,11 @@ namespace smart {
 
     static constexpr const char simpleTextTypeText[] = "<SimpleText>";
 
-    static const struct node_vtable simpleTextVTABLE = CREATE_VTABLE2(SimpleTextNodeStruct,
+    static const struct node_vtable simpleTextVTABLE = CREATE_VTABLE(SimpleTextNodeStruct,
                                                                 selfTextLength,
                                                                 self_text,
                                                                 appendToLine, simpleTextTypeText
-                                                                  , NodeTypeId::SimpleText, 0);
+                                                                  , NodeTypeId::SimpleText);
     const struct node_vtable *const VTables::SimpleTextVTable = &simpleTextVTABLE;
 
 
@@ -49,37 +49,37 @@ namespace smart {
 
     static constexpr const char spaceTextTypeText[] = "<SpaceText>";
 
-    static const node_vtable _spaceVTable = CREATE_VTABLE2(SpaceNodeStruct,
+    static const node_vtable _spaceVTable = CREATE_VTABLE(SpaceNodeStruct,
                                                             selfTextLength,
                                                             self_text,
-                                                            appendToLine, spaceTextTypeText, NodeTypeId::Space, 1
+                                                            appendToLine, spaceTextTypeText, NodeTypeId::Space
     );
     const struct node_vtable *const VTables::SpaceVTable = &_spaceVTable;
 
 
-    static const node_vtable _nullVTable = CREATE_VTABLE2(NullNodeStruct,
+    static const node_vtable _nullVTable = CREATE_VTABLE(NullNodeStruct,
                                                            selfTextLength,
                                                            self_text,
-                                                           appendToLine, "<NULL>", NodeTypeId::NULLId, 2
+                                                           appendToLine, "<NULL>", NodeTypeId::NULLId
     );
 
     const struct node_vtable *const VTables::NullVTable = &_nullVTable;
 
 
-    static const node_vtable _lineCommentVTable = CREATE_VTABLE2(LineCommentNodeStruct,
+    static const node_vtable _lineCommentVTable = CREATE_VTABLE(LineCommentNodeStruct,
                                                            selfTextLength,
                                                            self_text,
-                                                           appendToLine, "<Line Comment>", NodeTypeId::LineComment, 3
+                                                           appendToLine, "<Line Comment>", NodeTypeId::LineComment
     );
 
     const struct node_vtable *const VTables::LineCommentVTable = &_lineCommentVTable;
 
 
-    static const node_vtable _blockCommentFragmentVTable = CREATE_VTABLE2(LineCommentNodeStruct,
+    static const node_vtable _blockCommentFragmentVTable = CREATE_VTABLE(BlockCommentFragmentStruct,
                                                                  selfTextLength,
                                                                  self_text,
-                                                                 appendToLine, "<Comment Fragment>", NodeTypeId::BlockCommentFragment, 4
-    );
+                                                                 appendToLine, "<Comment Fragment>",
+                                                                NodeTypeId::BlockCommentFragment);
 
     const struct node_vtable *const VTables::BlockCommentFragmentVTable = &_blockCommentFragmentVTable;
 

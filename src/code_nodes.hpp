@@ -178,7 +178,7 @@ namespace smart {
         NODE_HEADER;
 
         SimpleTextNodeStruct returnText;
-        NodeBase *valueNode; // 32
+        NodeBase *valueNode;
     };
 
     using ReturnStatementNodeStruct = KeywordAndValueStruct; // return 32
@@ -640,9 +640,6 @@ namespace smart {
         return 0;
     }
     #define CREATE_VTABLE(T, f1, f2, f3, f4, f5) \
-        CREATE_VTABLE2(T, f1, f2, f3, f4, f5, 0)
-
-    #define CREATE_VTABLE2(T, f1, f2, f3, f4, f5, f6) \
         node_vtable { \
             reinterpret_cast<selfTextLengthFunction> (f1) \
             , reinterpret_cast<selfTextFunction> (f2) \
@@ -651,7 +648,7 @@ namespace smart {
             , (sizeof(f4)-1) \
             , f5 \
         } \
-        ;static const int check_result_##T##f6 = vtable_type_check<T>(f1,f2,f3,f4, f5)
+        ;static const int check_result_##T = vtable_type_check<T>(f1,f2,f3,f4,f5)
     // static_assert(std::is_same<F2, decltype(std::declval<vtableT<T>>().selfText)>::value, "");
 
     struct VTables {

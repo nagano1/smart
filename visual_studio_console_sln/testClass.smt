@@ -57,10 +57,9 @@ class AClass
 
         */
         return/*true*/3241//面白すぎ
-        return std:fnc(true)
+        return/**/
         false//tugi ga saigono kyokudesu
         return 1
-            + 2
     }
 
     fn a()

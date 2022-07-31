@@ -50,7 +50,6 @@ namespace smart {
         return currentCodeLine;
     }
 
-
     static constexpr const char assignTypeText[] = "<ReturnStatement>";
 
     /*
@@ -104,7 +103,7 @@ namespace smart {
             return result;
         } else {
             //context->scanEnd = true;
-            //context->setError(ErrorCode::syntax_error, start);
+            context->setError(ErrorCode::no_value_for_return, start);
         }
 
         return -1;
