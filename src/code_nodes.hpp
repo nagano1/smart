@@ -110,6 +110,8 @@ namespace smart {
         int_fast32_t nameLength;
     };
 
+    using VariableNodeStruct = NameNodeStruct;
+
     using TypeNodeStruct = struct _TypeNodeStruct {
         NODE_HEADER;
 
@@ -601,6 +603,8 @@ namespace smart {
         BlockComment = 22,
         BlockCommentFragment = 23,
 
+        Variable = 25,
+
     };
 
     #define VTABLE_DEF(T) \
@@ -663,6 +667,7 @@ namespace smart {
                 *const FnVTable,
 
                 *const NameVTable,
+                *const VariableVTable,
                 *const BodyVTable,
                 *const TypeVTable,
                 *const StringLiteralVTable,

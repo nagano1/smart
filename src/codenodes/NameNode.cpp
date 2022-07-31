@@ -70,6 +70,16 @@ namespace smart {
     const node_vtable *const VTables::NameVTable = &_nameVTable;
 
 
+
+    static constexpr const char variableTypeText[] = "<Variable>";
+
+    static const node_vtable _variableVTable = CREATE_VTABLE(VariableNodeStruct, selfTextLength,
+                                                         self_text,
+                                                         appendToLine, variableTypeText,
+                                                         NodeTypeId::Variable);
+    const node_vtable *const VTables::VariableVTable = &_variableVTable;
+
+
     void Init::initNameNode(NameNodeStruct *name, ParseContext *context, void *parentNode) {
         INIT_NODE(name, context, parentNode, VTables::NameVTable);
         name->name = nullptr;

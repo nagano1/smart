@@ -54,10 +54,9 @@ class AClass
         // jfoiaweoifaw
         
         /*
-
         */
         return/*true*/3241//面白すぎ
-        return/**/
+        return/**/21241
         false//tugi ga saigono kyokudesu
         return 1
     }
