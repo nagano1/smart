@@ -355,7 +355,7 @@ namespace smart {
 
         if (jsonObject->parsePhase == phase::VALUE) {
             int result;
-            if (-1 < (result = Tokenizers::jsonValueTokenizer(Cast::upcast(currentKeyValueItem), ch,
+            if (-1 < (result = Tokenizers::jsonValueTokenizer2(Cast::upcast(currentKeyValueItem), ch,
                                                               start, context))) {
                 currentKeyValueItem->valueNode = context->codeNode;
                 jsonObject->parsePhase = phase::EXPECT_COMMA;
@@ -388,7 +388,7 @@ namespace smart {
 
 
 
-    int Tokenizers::jsonValueTokenizer(TokenizerParams_parent_ch_start_context) {
+    int Tokenizers::jsonValueTokenizer2(TokenizerParams_parent_ch_start_context) {
 
         int result = Tokenizers::numberTokenizer(TokenizerParams_pass);
         if (result > -1) {

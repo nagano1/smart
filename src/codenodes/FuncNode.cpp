@@ -142,7 +142,7 @@ namespace smart {
                 else {
                     // value as a statement
                     int result;
-                    if (-1 < (result = Tokenizers::jsonValueTokenizer(TokenizerParams_pass))) {
+                    if (-1 < (result = Tokenizers::valueTokenizer(TokenizerParams_pass))) {
                         appendChildNode(body, context->codeNode);
                         return result;
                     }

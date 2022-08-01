@@ -95,7 +95,7 @@ namespace smart {
 
         auto *returnNode = Cast::downcast<ReturnStatementNodeStruct *>(parent);
         int result;
-        if (-1 < (result = Tokenizers::jsonValueTokenizer(Cast::upcast(returnNode), ch,
+        if (-1 < (result = Tokenizers::valueTokenizer(Cast::upcast(returnNode), ch,
                                                           start, context))) {
             returnNode->valueNode = context->codeNode;
             context->scanEnd = true;

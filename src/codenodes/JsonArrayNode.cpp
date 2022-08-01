@@ -189,7 +189,7 @@ namespace smart {
     static inline int parseNextValue(TokenizerParams_parent_ch_start_context, JsonArrayStruct* jsonArray)
     {
         int result;
-        if (-1 < (result = Tokenizers::jsonValueTokenizer(TokenizerParams_pass))) {
+        if (-1 < (result = Tokenizers::jsonValueTokenizer2(TokenizerParams_pass))) {
             auto *nextItem = Alloc::newJsonArrayItem(context, parent);
 
             nextItem->valueNode = context->codeNode;

@@ -146,7 +146,7 @@ namespace smart {
             }
         } else {
             int result;
-            if (-1 < (result = Tokenizers::jsonValueTokenizer(Cast::upcast(assignment), ch,
+            if (-1 < (result = Tokenizers::valueTokenizer(Cast::upcast(assignment), ch,
                                                               start, context))) {
                 assignment->valueNode = context->codeNode;
                 context->scanEnd = true;

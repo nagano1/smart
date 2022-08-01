@@ -61,6 +61,21 @@ namespace smart {
         return -1;
     }
 
+
+    VariableNodeStruct *Alloc::newVariableNode(ParseContext *context, NodeBase *parentNode) {
+        auto *node = context->newMem<VariableNodeStruct>();
+        INIT_NODE(node, context, parentNode, VTables::VariableVTable);
+
+        //Init::initNameNode(reinterpret_cast<NameNodeStruct *>(&node), context, parentNode);
+
+        return node;
+    }
+
+    int Tokenizers::variableTokenizer(TokenizerParams_parent_ch_start_context) {
+        auto *variableNode = Alloc::newVariableNode(context, parent);
+        return Tokenizers::nameTokenizer(reinterpret_cast<NodeBase *>(variableNode), ch, start, context);
+    }
+
     static constexpr const char nameTypeText[] = "<Name>";
 
     static const node_vtable _nameVTable = CREATE_VTABLE(NameNodeStruct, selfTextLength,

@@ -445,4 +445,39 @@ namespace smart {
         //context->former_start = start;
         return returnResult;
     }
+
+
+    int Tokenizers::valueTokenizer(TokenizerParams_parent_ch_start_context) {
+        int result = Tokenizers::numberTokenizer(TokenizerParams_pass);
+        if (result > -1) {
+            return result;
+        }
+
+        if (-1 < (result = Tokenizers::boolTokenizer(TokenizerParams_pass))) {
+            return result;
+        }
+
+        if (-1 < (result = Tokenizers::variableTokenizer(TokenizerParams_pass))) {
+            return result;
+        }
+/*
+        if (-1 < (result = Tokenizers::jsonObjectTokenizer(TokenizerParams_pass))) {
+            return result;
+        }
+
+        if (-1 < (result = Tokenizers::jsonArrayTokenizer(TokenizerParams_pass))) {
+            return result;
+        }
+*/
+        if (-1 < (result = Tokenizers::nullTokenizer(TokenizerParams_pass))) {
+            return result;
+        }
+
+        if (-1 < (result = Tokenizers::stringLiteralTokenizer(TokenizerParams_pass))) {
+            return result;
+        }
+
+        return -1;
+    }
+
 }
