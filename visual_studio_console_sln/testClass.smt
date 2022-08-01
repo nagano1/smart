@@ -40,7 +40,14 @@ class fjawioejap
         let *abc = "joifwjoe01234"
         let f = 343214213
         int a = 3124
+        2134
+        4123332
 
+        afwfiiaeawe
+        afwfiiaeawe
+        afwfiiaeawe
+        taijetjwap
+        faijefjwap
     }
 }
 

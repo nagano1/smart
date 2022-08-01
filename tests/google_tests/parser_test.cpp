@@ -869,6 +869,8 @@ class A {
 
                 false
                 "jofiwjio"
+                faijowpefjwap
+
                 return  1234
             }
         }
@@ -961,6 +963,10 @@ ENDTEST
 void testCodeEquality(const char* codeText, int length) {
     auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
     DocumentUtils::parseText(document, codeText, length);
+
+
+    EXPECT_EQ(document->context->syntaxErrorInfo.hasError, false);
+    EXPECT_EQ(document->context->syntaxErrorInfo.errorCode, ErrorCode::no_syntax_error);
 
     char* treeText = DocumentUtils::getTextFromTree(document);
 
@@ -1322,6 +1328,10 @@ TEST(ParserTest_, ParseUtil) {
 
     EXPECT_EQ(-1, ParseUtil::matchAt("", 0, 0, "class"));
     EXPECT_EQ(-1, ParseUtil::matchAt("", 0, 0, ""));
+
+    constexpr char txt[] = "aefvariable aowef \n";
+    EXPECT_EQ(-1, ParseUtil::matchAt(txt, sizeof(txt)-1, 2, "false"));
+
 
     {
         std::string class_text(u8"     \tclassauto * 😂日本語=10234;");

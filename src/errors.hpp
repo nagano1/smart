@@ -30,6 +30,7 @@ namespace smart {
 
     enum class ErrorCode {
         first_keeper,
+        no_syntax_error,
 
         // common
         syntax_error,
@@ -128,6 +129,7 @@ namespace smart {
 
         ErrorInfo tempList[] = {
             ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
+            ErrorInfo{ ErrorCode::no_syntax_error, 10000, "no_error"},
 
             // common
             ErrorInfo{ ErrorCode::syntax_error, 418030, "syntax error" },
