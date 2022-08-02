@@ -272,7 +272,7 @@ struct ParseUtil {
 
         if (pos > -1) {
             if (startIndex + SIZE - 1 < charsLength
-                && ParseUtil::isSpaceOrLineBreak(chars[startIndex + SIZE - 1])
+                && ParseUtil::isTerminatableChar(chars[startIndex + SIZE - 1])
                     ) {
                 return pos;
             }
@@ -296,9 +296,12 @@ struct ParseUtil {
     }
 
 
-    static inline bool isSpaceOrLineBreak(utf8byte ch)
+    static inline bool isTerminatableChar(utf8byte ch)
     {
-        return ' ' == ch || ch == '\n' || '\t' == ch || '/' == ch || '\r' == ch;
+        return ' ' == ch || ch == '\n' || '\t' == ch
+            || '/' == ch || '\r' == ch
+            || ')' == ch || '}' == ch || ']' == ch
+            || ',' == ch || '.' == ch;
     }
 
 

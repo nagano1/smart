@@ -1,7 +1,6 @@
 class fjawioejap
 {
-    fn funcB()
-    {
+    fn funcB() {
         let a = 893214
         let *str = "0jfoiwjoie"
         int ab = 123412
@@ -42,17 +41,18 @@ class fjawioejap
         int a = 3124
         2134
         4123332
-
+        
         afwfiiaeawe
         afwfiiaeawe
         afwfiiaeawe
         taijetjwap
         faijefjwap
+        
     }
 }
 
-class AClass
-{
+class AClass/**/
+/**/{/**/
     // awef
     fn ffanc()
     {

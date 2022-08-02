@@ -250,7 +250,7 @@ namespace smart {
 
             if (found_count > 0) {
                 if (currentPos + found_count < context->length
-                    && ParseUtil::isSpaceOrLineBreak(context->chars[currentPos + found_count])
+                    && ParseUtil::isTerminatableChar(context->chars[currentPos + found_count])
                         ){
                 } else {
                     found_count = 0;
