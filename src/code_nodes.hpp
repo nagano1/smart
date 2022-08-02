@@ -227,8 +227,8 @@ namespace smart {
         SymbolStruct parameterStartNode;
         SymbolStruct parameterEndNode;
 
-        bool parameterStartFound;
-        bool parameterEndFound;
+        // bool parameterStartFound;
+        // bool parameterEndFound;
 
         BodyNodeStruct bodyNode;
 

@@ -259,8 +259,8 @@ namespace smart {
 
         Init::initNameNode(&funcNode->nameNode, context, parentNode);
 
-        funcNode->parameterStartFound = false;
-        funcNode->parameterEndFound = false;
+        // funcNode->parameterStartFound = false;
+        // funcNode->parameterEndFound = false;
 
         Init::initSymbolNode(&funcNode->parameterStartNode, context, funcNode, '(');
         Init::initSymbolNode(&funcNode->parameterEndNode, context, funcNode, ')');
@@ -324,18 +324,18 @@ namespace smart {
         //console_log(std::string(""+ch).c_str());
         //console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
 
-        if (!fnNode->parameterStartFound) {
+        if (fnNode->parameterStartNode.found == -1) {
             if (ch == '(') {
-                fnNode->parameterStartFound = true;
+                fnNode->parameterStartNode.found = start;
                 context->codeNode = Cast::upcast(&fnNode->parameterStartNode);
                 return start + 1;
             } else {
                 context->setError(ErrorCode::expect_parenthesis_for_fn_params, context->prevFoundPos);
             }
         } else {
-            if (!fnNode->parameterEndFound) {
+            if (fnNode->parameterEndNode.found == -1) {
                 if (ch == ')') {
-                    fnNode->parameterEndFound = true;
+                    fnNode->parameterEndNode.found = start;
                     context->codeNode = Cast::upcast(&fnNode->parameterEndNode);
                     return start + 1;
                 } else {

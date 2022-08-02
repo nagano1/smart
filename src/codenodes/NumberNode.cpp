@@ -108,7 +108,8 @@ namespace smart {
     //    | Number                   |
     //    +--------------------------+
 
-    static CodeLine *appendToLine(NumberNodeStruct *self, CodeLine *currentCodeLine) {
+    static CodeLine *appendToLine(NumberNodeStruct *self, CodeLine *currentCodeLine)
+    {
         assert(self->text != nullptr);
 
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
@@ -117,17 +118,20 @@ namespace smart {
         return currentCodeLine;
     }
 
-    static const char *selfText(NumberNodeStruct *self) {
+    static const char *selfText(NumberNodeStruct *self)
+    {
         return self->text;
     }
 
-    static int selfTextLength(NumberNodeStruct *self) {
+    static int selfTextLength(NumberNodeStruct *self)
+    {
         return self->textLength;
     }
 
 
     static constexpr const char numberNodeTypeText[] = "<number>";
-    int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context) {
+    int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context)
+    {
         int found_count = 0;
         for (int_fast32_t i = start; i < context->length; i++) {
             if (!ParseUtil::isNumberLetter(context->chars[i])) {
@@ -163,7 +167,8 @@ namespace smart {
 
 
 
-    NumberNodeStruct *Alloc::newNumberNode(ParseContext *context, NodeBase *parentNode) {
+    NumberNodeStruct *Alloc::newNumberNode(ParseContext *context, NodeBase *parentNode)
+    {
         auto *node = context->newMem<NumberNodeStruct>();
         INIT_NODE(node, context, parentNode, VTables::NumberVTable);
         node->text = nullptr;
@@ -172,4 +177,94 @@ namespace smart {
         return node;
     }
 
-}
+
+
+
+
+
+
+
+    //    +--------------------------+
+    //    | Parentheses value        |
+    //    +--------------------------+
+/*
+    static CodeLine *appendToLine(NumberNodeStruct *self, CodeLine *currentCodeLine)
+    {
+        assert(self->text != nullptr);
+
+        currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
+        currentCodeLine->appendNode(self);
+
+        return currentCodeLine;
+    }
+
+    static const char *selfText(NumberNodeStruct *self)
+    {
+        return self->text;
+    }
+
+    static int selfTextLength(NumberNodeStruct *self)
+    {
+        return self->textLength;
+    }
+
+
+    static constexpr const char numberNodeTypeText[] = "<number>";
+    int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context)
+    {
+        int found_count = 0;
+        for (int_fast32_t i = start; i < context->length; i++) {
+            if (!ParseUtil::isNumberLetter(context->chars[i])) {
+                break;
+            }
+
+            found_count++;
+        }
+
+        if (found_count > 0) {
+            auto *numberNode = Alloc::newNumberNode(context, parent);
+
+            context->codeNode = Cast::upcast(numberNode);
+            numberNode->text = context->memBuffer.newMem<char>(found_count + 1);
+            numberNode->textLength = found_count;
+
+            TEXT_MEMCPY(numberNode->text, context->chars + start, found_count);
+            numberNode->text[found_count] = '\0';
+
+            return start + found_count;
+        }
+
+        return -1;
+    }
+
+
+    static const node_vtable _numberVTable_ = CREATE_VTABLE(NumberNodeStruct, parentheses_selfTextLength,
+                                                            parentheses_selfText,
+                                                            parentheses_appendToLine, parenthesesNodeTypeText,
+                                                            NodeTypeId::Number);
+
+    const node_vtable *const VTables::NumberVTable = &_numberVTable_;
+
+
+
+    NumberNodeStruct *Alloc::newNumberNode(ParseContext *context, NodeBase *parentNode)
+    {
+        auto *node = context->newMem<NumberNodeStruct>();
+        INIT_NODE(node, context, parentNode, VTables::NumberVTable);
+        node->text = nullptr;
+        node->textLength = 0;
+
+        return node;
+    }
+
+
+
+
+*/
+
+
+
+
+
+
+} // namespace
