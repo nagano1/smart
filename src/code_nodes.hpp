@@ -227,14 +227,21 @@ namespace smart {
         SymbolStruct parameterStartNode;
         SymbolStruct parameterEndNode;
 
-        // bool parameterStartFound;
-        // bool parameterEndFound;
-
         BodyNodeStruct bodyNode;
 
         NodeBase *firstChildParameterNode;
         NodeBase *lastChildParameterNode;
         int parameterChildCount;
+    };
+
+
+    using ParenthesesNodeStruct = struct {
+        NODE_HEADER;
+
+        //SymbolStruct openNode;
+        SymbolStruct closeNode;
+
+        NodeBase *valueNode;
     };
 
 
@@ -392,7 +399,7 @@ namespace smart {
         SyntaxErrorInfo syntaxErrorInfo;
         bool has_cancel_request{false};
         bool has_depth_error{false};
-        st_int parentDepth{ -1 };
+        int parentDepth{ -1 };
 
         // node caches
         AssignStatementNodeStruct *unusedAssignment;
@@ -604,6 +611,7 @@ namespace smart {
         BlockCommentFragment = 23,
 
         Variable = 25,
+        Parentheses = 26,
 
     };
 
@@ -678,6 +686,7 @@ namespace smart {
                 *const NullVTable,
                 *const SpaceVTable,
                 *const LineBreakVTable,
+                *const ParenthesesVTable,
 
                 *const LineCommentVTable,
                 *const BlockCommentVTable,
@@ -895,11 +904,11 @@ namespace smart {
 
         static NumberNodeStruct *newNumberNode(ParseContext *context, NodeBase *parentNode);
         static VariableNodeStruct *newVariableNode(ParseContext *context, NodeBase *parentNode);
+        static ParenthesesNodeStruct *newParenthesesNode(ParseContext *context, NodeBase *parentNode);
 
         static BoolNodeStruct *newBoolNode(ParseContext *context, NodeBase *parentNode);
         static LineBreakNodeStruct *newLineBreakNode(ParseContext *context, NodeBase *parentNode);
         static SimpleTextNodeStruct *newSimpleTextNode(ParseContext *context, NodeBase *parentNode);
-        static SpaceNodeStruct *newSpaceNode(ParseContext *context, NodeBase *parentNode);
         static NullNodeStruct *newNullNode(ParseContext *context, NodeBase *parentNode);
 
         // comment
@@ -948,6 +957,8 @@ namespace smart {
     struct Tokenizers {
         static int nameTokenizer(TokenizerParams_parent_ch_start_context);
         static int variableTokenizer(TokenizerParams_parent_ch_start_context);
+        static int valueTokenizer(TokenizerParams_parent_ch_start_context);
+        static int parenthesesTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int typeTokenizer(TokenizerParams_parent_ch_start_context);
         static int numberTokenizer(TokenizerParams_parent_ch_start_context);
@@ -964,7 +975,6 @@ namespace smart {
         static int jsonObjectNameTokenizer(TokenizerParams_parent_ch_start_context);
         static int jsonValueTokenizer2(TokenizerParams_parent_ch_start_context);
 
-        static int valueTokenizer(TokenizerParams_parent_ch_start_context);
 
 
         static int assignStatementTokenizer(TokenizerParams_parent_ch_start_context);

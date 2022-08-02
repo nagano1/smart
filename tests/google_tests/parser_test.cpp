@@ -923,6 +923,8 @@ class fjawioejap
 
         let f = 3
 
+        (3214)
+
         return
         return 3421
     }
@@ -954,6 +956,13 @@ ENDTEST
 
 TEST(ParserTest_, SameLength_blockComment) {
     const char text[] = " /* \r\n /**/ bck\r\n\n*/";
+    testCodeEquality(text, sizeof(text) - 1);
+}
+
+ENDTEST
+
+TEST(ParserTest_, parentheses) {
+    const char text[] = "fn a() { (12) }";
     testCodeEquality(text, sizeof(text) - 1);
 }
 

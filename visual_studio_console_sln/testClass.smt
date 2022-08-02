@@ -61,6 +61,8 @@ class AClass/**/
         3142314
         false
         // jfoiaweoifaw
+        (varname)
+        (912873401297409812780974120987003982)
         
         /*
         */

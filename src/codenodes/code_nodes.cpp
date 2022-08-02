@@ -457,6 +457,10 @@ namespace smart {
             return result;
         }
 
+        if (-1 < (result = Tokenizers::parenthesesTokenizer(TokenizerParams_pass))) {
+            return result;
+        }
+
         if (-1 < (result = Tokenizers::variableTokenizer(TokenizerParams_pass))) {
             return result;
         }

@@ -360,7 +360,7 @@ namespace smart {
             }
         }
         return -1;
-    };
+    }
 
 
     int Tokenizers::fnTokenizer(TokenizerParams_parent_ch_start_context) {

@@ -187,84 +187,97 @@ namespace smart {
     //    +--------------------------+
     //    | Parentheses value        |
     //    +--------------------------+
-/*
-    static CodeLine *appendToLine(NumberNodeStruct *self, CodeLine *currentCodeLine)
+    static CodeLine *parentheses_appendToLine(ParenthesesNodeStruct *self, CodeLine *currentCodeLine)
     {
-        assert(self->text != nullptr);
+        currentCodeLine = currentCodeLine->addPrevLineBreakNode(self)
+                                         ->appendNode(self);
 
-        currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
-        currentCodeLine->appendNode(self);
+        if (self->valueNode) {
+            int formerParentDepth = self->context->parentDepth;
+            self->context->parentDepth += 1;
+            currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+            self->context->parentDepth = formerParentDepth;
+        }
+
+        currentCodeLine = VTableCall::appendToLine(&self->closeNode, currentCodeLine);
 
         return currentCodeLine;
     }
 
-    static const char *selfText(NumberNodeStruct *self)
+    static const char *parentheses_selfText(ParenthesesNodeStruct *self)
     {
-        return self->text;
+        return "(";
     }
 
-    static int selfTextLength(NumberNodeStruct *self)
+    static int parentheses_selfTextLength(ParenthesesNodeStruct *self)
     {
-        return self->textLength;
+        return 1;
     }
 
 
-    static constexpr const char numberNodeTypeText[] = "<number>";
-    int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context)
-    {
-        int found_count = 0;
-        for (int_fast32_t i = start; i < context->length; i++) {
-            if (!ParseUtil::isNumberLetter(context->chars[i])) {
-                break;
+    static constexpr const char parenthesesNodeTypeText[] = "<parentheses>";
+
+    static int inner_returnStatementTokenizerMulti(TokenizerParams_parent_ch_start_context) {
+        auto *fnNode = Cast::downcast<ParenthesesNodeStruct *>(parent);
+
+        if (ch == ')') {
+            context->codeNode = Cast::upcast(&fnNode->closeNode);
+            context->scanEnd = true;
+            return start + 1;
+        } else {
+            int result;
+            if (-1 < (result = Tokenizers::valueTokenizer(Cast::upcast(fnNode), ch, start,
+                                                          context))) {
+                fnNode->valueNode = context->codeNode;
+                return result;
+            } else {
+                context->setError(ErrorCode::expect_end_parenthesis_for_fn_params,
+                                  context->prevFoundPos);
             }
-
-            found_count++;
         }
+        return -1;
+    }
 
-        if (found_count > 0) {
-            auto *numberNode = Alloc::newNumberNode(context, parent);
 
-            context->codeNode = Cast::upcast(numberNode);
-            numberNode->text = context->memBuffer.newMem<char>(found_count + 1);
-            numberNode->textLength = found_count;
+    int Tokenizers::parenthesesTokenizer(TokenizerParams_parent_ch_start_context)
+    {
+        if ('(' == ch) {
+            auto *returnNode = Alloc::newParenthesesNode(context, parent);
+            int currentPos = start + 1;
+            int resultPos;
+            if (-1 < (resultPos = Scanner::scanMulti(returnNode,
+                                                     inner_returnStatementTokenizerMulti,
+                                                     currentPos, context))) {
 
-            TEXT_MEMCPY(numberNode->text, context->chars + start, found_count);
-            numberNode->text[found_count] = '\0';
-
-            return start + found_count;
+                context->codeNode = reinterpret_cast<NodeBase *>(returnNode);
+                return resultPos;
+            }
         }
 
         return -1;
     }
 
 
-    static const node_vtable _numberVTable_ = CREATE_VTABLE(NumberNodeStruct, parentheses_selfTextLength,
-                                                            parentheses_selfText,
-                                                            parentheses_appendToLine, parenthesesNodeTypeText,
-                                                            NodeTypeId::Number);
+    static const node_vtable _parenthesesVTable = CREATE_VTABLE(ParenthesesNodeStruct,
+                                                                parentheses_selfTextLength,
+                                                                parentheses_selfText,
+                                                                parentheses_appendToLine,
+                                                                parenthesesNodeTypeText,
+                                                            NodeTypeId::Parentheses);
 
-    const node_vtable *const VTables::NumberVTable = &_numberVTable_;
+    const node_vtable *const VTables::ParenthesesVTable = &_parenthesesVTable;
 
-
-
-    NumberNodeStruct *Alloc::newNumberNode(ParseContext *context, NodeBase *parentNode)
+    ParenthesesNodeStruct *Alloc::newParenthesesNode(ParseContext *context, NodeBase *parentNode)
     {
-        auto *node = context->newMem<NumberNodeStruct>();
-        INIT_NODE(node, context, parentNode, VTables::NumberVTable);
-        node->text = nullptr;
-        node->textLength = 0;
+        auto *node = context->newMem<ParenthesesNodeStruct>();
+        INIT_NODE(node, context, parentNode, VTables::ParenthesesVTable);
+        node->valueNode = nullptr;
 
+        //Init::initSymbolNode(&node->openNode, context, node, '(');
+        Init::initSymbolNode(&node->closeNode, context, node, ')');
         return node;
     }
-
-
-
-
+/*
 */
-
-
-
-
-
 
 } // namespace
