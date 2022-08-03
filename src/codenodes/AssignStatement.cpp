@@ -183,7 +183,7 @@ namespace smart {
             assignment->onlyAssign = true;
             assignment->useLet = false;
 
-            context->firstNode = Cast::upcast(&assignment->nameNode);
+            context->leftNode = Cast::upcast(&assignment->nameNode);
             context->virtualCodeNode = Cast::upcast(assignment);
 
             return resultPos;
@@ -272,7 +272,7 @@ namespace smart {
                                                      inner_assignStatementTokenizerMulti,
                                                      currentPos, context))
             ) {
-                context->firstNode = Cast::upcast(&assignStatement->letOrType);
+                context->leftNode = Cast::upcast(&assignStatement->letOrType);
                 context->virtualCodeNode = Cast::upcast(assignStatement);
 
                 return resultPos;

@@ -125,11 +125,11 @@ namespace smart {
                                                          inner_returnStatementTokenizerMulti,
                                                          currentPos, context))) {
 
-                    context->firstNode = Cast::upcast(&returnNode->returnText);
+                    context->leftNode = Cast::upcast(&returnNode->returnText);
                     context->virtualCodeNode = Cast::upcast(returnNode);
                     return resultPos;
                 } else {
-                    context->firstNode = Cast::upcast(&returnNode->returnText);
+                    context->leftNode = Cast::upcast(&returnNode->returnText);
                     context->virtualCodeNode = Cast::upcast(returnNode);
                     return currentPos;
                 }

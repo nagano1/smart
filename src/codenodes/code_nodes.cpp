@@ -383,22 +383,22 @@ namespace smart {
                 //console_log(":try:" + std::to_string(result));
 
                 // assign spaces
-                if (context->firstNode != nullptr) {
+                if (context->leftNode != nullptr) {
                     if (whitespace_startpos != -1) {
-                        context->firstNode->prev_chars = i - whitespace_startpos;
+                        context->leftNode->prev_chars = i - whitespace_startpos;
                         whitespace_startpos = -1;
                     }
 
                     if (commentNode != nullptr) {
-                        context->firstNode->prevCommentNode = commentNode;
+                        context->leftNode->prevCommentNode = commentNode;
                         commentNode = nullptr;
                     }
                 }
 
                 returnResult = i = result;
 
-                if (context->firstNode != nullptr) {
-                    context->firstNode->prevLineBreakNode = prevLineBreak;
+                if (context->leftNode != nullptr) {
+                    context->leftNode->prevLineBreakNode = prevLineBreak;
                 }
                 prevLineBreak = nullptr;
                 lastLineBreak = nullptr;

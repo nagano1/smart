@@ -429,7 +429,7 @@ TEST(cplusplus_test, ThreadQueue) {
             int count_temp = -1;
             while (firstNode) {
                 count_temp++;
-                //printf("%d,", firstNode->nodeIndex.load());
+                //printf("%d,", leftNode->nodeIndex.load());
                 if (firstNode == lastNode) {
                     GLOG << "lastNode->nodeIndex = " << lastNode->nodeIndex << std::endl;
                     break;

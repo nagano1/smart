@@ -512,7 +512,7 @@ void GreenThread::start() {
 //                                            doneDelete = true;
 //                                            // Dispose
 //                                            auto *node = this->threadPool->thread_queue[q]->firstRunNode.load();
-//                                            auto *firstNode = node;
+//                                            auto *leftNode = node;
 //                                            int total_delet_count = 0;
 //                                            int temp_delete_count = 0;
 //                                            int next_add_thread_index = 0;
@@ -543,7 +543,7 @@ void GreenThread::start() {
 //                                                            auto *end = target_thread->cacheRunNodeEnd.load();
 //                                                            node->next.store(nullptr, std::memory_order_relaxed);
 //                                                            target_thread->cacheRunNodeEnd.store(node, std::memory_order_relaxed);
-//                                                            end->next.store(firstNode, std::memory_order_relaxed);
+//                                                            end->next.store(leftNode, std::memory_order_relaxed);
 //
 //                                                            target_thread->cacheAddedCount.fetch_add(temp_delete_count, std::memory_order_relaxed);
 //
@@ -572,7 +572,7 @@ void GreenThread::start() {
 //                                                                auto *end = target_thread->cacheRunNodeEnd.load();
 //                                                                node->next.store(nullptr, std::memory_order_relaxed);
 //                                                                target_thread->cacheRunNodeEnd.store(node, std::memory_order_relaxed);
-//                                                                end->next.store(firstNode, std::memory_order_relaxed);
+//                                                                end->next.store(leftNode, std::memory_order_relaxed);
 //
 //                                                                target_thread->cacheAddedCount.fetch_add(temp_delete_count, std::memory_order_relaxed);
 //
@@ -595,7 +595,7 @@ void GreenThread::start() {
 //
 //
 //                                                    if (should_delete) {
-//                                                        auto *deleteNode = firstNode;
+//                                                        auto *deleteNode = leftNode;
 //                                                        if (total_delet_count % 20 == 0) {
 //
 //                                                            /*
@@ -619,7 +619,7 @@ void GreenThread::start() {
 //
 //                                                    }
 //
-//                                                    firstNode = next;
+//                                                    leftNode = next;
 //                                                    next_add_thread_index++;
 //                                                    if (next_add_thread_index >= threads_size) {
 //                                                        next_add_thread_index = 0;

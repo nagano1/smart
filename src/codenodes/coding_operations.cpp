@@ -65,7 +65,7 @@ namespace smart {
 		// assign indent
 		auto* line = doc->firstCodeLine;
 		while (line) {
-			//auto* node = line->firstNode;
+			//auto* node = line->leftNode;
 			//line->indent = node->prev_chars;
 
 			line = line->nextLine;

@@ -392,7 +392,7 @@ namespace smart {
 
         bool afterLineBreak;
         //NodeBase *codeNode;
-        NodeBase *firstNode;
+        NodeBase *leftNode;
         NodeBase *valueNode;
         NodeBase *virtualCodeNode;
         // int former_start;
@@ -418,7 +418,7 @@ namespace smart {
         MemBuffer memBuffer;
 
         void setCodeNode(void* node) {
-            this->firstNode = static_cast<NodeBase *>(node);
+            this->leftNode = static_cast<NodeBase *>(node);
             this->virtualCodeNode = static_cast<NodeBase *>(node);
         }
 
@@ -1007,7 +1007,7 @@ namespace smart {
                     TEXT_MEMCPY(boolNode->text, context->chars + start, length);
                     boolNode->text[length] = '\0';
 
-                    context->firstNode = Cast::upcast(boolNode);
+                    context->leftNode = Cast::upcast(boolNode);
                     context->virtualCodeNode = Cast::upcast(boolNode);
                     return start + length;
                 }

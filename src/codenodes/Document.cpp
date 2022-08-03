@@ -138,7 +138,7 @@ namespace smart {
         return nullptr;
         /*
         int totalCount = 0;
-            auto *node = line->firstNode;
+            auto *node = line->leftNode;
             while (node) {
                 int len = VTableCall::selfTextLength(node);
                 totalCount += len;
@@ -148,7 +148,7 @@ namespace smart {
         auto *text = (char *)line->context->newMemArray<char>(totalCount+ 1);
         text[totalCount] = '\0';
         {
-            auto *node = line->firstNode;
+            auto *node = line->leftNode;
             size_t currentOffset = 0;
             while (node) {
                 auto *chs = VTableCall::selfText(node);
@@ -405,7 +405,7 @@ namespace smart {
         context->scanEnd = false;
         context->length = length;
         //context->codeNode = nullptr;
-        context->firstNode = nullptr;
+        context->leftNode = nullptr;
         context->virtualCodeNode = nullptr;
 
         context->remainedLineBreakNode = nullptr;
