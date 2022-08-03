@@ -24,7 +24,6 @@ class fjawioejap
         false
         null
         true
-
         
         /*
         ofijaweifaow 
@@ -41,8 +40,8 @@ class fjawioejap
         let f = 343214213
         int a = 3124
         2134
-        4123332
-        
+        4123
+
         afwfiiaeawe
         afwfiiaeawe
         afwfiiaeawe
@@ -50,6 +49,7 @@ class fjawioejap
         faijefjwap
         true
         false
+        "jofoajwieofawo"
     }
 }
 

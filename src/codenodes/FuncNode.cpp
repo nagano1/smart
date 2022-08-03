@@ -116,7 +116,7 @@ namespace smart {
         auto *body = Cast::downcast<BodyNodeStruct *>(parent);
         if (ch == '}') {
             context->scanEnd = true;
-            context->codeNode = Cast::upcast(&body->endBodyNode);
+            context->setCodeNode(&body->endBodyNode);
             return start + 1;
         } else {
             if (!body->firstStatementFound || context->afterLineBreak) {
@@ -143,7 +143,7 @@ namespace smart {
                     // value as a statement
                     int result;
                     if (-1 < (result = Tokenizers::valueTokenizer(TokenizerParams_pass))) {
-                        appendChildNode(body, context->codeNode);
+                        appendChildNode(body, context->virtualCodeNode);
                         return result;
                     }
                 }
@@ -168,7 +168,7 @@ namespace smart {
                                             context);
 
             if (result > -1) {
-                context->codeNode = Cast::upcast(bodyNode);
+                context->setCodeNode(bodyNode);
                 return result;
             }
         } else {
@@ -327,7 +327,7 @@ namespace smart {
         if (fnNode->parameterStartNode.found == -1) {
             if (ch == '(') {
                 fnNode->parameterStartNode.found = start;
-                context->codeNode = Cast::upcast(&fnNode->parameterStartNode);
+                context->setCodeNode(&fnNode->parameterStartNode);
                 return start + 1;
             } else {
                 context->setError(ErrorCode::expect_parenthesis_for_fn_params, context->prevFoundPos);
@@ -336,7 +336,7 @@ namespace smart {
             if (fnNode->parameterEndNode.found == -1) {
                 if (ch == ')') {
                     fnNode->parameterEndNode.found = start;
-                    context->codeNode = Cast::upcast(&fnNode->parameterEndNode);
+                    context->setCodeNode(&fnNode->parameterEndNode);
                     return start + 1;
                 } else {
                     context->setError(ErrorCode::expect_end_parenthesis_for_fn_params, context->prevFoundPos);
@@ -384,7 +384,7 @@ namespace smart {
                         //console_log(std::string(classNode->nameNode.name).c_str());
                         context->setError(ErrorCode::invalid_fn_name, start);
 
-                        context->codeNode = Cast::upcast(fnNode);
+                        context->setCodeNode(fnNode);
                         return currentPos;
                     }
                 }
@@ -396,11 +396,11 @@ namespace smart {
 
                     context->setError(ErrorCode::invalid_fn_name, context->prevFoundPos);
 
-                    context->codeNode = Cast::upcast(fnNode);
+                    context->setCodeNode(fnNode);
                     return currentPos;
                 }
 
-                context->codeNode = Cast::upcast(fnNode);
+                context->setCodeNode(fnNode);
                 return resultPos;
             }
         }

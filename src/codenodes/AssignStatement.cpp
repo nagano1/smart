@@ -109,7 +109,7 @@ namespace smart {
             if (assignment->pointerAsterisk.found == -1) {
                 if (ch == '*') {
                     assignment->pointerAsterisk.found = start;
-                    context->codeNode = Cast::upcast(&assignment->pointerAsterisk);
+                    context->setCodeNode(&assignment->pointerAsterisk);
                     return start + 1;
                 }
             }
@@ -118,7 +118,7 @@ namespace smart {
             if (-1 < (result = Tokenizers::nameTokenizer(Cast::upcast(&assignment->nameNode)
                                                         , ch, start, context))
             ) {
-                context->codeNode = Cast::upcast(&assignment->nameNode);
+                context->setCodeNode(&assignment->nameNode);
                 return result;
             } else {
                 //context->scanEnd = true;
@@ -129,11 +129,11 @@ namespace smart {
         } else if (assignment->equalSymbol.found == -1) {
             if (ch == '=') {
                 assignment->equalSymbol.found = start;
-                context->codeNode = Cast::upcast(&assignment->equalSymbol);
+                context->setCodeNode(&assignment->equalSymbol);
                 return start+1;
             } else {
                 if (assignment->hasMutMark) {
-                    context->codeNode = nullptr;
+                    context->setCodeNode(nullptr);
                     context->scanEnd = true;
 
                     return context->prevFoundPos; // revert to name
@@ -148,7 +148,7 @@ namespace smart {
             int result;
             if (-1 < (result = Tokenizers::valueTokenizer(Cast::upcast(assignment), ch,
                                                               start, context))) {
-                assignment->valueNode = context->codeNode;
+                assignment->valueNode = context->virtualCodeNode;
                 context->scanEnd = true;
 
                 return result;
@@ -183,7 +183,7 @@ namespace smart {
             assignment->onlyAssign = true;
             assignment->useLet = false;
 
-            context->codeNode = Cast::upcast(&assignment->nameNode);
+            context->firstNode = Cast::upcast(&assignment->nameNode);
             context->virtualCodeNode = Cast::upcast(assignment);
 
             return resultPos;
@@ -272,7 +272,7 @@ namespace smart {
                                                      inner_assignStatementTokenizerMulti,
                                                      currentPos, context))
             ) {
-                context->codeNode = Cast::upcast(&assignStatement->letOrType);
+                context->firstNode = Cast::upcast(&assignStatement->letOrType);
                 context->virtualCodeNode = Cast::upcast(assignStatement);
 
                 return resultPos;

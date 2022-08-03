@@ -391,7 +391,9 @@ namespace smart {
 
 
         bool afterLineBreak;
-        NodeBase *codeNode;
+        //NodeBase *codeNode;
+        NodeBase *firstNode;
+        NodeBase *valueNode;
         NodeBase *virtualCodeNode;
         // int former_start;
         int baseIndent;
@@ -414,6 +416,11 @@ namespace smart {
         int remaindPrevChars{0};
 
         MemBuffer memBuffer;
+
+        void setCodeNode(void* node) {
+            this->firstNode = static_cast<NodeBase *>(node);
+            this->virtualCodeNode = static_cast<NodeBase *>(node);
+        }
 
         template<typename T>
         T *newMem() {
@@ -982,29 +989,40 @@ namespace smart {
         static int returnStatementTokenizer(TokenizerParams_parent_ch_start_context);
 
         // SimpleTextNodeStruct
-        template<typename TYPE, std::size_t SIZE>
-        static inline int WordTokenizer(TokenizerParams_parent_ch_start_context
+        template<typename TYPE, std::size_t SIZE, typename GENTYPE>
+        static inline int WordTokenizer2(TokenizerParams_parent_ch_start_context
+                      , GENTYPE* (*genereater)(ParseContext *, NodeBase*)
                       , utf8byte capitalLetter
                       , const TYPE(&word)[SIZE])
         {
             if (capitalLetter == ch) {
                 int length = st_size_of(word) - 1;
                 if (ParseUtil::matchAt(context->chars, context->length, start, word) > -1 ) {
-                    auto *boolNode = Alloc::newSimpleTextNode(context, parent);
-                        Init::initSimpleTextNode(boolNode, context, parent, 3);
+                    auto *boolNode = (SimpleTextNodeStruct*)(genereater(context, parent));
+                    Init::initSimpleTextNode(boolNode, context, parent, 3);
 
-                        boolNode->text = context->memBuffer.newMem<char>(length + 1);
-                        boolNode->textLength = length;
+                    boolNode->text = context->memBuffer.newMem<char>(length + 1);
+                    boolNode->textLength = length;
 
-                        TEXT_MEMCPY(boolNode->text, context->chars + start, length);
-                        boolNode->text[length] = '\0';
+                    TEXT_MEMCPY(boolNode->text, context->chars + start, length);
+                    boolNode->text[length] = '\0';
 
-                        context->codeNode = Cast::upcast(boolNode);
-                        return start + length;
+                    context->firstNode = Cast::upcast(boolNode);
+                    context->virtualCodeNode = Cast::upcast(boolNode);
+                    return start + length;
                 }
             }
 
             return -1;
+        }
+
+        // SimpleTextNodeStruct
+        template<typename TYPE, std::size_t SIZE>
+        static inline int WordTokenizer(TokenizerParams_parent_ch_start_context
+                , utf8byte capitalLetter
+                , const TYPE(&word)[SIZE])
+        {
+            return WordTokenizer2(TokenizerParams_pass, Alloc::newSimpleTextNode, capitalLetter, word);
         }
     };
 

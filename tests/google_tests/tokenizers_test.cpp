@@ -36,8 +36,8 @@ TEST(TokenizersTest_, StringLiteralTest) {
         int result = Tokenizers::stringLiteralTokenizer(nullptr, class_chars[0], 0, context);
 
         EXPECT_EQ(result, 9);
-        EXPECT_EQ(context->codeNode->vtable, VTables::StringLiteralVTable);
-        auto* stru = Cast::downcast<StringLiteralNodeStruct*>(context->codeNode);
+        EXPECT_EQ(context->virtualCodeNode->vtable, VTables::StringLiteralVTable);
+        auto* stru = Cast::downcast<StringLiteralNodeStruct*>(context->virtualCodeNode);
         EXPECT_EQ(std::string{ stru->str }, std::string{ "my text" });
     }
 
@@ -49,9 +49,9 @@ TEST(TokenizersTest_, StringLiteralTest) {
         int result = Tokenizers::stringLiteralTokenizer(nullptr, chars[0], 0, context);
 
         EXPECT_EQ(result, 21);
-        EXPECT_EQ(context->codeNode->vtable, VTables::StringLiteralVTable);
+        EXPECT_EQ(context->virtualCodeNode->vtable, VTables::StringLiteralVTable);
 
-        auto* stru = Cast::downcast<StringLiteralNodeStruct*>(context->codeNode);
+        auto* stru = Cast::downcast<StringLiteralNodeStruct*>(context->virtualCodeNode);
         EXPECT_EQ(stru->strLength, 8);
         EXPECT_EQ(std::string{ stru->str }, std::string{ u8R"(A虎のa)" });
 
@@ -67,9 +67,9 @@ TEST(TokenizersTest_, StringLiteralTest) {
         int result = Tokenizers::stringLiteralTokenizer(nullptr, chars[0], 0, context);
 
         EXPECT_EQ(result, 10);
-        EXPECT_EQ(context->codeNode->vtable, VTables::StringLiteralVTable);
+        EXPECT_EQ(context->virtualCodeNode->vtable, VTables::StringLiteralVTable);
 
-        auto* stru = Cast::downcast<StringLiteralNodeStruct*>(context->codeNode);
+        auto* stru = Cast::downcast<StringLiteralNodeStruct*>(context->virtualCodeNode);
         EXPECT_EQ(stru->strLength, 4);
         EXPECT_EQ(std::string{ stru->str }, std::string{ u8"\r\n\t\t" });
 

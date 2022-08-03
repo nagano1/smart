@@ -338,11 +338,11 @@ namespace smart {
 
         if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
             auto *doc = Cast::downcast<DocumentStruct *>(parent);
-            appendRootNode(doc, context->codeNode);
+            appendRootNode(doc, context->virtualCodeNode);
             return result;
         } else if (-1 < (result = Tokenizers::fnTokenizer(parent, ch, start, context))) {
             auto* doc = Cast::downcast<DocumentStruct*>(parent);
-            appendRootNode(doc, context->codeNode);
+            appendRootNode(doc, context->virtualCodeNode);
             return result;
         }
 
@@ -362,12 +362,12 @@ namespace smart {
         int result;
         if (-1 < (result = Tokenizers::jsonObjectTokenizer(parent, ch, start, context))) {
             auto *doc = Cast::downcast<DocumentStruct *>(parent);
-            appendRootNode(doc, context->codeNode);
+            appendRootNode(doc, context->virtualCodeNode);
             return result;
         }
         if (-1 < (result = Tokenizers::jsonArrayTokenizer(parent, ch, start, context))) {
             auto *doc = Cast::downcast<DocumentStruct *>(parent);
-            appendRootNode(doc, context->codeNode);
+            appendRootNode(doc, context->virtualCodeNode);
             return result;
         }
 
@@ -404,7 +404,8 @@ namespace smart {
         context->start = 0;
         context->scanEnd = false;
         context->length = length;
-        context->codeNode = nullptr;
+        //context->codeNode = nullptr;
+        context->firstNode = nullptr;
         context->virtualCodeNode = nullptr;
 
         context->remainedLineBreakNode = nullptr;

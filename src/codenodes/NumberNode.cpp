@@ -60,14 +60,18 @@ namespace smart {
 
     int Tokenizers::boolTokenizer(TokenizerParams_parent_ch_start_context)
     {
-        int result = Tokenizers::WordTokenizer(TokenizerParams_pass, 't', "true");
+        int result = Tokenizers::WordTokenizer2(TokenizerParams_pass,
+                                                Alloc::newBoolNode
+                                                ,'t', "true");
         bool isTrue = result > -1;
         if (!isTrue) {
-            result = Tokenizers::WordTokenizer(TokenizerParams_pass, 'f', "false");
+            result = Tokenizers::WordTokenizer2(TokenizerParams_pass,
+                                                Alloc::newBoolNode,
+                                                'f', "false");
         }
 
         if (result > -1) {
-            auto *boolNode = Cast::downcast<BoolNodeStruct*>(context->codeNode);
+            auto *boolNode = Cast::downcast<BoolNodeStruct*>(context->virtualCodeNode);
             boolNode->found = start;
             boolNode->boolValue = isTrue;
             return result;
@@ -144,7 +148,7 @@ namespace smart {
         if (found_count > 0) {
             auto *numberNode = Alloc::newNumberNode(context, parent);
 
-            context->codeNode = Cast::upcast(numberNode);
+            context->setCodeNode(numberNode);
             numberNode->text = context->memBuffer.newMem<char>(found_count + 1);
             numberNode->textLength = found_count;
 
@@ -221,14 +225,14 @@ namespace smart {
         auto *fnNode = Cast::downcast<ParenthesesNodeStruct *>(parent);
 
         if (ch == ')') {
-            context->codeNode = Cast::upcast(&fnNode->closeNode);
+            context->setCodeNode(&fnNode->closeNode);
             context->scanEnd = true;
             return start + 1;
         } else {
             int result;
             if (-1 < (result = Tokenizers::valueTokenizer(Cast::upcast(fnNode), ch, start,
                                                           context))) {
-                fnNode->valueNode = context->codeNode;
+                fnNode->valueNode = context->virtualCodeNode;
                 return result;
             } else {
                 context->setError(ErrorCode::expect_end_parenthesis_for_fn_params,
@@ -249,7 +253,7 @@ namespace smart {
                                                      inner_returnStatementTokenizerMulti,
                                                      currentPos, context))) {
 
-                context->codeNode = reinterpret_cast<NodeBase *>(returnNode);
+                context->setCodeNode(returnNode);
                 return resultPos;
             }
         }

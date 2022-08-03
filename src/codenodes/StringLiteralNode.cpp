@@ -100,7 +100,7 @@ namespace smart {
         if (found_count > 0) {
             auto *strLiteralNode = context->newMem<StringLiteralNodeStruct>();
             Init::initStringLiteralNode(strLiteralNode, context, parent);
-            context->codeNode = Cast::upcast(strLiteralNode);
+            context->setCodeNode(strLiteralNode);
 
             strLiteralNode->text = context->memBuffer.newMem<char>(found_count + 1);
 

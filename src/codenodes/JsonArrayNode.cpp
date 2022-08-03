@@ -148,7 +148,7 @@ namespace smart {
                 context);
 
             if (result > -1) {
-                context->codeNode = Cast::upcast(jsonArray);
+                context->setCodeNode(jsonArray);
                 return result;
             }
         }
@@ -192,7 +192,7 @@ namespace smart {
         if (-1 < (result = Tokenizers::jsonValueTokenizer2(TokenizerParams_pass))) {
             auto *nextItem = Alloc::newJsonArrayItem(context, parent);
 
-            nextItem->valueNode = context->codeNode;
+            nextItem->valueNode = context->virtualCodeNode;
             appendRootNode(jsonArray, nextItem);
             jsonArray->parsePhase = phase::EXPECT_COMMA;
             return result;
@@ -206,7 +206,7 @@ namespace smart {
 
         if (ch == ']') {
             context->scanEnd = true;
-            context->codeNode = Cast::upcast(&jsonArray->endBodyNode);
+            context->setCodeNode(&jsonArray->endBodyNode);
             return start + 1;
         }
 
@@ -219,7 +219,7 @@ namespace smart {
         if (jsonArray->parsePhase == phase::EXPECT_COMMA) {
             if (ch == ',') { // try to find ',' which leads to next key-value
                 currentKeyValueItem->hasComma = true;
-                context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
+                context->setCodeNode(&currentKeyValueItem->follwingComma);
                 jsonArray->parsePhase = phase::EXPECT_VALUE;
                 return start + 1;
             } else if (context->afterLineBreak) {

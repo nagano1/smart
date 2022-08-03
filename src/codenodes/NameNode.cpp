@@ -47,7 +47,7 @@ namespace smart {
         if (found_count > 0) {
             auto *nameNode = Cast::downcast<NameNodeStruct *>(parent);
 
-            context->codeNode = Cast::upcast(nameNode);
+            context->setCodeNode(nameNode);
             nameNode->name = context->memBuffer.newMem<char>(found_count + 1);
             nameNode->nameLength = found_count;
             nameNode->found = start;

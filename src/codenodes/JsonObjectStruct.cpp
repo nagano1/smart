@@ -153,7 +153,7 @@ namespace smart {
 
         if (found_count > 0) {
             auto *keyNode = Alloc::newJsonObjectKeyNode(context, parent);
-            context->codeNode = Cast::upcast(keyNode);
+            context->setCodeNode(keyNode);
 
             keyNode->namePos = 1;
             keyNode->nameLength = found_count - 2;
@@ -270,7 +270,7 @@ namespace smart {
                                             context);
 
             if (result > -1) {
-                context->codeNode = Cast::upcast(jsonObject);
+                context->setCodeNode(jsonObject);
 
                 returnPosition = result;
                 return returnPosition;
@@ -305,7 +305,7 @@ namespace smart {
         if (-1 < (result = Tokenizers::jsonObjectNameTokenizer(parent, ch, start, context))) {
             JsonKeyValueItemStruct* nextItem = Alloc::newJsonKeyValueItemNode(context, parent);
 
-            nextItem->keyNode = Cast::downcast<JsonObjectKeyNodeStruct*>(context->codeNode);
+            nextItem->keyNode = Cast::downcast<JsonObjectKeyNodeStruct*>(context->virtualCodeNode);
 
             if (jsonObject->firstKeyValueItem == nullptr) {
                 jsonObject->firstKeyValueItem = nextItem;
@@ -330,7 +330,7 @@ namespace smart {
         if (jsonObject->parsePhase == phase::EXPECT_NAME) {
             if (ch == '}') { // empty
                 context->scanEnd = true;
-                context->codeNode = Cast::upcast(&jsonObject->endBodyNode);
+                context->setCodeNode(&jsonObject->endBodyNode);
                 return start + 1;
             }
 
@@ -343,7 +343,7 @@ namespace smart {
 
         if (jsonObject->parsePhase == phase::DELIMETER) {
             if (ch == ':') { // delimeter
-                context->codeNode = Cast::upcast(&currentKeyValueItem->delimeter);
+                context->setCodeNode(&currentKeyValueItem->delimeter);
                 jsonObject->parsePhase = phase::VALUE;
                 return start + 1;
             }
@@ -357,7 +357,7 @@ namespace smart {
             int result;
             if (-1 < (result = Tokenizers::jsonValueTokenizer2(Cast::upcast(currentKeyValueItem), ch,
                                                               start, context))) {
-                currentKeyValueItem->valueNode = context->codeNode;
+                currentKeyValueItem->valueNode = context->virtualCodeNode;
                 jsonObject->parsePhase = phase::EXPECT_COMMA;
                 return result;
             }
@@ -368,12 +368,12 @@ namespace smart {
         if (jsonObject->parsePhase == phase::EXPECT_COMMA) {
             if (ch == ',') { // try to find ',' which leads to next key-value
                 currentKeyValueItem->hasComma = true;
-                context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
+                context->setCodeNode(&currentKeyValueItem->follwingComma);
                 jsonObject->parsePhase = phase::EXPECT_NAME;
                 return start + 1;
             } else if (ch == '}') {
                 context->scanEnd = true;
-                context->codeNode = Cast::upcast(&jsonObject->endBodyNode);
+                context->setCodeNode(&jsonObject->endBodyNode);
                 return start + 1;
             }
             else if (context->afterLineBreak) {

@@ -42,7 +42,7 @@ namespace smart
         auto returnPos = Tokenizers::nameTokenizer(Cast::upcast(&typeNode->nameNode), ch, start, context);
         if (returnPos > -1) {
             //if (context->codeNode) {
-                context->codeNode = Cast::upcast(typeNode);
+                context->setCodeNode(typeNode);
             //}
         }
         return returnPos;

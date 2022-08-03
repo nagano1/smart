@@ -137,26 +137,26 @@ namespace smart {
         if (!classNode->startFound) {
             if (ch == '{') {
                 classNode->startFound = true;
-                context->codeNode = Cast::upcast(&classNode->bodyStartNode);
+                context->setCodeNode(&classNode->bodyStartNode);
                 return start + 1;
             } else {
                 context->setError(ErrorCode::no_brace_for_class, classNode->found);
             }
         } else if (ch == '}') {
             context->scanEnd = true;
-            context->codeNode = Cast::upcast(&classNode->endBodyNode);
+            context->setCodeNode(&classNode->endBodyNode);
             return start + 1;
         } else {
             int result;
             if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
                 auto *innerClassNode = Cast::downcast<ClassNodeStruct *>(parent);
-                appendChildNode(innerClassNode, context->codeNode);
+                appendChildNode(innerClassNode, context->virtualCodeNode);
                 return result;
             }
 
             if (-1 < (result = Tokenizers::fnTokenizer(parent, ch, start, context))) {
                 auto* innerClassNode = Cast::downcast<ClassNodeStruct*>(parent);
-                appendChildNode(innerClassNode, context->codeNode);
+                appendChildNode(innerClassNode, context->virtualCodeNode);
                 return result;
             }
 
@@ -208,7 +208,7 @@ namespace smart {
                     return -1;
                 }
 
-                context->codeNode = Cast::upcast(classNode);
+                context->setCodeNode(classNode);
                 return resultPos;
             }
         }

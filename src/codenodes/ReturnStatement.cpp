@@ -97,7 +97,7 @@ namespace smart {
         int result;
         if (-1 < (result = Tokenizers::valueTokenizer(Cast::upcast(returnNode), ch,
                                                           start, context))) {
-            returnNode->valueNode = context->codeNode;
+            returnNode->valueNode = context->virtualCodeNode;
             context->scanEnd = true;
 
             return result;
@@ -125,11 +125,11 @@ namespace smart {
                                                          inner_returnStatementTokenizerMulti,
                                                          currentPos, context))) {
 
-                    context->codeNode = Cast::upcast(&returnNode->returnText);
+                    context->firstNode = Cast::upcast(&returnNode->returnText);
                     context->virtualCodeNode = Cast::upcast(returnNode);
                     return resultPos;
                 } else {
-                    context->codeNode = Cast::upcast(&returnNode->returnText);
+                    context->firstNode = Cast::upcast(&returnNode->returnText);
                     context->virtualCodeNode = Cast::upcast(returnNode);
                     return currentPos;
                 }
