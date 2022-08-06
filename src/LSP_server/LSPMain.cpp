@@ -98,6 +98,8 @@ void LSPManager::LSP_main() {
     //th.detach();
 }
 
+static DocumentStruct* latestDocument = nullptr;
+
 static void validateJson(const char *text, int textLength, const char * const filePath, int filePathLength) {
 
     auto isCode= ParseUtil::endsWith2(filePath, filePathLength, ".smt");//pls
@@ -184,9 +186,12 @@ static void validateJson(const char *text, int textLength, const char * const fi
             fprintf(stderr, "[%s]", text);
             fflush(stderr);
             // check equality
+
+            free(treeText);
             exit(0);
             // EXPECT_EQ(strlen(treeText), strlen(chars));
         }
+        free(treeText);
 
 
         char moji[1024];
@@ -206,7 +211,10 @@ static void validateJson(const char *text, int textLength, const char * const fi
         fflush(stdout);
     }
 
-    Alloc::deleteDocument(document);
+    if (latestDocument != nullptr) {
+        Alloc::deleteDocument(latestDocument);
+    }
+    latestDocument = document;
 
     /*
     char *treeText = DocumentUtils::getTextFromTree(document);
@@ -262,6 +270,14 @@ void LSPManager::nextRequest(char *chars, int length) {
         "capabilities": {
             "textDocumentSync": 1
             ,"completionProvider": { "resolveProvider": true }
+            ,"semanticTokensProvider": {
+                "legend": {
+                    "tokenTypes": ["class", "interface", "enum", "function", "variable"],
+                    "tokenModifiers": ["declaration", "documentation"]
+                }, "range": false
+                , "full": {"delta": false}
+            }
+
         }
     }
 })";
@@ -277,6 +293,8 @@ void LSPManager::nextRequest(char *chars, int length) {
             if (methodNode->textLength > 0) {
                 auto didChange = 0 == strcmp(methodNode->str, "textDocument/didChange");
                 auto didOpen = 0 == strcmp(methodNode->str, "textDocument/didOpen");
+                auto isReqOfFullSemanticTokens = 0 == strcmp(methodNode->str, "textDocument/semanticTokens/full");
+
 
                 if (didOpen || didChange) {
                     auto* params = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
@@ -299,6 +317,14 @@ void LSPManager::nextRequest(char *chars, int length) {
                         validateJson(item4->str, item4->strLength, fileUri->str, fileUri->strLength);
                     }
                 }
+
+                if (isReqOfFullSemanticTokens) {
+                    /*
+　                      df0d　{ line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
+                        { line: 2, startChar: 10, length: 4, tokenType: 1, tokenModifiers: 0 },
+                        { line: 5, startChar:  2, length: 7, tokenType: 2, tokenModifiers: 0 }
+                    */
+                }
             }
 
         }
@@ -312,6 +338,7 @@ void LSPManager::nextRequest(char *chars, int length) {
         fprintf(stderr, "different \n"); fflush(stderr);
     }
 
+    free(treeText);
     Alloc::deleteDocument(document);
 
     /*
