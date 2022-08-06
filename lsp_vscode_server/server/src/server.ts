@@ -13,6 +13,10 @@ import {
 	TextDocumentPositionParams,
 	ClientCapabilities,
 	ServerCapabilities,
+    SemanticTokens,
+    SemanticTokensBuilder,
+    Range,
+    Position
 } from 'vscode-languageserver';
 
 import * as path from "path"
@@ -77,15 +81,31 @@ export const sendMessage = (obj: Object) => {
 	//child.stdin.end();
 })();
 
+const tokenTypes = ['class', 'interface', 'enum', 'function', 'variable'];
+const tokenModifiers = ['declaration', 'documentation'];
+const legend = new vscode.SemanticTokensLegend(tokenTypes, tokenModifiers);
+
 export const listenToLSPClient = () => {
 	let buffer = ""
 
 	const parseAsPossible = async () => {
 		//console.warn(buffer);
 
+        const tokensBuilder = new SemanticTokensBuilder(legend);
+        // on line 1, characters 1-5 are a class declaration
+        tokensBuilder.push(
+          new Range(new Position(1, 1), new Position(1, 5)),
+          'class',
+          ['declaration'],
+        );
+        let s : SemanticTokens = {
+        };
 		sendMessage({
 			id: "0", result: {
 				capabilities: {
+                    semanticTokensProvider: {
+                        full
+                    },
 					textDocumentSync: {
 						// Indicate the server want the client to send
 						// `textDocument/didOpen` and `textDocument/didClose` notifications
