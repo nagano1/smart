@@ -24,7 +24,6 @@ class fjawioejap
         false
         null
         true
-        
         /*
         ofijaweifaow 
         aiwjeofijaw jpawijfw4213
@@ -32,7 +31,6 @@ class fjawioejap
         jfaiwejfiwoajoijw
         jofijeiowajiwa
         */
-
         // joiwfaejfo
         // joijweoifjaw oiaoiwjfoijwaioji
 
@@ -43,18 +41,18 @@ class fjawioejap
         4123
 
         afwfiiaeawe
-        afwfiiaeawe
-        afwfiiaeawe
         taijetjwap
         faijefjwap
         true
-        false
         "jofoajwieofawo"
     }
 }
 
 
-class A{
+
+
+class A
+{
     class AClass/**/
     {/**/
         // awef
@@ -64,20 +62,23 @@ class A{
             false
             // jfoiaweoifaw
             
+            func(true, "jfoiw", 1203)
+            
             return/*true*/3241//面白すぎ
             return/**/21241
             false//tugi ga saigono kyokudesu
             return 1
+
         }
+
 
         fn a()
         {
             // afjiowe
-
-
 
         } // afweo
     } // joiwafjoefwa 
     //
     /* fwaei */
 }
+
