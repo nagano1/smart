@@ -38,6 +38,10 @@ namespace smart {
         should_break_line,
         indent_error,
 
+        // value
+        expect_end_parenthesis,
+
+
         // string
         missing_closing_quote,
         missing_closing_quote2,
@@ -78,11 +82,10 @@ namespace smart {
         ErrorCode errorIndex;
         int errorCode;
         const char* msg;
-    };
 
-    extern ErrorInfo ErrorInfoList[errorListSize];
-    extern bool errorInfoInitialized;
-    static ErrorInfo sortErrorInfoList[errorListSize];
+        static ErrorInfo ErrorInfoList[errorListSize];
+        static bool errorInfoInitialized;
+    };
 
 
 
@@ -123,9 +126,11 @@ namespace smart {
     */
 
 
+    static ErrorInfo sortErrorInfoList[errorListSize];
+
     static int initErrorInfoList()
     {
-        errorInfoInitialized = true;
+        ErrorInfo::errorInfoInitialized = true;
 
         ErrorInfo tempList[] = {
             ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
@@ -136,6 +141,10 @@ namespace smart {
             ErrorInfo{ ErrorCode::syntax_error2, 418031, "syntax error2" },
             ErrorInfo{ ErrorCode::should_break_line, 418032, "should have a line break2" },
             ErrorInfo{ ErrorCode::indent_error, 418033, "indent error" },
+
+
+            // value
+            ErrorInfo{ ErrorCode::expect_end_parenthesis, 418133, "expect_end_parenthesis" },
 
             // string
             ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
@@ -173,7 +182,7 @@ namespace smart {
                 exit(8943210);
             }
 
-            ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
+            ErrorInfo::ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
             sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
         }
 
@@ -200,22 +209,22 @@ namespace smart {
     }
 
     static int getErrorId(ErrorCode errorCode) {
-        if (!errorInfoInitialized) {
+        if (!ErrorInfo::errorInfoInitialized) {
             initErrorInfoList();
         }
 
-        auto&& errorInfo = ErrorInfoList[static_cast<int>(errorCode)];
+        auto&& errorInfo = ErrorInfo::ErrorInfoList[static_cast<int>(errorCode)];
         return errorInfo.errorCode;
     }
 
 
     static const char *getErrorMessage(ErrorCode errorCode) {
-        if (!errorInfoInitialized) {
+        if (!ErrorInfo::errorInfoInitialized) {
             initErrorInfoList();
         }
 
         const char *mes = nullptr;
-        auto&& errorInfo = ErrorInfoList[static_cast<int>(errorCode)];
+        auto&& errorInfo = ErrorInfo::ErrorInfoList[static_cast<int>(errorCode)];
         mes = errorInfo.msg;
 
         auto *transMess = translateErrorMessage(errorCode, Language::jp);

@@ -179,6 +179,10 @@ static void validateJson(const char *text, int textLength, const char * const fi
         char* treeText = DocumentUtils::getTextFromTree(document);
 
         if (strcmp(treeText, text) != 0) {
+            fprintf(stderr, "wowow[%s]", treeText);
+            fflush(stderr);
+            fprintf(stderr, "[%s]", text);
+            fflush(stderr);
             // check equality
             exit(0);
             // EXPECT_EQ(strlen(treeText), strlen(chars));

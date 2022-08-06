@@ -238,14 +238,14 @@ namespace smart {
     using ParenthesesNodeStruct = struct {
         NODE_HEADER;
 
-        //SymbolStruct openNode;
-        SymbolStruct closeNode;
+        SymbolStruct openNode;
+        SymbolStruct closeNode2;
 
         NodeBase *valueNode;
     };
 
 
-    /* (mut point: Point) */
+    /* ($int point) */
     using FuncParameterItemStruct = struct {
         NODE_HEADER;
 
@@ -258,6 +258,32 @@ namespace smart {
         SymbolStruct follwingComma;
         bool hasComma;
     };
+
+
+
+    using FuncArgumentItemStruct = struct {
+        NODE_HEADER;
+
+        NodeBase *valueNode;
+        SymbolStruct follwingComma;
+        bool hasComma;
+    };
+
+
+    // value(param, param)
+    using CallFuncNodeStruct = struct {
+        NODE_HEADER;
+
+        NodeBase *valueNode;
+        int parsePhase;
+        SymbolStruct openNode;
+        SymbolStruct closeNode2;
+
+        FuncArgumentItemStruct *firstArgumentItem;
+        FuncArgumentItemStruct *lastArgumentItem;
+    };
+
+
 
 
     using JsonObjectKeyNodeStruct = struct {
@@ -395,7 +421,6 @@ namespace smart {
         NodeBase *leftNode;
         NodeBase *valueNode;
         NodeBase *virtualCodeNode;
-        // int former_start;
         int baseIndent;
         utf8byte *chars;
         SyntaxErrorInfo syntaxErrorInfo;
@@ -619,6 +644,9 @@ namespace smart {
 
         Variable = 25,
         Parentheses = 26,
+        CallFunc = 27,
+        FuncArgument = 28,
+        FuncParameter = 29
 
     };
 
@@ -694,13 +722,15 @@ namespace smart {
                 *const SpaceVTable,
                 *const LineBreakVTable,
                 *const ParenthesesVTable,
+                *const CallFuncVTable,
+                *const FuncArgumentVTable,
 
                 *const LineCommentVTable,
                 *const BlockCommentVTable,
                 *const BlockCommentFragmentVTable,
 
 
-        *const JsonObjectVTable,
+                *const JsonObjectVTable,
                 *const JsonArrayVTable,
                 *const JsonKeyValueItemVTable,
                 *const JsonArrayItemVTable,
@@ -912,6 +942,7 @@ namespace smart {
         static NumberNodeStruct *newNumberNode(ParseContext *context, NodeBase *parentNode);
         static VariableNodeStruct *newVariableNode(ParseContext *context, NodeBase *parentNode);
         static ParenthesesNodeStruct *newParenthesesNode(ParseContext *context, NodeBase *parentNode);
+        static CallFuncNodeStruct *newFuncCallNode(ParseContext *context, NodeBase *parentNode);
 
         static BoolNodeStruct *newBoolNode(ParseContext *context, NodeBase *parentNode);
         static LineBreakNodeStruct *newLineBreakNode(ParseContext *context, NodeBase *parentNode);
@@ -939,6 +970,8 @@ namespace smart {
         static JsonKeyValueItemStruct *newJsonKeyValueItemNode(ParseContext *context, NodeBase *parentNode);
         static JsonArrayStruct *newJsonArray(ParseContext *context, NodeBase *parentNode);
         static JsonArrayItemStruct *newJsonArrayItem(ParseContext *context, NodeBase *parentNode);
+        static FuncParameterItemStruct *newFuncParameterItem(ParseContext *context, NodeBase *parentNode);
+        static FuncArgumentItemStruct *newFuncArgumentItem(ParseContext *context, NodeBase *parentNode);
 
         static DocumentStruct *newDocument(
                 DocumentType docType,
@@ -966,6 +999,7 @@ namespace smart {
         static int variableTokenizer(TokenizerParams_parent_ch_start_context);
         static int valueTokenizer(TokenizerParams_parent_ch_start_context);
         static int parenthesesTokenizer(TokenizerParams_parent_ch_start_context);
+        static int funcCallTokenizer(TokenizerParams_parent_ch_start_context);
 
         static int typeTokenizer(TokenizerParams_parent_ch_start_context);
         static int numberTokenizer(TokenizerParams_parent_ch_start_context);
@@ -1052,6 +1086,9 @@ namespace smart {
                 int start,
                 ParseContext *context
         );
+        static void *
+        generateBlockCommentFragments(void *parentNode, ParseContext *context, const int32_t &i,
+                                      int commendEndIndex);
     };
 }
 

@@ -64,6 +64,19 @@ namespace smart {
     const struct node_vtable *const VTables::JsonArrayItemVTable = &_jsonArrayItemVTable;
 
 
+    JsonArrayItemStruct *Alloc::newJsonArrayItem(ParseContext *context, NodeBase *parentNode) {
+        auto *keyValueItem = context->newMem<JsonArrayItemStruct>();
+
+        INIT_NODE(keyValueItem, context, parentNode, &_jsonArrayItemVTable);
+
+        Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
+
+        keyValueItem->hasComma = false;
+        keyValueItem->valueNode = nullptr;
+
+        return keyValueItem;
+    }
+
 
 
 
@@ -157,19 +170,6 @@ namespace smart {
     }
 
 
-    JsonArrayItemStruct *Alloc::newJsonArrayItem(ParseContext *context, NodeBase *parentNode) {
-        auto *keyValueItem = context->newMem<JsonArrayItemStruct>();
-
-        INIT_NODE(keyValueItem, context, parentNode, &_jsonArrayItemVTable);
-
-        Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
-
-        keyValueItem->hasComma = false;
-        keyValueItem->valueNode = nullptr;
-
-        return keyValueItem;
-    }
-
 
 
     static inline void appendRootNode(JsonArrayStruct *arr, JsonArrayItemStruct *arrayItem) {
@@ -223,7 +223,7 @@ namespace smart {
                 jsonArray->parsePhase = phase::EXPECT_VALUE;
                 return start + 1;
             } else if (context->afterLineBreak) {
-                // comma is not needed after a line break
+                // comma is not required after a line break
                 return parseNextValue(TokenizerParams_pass, jsonArray);
             }
             return -1;

@@ -1,4 +1,5 @@
-﻿#include <stdio.h>
+﻿
+#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <array>
@@ -14,13 +15,14 @@
 
 #include <cstdint>
 #include <ctime>
+#include <stdint.h>
 
 #include "code_nodes.hpp"
 
 namespace smart {
-    ErrorInfo ErrorInfoList[errorListSize];
-    bool errorInfoInitialized{false};
-    static int ab = initErrorInfoList();
+    ErrorInfo ErrorInfo::ErrorInfoList[errorListSize];
+    bool ErrorInfo::errorInfoInitialized{false};
+    //static int _ab = initErrorInfoList();
 
 
     int HashMap::calc_hash(const char *key, int keyLength, size_t max) {
@@ -200,7 +202,7 @@ namespace smart {
         return retPos;
     }
 
-    int Scanner::scan_for_root(void *parentNode,
+    int Scanner::scan_for_root(void *parentNode, // NOLINT(readability-function-cognitive-complexity)
         TokenizerFunction tokenizer,
         int start,
         ParseContext *context,
@@ -211,11 +213,9 @@ namespace smart {
 
         utf8byte ch;
         int returnResult = -1;
-
         int32_t whitespace_startpos = -1;
         void *commentNode = nullptr;
 
-        //context->scanEnd = false;
         for (int32_t i = start; i <= context->length;) {
             ch = context->chars[i];
             // fprintf(stderr, "%c ,", ch);
@@ -223,88 +223,36 @@ namespace smart {
             // __android_log_print(ANDROID_LOG_DEBUG, "aaa", "here = %d,%c",i, ch);
             //console_log(("i:" + std::string(":") + ch + "," + std::to_string(i)).c_str());
 
-
             if (ch == '/') { // comment
-                int idxEnd = -1;
+                int commendEndIndex = -1;
                 bool isLineComment = false;
 
                 // line comment with "//"
                 if ('/' == context->chars[i+1]) {
-                    idxEnd = ParseUtil::indexOfBreakOrEnd(context->chars, context->length, i);
+                    commendEndIndex = ParseUtil::indexOfBreakOrEnd(context->chars, context->length, i);
                     isLineComment = true;
 
                 } // block comment /* */
                 else if ('*' == context->chars[i+1]) {
                     //  find the correspond "*/"
-                    int idxEnd2 = searchEndBlockCommentPos(i + 2, context->chars, context->length);
-                    idxEnd = idxEnd2;
+                    commendEndIndex = searchEndBlockCommentPos(i + 2, context->chars, context->length);
                 }
 
-                if (idxEnd > -1) {
+                if (commendEndIndex > -1) {
                     auto *prevCommentNode = commentNode;
 
                     if (isLineComment) {
                         auto *comment = Alloc::newLineCommentNode(context, Cast::upcast(parentNode));
-                        Init::assignText_SimpleTextNode(comment, context, i, idxEnd - i);
+                        Init::assignText_SimpleTextNode(comment, context, i, commendEndIndex - i);
 
                         commentNode = comment;
                     }
                     else {
-                        auto *blockComment = Alloc::newBlockCommentNode(context, Cast::upcast(parentNode));
-
-                        int currentIndex = i;
-                        BlockCommentFragmentStruct *lastNode = nullptr;
-                        LineBreakNodeStruct *lastBreakLine = nullptr;
-
-                        while (currentIndex < idxEnd) {
-                            int idxOfCommentEnd = ParseUtil::indexOfBreakOrEnd(context->chars, context->length, currentIndex);
-
-                            if (idxEnd < idxOfCommentEnd) {
-                                idxOfCommentEnd = idxEnd;
-                            }
-
-                            if (idxOfCommentEnd > -1 && currentIndex <= idxOfCommentEnd) {
-                                auto *commentFragment = Alloc::newBlockCommentFragmentNode(context,
-                                                                          Cast::upcast(parentNode));
-
-                                commentFragment->prevLineBreakNode = lastBreakLine;
-                                lastBreakLine = nullptr;
-
-                                int commentLength = idxOfCommentEnd - currentIndex;
-                                //fprintf(stderr, "<%d>", commentLength);
-                                Init::assignText_SimpleTextNode(commentFragment, context, currentIndex, commentLength);
-                                //fprintf(stderr, "<%s>", commentFragment->text);
-                                //fprintf(stderr, "<idxOfCommentEnd: %d>", idxOfCommentEnd);
-
-                                auto *newLineBreak = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
-                                bool rn = context->chars[idxOfCommentEnd] == '\r' && context->chars[idxOfCommentEnd+1] == '\n';
-                                if (rn) { // \r\n
-                                    newLineBreak->text[0] = '\r';
-                                    newLineBreak->text[1] = '\n';
-                                    newLineBreak->text[2] = '\0';
-                                    currentIndex = idxOfCommentEnd + 2;
-
-                                } else {
-                                    currentIndex = idxOfCommentEnd + 1;
-                                }
-
-                                lastBreakLine = newLineBreak;
-
-                                if (lastNode != nullptr) {
-                                    lastNode->nextNode = Cast::upcast(commentFragment);
-                                }
-                                lastNode = commentFragment;
-                                if (blockComment->firstCommentFragment == nullptr) {
-                                    blockComment->firstCommentFragment = commentFragment;
-                                }
-                            } else {
-                                break;
-                            }
-                        }
-                        commentNode = blockComment;
+                        commentNode = generateBlockCommentFragments(parentNode, context, i,
+                                                                    commendEndIndex);
                     }
 
-                    NodeBase * comment2 = Cast::upcast(commentNode);
+                    NodeBase *comment2 = Cast::upcast(commentNode);
                     if (whitespace_startpos != -1 && whitespace_startpos < i) {
                         comment2->prev_chars = i - whitespace_startpos;
                         whitespace_startpos = -1;
@@ -314,7 +262,12 @@ namespace smart {
                         comment2->prevCommentNode = prevCommentNode;
                     }
 
-                    i = idxEnd;
+                    if (prevLineBreak != nullptr) {
+                        comment2->prevLineBreakNode = prevLineBreak;
+                        prevLineBreak = nullptr;
+                    }
+
+                    i = commendEndIndex;
                     returnResult = i;
                     continue;
                 }
@@ -357,8 +310,7 @@ namespace smart {
             }
             else if (ParseUtil::isSpace(ch)) {
                 int spaceEndIndex = i + 1;
-
-                for (; spaceEndIndex < context->length; spaceEndIndex++) {
+                for (; spaceEndIndex < context->length; spaceEndIndex++) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
                     if (!ParseUtil::isSpace(context->chars[spaceEndIndex])) {
                         break;
                     }
@@ -378,7 +330,6 @@ namespace smart {
             returnResult = result;
             if (result > -1) {
                 context->afterLineBreak = false;
-
                 context->prevFoundPos = result;
                 //console_log(":try:" + std::to_string(result));
 
@@ -393,13 +344,12 @@ namespace smart {
                         context->leftNode->prevCommentNode = commentNode;
                         commentNode = nullptr;
                     }
-                }
 
-                returnResult = i = result;
-
-                if (context->leftNode != nullptr) {
                     context->leftNode->prevLineBreakNode = prevLineBreak;
                 }
+
+                i = result;
+
                 prevLineBreak = nullptr;
                 lastLineBreak = nullptr;
 
@@ -417,33 +367,76 @@ namespace smart {
             }
 
             if ((ch & 0x80) != 0x80) {
-
             }
-
-            if (!root) {
+            //if (!root) {
                 break;
-            }
-
+            //}
             i++;
         }
 
         if (root) {
-
             context->remainedLineBreakNode = prevLineBreak;
             context->remainedCommentNode = commentNode;
             if (whitespace_startpos > -1 && whitespace_startpos < context->length) {
                 context->remaindPrevChars = context->length - whitespace_startpos;
             }
         }
-        else {
-            if (prevLineBreak) {
-                //delete prevLineBreak;
+        context->scanEnd = false;
+        return returnResult;
+    }
+
+    inline void *Scanner::generateBlockCommentFragments(void *parentNode, ParseContext *context,
+                                           const int32_t &i, int commendEndIndex) {
+        void *commentNode;
+        auto *blockComment = Alloc::newBlockCommentNode(context, Cast::upcast(parentNode));
+
+        int currentIndex = i;
+        BlockCommentFragmentStruct *lastNode = nullptr;
+        LineBreakNodeStruct *lastBreakLine = nullptr;
+
+        while (currentIndex < commendEndIndex) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
+            int idxOfCommentEnd = ParseUtil::indexOfBreakOrEnd(context->chars, context->length, currentIndex);
+
+            if (commendEndIndex < idxOfCommentEnd) {
+                idxOfCommentEnd = commendEndIndex;
+            }
+
+            if (idxOfCommentEnd > -1 && currentIndex <= idxOfCommentEnd) {
+                auto *commentFragment = Alloc::newBlockCommentFragmentNode(context,
+                                                          Cast::upcast(parentNode));
+
+                commentFragment->prevLineBreakNode = lastBreakLine;
+
+                int commentLength = idxOfCommentEnd - currentIndex;
+                Init::assignText_SimpleTextNode(commentFragment, context, currentIndex, commentLength);
+                //fprintf(stderr, "<idxOfCommentEnd: %d>", idxOfCommentEnd);
+
+                auto *newLineBreak = Alloc::newLineBreakNode(context, Cast::upcast(parentNode));
+                bool rn = context->chars[idxOfCommentEnd] == '\r' && context->chars[idxOfCommentEnd+1] == '\n';
+                if (rn) { // \r\n
+                    newLineBreak->text[0] = '\r';
+                    newLineBreak->text[1] = '\n';
+                    newLineBreak->text[2] = '\0';
+                    currentIndex = idxOfCommentEnd + 2;
+                } else {
+                    currentIndex = idxOfCommentEnd + 1;
+                }
+
+                lastBreakLine = newLineBreak;
+
+                if (lastNode != nullptr) {
+                    lastNode->nextNode = Cast::upcast(commentFragment);
+                }
+                lastNode = commentFragment;
+                if (blockComment->firstCommentFragment == nullptr) {
+                    blockComment->firstCommentFragment = commentFragment;
+                }
+            } else {
+                break;
             }
         }
-        context->scanEnd = false;
-
-        //context->former_start = start;
-        return returnResult;
+        commentNode = blockComment;
+        return commentNode;
     }
 
 
@@ -458,10 +451,18 @@ namespace smart {
         }
 
         if (-1 < (result = Tokenizers::parenthesesTokenizer(TokenizerParams_pass))) {
+            // try to find FuncCall Node
+
             return result;
         }
 
         if (-1 < (result = Tokenizers::variableTokenizer(TokenizerParams_pass))) {
+            // try to find FuncCall Node
+            int callFuncPos;
+            if (-1 < (callFuncPos = Tokenizers::funcCallTokenizer(parent, context->chars[result],
+                                                                  result, context))) {
+                return callFuncPos;
+            }
             return result;
         }
 /*

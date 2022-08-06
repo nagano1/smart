@@ -203,7 +203,7 @@ namespace smart {
             self->context->parentDepth = formerParentDepth;
         }
 
-        currentCodeLine = VTableCall::appendToLine(&self->closeNode, currentCodeLine);
+        currentCodeLine = VTableCall::appendToLine(&self->closeNode2, currentCodeLine);
 
         return currentCodeLine;
     }
@@ -225,18 +225,26 @@ namespace smart {
         auto *fnNode = Cast::downcast<ParenthesesNodeStruct *>(parent);
 
         if (ch == ')') {
-            context->setCodeNode(&fnNode->closeNode);
+            context->setCodeNode(&fnNode->closeNode2);
             context->scanEnd = true;
             return start + 1;
         } else {
-            int result;
-            if (-1 < (result = Tokenizers::valueTokenizer(Cast::upcast(fnNode), ch, start,
-                                                          context))) {
-                fnNode->valueNode = context->virtualCodeNode;
-                return result;
-            } else {
-                context->setError(ErrorCode::expect_end_parenthesis_for_fn_params,
+            if (fnNode->valueNode != nullptr && fnNode->valueNode->found > -1) {
+                context->setError(ErrorCode::expect_end_parenthesis,
                                   context->prevFoundPos);
+            }
+            else {
+                int result;
+                if (-1 < (result = Tokenizers::valueTokenizer(Cast::upcast(fnNode), ch, start,
+                                                              context))) {
+                    fnNode->valueNode = context->virtualCodeNode;
+                    fnNode->valueNode->found = start;
+
+                    return result;
+                } else {
+                    context->setError(ErrorCode::expect_end_parenthesis_for_fn_params,
+                                      context->prevFoundPos);
+                }
             }
         }
         return -1;
@@ -278,10 +286,9 @@ namespace smart {
         node->valueNode = nullptr;
 
         //Init::initSymbolNode(&node->openNode, context, node, '(');
-        Init::initSymbolNode(&node->closeNode, context, node, ')');
+        Init::initSymbolNode(&node->closeNode2, context, node, ')');
         return node;
     }
-/*
-*/
+
 
 } // namespace

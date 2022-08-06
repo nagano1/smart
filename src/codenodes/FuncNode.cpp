@@ -25,10 +25,262 @@ namespace smart {
 
 
 
-    /*
-     *
-     */
 
+
+    // -----------------------------------------------------------------------------------
+    //
+    //                              FuncArgumentItemStruct
+    //
+    // -----------------------------------------------------------------------------------
+    static CodeLine *FuncArgument_appendToLine2(FuncArgumentItemStruct *self, CodeLine *currentCodeLine) {
+        currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
+
+        currentCodeLine->appendNode(self);
+
+        if (self->valueNode) {
+            currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+        }
+
+        if (self->hasComma) {
+            currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
+        }
+
+        return currentCodeLine;
+    };
+
+
+    static const utf8byte *FuncArgument_selfText(FuncArgumentItemStruct *) {
+        return "";
+    }
+
+    static int FuncArgument_selfTextLength2(FuncArgumentItemStruct *) {
+        return 0;
+    }
+
+
+    static const node_vtable _funcArgumentItemVTable = CREATE_VTABLE(FuncArgumentItemStruct,
+                                                                     FuncArgument_selfTextLength2,
+                                                                     FuncArgument_selfText,
+                                                                     FuncArgument_appendToLine2,
+                                                                     "<FuncArgument>",
+                                                                     NodeTypeId::FuncArgument);
+
+    const struct node_vtable *const VTables::FuncArgumentVTable  = &_funcArgumentItemVTable;
+
+    FuncArgumentItemStruct *Alloc::newFuncArgumentItem(ParseContext *context, NodeBase *parentNode) {
+        auto *keyValueItem = context->newMem<FuncArgumentItemStruct>();
+
+        INIT_NODE(keyValueItem, context, parentNode, &_funcArgumentItemVTable);
+
+        Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
+
+        keyValueItem->hasComma = false;
+        keyValueItem->valueNode = nullptr;
+
+        return keyValueItem;
+    }
+
+
+
+
+
+    //    +--------------------------+
+    //    | CallFunc Node            |
+    //    +--------------------------+
+    static CodeLine *callfunc_appendToLine(CallFuncNodeStruct *self, CodeLine *currentCodeLine)
+    {
+        // currentCodeLine = currentCodeLine->addPrevLineBreakNode(self->valueNode);
+
+        if (self->valueNode) {
+            currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+        }
+
+        //int formerParentDepth = self->context->parentDepth;
+        //self->context->parentDepth += 1;
+        //self->context->parentDepth = formerParentDepth;
+
+        currentCodeLine = VTableCall::appendToLine(&self->openNode, currentCodeLine);
+
+        self->context->parentDepth += 1;
+
+        auto *item = self->firstArgumentItem;
+        while (item != nullptr) { // NOLINT(altera-unroll-loops,altera-id-dependent-backward-branch)
+            currentCodeLine = VTableCall::appendToLine(item, currentCodeLine);
+            item = Cast::downcast<FuncArgumentItemStruct *>(item->nextNode);
+        }
+
+        self->context->parentDepth -= 1;
+
+
+        currentCodeLine = VTableCall::appendToLine(&self->closeNode2, currentCodeLine);
+
+        return currentCodeLine;
+    }
+
+
+    // virtual node
+    static const char *callfunc_selfText(CallFuncNodeStruct *self)
+    {
+        return "";
+    }
+
+    static int callfun_selfTextLength(CallFuncNodeStruct *self)
+    {
+        return 0;
+    }
+
+
+    static constexpr const char callfuncNodeTypeText[] = "<FuncCall>";
+
+
+    static inline void appendRootNode(CallFuncNodeStruct *arr, FuncArgumentItemStruct *arrayItem) {
+        assert(arr != nullptr && arrayItem != nullptr);
+
+        if (arr->firstArgumentItem == nullptr) {
+            arr->firstArgumentItem = arrayItem;
+        }
+        if (arr->lastArgumentItem != nullptr) {
+            arr->lastArgumentItem->nextNode = Cast::upcast(arrayItem);
+        }
+        arr->lastArgumentItem = arrayItem;
+    }
+
+
+    enum phase {
+        EXPECT_VALUE = 0,
+        EXPECT_COMMA = 3
+    };
+
+
+
+    static inline int parseNextValue(TokenizerParams_parent_ch_start_context, CallFuncNodeStruct* funcCallNode)
+    {
+        int result;
+        if (-1 < (result = Tokenizers::jsonValueTokenizer2(TokenizerParams_pass))) {
+            auto *nextItem = Alloc::newFuncArgumentItem(context, parent);
+
+            nextItem->valueNode = context->virtualCodeNode;
+            appendRootNode(funcCallNode, nextItem);
+            funcCallNode->parsePhase = phase::EXPECT_COMMA;
+            return result;
+        }
+        return -1;
+    }
+
+
+    static int inner_returnStatementTokenizerMulti(TokenizerParams_parent_ch_start_context) {
+        auto *funcCallNode = Cast::downcast<CallFuncNodeStruct*>(parent);
+
+        if (ch == ')') {
+            context->setCodeNode(&funcCallNode->closeNode2);
+            context->scanEnd = true;
+            return start + 1;
+        }
+
+        if (funcCallNode->parsePhase == phase::EXPECT_VALUE) {
+            return parseNextValue(TokenizerParams_pass, funcCallNode);
+        }
+
+        auto *currentKeyValueItem = funcCallNode->lastArgumentItem;
+
+        if (funcCallNode->parsePhase == phase::EXPECT_COMMA) {
+            if (ch == ',') { // try to find ',' which leads to next key-value
+                currentKeyValueItem->hasComma = true;
+                context->setCodeNode(&currentKeyValueItem->follwingComma);
+                funcCallNode->parsePhase = phase::EXPECT_VALUE;
+                return start + 1;
+            } else if (context->afterLineBreak) {
+                // comma is not required after a line break
+                return parseNextValue(TokenizerParams_pass, funcCallNode);
+            }
+            return -1;
+        }
+        return -1;
+    }
+
+
+    int Tokenizers::funcCallTokenizer(TokenizerParams_parent_ch_start_context)
+    {
+        if ('(' == ch) {
+            assert(context->virtualCodeNode != null);
+
+            auto *funcCallNode = Alloc::newFuncCallNode(context, parent);
+
+            funcCallNode->valueNode = context->virtualCodeNode;
+            funcCallNode->valueNode->parentNode = Cast::upcast(funcCallNode);
+
+            auto *leftNode = context->leftNode;
+
+            int currentPos = start + 1;
+            int resultPos;
+            if (-1 < (resultPos = Scanner::scanMulti(funcCallNode,
+                                                     inner_returnStatementTokenizerMulti,
+                                                     currentPos, context))) {
+
+                context->virtualCodeNode = Cast::upcast(funcCallNode);
+                context->leftNode = leftNode;
+                return resultPos;
+            }
+        }
+
+        return -1;
+    }
+
+
+    static const node_vtable _callfuncVTable = CREATE_VTABLE(CallFuncNodeStruct,
+                                                             callfun_selfTextLength,
+                                                             callfunc_selfText,
+                                                             callfunc_appendToLine,
+                                                             callfuncNodeTypeText,
+                                                             NodeTypeId::CallFunc);
+
+    const node_vtable *const VTables::CallFuncVTable = &_callfuncVTable;
+
+
+    CallFuncNodeStruct *Alloc::newFuncCallNode(ParseContext *context, NodeBase *parentNode)
+    {
+        auto *node = context->newMem<CallFuncNodeStruct>();
+        INIT_NODE(node, context, parentNode, VTables::CallFuncVTable);
+        node->valueNode = nullptr;
+        node->parsePhase = phase::EXPECT_VALUE;
+
+        Init::initSymbolNode(&node->openNode, context, node, '(');
+        Init::initSymbolNode(&node->closeNode2, context, node, ')');
+
+        node->firstArgumentItem = nullptr;
+        node->lastArgumentItem = nullptr;
+
+        return node;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //    +--------------------------+
+    //    | BodyNode                 |
+    //    +--------------------------+
     static int selfTextLength2(BodyNodeStruct *) {
         return 1;
     }
@@ -195,7 +447,86 @@ namespace smart {
 
 
 
-// --------------------- Defines FuncNode VTable ---------------------- /
+    // --------------------- Defines FuncNode VTable ---------------------- /
+
+
+
+
+    // -----------------------------------------------------------------------------------
+    //
+    //                              FuncCallParameterItemStruct
+    //
+    // -----------------------------------------------------------------------------------
+    /*
+    static CodeLine *appendToLine2(FuncParameterItemStruct *self, CodeLine *currentCodeLine) {
+        currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
+
+        currentCodeLine->appendNode(self);
+
+        if (self->valueNode) {
+            currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+        }
+
+        if (self->hasComma) {
+            currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
+        }
+
+        return currentCodeLine;
+    };
+
+
+    // virtual
+    static const utf8byte *selfText_JsonKeyValueItemStruct(FuncParameterItemStruct *) {
+        return "";
+    }
+
+    static int selfTextLength2(FuncParameterItemStruct *) {
+        return 0;
+    }
+
+
+    static const node_vtable _jsonArrayItemVTable = CREATE_VTABLE(FuncParameterItemStruct,
+                                                                  selfTextLength2,
+                                                                  selfText_JsonKeyValueItemStruct,
+                                                                  appendToLine2,
+                                                                  "<FuncParameterItem>",
+                                                                  NodeTypeId::FuncParameter);
+
+    const struct node_vtable *const VTables::JsonArrayItemVTable = &_jsonArrayItemVTable;
+
+
+    FuncParameterItemStruct *Alloc::newFuncParameterItem(ParseContext *context, NodeBase *parentNode) {
+        auto *keyValueItem = context->newMem<FuncParameterItemStruct>();
+
+        INIT_NODE(keyValueItem, context, parentNode, &_jsonArrayItemVTable);
+
+        Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
+
+        keyValueItem->hasComma = false;
+        keyValueItem->valueNode = nullptr;
+
+        return keyValueItem;
+    }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //    +--------------------------+
+    //    | FuncDefNode                 |
+    //    +--------------------------+
 
     static int selfTextLength(FuncNodeStruct *) {
         return size_of_fn;
@@ -258,9 +589,6 @@ namespace smart {
 
 
         Init::initNameNode(&funcNode->nameNode, context, parentNode);
-
-        // funcNode->parameterStartFound = false;
-        // funcNode->parameterEndFound = false;
 
         Init::initSymbolNode(&funcNode->parameterStartNode, context, funcNode, '(');
         Init::initSymbolNode(&funcNode->parameterEndNode, context, funcNode, ')');
@@ -406,4 +734,26 @@ namespace smart {
         }
         return -1;
     }
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+} // ok
