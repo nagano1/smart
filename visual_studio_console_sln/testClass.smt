@@ -53,35 +53,31 @@ class fjawioejap
     }
 }
 
-class AClass/**/
-{/**/
-    // awef
-    fn ffanc()
-    {
-        3142314
-        false
-        // jfoiaweoifaw
-        (varname)
-        (912873401297409812780974120987003982)
-        
-        /*
-        */
-        return/*true*/3241//面白すぎ
-        return/**/21241
-        false//tugi ga saigono kyokudesu
-        return 1
-    }
 
-    fn a()
-    {
-        // afjiowe
+class A{
+    class AClass/**/
+    {/**/
+        // awef
+        fn ffanc()
+        {
+            3142314
+            false
+            // jfoiaweoifaw
+            
+            return/*true*/3241//面白すぎ
+            return/**/21241
+            false//tugi ga saigono kyokudesu
+            return 1
+        }
+
+        fn a()
+        {
+            // afjiowe
 
 
 
-
-
-
-    } // afweo
-} // joiwafjoefwa 
-//
-/* fwaei */
+        } // afweo
+    } // joiwafjoefwa 
+    //
+    /* fwaei */
+}

@@ -924,6 +924,7 @@ class fjawioejap
         let f = 3
 
         (3214)
+        funcA(true, "jfiwo")
 
         return
         return 3421
