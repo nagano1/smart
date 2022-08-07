@@ -48,6 +48,7 @@ class fjawioejap
     }
 }
 
+
 class A
 {
     class AClass/**/

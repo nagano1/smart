@@ -409,6 +409,9 @@ namespace smart {
         NodeBase *lastRootNode;
     };
 
+    static const char* tokenTypes[] = {"class", "interface", "enum", "function", "variable", nullptr};
+    static const char* tokenModifiers[] = {"declaration", "documentation", nullptr};
+
     struct ParseContext {
         st_uint start;
         int length;
@@ -586,7 +589,6 @@ namespace smart {
                     lineFirstPos = i;
                 }
             }
-
 
             return false;
         }
@@ -904,6 +906,7 @@ namespace smart {
         static void formatIndent(DocumentStruct *doc);
 
         static utf8byte *getTextFromTree(DocumentStruct *doc);
+        static utf8byte *getSemanticTokensTextFromTree(DocumentStruct *doc, int *len);
         static utf8byte *getTypeTextFromTree(DocumentStruct *doc);
         static utf8byte *getTextFromLine(CodeLine *line);
         static utf8byte *getTextFromNode(NodeBase *line);

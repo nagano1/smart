@@ -103,9 +103,9 @@ static DocumentStruct* latestDocument = nullptr;
 
 
 
-static void sendMessageToClient(char* text, int len)
+static void sendMessageToClient2(char* text, int len, int dummyLen)
 {
-    fprintf(stdout, "Content-Length:%d\r\n\r\n", len);
+    fprintf(stdout, "Content-Length:%d\r\n\r\n", dummyLen);
     fwrite(text, sizeof(char), len, stdout); // fprintf(stdout, "%s", text);
     fflush(stdout);
 
@@ -114,6 +114,18 @@ static void sendMessageToClient(char* text, int len)
     fflush(stderr);
 }
 
+static void sendMessageToClient(char* text, int len) {
+    sendMessageToClient2(text, len, len);
+}
+
+
+
+
+constexpr char tail[] = u8R"(
+
+]}
+})";
+constexpr int a = sizeof(tail) - 1;
 
 
 static void publishSemanticTokens(char *idText, int idTextLen, const char* const filePath, int filePathLength)
@@ -125,21 +137,32 @@ static void publishSemanticTokens(char *idText, int idTextLen, const char* const
 
     /*
 　      { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
-        { line: 2, startChar: 10, length: 4, tokenType: 1, tokenModifiers: 0 },
-        { line: 5, startChar:  2, length: 7, tokenType: 2, tokenModifiers: 0 }
     */
 
     auto* document = latestDocument;
+    int tokensLen;
+    
+    auto* semanticTokens = DocumentUtils::getSemanticTokensTextFromTree(document, &tokensLen);
 
-    char moji[512];
+    char moji[1024];
     int len = sprintf(moji, u8R"(
 {
     "id": %s
-    , "result": null
-})", idText);
+    , "result": {"data":[)", idText);
 
 
-    sendMessageToClient(moji, len);
+    sendMessageToClient2(moji, len, len + tokensLen + a);
+
+    fwrite(semanticTokens, sizeof(char), tokensLen, stdout); // fprintf(stdout, "%s", text);
+
+    fprintf(stderr, "%s", semanticTokens);
+    fprintf(stdout, "%s", tail);
+    fprintf(stderr, "%s", tail);
+
+    fflush(stdout);
+    fflush(stderr);
+
+
 }
 
 static void publishDiagnostics(const char *text, int textLength, const char * const filePath, int filePathLength) {
@@ -291,8 +314,21 @@ void LSPManager::nextRequest(char *chars, int length) {
             fprintf(stderr, "here5: [%s]", methodNode->str);
             fflush(stderr);
 
+            char semanticTokens[512];
+            char tokenModifiersText[512];
+            for (int i = 0, pos = 0; tokenTypes[i] != nullptr; i++) {
+                int len = sprintf(semanticTokens + pos, i== 0 ? "\"%s\"" : ",\"%s\"", tokenTypes[i]);
+                pos += len;
+            } 
+
+            for (int i = 0, pos = 0; tokenModifiers[i] != nullptr; i++) {
+                int len = sprintf(tokenModifiersText + pos, i == 0 ? "\"%s\"" : ",\"%s\"", tokenModifiers[i]);
+                pos += len;
+            }
+
             if (methodNode->textLength > 0 && 0 == strcmp(methodNode->str, "initialize")) {
-                const char body[] = u8R"(
+                char body[1024];
+                int len = sprintf(body, u8R"(
 {
     "jsonrpc": "2.0"
     ,"id" : "0"
@@ -302,16 +338,16 @@ void LSPManager::nextRequest(char *chars, int length) {
             ,"completionProvider": { "resolveProvider": true }
             ,"semanticTokensProvider": {
                 "legend": {
-                    "tokenTypes": ["class", "interface", "enum", "function", "variable"],
-                    "tokenModifiers": ["declaration", "documentation"]
+                    "tokenTypes": [%s],
+                    "tokenModifiers": [%s]
                 }, "range": false
                 , "full": {"delta": false}
             }
         }
     }
-})";
+})", semanticTokens, tokenModifiersText);
 
-                sendMessageToClient((char*)body, sizeof(body)-1);
+                sendMessageToClient((char*)body, len);
             }
 
             if (methodNode->textLength > 0) {

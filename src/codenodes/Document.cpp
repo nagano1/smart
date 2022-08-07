@@ -1,4 +1,5 @@
-﻿#include <cstdio>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <cstdio>
 #include <string>
 #include <array>
 #include <algorithm>
@@ -266,8 +267,74 @@ namespace smart {
 
 
 
+    // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
+    static int getSemanticTokensLength(DocumentStruct *doc, char* text) {
+        char buff[512];
+
+        // get size of chars
+        int totalByteCount = 0;
+        {
+            auto *line = doc->firstCodeLine;
+            int currentLineNo = 0;
+            int bufIndex = 0;
+            bool first = true;
+            while (line) { // NOLINT(altera-id-dependent-backward-branch)
+                auto *node = line->firstNode;
+
+                int charPos = 0;
+                while (node) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
+
+                    charPos += node->prev_chars;
+
+                    int len = VTableCall::selfTextLength(node);
+                    auto *chs = VTableCall::selfText(node);
+
+                    int utf16len = ParseUtil::utf16_length(chs, len);
+
+                    if (ParseUtil::hasCharBeforeLineBreak(chs, len, 0)) {
+                        char* dst = text != nullptr ? text + bufIndex : buff;
+                        // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
+                        int wlen = sprintf(dst,
+                                           "%s%d,%d,%d,0,0",
+                                 first?"":",", currentLineNo, charPos, utf16len);
+
+                        if (first) {
+                            first = false;
+                        }
 
 
+                        if (text != nullptr) {
+                            bufIndex += wlen;
+                        } else {
+                            totalByteCount += wlen;
+                        }
+                    }
+
+                    charPos += utf16len;
+
+                    node = node->nextNodeInLine;
+                }
+
+                line = line->nextLine;
+                currentLineNo++;
+            }
+        }
+
+        return totalByteCount;
+    }
+
+    utf8byte *DocumentUtils::getSemanticTokensTextFromTree(DocumentStruct *doc, int *len)
+    {
+        int totalCount = getSemanticTokensLength(doc, nullptr);
+
+        *len = totalCount;
+        auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
+        text[totalCount] = '\0';
+        getSemanticTokensLength(doc, text);
+        //                     memcpy(text + currentOffset, chs, len);
+
+        return text;
+    }
 
     utf8byte *DocumentUtils::getTextFromTree(DocumentStruct *doc) {
         // get size of chars
