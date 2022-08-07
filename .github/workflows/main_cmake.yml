@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '15 0 * * *' # 分 時 日 月 曜日
+    - cron: '15 0 1 * *' # 分 時 日 月 曜日
 
 
 jobs:
