@@ -13,7 +13,7 @@ class fjawioejap
         ?let *f = null
         $let g = true
         
-        "abcdefg"
+        "abcdefg半永久的"
         3142
         true
         null
@@ -24,6 +24,7 @@ class fjawioejap
         false
         null
         true
+        
         /*
         ofijaweifaow 
         aiwjeofijaw jpawijfw4213

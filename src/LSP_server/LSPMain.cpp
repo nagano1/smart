@@ -103,19 +103,28 @@ static DocumentStruct* latestDocument = nullptr;
 
 
 
-static void sendMessageToClient2(char* text, int len, int dummyLen)
+static void sendMessageToClientHead(char* text, int len, int lenWithExtra)
 {
-    fprintf(stdout, "Content-Length:%d\r\n\r\n", dummyLen);
+    fprintf(stdout, "Content-Length:%d\r\n\r\n", lenWithExtra);
     fwrite(text, sizeof(char), len, stdout); // fprintf(stdout, "%s", text);
     fflush(stdout);
 
     // debug
-    fprintf(stderr, "\nsent message = [%s]", text);
+    fprintf(stderr, "\nsent message = [%s%s", text, len == lenWithExtra ? "]": "");
     fflush(stderr);
+
+}
+
+static void sendMessageToClientExtra(char* text, int len) {
+    fwrite(text, sizeof(char), len, stdout); // fprintf(stdout, "%s", text);
+    fflush(stdout);
+    
+    // debug
+    fprintf(stderr, "%s", text);
 }
 
 static void sendMessageToClient(char* text, int len) {
-    sendMessageToClient2(text, len, len);
+    sendMessageToClientHead(text, len, len);
 }
 
 
@@ -130,7 +139,7 @@ constexpr int a = sizeof(tail) - 1;
 
 static void publishSemanticTokens(char *idText, int idTextLen, const char* const filePath, int filePathLength)
 {
-    if (latestDocument == nullptr) {
+    if (latestDocument == nullptr || latestDocument->context->syntaxErrorInfo.hasError) {
         return;
     }
 
@@ -151,7 +160,7 @@ static void publishSemanticTokens(char *idText, int idTextLen, const char* const
     , "result": {"data":[)", idText);
 
 
-    sendMessageToClient2(moji, len, len + tokensLen + a);
+    sendMessageToClientHead(moji, len, len + tokensLen + a);
 
     fwrite(semanticTokens, sizeof(char), tokensLen, stdout); // fprintf(stdout, "%s", text);
 

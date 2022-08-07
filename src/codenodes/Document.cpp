@@ -269,21 +269,22 @@ namespace smart {
 
     // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
     static int getSemanticTokensLength(DocumentStruct *doc, char* text) {
-        char buff[512];
+        char buff[255];
 
         // get size of chars
         int totalByteCount = 0;
         {
             auto *line = doc->firstCodeLine;
             int currentLineNo = 0;
-            int bufIndex = 0;
+            int textIndex = 0;
             bool first = true;
+            int prevLine = 0;
             while (line) { // NOLINT(altera-id-dependent-backward-branch)
                 auto *node = line->firstNode;
 
                 int charPos = 0;
+                int prevStart = 0;
                 while (node) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
-
                     charPos += node->prev_chars;
 
                     int len = VTableCall::selfTextLength(node);
@@ -291,27 +292,33 @@ namespace smart {
 
                     int utf16len = ParseUtil::utf16_length(chs, len);
 
-                    if (ParseUtil::hasCharBeforeLineBreak(chs, len, 0)) {
-                        char* dst = text != nullptr ? text + bufIndex : buff;
-                        // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
-                        int wlen = sprintf(dst,
-                                           "%s%d,%d,%d,0,0",
-                                 first?"":",", currentLineNo, charPos, utf16len);
+                    //if (node->vtable == VTables::NumberVTable) {
+                        if (len > 0 && ParseUtil::hasCharBeforeLineBreak(chs, len, 0)) {
+                            char *dst = text != nullptr ? text + textIndex : buff;
+                            // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
+                            int wlen = sprintf(dst,
+                                               "%s%d,%d,%d,2,1",
+                                               first ? "" : ",",
+                                               currentLineNo - prevLine,
+                                               charPos - prevStart,
+                                               utf16len);
 
-                        if (first) {
-                            first = false;
+                            if (first) {
+                                first = false;
+                            }
+
+                            prevLine = currentLineNo;
+                            prevStart = charPos;
+
+                            if (text != nullptr) {
+                                textIndex += wlen;
+                            } else {
+                                totalByteCount += wlen;
+                            }
                         }
-
-
-                        if (text != nullptr) {
-                            bufIndex += wlen;
-                        } else {
-                            totalByteCount += wlen;
-                        }
-                    }
+                    //}
 
                     charPos += utf16len;
-
                     node = node->nextNodeInLine;
                 }
 
@@ -329,10 +336,8 @@ namespace smart {
 
         *len = totalCount;
         auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
-        text[totalCount] = '\0';
         getSemanticTokensLength(doc, text);
-        //                     memcpy(text + currentOffset, chs, len);
-
+        text[totalCount] = '\0';
         return text;
     }
 
