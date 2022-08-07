@@ -98,6 +98,9 @@ export const listenToLSPClient = () => {
           'class',
           ['declaration'],
         );
+        let tokens = tokensBuilder.build();
+
+
         let s : SemanticTokens = {
         };
 		sendMessage({
