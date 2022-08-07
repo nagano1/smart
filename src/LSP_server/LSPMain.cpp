@@ -100,9 +100,51 @@ void LSPManager::LSP_main() {
 
 static DocumentStruct* latestDocument = nullptr;
 
-static void validateJson(const char *text, int textLength, const char * const filePath, int filePathLength) {
 
-    auto isCode= ParseUtil::endsWith2(filePath, filePathLength, ".smt");//pls
+
+
+static void sendMessageToClient(char* text, int len)
+{
+    fprintf(stdout, "Content-Length:%d\r\n\r\n", len);
+    fwrite(text, sizeof(char), len, stdout); // fprintf(stdout, "%s", text);
+    fflush(stdout);
+
+    // debug
+    fprintf(stderr, "\nsent message = [%s]", text);
+    fflush(stderr);
+}
+
+
+
+static void publishSemanticTokens(char *idText, int idTextLen, const char* const filePath, int filePathLength)
+{
+    if (latestDocument == nullptr) {
+        return;
+    }
+
+
+    /*
+　      { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
+        { line: 2, startChar: 10, length: 4, tokenType: 1, tokenModifiers: 0 },
+        { line: 5, startChar:  2, length: 7, tokenType: 2, tokenModifiers: 0 }
+    */
+
+    auto* document = latestDocument;
+
+    char moji[512];
+    int len = sprintf(moji, u8R"(
+{
+    "id": %s
+    , "result": null
+})", idText);
+
+
+    sendMessageToClient(moji, len);
+}
+
+static void publishDiagnostics(const char *text, int textLength, const char * const filePath, int filePathLength) {
+
+    auto isCode= ParseUtil::endsWith2(filePath, filePathLength, ".smt"); // pls
     //auto isJson = ParseUtil::endsWith2(filePath, filePathLength, ".txt");
 
     auto *document = Alloc::newDocument(isCode ? DocumentType::CodeDocument : DocumentType::JsonDocument, nullptr);
@@ -168,20 +210,14 @@ static void validateJson(const char *text, int textLength, const char * const fi
     }
 })", filePath ,char1, line1, char2, line2, document->context->syntaxErrorInfo.reason, error2);
 
-
-        std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(len) + "\r\n\r\n" + std::string{ moji };
-
-        fprintf(stdout, "%s", responseMessage.c_str());
-        fflush(stdout);
-        fprintf(stderr, "[%s]", responseMessage.c_str());
-        fflush(stderr);
+        sendMessageToClient((char*)moji, len);
     }
     else {
 
         char* treeText = DocumentUtils::getTextFromTree(document);
 
         if (strcmp(treeText, text) != 0) {
-            fprintf(stderr, "wowow[%s]", treeText);
+            fprintf(stderr, "[%s] != ", treeText);
             fflush(stderr);
             fprintf(stderr, "[%s]", text);
             fflush(stderr);
@@ -194,21 +230,15 @@ static void validateJson(const char *text, int textLength, const char * const fi
         free(treeText);
 
 
-        char moji[1024];
-        sprintf(moji, u8R"(
+        char moji[512];
+        int len = sprintf(moji, u8R"(
 {
     "jsonrpc": "2.0"
     , "method": "textDocument/publishDiagnostics"
     , "params": {"uri":"%s","diagnostics": []}
 })", filePath);
-        fprintf(stderr, "\n\n[%s]\n\n", moji);
-        fflush(stderr);
 
-
-        std::string responseMessage = std::string{ "Content-Length:" } +std::to_string(+strlen(moji)) + "\r\n\r\n" + std::string{ moji };
-
-        fprintf(stdout, "%s", responseMessage.c_str());
-        fflush(stdout);
+        sendMessageToClient((char*)moji, len);
     }
 
     if (latestDocument != nullptr) {
@@ -228,7 +258,7 @@ static void validateJson(const char *text, int textLength, const char * const fi
 
 
 void LSPManager::nextRequest(char *chars, int length) {
-    fprintf(stderr, "req: \n%s", chars);
+    fprintf(stderr, "\nreceived msg = \n[%s]", chars);
     fflush(stderr);
 
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
@@ -277,17 +307,11 @@ void LSPManager::nextRequest(char *chars, int length) {
                 }, "range": false
                 , "full": {"delta": false}
             }
-
         }
     }
 })";
 
-                std::string responseMessage = std::string{ "Content-Length: " } +std::to_string(strlen(body)) + std::string{ "\r\n\r\n" }+std::string{ body };
-
-                fprintf(stderr, "[%s]", responseMessage.c_str()); fflush(stderr);
-
-                fprintf(stdout, "%s", responseMessage.c_str());
-                fflush(stdout);
+                sendMessageToClient((char*)body, sizeof(body)-1);
             }
 
             if (methodNode->textLength > 0) {
@@ -296,8 +320,9 @@ void LSPManager::nextRequest(char *chars, int length) {
                 auto isReqOfFullSemanticTokens = 0 == strcmp(methodNode->str, "textDocument/semanticTokens/full");
 
 
+                auto* params = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
+
                 if (didOpen || didChange) {
-                    auto* params = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
                     auto* textDocument = Cast::downcast<JsonObjectStruct*>(params->hashMap->get2("textDocument"));
                     auto* fileUri = Cast::downcast<StringLiteralNodeStruct*>(textDocument->hashMap->get2("uri"));
 
@@ -309,21 +334,29 @@ void LSPManager::nextRequest(char *chars, int length) {
                         auto* item5 = Cast::downcast<JsonObjectStruct*>(item3->firstItem->valueNode);
                         auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(item5->hashMap->get2("text"));
 
-                        validateJson(item4->str, item4->strLength, fileUri->str, fileUri->strLength);
+                        publishDiagnostics(item4->str, item4->strLength, fileUri->str, fileUri->strLength);
                     }
                     else if (didOpen) {
                         auto* item4 = Cast::downcast<StringLiteralNodeStruct*>(textDocument->hashMap->get2("text"));
 
-                        validateJson(item4->str, item4->strLength, fileUri->str, fileUri->strLength);
+                        publishDiagnostics(item4->str, item4->strLength, fileUri->str, fileUri->strLength);
                     }
                 }
 
                 if (isReqOfFullSemanticTokens) {
-                    /*
-　                      df0d　{ line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
-                        { line: 2, startChar: 10, length: 4, tokenType: 1, tokenModifiers: 0 },
-                        { line: 5, startChar:  2, length: 7, tokenType: 2, tokenModifiers: 0 }
+                    auto* item = rootJson->hashMap->get2("id");
+                    auto* idNode = Cast::downcast<StringLiteralNodeStruct*>(item);
+
+                    auto* textDocument = Cast::downcast<JsonObjectStruct*>(params->hashMap->get2("textDocument"));
+                    auto* fileUri = Cast::downcast<StringLiteralNodeStruct*>(textDocument->hashMap->get2("uri"));
+
+                    /*:
+                    {"jsonrpc":"2.0","id":1,"method":"textDocument/semanticTokens/full"
+                    ,"params":{"textDocument":{"uri":"file:///c%3A/GitProjects/doorlang_root/visual_studio_console_sln/testClass.smt"}}
                     */
+
+                    publishSemanticTokens(idNode->text, idNode->textLength, fileUri->str, fileUri->strLength);
+                    
                 }
             }
 
@@ -331,7 +364,7 @@ void LSPManager::nextRequest(char *chars, int length) {
     }
 
 
-    if (std::string{ chars } == std::string{ treeText }) {
+    if (strcmp(chars, treeText) == 0) {
         fprintf(stderr, "same\n"); fflush(stderr);
     }
     else {

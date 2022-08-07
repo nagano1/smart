@@ -20,7 +20,7 @@ class fjawioejap
         false
 
         "jfiowjaoie"
-        123490
+        241321
         false
         null
         true
@@ -48,9 +48,6 @@ class fjawioejap
     }
 }
 
-
-
-
 class A
 {
     class AClass/**/
@@ -61,7 +58,7 @@ class A
             3142314
             false
             // jfoiaweoifaw
-            
+
             func(true, "jfoiw", 1203)
             
             return/*true*/3241//面白すぎ
@@ -70,7 +67,6 @@ class A
             return 1
 
         }
-
 
         fn a()
         {
@@ -81,4 +77,3 @@ class A
     //
     /* fwaei */
 }
-
