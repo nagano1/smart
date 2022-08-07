@@ -117,7 +117,7 @@ namespace smart {
     }
 
     bool HashMap::has(const char * key, int keyLength) {
-        return this->entries[calc_hash0(key, keyLength)]->key != nullptr;
+        return this->entries[calc_hash0(key, keyLength)] != nullptr;
     }
 
     void HashMap::deleteKey(const char * key, int keyLength) {

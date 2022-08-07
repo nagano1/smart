@@ -268,7 +268,7 @@ namespace smart {
 
 
     // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
-    static int getSemanticTokensLength(DocumentStruct *doc, char* text) {
+    static int getSemanticTokensLength(DocumentStruct *doc, char* text, int line0, int char0, int line1, int char1) {
         char buff[255];
 
         // get size of chars
@@ -293,7 +293,16 @@ namespace smart {
                     int utf16len = ParseUtil::utf16_length(chs, len);
 
                     //if (node->vtable == VTables::NumberVTable) {
-                        if (len > 0 && ParseUtil::hasCharBeforeLineBreak(chs, len, 0)) {
+                    if (len > 0 && ParseUtil::hasCharBeforeLineBreak(chs, len, 0)) {
+                        //"range":{"start":{"line":0,"character":0},"end":{"line":80,"character":1}}}
+                        bool insideRange = true;
+                        if (line0 != -1) {
+                            if (currentLineNo < line0 || line1 < currentLineNo) {
+                                insideRange = false;
+                            }
+                        }
+
+                        if (insideRange) {
                             char *dst = text != nullptr ? text + textIndex : buff;
                             // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
                             int wlen = sprintf(dst,
@@ -316,7 +325,8 @@ namespace smart {
                                 totalByteCount += wlen;
                             }
                         }
-                    //}
+                        //}
+                    }
 
                     charPos += utf16len;
                     node = node->nextNodeInLine;
@@ -330,13 +340,13 @@ namespace smart {
         return totalByteCount;
     }
 
-    utf8byte *DocumentUtils::getSemanticTokensTextFromTree(DocumentStruct *doc, int *len)
+    utf8byte *DocumentUtils::getSemanticTokensTextFromTree(DocumentStruct *doc, int *len, int line0, int char0, int line1, int char1)
     {
-        int totalCount = getSemanticTokensLength(doc, nullptr);
+        int totalCount = getSemanticTokensLength(doc, nullptr, line0, char0, line1, char1);
 
         *len = totalCount;
         auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
-        getSemanticTokensLength(doc, text);
+        getSemanticTokensLength(doc, text, line0, char0, line1, char1);
         text[totalCount] = '\0';
         return text;
     }

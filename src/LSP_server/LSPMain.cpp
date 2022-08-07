@@ -137,7 +137,9 @@ constexpr char tail[] = u8R"(
 constexpr int a = sizeof(tail) - 1;
 
 
-static void publishSemanticTokens(char *idText, int idTextLen, const char* const filePath, int filePathLength)
+static void publishSemanticTokens(char *idText, int idTextLen, const char* const filePath, int filePathLength
+    ,int line0, int char0, int line1, int char1
+)
 {
     if (latestDocument == nullptr || latestDocument->context->syntaxErrorInfo.hasError) {
         return;
@@ -151,7 +153,7 @@ static void publishSemanticTokens(char *idText, int idTextLen, const char* const
     auto* document = latestDocument;
     int tokensLen;
     
-    auto* semanticTokens = DocumentUtils::getSemanticTokensTextFromTree(document, &tokensLen);
+    auto* semanticTokens = DocumentUtils::getSemanticTokensTextFromTree(document, &tokensLen, line0, char0, line1, char1);
 
     char moji[1024];
     int len = sprintf(moji, u8R"(
@@ -162,7 +164,8 @@ static void publishSemanticTokens(char *idText, int idTextLen, const char* const
 
     sendMessageToClientHead(moji, len, len + tokensLen + a);
 
-    fwrite(semanticTokens, sizeof(char), tokensLen, stdout); // fprintf(stdout, "%s", text);
+    sendMessageToClientExtra(semanticTokens, tokensLen);
+    //fwrite(semanticTokens, sizeof(char), tokensLen, stdout); // fprintf(stdout, "%s", text);
 
     fprintf(stderr, "%s", semanticTokens);
     fprintf(stdout, "%s", tail);
@@ -349,7 +352,7 @@ void LSPManager::nextRequest(char *chars, int length) {
                 "legend": {
                     "tokenTypes": [%s],
                     "tokenModifiers": [%s]
-                }, "range": false
+                }, "range": true
                 , "full": {"delta": false}
             }
         }
@@ -363,7 +366,7 @@ void LSPManager::nextRequest(char *chars, int length) {
                 auto didChange = 0 == strcmp(methodNode->str, "textDocument/didChange");
                 auto didOpen = 0 == strcmp(methodNode->str, "textDocument/didOpen");
                 auto isReqOfFullSemanticTokens = 0 == strcmp(methodNode->str, "textDocument/semanticTokens/full");
-
+                auto rangeSemanticTokens = 0 == strcmp(methodNode->str, "textDocument/semanticTokens/range");
 
                 auto* params = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
 
@@ -388,19 +391,41 @@ void LSPManager::nextRequest(char *chars, int length) {
                     }
                 }
 
-                if (isReqOfFullSemanticTokens) {
+                if (isReqOfFullSemanticTokens || rangeSemanticTokens) {
                     auto* item = rootJson->hashMap->get2("id");
                     auto* idNode = Cast::downcast<StringLiteralNodeStruct*>(item);
 
                     auto* textDocument = Cast::downcast<JsonObjectStruct*>(params->hashMap->get2("textDocument"));
                     auto* fileUri = Cast::downcast<StringLiteralNodeStruct*>(textDocument->hashMap->get2("uri"));
 
+
+
+                    int line0 = -1, char0 = -1, line1 = -1, char1 = -1;
+                    if (params->hashMap->has("range", 5)) {
+                        auto* range = Cast::downcast<JsonObjectStruct*>(params->hashMap->get2("range"));
+                        auto* start = Cast::downcast<JsonObjectStruct*>(range->hashMap->get2("start"));
+                        auto* end = Cast::downcast<JsonObjectStruct*>(range->hashMap->get2("end"));
+
+                        line0 = atoi(Cast::downcast<NumberNodeStruct*>(start->hashMap->get2("line"))->text);
+                        char0 = atoi(Cast::downcast<NumberNodeStruct*>(start->hashMap->get2("character"))->text);
+                        line1 = atoi(Cast::downcast<NumberNodeStruct*>(end->hashMap->get2("line"))->text);
+                        char1 = atoi(Cast::downcast<NumberNodeStruct*>(end->hashMap->get2("character"))->text);
+                        fprintf(stderr, "line0 = %d, line1 = %d", line0, line1);
+                    }
+                    /*
+                    */
+
+                    /*
+                    "range":{"start":{"line":0,"character":0},"end":{"line":80,"character":1}}}
+                    */
+
                     /*:
                     {"jsonrpc":"2.0","id":1,"method":"textDocument/semanticTokens/full"
                     ,"params":{"textDocument":{"uri":"file:///c%3A/GitProjects/doorlang_root/visual_studio_console_sln/testClass.smt"}}
                     */
 
-                    publishSemanticTokens(idNode->text, idNode->textLength, fileUri->str, fileUri->strLength);
+                    publishSemanticTokens(idNode->text, idNode->textLength, fileUri->str, fileUri->strLength
+                    ,line0, char0, line1, char1);
                     
                 }
             }

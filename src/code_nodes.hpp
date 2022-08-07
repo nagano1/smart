@@ -906,7 +906,7 @@ namespace smart {
         static void formatIndent(DocumentStruct *doc);
 
         static utf8byte *getTextFromTree(DocumentStruct *doc);
-        static utf8byte *getSemanticTokensTextFromTree(DocumentStruct *doc, int *len);
+        static utf8byte *getSemanticTokensTextFromTree(DocumentStruct *doc, int *len, int line0, int char0, int line1, int char1);
         static utf8byte *getTypeTextFromTree(DocumentStruct *doc);
         static utf8byte *getTextFromLine(CodeLine *line);
         static utf8byte *getTextFromNode(NodeBase *line);
