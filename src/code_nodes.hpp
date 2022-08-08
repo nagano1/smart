@@ -1088,7 +1088,7 @@ namespace smart {
                 int length = st_size_of(word) - 1;
                 if (ParseUtil::matchAt(context->chars, context->length, start, word) > -1 ) {
                     auto *boolNode = (SimpleTextNodeStruct*)(genereater(context, parent));
-                    Init::initSimpleTextNode(boolNode, context, parent, 3);
+                    //Init::initSimpleTextNode(boolNode, context, parent, 3);
 
                     boolNode->text = context->memBuffer.newMem<char>(length + 1);
                     boolNode->textLength = length;

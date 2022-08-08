@@ -450,6 +450,10 @@ namespace smart {
             return result;
         }
 
+        if (-1 < (result = Tokenizers::nullTokenizer(TokenizerParams_pass))) {
+            return result;
+        }
+
         if (-1 < (result = Tokenizers::parenthesesTokenizer(TokenizerParams_pass))) {
             // try to find FuncCall Node
 
@@ -474,9 +478,7 @@ namespace smart {
             return result;
         }
 */
-        if (-1 < (result = Tokenizers::nullTokenizer(TokenizerParams_pass))) {
-            return result;
-        }
+
 
         if (-1 < (result = Tokenizers::stringLiteralTokenizer(TokenizerParams_pass))) {
             return result;

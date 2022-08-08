@@ -588,7 +588,7 @@ namespace smart {
         funcNode->firstChildParameterNode = nullptr;
 
 
-        Init::initNameNode(&funcNode->nameNode, context, parentNode);
+        Init::initNameNode(&funcNode->nameNode, context, funcNode);
 
         Init::initSymbolNode(&funcNode->parameterStartNode, context, funcNode, '(');
         Init::initSymbolNode(&funcNode->parameterEndNode, context, funcNode, ')');
