@@ -1,4 +1,4 @@
-class fjawioejap
+class ClassMine
 {
     fn funcB()
     {
@@ -6,8 +6,6 @@ class fjawioejap
         let *str = "0jfoiwjoie"
         int ab = 123412
         "fjoiiw" // u889u98u
-
-
 
         $float f = 4503
         ?let *f = null
@@ -20,71 +18,44 @@ class fjawioejap
         false
 
         "jfiowjaoie"
-        241321
         false
         null
+        false
         true
+        false
+        let a = "完璧"
         
+        /*aowiej*/
+
         /*
-        ofijaweifaow 
-        aiwjeofijaw jpawijfw4213
-        jioawjeifoaw
-        jfaiwejfiwoajoijw
-        jofijeiowajiwa
+            ofijaweifaow 
+            aiwjeofijaw jpawijfw4213
+            jofijeiowajiwa
         */
-        // joiwfaejfo
-        // joijweoifjaw oiaoiwjfoijwaioji
+
+        /*世界が傾いてました。*/日本語完璧文字🎃🎞🦺🎨jfoiawe/**/
+        let a = "jifowjeoj"
+        /*fjaoiwe*/
+        // joijweoifjaw
 
         let *abc = "joifwjoe01234"
         let f = 343214213
         int a = 3124
-        2134
-        4123
 
+        printf("jfowi")
+        fjawoiefajo
         afwfiiaeawe
-        taijetjwap
-        faijefjwap
         true
         "jofoajwieofawo"
     }
 }
 
+/* */
+// fjaiwoe
+/**/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**/
 
 
 
@@ -201,3 +172,29 @@ class A
     //
     /* fwaei */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

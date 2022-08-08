@@ -409,7 +409,59 @@ namespace smart {
         NodeBase *lastRootNode;
     };
 
-    static const char* tokenTypes[] = {"class", "interface", "enum", "function", "variable", nullptr};
+
+    enum class TokenTypeIds {
+        namespaceId = 0,
+        typeId = 1,
+        classId = 2,
+        enumId = 3,
+        interfaceId = 4,
+        structId = 5,
+        typeParameterId = 6,
+        parameterId = 7,
+        variableId = 8,
+        propertyId = 9,
+        enumMemberId = 10,
+        eventId = 11,
+        functionId = 12,
+        methodId = 13,
+        macroId = 14,
+        keywordId = 15,
+        modifierId = 16,
+        commentId = 17,
+        stringId = 18,
+        numberId = 19,
+        regexp = 20,
+        operatorId = 21,
+        decoratorId = 22
+    };
+
+    static const char* tokenTypes[] = {
+            "namespace",
+            "type",
+            "class",
+            "enum",
+            "interface",
+            "struct",
+            "typeParameter",
+            "parameter",
+            "variable",
+            "property",
+            "enumMember",
+            "event",
+            "function",
+            "method",
+            "macro",
+            "keyword",
+            "modifier",
+            "comment",
+            "string",
+            "number",
+            "regexp",
+            "operator",
+            "decorator",
+            nullptr
+    };
     static const char* tokenModifiers[] = {"declaration", "documentation", nullptr};
 
     struct ParseContext {
@@ -906,7 +958,7 @@ namespace smart {
         static void formatIndent(DocumentStruct *doc);
 
         static utf8byte *getTextFromTree(DocumentStruct *doc);
-        static utf8byte *getSemanticTokensTextFromTree(DocumentStruct *doc, int *len, int line0, int char0, int line1, int char1);
+        static utf8byte *getSemanticTokensTextFromTree(DocumentStruct *doc, int *len, int line0, int line1);
         static utf8byte *getTypeTextFromTree(DocumentStruct *doc);
         static utf8byte *getTextFromLine(CodeLine *line);
         static utf8byte *getTextFromNode(NodeBase *line);

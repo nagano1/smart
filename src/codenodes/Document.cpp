@@ -10,6 +10,7 @@
 #include <cstdio>
 #include <cstdint>
 #include <ctime>
+#include <stdio.h>
 
 #include "code_nodes.hpp"
 
@@ -267,11 +268,153 @@ namespace smart {
 
 
 
-    // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
-    static int getSemanticTokensLength(DocumentStruct *doc, char* text, int line0, int char0, int line1, int char1) {
-        char buff[255];
+    static int getTokenTypeId(NodeBase *node, int i) { // NOLINT(readability-function-cognitive-complexity)
 
-        // get size of chars
+        auto *targetNode = node;
+        if (targetNode->vtable == VTables::SimpleTextVTable) {
+            targetNode = targetNode->parentNode;
+        }
+        
+        if (targetNode->vtable == VTables::VariableVTable) {
+            if (targetNode->parentNode->vtable == VTables::CallFuncVTable) {
+                targetNode = targetNode->parentNode;
+            }
+        }
+
+        if (targetNode->vtable == VTables::BlockCommentFragmentVTable
+            || targetNode->vtable == VTables::LineCommentVTable) {
+            return (int)TokenTypeIds::commentId;
+        }
+        else if (targetNode->vtable == VTables::BoolVTable) {
+            return (int)TokenTypeIds::numberId;
+        }
+        else if (targetNode->vtable == VTables::NumberVTable) {
+            return (int)TokenTypeIds::numberId;
+        }
+        else if (targetNode->vtable == VTables::StringLiteralVTable) {
+            return (int)TokenTypeIds::stringId;
+        }
+        else if (targetNode->vtable == VTables::CallFuncVTable) {
+            return (int)TokenTypeIds::functionId;
+        }
+        else if (targetNode->vtable == VTables::VariableVTable) {
+            return (int)TokenTypeIds::variableId;
+        }
+        else if (targetNode->vtable == VTables::SimpleTextVTable) {
+            return (int)TokenTypeIds::keywordId;
+        }
+        else if (targetNode->vtable == VTables::ClassVTable) {
+            return (int)TokenTypeIds::keywordId;
+        }
+        else if (targetNode->vtable == VTables::FnVTable) {
+            return (int)TokenTypeIds::keywordId;
+        }
+        else if (targetNode->vtable == VTables::SymbolVTable) {
+            return (int)TokenTypeIds::keywordId;
+        }
+        else if (targetNode->vtable == VTables::NullVTable) {
+            return (int)TokenTypeIds::numberId;
+        }
+        else if (targetNode->vtable == VTables::AssignStatementVTable) {
+            auto *assign = Cast::downcast<AssignStatementNodeStruct*>(targetNode);
+            if (assign->hasMutMark || assign->hasNullableMark) {
+                if (i == 0) {
+                    return (int) TokenTypeIds::numberId;
+                }
+            }
+            return (int) TokenTypeIds::keywordId;
+        }
+        else if (targetNode->vtable == VTables::NameVTable) {
+            if (targetNode->parentNode->vtable == VTables::FnVTable) {
+                return (int)TokenTypeIds::functionId;
+            }
+            else if (targetNode->parentNode->vtable == VTables::ClassVTable) {
+                return (int)TokenTypeIds::classId;
+            }
+            else {
+                return (int)TokenTypeIds::variableId;
+            }
+        }
+        return -1;
+    }
+
+    static void splitCharsIfYouWant(NodeBase *node, int *len0, int *utf16Len0, int *len1, int *utf16Len1)
+    {
+
+        auto *chs = VTableCall::selfText(node);
+        int len = VTableCall::selfTextLength(node);
+        *utf16Len0 = ParseUtil::utf16_length(chs, len);
+
+        auto *targetNode = node;
+        if (targetNode->vtable == VTables::SimpleTextVTable) {
+            targetNode = targetNode->parentNode;
+        }
+
+        if (targetNode->vtable == VTables::AssignStatementVTable) {
+            auto *assign = Cast::downcast<AssignStatementNodeStruct*>(targetNode);
+            if (assign->hasMutMark || assign->hasNullableMark) {
+                *utf16Len1 = *utf16Len0 - 1;
+                *len0 = 1;
+                *utf16Len0 = 1;
+                *len1 = len -1;
+                return;
+            }
+        }
+
+
+        if (ParseUtil::hasCharBeforeLineBreak(chs, len, 0)) {
+            *len0 = len;
+        }
+    }
+
+    static inline void awefaf(char *text, int currentLineNo, int *textIndex, bool *first,
+           int *prevLine, NodeBase *node, int *prevStart, int *totalByteCount, int *charPos)
+    {
+
+        int len0 = 0, len1 = 0, utf16Len0 = 0, utf16Len1 = 0;
+        splitCharsIfYouWant(node, &len0, &utf16Len0, &len1, &utf16Len1);
+        static char buff[255];
+
+        for (int i = 0; i <= 1; i++) {
+            int len = i == 0 ? len0 : len1;
+            int utf16len = i == 0 ? utf16Len0 : utf16Len1;
+            char *dst = text != nullptr ? text + *textIndex : buff;
+            if (len > 0) {
+                // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
+
+                int tokenTypeId = getTokenTypeId(node, i);
+                if (tokenTypeId > -1) {
+                    int wlen = sprintf(dst,
+                                       "%s%d,%d,%d,%d,%s",
+                                       *first ? "" : ",",
+                                       currentLineNo - *prevLine,
+                                       *charPos - *prevStart,
+                                       utf16len,
+                                       tokenTypeId,
+                                       "1"
+                    );
+
+                    *prevLine = currentLineNo;
+                    *prevStart = *charPos;
+
+                    if (*first) {
+                        *first = false;
+                    }
+
+                    if (text != nullptr) {
+                        *textIndex += wlen;
+                    } else {
+                        *totalByteCount += wlen;
+                    }
+                }
+            }
+            *charPos += utf16len;
+        }
+    }
+
+
+// { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
+    static int getSemanticTokensLength(DocumentStruct *doc, char* text, int line0, int line1) {
         int totalByteCount = 0;
         {
             auto *line = doc->firstCodeLine;
@@ -280,58 +423,28 @@ namespace smart {
             bool first = true;
             int prevLine = 0;
             while (line) { // NOLINT(altera-id-dependent-backward-branch)
-                auto *node = line->firstNode;
 
-                int charPos = 0;
-                int prevStart = 0;
-                while (node) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
-                    charPos += node->prev_chars;
-
-                    int len = VTableCall::selfTextLength(node);
-                    auto *chs = VTableCall::selfText(node);
-
-                    int utf16len = ParseUtil::utf16_length(chs, len);
-
-                    //if (node->vtable == VTables::NumberVTable) {
-                    if (len > 0 && ParseUtil::hasCharBeforeLineBreak(chs, len, 0)) {
-                        //"range":{"start":{"line":0,"character":0},"end":{"line":80,"character":1}}}
-                        bool insideRange = true;
-                        if (line0 != -1) {
-                            if (currentLineNo < line0 || line1 < currentLineNo) {
-                                insideRange = false;
-                            }
-                        }
-
-                        if (insideRange) {
-                            char *dst = text != nullptr ? text + textIndex : buff;
-                            // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
-                            int wlen = sprintf(dst,
-                                               "%s%d,%d,%d,2,1",
-                                               first ? "" : ",",
-                                               currentLineNo - prevLine,
-                                               charPos - prevStart,
-                                               utf16len);
-
-                            if (first) {
-                                first = false;
-                            }
-
-                            prevLine = currentLineNo;
-                            prevStart = charPos;
-
-                            if (text != nullptr) {
-                                textIndex += wlen;
-                            } else {
-                                totalByteCount += wlen;
-                            }
-                        }
-                        //}
+                bool insideRange = true;
+                if (line0 != -1) {
+                    if (currentLineNo < line0 || line1 < currentLineNo) {
+                        insideRange = false;
                     }
-
-                    charPos += utf16len;
-                    node = node->nextNodeInLine;
                 }
 
+                if (insideRange) {
+                    auto *node = line->firstNode;
+
+                    int charPos = 0;
+                    int prevStart = 0;
+                    while (node) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
+                        charPos += node->prev_chars;
+
+                        awefaf(text, currentLineNo, &textIndex, &first, &prevLine, node,
+                               &prevStart, &totalByteCount, &charPos);
+
+                        node = node->nextNodeInLine;
+                    }
+                }
                 line = line->nextLine;
                 currentLineNo++;
             }
@@ -340,13 +453,14 @@ namespace smart {
         return totalByteCount;
     }
 
-    utf8byte *DocumentUtils::getSemanticTokensTextFromTree(DocumentStruct *doc, int *len, int line0, int char0, int line1, int char1)
+
+    utf8byte *DocumentUtils::getSemanticTokensTextFromTree(DocumentStruct *doc, int *len, int line0, int line1)
     {
-        int totalCount = getSemanticTokensLength(doc, nullptr, line0, char0, line1, char1);
+        int totalCount = getSemanticTokensLength(doc, nullptr, line0, line1);
 
         *len = totalCount;
         auto *text = (char *) malloc(sizeof(char) * totalCount + 1);
-        getSemanticTokensLength(doc, text, line0, char0, line1, char1);
+        getSemanticTokensLength(doc, text, line0, line1);
         text[totalCount] = '\0';
         return text;
     }
@@ -530,6 +644,5 @@ namespace smart {
 
                 callAllLineEvent(docStruct, docStruct->firstCodeLine, context);
         }
-
     }
 }
