@@ -394,7 +394,7 @@ namespace smart {
         BlockCommentFragmentStruct *lastNode = nullptr;
         LineBreakNodeStruct *lastBreakLine = nullptr;
 
-        while (currentIndex < commendEndIndex) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
+        while (currentIndex <= commendEndIndex) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
             int idxOfCommentEnd = ParseUtil::indexOfBreakOrEnd(context->chars, context->length, currentIndex);
 
             if (commendEndIndex < idxOfCommentEnd) {
