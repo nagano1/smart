@@ -38,6 +38,7 @@ Content-Length: 200
 {"jsonrpc":"2.0","method":"initialized","params":{}}
  */
 
+static const bool debugLog = false;
 
 
 
@@ -57,9 +58,10 @@ void LSPManager::LSP_main() {
         int n = 0;
         scanf("Content-Length: %d", &n);
 
-        fprintf(stderr, "n: %d\n", n);
-        fflush(stderr);
-
+        if (debugLog) {
+            fprintf(stderr, "n: %d\n", n);
+            fflush(stderr);
+        }
         if (n > 0) {
             // skip remain headers
             bool lineBreak = false;
@@ -84,8 +86,10 @@ void LSPManager::LSP_main() {
             free(chars);
         }
         else {
-            fprintf(stderr, "FAILED!!!\n");
-            fflush(stderr);
+            if (debugLog) {
+                fprintf(stderr, "FAILED!!!\n");
+                fflush(stderr);
+            }
             int stop = getchar();
             if (EOF == stop) {
                 return;
@@ -112,8 +116,10 @@ static void sendMessageToClientHead(char* text, int len, int lenWithExtra)
     fflush(stdout);
 
     // debug
-    fprintf(stderr, "\nsent message = [%s%s", text, len == lenWithExtra ? "]": "");
-    fflush(stderr);
+    if (debugLog) {
+        fprintf(stderr, "\nsent message = [%s%s", text, len == lenWithExtra ? "]" : "");
+        fflush(stderr);
+    }
 }
 
 static void sendMessageToClientExtra(char* text, int len)
@@ -124,7 +130,9 @@ static void sendMessageToClientExtra(char* text, int len)
     fflush(stdout);
     
     // debug
-    fprintf(stderr, "%s", text);
+    if (debugLog) {
+        fprintf(stderr, "%s", text);
+    }
 }
 
 static void sendMessageToClient(char* text, int len)
@@ -252,10 +260,13 @@ static void publishDiagnostics(const char *text, int textLength, const char * co
         char* treeText = DocumentUtils::getTextFromTree(document);
 
         if (strcmp(treeText, text) != 0) {
-            fprintf(stderr, "[%s] != ", treeText);
-            fflush(stderr);
-            fprintf(stderr, "[%s]", text);
-            fflush(stderr);
+
+            if (debugLog) {
+                fprintf(stderr, "[%s] != ", treeText);
+                fflush(stderr);
+                fprintf(stderr, "[%s]", text);
+                fflush(stderr);
+            }
             // check equality
 
             free(treeText);
@@ -307,9 +318,10 @@ static void publishDiagnostics(const char *text, int textLength, const char * co
 
 
 void LSPManager::nextRequest(char *chars, int length) {
-    fprintf(stderr, "\nreceived msg = \n[%s]", chars);
-    fflush(stderr);
-
+    if (debugLog) {
+        fprintf(stderr, "\nreceived msg = \n[%s]", chars);
+        fflush(stderr);
+    }
     auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, chars, length);
 
@@ -329,17 +341,18 @@ void LSPManager::nextRequest(char *chars, int length) {
     DocumentUtils::generateHashTables(document);
 
     auto *rootJson = Cast::downcast<JsonObjectStruct*>(document->firstRootNode);
-    fprintf(stderr, "type: %s", rootJson->vtable->typeChars);
-    fflush(stderr);
-
+    if (debugLog) {
+        fprintf(stderr, "type: %s", rootJson->vtable->typeChars);
+        fflush(stderr);
+    }
     if (rootJson) {
         auto *item = rootJson->hashMap->get2("method");
         if (item) {
             auto *methodNode = Cast::downcast<StringLiteralNodeStruct*>(item);
-
-            fprintf(stderr, "here5: [%s]", methodNode->str);
-            fflush(stderr);
-
+            //if (debugLog) {
+                fprintf(stderr, "\nmethod: [%s]", methodNode->str);
+                fflush(stderr);
+            //}
             char semanticTokens[512];
             char tokenModifiersText[512];
             for (int i = 0, pos = 0; tokenTypes[i] != nullptr; i++) {
@@ -388,8 +401,10 @@ void LSPManager::nextRequest(char *chars, int length) {
                     auto* textDocument = Cast::downcast<JsonObjectStruct*>(params->hashMap->get2("textDocument"));
                     auto* fileUri = Cast::downcast<StringLiteralNodeStruct*>(textDocument->hashMap->get2("uri"));
 
-                    fprintf(stderr, "file = %s\n", fileUri->str);
-                    fflush(stderr);
+                    if (debugLog) {
+                        fprintf(stderr, "file = %s\n", fileUri->str);
+                        fflush(stderr);
+                    }
 
                     if (didChange) {
                         auto* item3 = Cast::downcast<JsonArrayStruct*>(params->hashMap->get2("contentChanges"));
@@ -424,7 +439,9 @@ void LSPManager::nextRequest(char *chars, int length) {
                         char0 = atoi(Cast::downcast<NumberNodeStruct*>(start->hashMap->get2("character"))->text);
                         line1 = atoi(Cast::downcast<NumberNodeStruct*>(end->hashMap->get2("line"))->text);
                         char1 = atoi(Cast::downcast<NumberNodeStruct*>(end->hashMap->get2("character"))->text);
-                        fprintf(stderr, "line0 = %d, line1 = %d", line0, line1);
+                        if (debugLog) {
+                            fprintf(stderr, "line0 = %d, line1 = %d", line0, line1);
+                        }
                     }
                     /*
                     */
@@ -448,13 +465,14 @@ void LSPManager::nextRequest(char *chars, int length) {
     }
 
 
-    if (strcmp(chars, treeText) == 0) {
-        fprintf(stderr, "same\n"); fflush(stderr);
+    if (debugLog) {
+        if (strcmp(chars, treeText) == 0) {
+            fprintf(stderr, "same\n"); fflush(stderr);
+        }
+        else {
+            fprintf(stderr, "different \n"); fflush(stderr);
+        }
     }
-    else {
-        fprintf(stderr, "different \n"); fflush(stderr);
-    }
-
     free(treeText);
     Alloc::deleteDocument(document);
 
