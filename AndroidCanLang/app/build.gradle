@@ -6,14 +6,12 @@ apply plugin: 'kotlin-kapt'
 
 android {
     signingConfigs {
-
-        /*
         release_sign {
-            storeFile f ile('release.jks')
+            storeFile file('../release.jks')
             storePassword 'doorlang'
             keyAlias = 'key0'
             keyPassword 'doorlang'
-        }*/
+        }
     }
     compileSdkVersion 31
     //buildToolsVersion '30.0.1'
@@ -34,6 +32,9 @@ android {
                 //arguments "-DANDRO\ID_STL=c++_shared"
             }
         }
+
+        signingConfig = signingConfigs.getByName("release_sign")
+
     }
     dataBinding {
         enabled = true
