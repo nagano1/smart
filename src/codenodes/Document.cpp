@@ -286,7 +286,10 @@ namespace smart {
             return (int)TokenTypeIds::commentId;
         }
         else if (targetNode->vtable == VTables::BoolVTable) {
-            return (int)TokenTypeIds::numberId;
+            return -1;
+        }
+        else if (targetNode->vtable == VTables::NullVTable) {
+            return -1;
         }
         else if (targetNode->vtable == VTables::NumberVTable) {
             return (int)TokenTypeIds::numberId;
@@ -301,19 +304,17 @@ namespace smart {
             return (int)TokenTypeIds::variableId;
         }
         else if (targetNode->vtable == VTables::SimpleTextVTable) {
-            return (int)TokenTypeIds::keywordId;
+            return -1;//(int)TokenTypeIds::keywordId;
         }
         else if (targetNode->vtable == VTables::ClassVTable) {
-            return (int)TokenTypeIds::keywordId;
+            return -1;//(int)TokenTypeIds::myclass;
+
         }
         else if (targetNode->vtable == VTables::FnVTable) {
-            return (int)TokenTypeIds::keywordId;
+            return -1;
         }
         else if (targetNode->vtable == VTables::SymbolVTable) {
             return (int)TokenTypeIds::keywordId;
-        }
-        else if (targetNode->vtable == VTables::NullVTable) {
-            return (int)TokenTypeIds::numberId;
         }
         else if (targetNode->vtable == VTables::AssignStatementVTable) {
             auto *assign = Cast::downcast<AssignStatementNodeStruct*>(targetNode);
@@ -322,7 +323,7 @@ namespace smart {
                     return (int) TokenTypeIds::numberId;
                 }
             }
-            return (int) TokenTypeIds::keywordId;
+            return -1;//(int) TokenTypeIds::keywordId;
         }
         else if (targetNode->vtable == VTables::NameVTable) {
             if (targetNode->parentNode->vtable == VTables::FnVTable) {
@@ -340,7 +341,6 @@ namespace smart {
 
     static void splitCharsIfYouWant(NodeBase *node, int *len0, int *utf16Len0, int *len1, int *utf16Len1)
     {
-
         auto *chs = VTableCall::selfText(node);
         int len = VTableCall::selfTextLength(node);
         *utf16Len0 = ParseUtil::utf16_length(chs, len);
@@ -367,49 +367,46 @@ namespace smart {
         }
     }
 
-    static inline void awefaf(char *text, int currentLineNo, int *textIndex, bool *first,
-           int *prevLine, NodeBase *node, int *prevStart, int *totalByteCount, int *charPos)
+    static inline int addSemanticTokens(NodeBase *node, char *text, int currentLineNo, bool *first,
+                                        int *prevSetLine, int *prevSetStart, int *charPos)
     {
-
         int len0 = 0, len1 = 0, utf16Len0 = 0, utf16Len1 = 0;
         splitCharsIfYouWant(node, &len0, &utf16Len0, &len1, &utf16Len1);
-        static char buff[255];
 
-        for (int i = 0; i <= 1; i++) {
+        int writeBytes = 0;
+
+        for (int i = 0; i <= 1; i++) { // NOLINT(altera-unroll-loops)
             int len = i == 0 ? len0 : len1;
             int utf16len = i == 0 ? utf16Len0 : utf16Len1;
-            char *dst = text != nullptr ? text + *textIndex : buff;
             if (len > 0) {
-                // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
-
                 int tokenTypeId = getTokenTypeId(node, i);
                 if (tokenTypeId > -1) {
-                    int wlen = sprintf(dst,
+                    // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
+                    const char *tokenModifiersFlag = "0";
+                    int wlen = sprintf(text + writeBytes,
                                        "%s%d,%d,%d,%d,%s",
                                        *first ? "" : ",",
-                                       currentLineNo - *prevLine,
-                                       *charPos - *prevStart,
+                                       currentLineNo - *prevSetLine,
+                                       *charPos - *prevSetStart,
                                        utf16len,
                                        tokenTypeId,
-                                       "1"
+                                       tokenModifiersFlag
                     );
 
-                    *prevLine = currentLineNo;
-                    *prevStart = *charPos;
+                    if (wlen > 0) {
+                        *prevSetLine = currentLineNo;
+                        *prevSetStart = *charPos;
 
-                    if (*first) {
-                        *first = false;
-                    }
-
-                    if (text != nullptr) {
-                        *textIndex += wlen;
-                    } else {
-                        *totalByteCount += wlen;
+                        if (*first) {
+                            *first = false;
+                        }
+                        writeBytes += wlen;
                     }
                 }
+                *charPos += utf16len;
             }
-            *charPos += utf16len;
         }
+        return writeBytes;
     }
 
 
@@ -417,9 +414,10 @@ namespace smart {
     static int getSemanticTokensLength(DocumentStruct *doc, char* text, int line0, int line1) {
         int totalByteCount = 0;
         {
+            static char buff[255];
+
             auto *line = doc->firstCodeLine;
             int currentLineNo = 0;
-            int textIndex = 0;
             bool first = true;
             int prevLine = 0;
             while (line) { // NOLINT(altera-id-dependent-backward-branch)
@@ -439,8 +437,10 @@ namespace smart {
                     while (node) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
                         charPos += node->prev_chars;
 
-                        awefaf(text, currentLineNo, &textIndex, &first, &prevLine, node,
-                               &prevStart, &totalByteCount, &charPos);
+                        char *dst = text != nullptr ? text + totalByteCount : buff;
+                        int writeBytes = addSemanticTokens(node, dst, currentLineNo, &first, &prevLine,
+                                          &prevStart, &charPos);
+                        totalByteCount += writeBytes;
 
                         node = node->nextNodeInLine;
                     }

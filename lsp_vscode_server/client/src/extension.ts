@@ -11,7 +11,9 @@ import {
 
 import { statSync } from 'fs';
 let client: LanguageClient;
-
+class A {
+    
+}
 export function activate(context: ExtensionContext) {
     /*
     let consoleApp = context.asAbsolutePath(

@@ -4,13 +4,18 @@ class ClassMine
     {
         let a = 893214
         let *str = "0jfoiwjoie"
-        int ab = 123412
-        "fjoiiw" // u889u98u
+        int 二音後ab = 123412
 
-        $float f = 4503
+        $float floata = 4503
         ?let *f = null
-        $let g = true
-        
+        ?let g = true
+
+        int a = "fjoiw"
+
+        /*
+        Let's fucking GO!!!
+        */
+
         "abcdefg半永久的"
         3142
         true
@@ -21,33 +26,31 @@ class ClassMine
         false
         null
         false
-        true
-        false
-        let a = "完璧"
-        
-        /*aowiej*/
-
+        let a = "完"
         /*
-            ofijaweifaow 
-            aiwjeofijaw jpawijfw4213
-            jofijeiowajiwa
+        ofijaweifaow 
+        /**/
+        aiwjeofijaw jpawijfw4213
+        jofijeiowajiwa
         */
 
-        /*世界が傾いてました。*/日本語完璧文字🎃🎞🦺🎨jfoiawe/**/
+        /*世界が傾いてました。*/日本語完璧文字🎃🎞🦺🎨/**/
         let a = "jifowjeoj"
-        /*fjaoiwe*/
-        // joijweoifjaw
+        /* fjaoiwe */
 
         let *abc = "joifwjoe01234"
-        let f = 343214213
+        let f = 343
         int a = 3124
 
         printf("jfowi")
-        fjawoiefajo
+
         afwfiiaeawe
         true
         "jofoajwieofawo"
+
+        return 30
     }
+
 }
 
 /* */
@@ -56,8 +59,6 @@ class ClassMine
 
 
 /**/
-
-
 
 
 
@@ -153,6 +154,8 @@ class A
             3142314
             false
             // jfoiaweoifaw
+
+            $let wow = 3421
 
             func(true, "jfoiw", 1203)
             

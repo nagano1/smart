@@ -222,26 +222,33 @@
 			"patterns": [
                 {
                     "name": "keyword.control.smartlang",
-                    "match": "\\b(class|:|if|while|for|return|fn)\\b"
+                    "match": "\\b(:|if|while|for|return)\\b"
+                },
+                {
+                    "name": "keyword.operator",
+                    "match": "\\="
                 },
                 {
                     "name": "constant.character",
                     "match": "\\$|\\?"
                 },
-                
                 {
                     "name": "constant.language",
                     "match": "\\b(null|true|false)\\b"
                 },
                 {
+                    "name": "keyword.other",
+                    "match": "\\b(class|fn|namespace)\\b"
+                },
+                {
                     "old": {
                         "name": "entity.name.type.smartlang",
-                        "match": "\\b(let|bool|string|double|float)\\b"
+                        "match": "\\b(bool|string|double|float)\\b"
                     }
                 },
                 {
                     "name": "entity.name.tag.smartlang",
-                    "match": "\\b(init|\\=)\\b"
+                    "match": "\\b(init)\\b"
                 },
                 {
                     "namelet": "entity.name.function",
@@ -252,19 +259,24 @@
                     "match": "\\;|\\+|-|\\*|/|\\*\\*|\\!"
                 },
                 {
-                    "name": "keyword.operator"
-                    ,"match": "\\="
-                },
+                    "unused": [
+                        {
+                            "name_old": "keyword.operator"
+                            ,"match_old": "\\="
+                        }
+                    ]
+                }
+                ,
                 {
                     "name": "entity.name.tag"
                     ,"match": "\\{"
                 },
                 {
                     "name": "storage.type",
-                    "match": "\\b(let|int|bool|String|float|double)\\b"
+                    "match": "\\b(bool|String|float|double|let|int)\\b"
                 },
                 {
-                    "name":"entity.name.smartlang",
+                    "name":"variable",
                     "match": "[^\\s\\=\"0-9\/][^\\s\\=\"\/]*"
                 },
                 {
@@ -272,7 +284,8 @@
                     "match_old": "[^\\s\\=\"0-9][^\\s\\=\"]*"
                 },
                 {
-                    "name":"constant.numeric.smartlang",
+                    "name":"constant.numeric",
+                    "name2":"constant.numeric.smartlang",
                     "match": "[0-9]+"
                 }
             ]

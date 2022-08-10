@@ -807,8 +807,7 @@ ENDTEST
 
 //}
 
-TEST(ParserTest_, SameLength_01) {
-    std::string futuretext = u8R"(
+std::string futuretext = u8R"(
 class A {
     class B {
         heap class ObjA {
@@ -887,6 +886,9 @@ class BDD{}
 class AABC  {  }
 
 )";
+
+TEST(ParserTest_, SameLength_01) {
+
     // std::string text = "   class           A   {    }   ";
     //            $let *list: string* | null = null As string* | null
     // 

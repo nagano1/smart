@@ -433,7 +433,8 @@ namespace smart {
         numberId = 19,
         regexp = 20,
         operatorId = 21,
-        decoratorId = 22
+        decoratorId = 22,
+        myclass = 23,
     };
 
     static const char* tokenTypes[] = {
@@ -460,6 +461,7 @@ namespace smart {
             "regexp",
             "operator",
             "decorator",
+            "myclass",
             nullptr
     };
     static const char* tokenModifiers[] = {"declaration", "documentation", nullptr};
