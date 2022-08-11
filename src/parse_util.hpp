@@ -359,6 +359,14 @@ struct ParseUtil {
         return true;
     }
 
+    static inline bool equal(const char* chars, int charsLength, const char* suffix, int suffixLength) {
+        if (charsLength == suffixLength) {
+            return endsWith(chars, charsLength, suffix, suffixLength);
+        }
+        return false;
+    }
+
+
     template<int SIZE>
     static inline bool endsWith2(const char* chars, int charsLength, const char(&suffix)[SIZE])
     {
