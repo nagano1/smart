@@ -3,6 +3,7 @@ set(BINARY ${CMAKE_PROJECT_NAME}_tst)
 file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false
         ../src/thread_pool.cpp
         ../src/codenodes/*.cpp
+        ../src/script_runtime/*.cpp
         google_tests/*.cpp
         google_tests/*.h
         ./test.cpp

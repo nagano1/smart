@@ -235,7 +235,7 @@
 		"testname": "scriptDemo",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptTest_, scriptDemo) {\r\n\r\n    constexpr char text[] = R\"(\r\nfn main() {\r\n    let a = 0\r\n    int b = 0\r\n    print(\"test日本語\")\r\n}\r\n)\";\r\n    const char* chars = text;// .c_str();\r\n    auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);\r\n    DocumentUtils::parseText(document, chars, sizeof(text) - 1);\r\n    DocumentUtils::generateHashTables(document);\r\n\r\n    char* treeText = DocumentUtils::getTextFromTree(document);\r\n    printf(\"%s\\n\", treeText);\r\n\r\n    EXPECT_EQ(strcmp(treeText, text), 0);\r\n\r\n    startScript(document);\r\n}\r\n\r\n"
+		"body": "TEST(ScriptTest_, scriptDemo) {\r\n\r\n        constexpr char text[] = R\"(\r\nfn main() {\r\n    let a = 0\r\n    int b = 0\r\n    print(\"test日本語\")\r\n}\r\n)\";\r\n        const char* chars = text;// .c_str();\r\n        auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);\r\n        DocumentUtils::parseText(document, chars, sizeof(text) - 1);\r\n        DocumentUtils::generateHashTables(document);\r\n\r\n        char* treeText = DocumentUtils::getTextFromTree(document);\r\n        printf(\"%s\\n\", treeText);\r\n\r\n        EXPECT_EQ(strcmp(treeText, text), 0);\r\n\r\n        startScript(document);\r\n    }\r\n\r\n    "
 	},
 	{
 		"testcasename": "SpeedTest",
