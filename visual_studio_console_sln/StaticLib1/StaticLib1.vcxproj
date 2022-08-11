@@ -169,6 +169,7 @@
     <ClInclude Include="..\..\src\code_nodes.hpp" />
     <ClInclude Include="..\..\src\common.hpp" />
     <ClInclude Include="..\..\src\parse_util.hpp" />
+    <ClInclude Include="..\..\src\script_runtime\script_runtime.hpp" />
     <ClInclude Include="..\..\src\thread_pool.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -188,6 +189,7 @@
     <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
+    <ClCompile Include="..\..\src\script_runtime\script_runtime.cpp" />
     <ClCompile Include="..\..\src\thread_pool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

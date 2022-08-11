@@ -9,6 +9,7 @@
 
 #include "code_nodes.hpp"
 #include "parse_util.hpp"
+#include "script_runtime/script_runtime.hpp"
 
 using namespace smart;
 
@@ -17,54 +18,23 @@ int main()
 {
     printf("Smart Lang v0.0.1\n");
 
-    std::string text = u8R"(
-class A {
-    class B {
-        class TestCl😂日本語10234ass
-        {
-            fn func()
-            {
-                1234123
-                "jfoiwaejio"
-                null
-                2134123
-
-                1234123
-                "jfoiwaejio"
-                2134123
-
-                let c = 0
-                let d = 893214
-                $let intA = 314
-
-                let c = 0
-                let d = 893214
-            }
-        }
-    }
-}
-class A {}
-class A {}
-class A {}
-class BDD{}
-
-
-
-class AABC  {  }
-
-fn doWhateverYouWant() {
+    constexpr char text[] = R"(
+fn main() {
     let a = 0
     int b = 0
+    print("test日本語")
 }
 )";
 
-    const char* chars = text.c_str();
+    const char* chars = text;// .c_str();
     auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
-    DocumentUtils::parseText(document, chars, text.size());
+    DocumentUtils::parseText(document, chars, sizeof(text)-1);
     DocumentUtils::generateHashTables(document);
 
     char* treeText = DocumentUtils::getTextFromTree(document);
     //printf("%s\n", treeText);
+
+    startScript(document);
 
 
     auto* rootNode = document->firstRootNode;
@@ -78,9 +48,37 @@ fn doWhateverYouWant() {
         else if (rootNode->vtable == VTables::FnVTable) {
             // fn
             auto* fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
-            printf("<%s()>", fnNode->nameNode.name);
+            printf("<%s()>\n", fnNode->nameNode.name);
             auto* childNode = fnNode->bodyNode.firstChildNode;
             while (childNode) {
+                if (childNode->vtable == VTables::CallFuncVTable) {
+                    printf("Func Call!!!!!!!!!!!!!!!!\n");
+                    auto* funcCall = Cast::downcast<CallFuncNodeStruct*>(childNode);
+                    funcCall->valueNode;
+
+
+                    auto* arg = funcCall->firstArgumentItem;
+                    if (arg != nullptr) {
+                        while (true) {
+                            printf("arg ");
+                            printf("arg = <%s>\n", arg->valueNode->vtable->typeChars);
+                            auto* valueNode = arg->valueNode;
+                            if (valueNode->vtable == VTables::StringLiteralVTable) {
+                                auto* stringArg = Cast::downcast<StringLiteralNodeStruct*>(valueNode);
+                                printf("arg = <%s>\n", stringArg->str);
+
+                            }
+
+                            if (arg->nextNode == nullptr) {
+                                break;
+                            }
+                            else {
+                                arg = Cast::downcast<FuncArgumentItemStruct*>(arg->nextNode);
+                            }
+                        }
+                    }
+
+                }
                 printf("<%s>", childNode->vtable->typeChars);
 
                 childNode = childNode->nextNode;

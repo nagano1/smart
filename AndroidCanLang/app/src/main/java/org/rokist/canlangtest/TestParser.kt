@@ -38,6 +38,8 @@ class TestParser {
                 val syntaxErrorGroup = TestGroup("SyntaxErrors")
                 topTestGroup.addTest(syntaxErrorGroup)
 
+                val scriptRuntimeGroup = TestGroup("Script Runtime")
+                topTestGroup.addTest(scriptRuntimeGroup)
 
                 val parserGroup =  TestGroup("Parser Tests")
                 topTestGroup.addTest(parserGroup)
@@ -62,11 +64,17 @@ class TestParser {
 
                     if (testCaseName.startsWith("SpeedTest")) {
                         speedGroup.addTest(testEntry)
-                    } else if (filename.startsWith("parser_test")) {
+                    }
+                    else if (filename.startsWith("script_runtime")) {
+                        scriptRuntimeGroup.addTest(testEntry)
+                    }
+                    else if (filename.startsWith("parser_test")) {
                         parserGroup.addTest(testEntry)
-                    } else if (filename.startsWith("syntax_error")) {
+                    }
+                    else if (filename.startsWith("syntax_error")) {
                         syntaxErrorGroup.addTest(testEntry)
-                    } else {
+                    }
+                    else {
                         topTestGroup.addTest(testEntry)
                     }
                     dict[testEntry.name] = testEntry

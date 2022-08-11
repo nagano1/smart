@@ -44,6 +44,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\..\tests\google_tests\coding_operation_tests.cpp" />
+    <ClCompile Include="..\..\tests\google_tests\script_runtime_test.cpp" />
     <ClCompile Include="..\..\tests\google_tests\syntax_error_tests.cpp" />
     <ClCompile Include="..\..\tests\google_tests\tokenizers_test.cpp" />
     <ClCompile Include="..\..\tests\test.cpp" />

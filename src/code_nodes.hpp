@@ -722,6 +722,8 @@ namespace smart {
         VTABLE_DEF(NodeBase)
     };
 
+
+
     // this is for static type checking
     template<typename T>
     struct vtableT {

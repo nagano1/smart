@@ -31,8 +31,11 @@ include_directories(${lib_src_dir})
 add_definitions("-DCMAKE_TEST=1")
 
 file(GLOB code_nodes_files "${lib_src_dir}/codenodes/*.cpp")
+file(GLOB script_runtime_files "${lib_src_dir}/script_runtime/*.cpp")
 
 file(GLOB test_files "${tests_src_dir}/*.cpp")
+
+
 
 
 add_library( # Sets the name of the library.
@@ -50,6 +53,7 @@ add_library( # Sets the name of the library.
         ${lib_src_dir}/LSP_server/LSPMain.cpp
         ${lib_src_dir}/LSP_server/LSPLocalServer.cpp
         ${code_nodes_files}
+        ${script_runtime_files}
 
         ${tests_src_dir}/../testlib_impl.cpp
         ${test_files}

@@ -10,6 +10,7 @@
 #include "code_nodes.hpp"
 #include "parse_util.hpp"
 #include "../test_common.h"
+#include "script_runtime/script_runtime.hpp"
 
 using namespace smart;
 
@@ -892,7 +893,7 @@ TEST(ParserTest_, SameLength_01) {
     // std::string text = "   class           A   {    }   ";
     //            $let *list: string* | null = null As string* | null
     // 
-    std::string text = u8R"(
+    constexpr char text[] = R"(
 class fjawioejap
 {
     fn funcB()
@@ -938,7 +939,7 @@ class/**/A/**/{
 }
 )";
 
-    testCodeEquality(text.c_str(), text.length());
+    testCodeEquality(text, sizeof(text)-1);
 }
 
 ENDTEST
@@ -1299,6 +1300,7 @@ ENDTEST
 
 
 TEST(ParserTest_, ParseUtil) {
+
 
     EXPECT_EQ(true, ParseUtil::isIdentifierLetter('a'));
 

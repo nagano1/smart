@@ -26,7 +26,7 @@ class ClassMine
         false
         null
         false
-        let a = "完"
+        let *a = "完"
         /*
         ofijaweifaow 
         /**/
