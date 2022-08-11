@@ -37,57 +37,6 @@ fn main() {
     startScript(document);
 
 
-    auto* rootNode = document->firstRootNode;
-    while (rootNode != nullptr) {
-
-        // printf("%s\n", rootNode->vtable->typeChars);
-        
-        if (rootNode->vtable == VTables::ClassVTable) {
-            // class
-        }
-        else if (rootNode->vtable == VTables::FnVTable) {
-            // fn
-            auto* fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
-            printf("<%s()>\n", fnNode->nameNode.name);
-            auto* childNode = fnNode->bodyNode.firstChildNode;
-            while (childNode) {
-                if (childNode->vtable == VTables::CallFuncVTable) {
-                    printf("Func Call!!!!!!!!!!!!!!!!\n");
-                    auto* funcCall = Cast::downcast<CallFuncNodeStruct*>(childNode);
-                    funcCall->valueNode;
-
-
-                    auto* arg = funcCall->firstArgumentItem;
-                    if (arg != nullptr) {
-                        while (true) {
-                            printf("arg ");
-                            printf("arg = <%s>\n", arg->valueNode->vtable->typeChars);
-                            auto* valueNode = arg->valueNode;
-                            if (valueNode->vtable == VTables::StringLiteralVTable) {
-                                auto* stringArg = Cast::downcast<StringLiteralNodeStruct*>(valueNode);
-                                printf("arg = <%s>\n", stringArg->str);
-
-                            }
-
-                            if (arg->nextNode == nullptr) {
-                                break;
-                            }
-                            else {
-                                arg = Cast::downcast<FuncArgumentItemStruct*>(arg->nextNode);
-                            }
-                        }
-                    }
-
-                }
-                printf("<%s>", childNode->vtable->typeChars);
-
-                childNode = childNode->nextNode;
-            }
-        }
-
-        rootNode = rootNode->nextNode;
-    }
-
     Alloc::deleteDocument(document);
 
     /*

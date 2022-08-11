@@ -37,22 +37,22 @@ namespace smart {
 
     TEST(ScriptTest_, scriptDemo) {
 
-        constexpr char text[] = R"(
-fn main() {
+        constexpr char source[] = R"(
+fn main()
+{
     let a = 0
     int b = 0
     print("test日本語")
 }
 )";
-        const char* chars = text;// .c_str();
         auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
-        DocumentUtils::parseText(document, chars, sizeof(text) - 1);
+        DocumentUtils::parseText(document, source, sizeof(source) - 1);
         DocumentUtils::generateHashTables(document);
 
         char* treeText = DocumentUtils::getTextFromTree(document);
         printf("%s\n", treeText);
 
-        EXPECT_EQ(strcmp(treeText, text), 0);
+        EXPECT_EQ(strcmp(treeText, source), 0);
 
         startScript(document);
     }

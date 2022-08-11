@@ -117,7 +117,7 @@ constexpr OS_TYPE os_type = OS_TYPE::UNIX;
 #ifdef NO_SPEED_TEST
 constexpr bool speed_test = false;
 #else
-constexpr bool speed_test = true;//// true
+constexpr bool speed_test = false;// true
 #endif
 
 #ifdef CMAKE_TEST
