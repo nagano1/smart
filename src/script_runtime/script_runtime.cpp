@@ -70,7 +70,8 @@ namespace smart {
     }
 
 
-    static ValueBase *newValue(bool heap) {
+    static ValueBase *newValue(bool heap)
+    {
         auto *emptyTypeEntry = (ValueBase*)malloc(sizeof(ValueBase));// this->context->newMem<TypeEntry>();
         emptyTypeEntry->ptr = nullptr;
         emptyTypeEntry->size = 0;
@@ -168,18 +169,20 @@ namespace smart {
         return nullptr;
     }
 
-
-    ValueBase *evaluateNode(NodeBase *valueNode, ValueBase *const testPointer)
+    ValueBase *ScriptEnv::evaluateNode(NodeBase *expressionNode)
     {
-        assert(valueNode != nullptr);
-        assert(valueNode->vtable != nullptr);
+        return ScriptEnv::evaluateNodeOrTest(expressionNode, nullptr);
+    }
 
-        if (valueNode->vtable == VTables::StringLiteralVTable) {
-            auto* strNode = Cast::downcast<StringLiteralNodeStruct *>(valueNode);
+    ValueBase *ScriptEnv::evaluateNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer)
+    {
+        assert(expressionNode != nullptr);
+        assert(expressionNode->vtable != nullptr);
 
-            if (testPointer) {
-                return testPointer;
-            }
+        if (expressionNode->vtable == VTables::StringLiteralVTable) {
+            auto* strNode = Cast::downcast<StringLiteralNodeStruct *>(expressionNode);
+
+            if (testPointer) { return testPointer; }
 
             auto *value = ScriptEnv::newValueForHeap();
             value->typeIndex = BuiltInTypeIndex::heapString;
@@ -192,12 +195,10 @@ namespace smart {
             return value;
         }
 
-        if (valueNode->vtable == VTables::NumberVTable) {
-            auto* numberNode = Cast::downcast<NumberNodeStruct *>(valueNode);
+        if (expressionNode->vtable == VTables::NumberVTable) {
+            auto* numberNode = Cast::downcast<NumberNodeStruct *>(expressionNode);
 
-            if (testPointer) {
-                return testPointer;
-            }
+            if (testPointer) { return testPointer; }
 
             auto *value = ScriptEnv::newValueForHeap();
             value->typeIndex = BuiltInTypeIndex::int32;
@@ -209,6 +210,12 @@ namespace smart {
             return value;
         }
 
+        if (expressionNode->vtable == VTables::CallFuncVTable) {
+            //auto *funcCall = Cast::downcast<CallFuncNodeStruct *>(expressionNode);
+            //auto *valueBase = this->evaluateNode(funcCall->exprNode);
+            if (testPointer) { return testPointer; }
+
+        }
 
         return nullptr;
     }
@@ -220,14 +227,12 @@ namespace smart {
 
             if (childNode->vtable == VTables::CallFuncVTable) {
                 auto* funcCall = Cast::downcast<CallFuncNodeStruct*>(childNode);
-
-                // printf("jfoiweio")
                 auto* arg = funcCall->firstArgumentItem;
                 if (arg != nullptr) {
                     while (true) {
                         printf("arg = <%s>\n", arg->exprNode->vtable->typeChars);
 
-                        auto *valueBase = evaluateNode(arg->exprNode, nullptr);
+                        auto *valueBase = env->evaluateNode(arg->exprNode);
                         auto *chars = env->typeEntryList[valueBase->typeIndex]->toString(valueBase);
                         printf("chars = [%s]\n", chars);
 
@@ -245,17 +250,12 @@ namespace smart {
                     }
                 }
             }
-
             childNode = childNode->nextNode;
         }
-
     }
-
-
 
     void startScript(char* script, int scriptLength)
     {
-
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
         auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);

@@ -61,7 +61,6 @@ namespace smart {
 
     using TypeEntry = struct _typeEntry {
         int typeIndex;
-
         char *(*toString)(ValueBase* value);
     };
 
@@ -71,6 +70,10 @@ namespace smart {
         int typeEntryListNextIndex;
 
         ScriptEngingContext *context;
+
+        ValueBase* evaluateNode(NodeBase* expressionNode);
+        ValueBase *evaluateNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer);
+
 
         static void deleteScriptEnv(_ScriptEnv *doc);
         static _ScriptEnv *newScriptEnv();

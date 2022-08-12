@@ -17,7 +17,6 @@
 #include "parse_util.hpp"
 #include "common.hpp"
 #include "errors.hpp"
-#include "script_runtime/script_runtime.hpp"
 
 
 //using utf8byte = char;
@@ -275,7 +274,7 @@ namespace smart {
     using CallFuncNodeStruct = struct {
         NODE_HEADER;
 
-        NodeBase *valueNode;
+        NodeBase *exprNode;
         int parsePhase;
         SymbolStruct openNode;
         SymbolStruct closeNode2;

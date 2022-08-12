@@ -90,8 +90,8 @@ namespace smart {
     {
         // currentCodeLine = currentCodeLine->addPrevLineBreakNode(self->exprNode);
 
-        if (self->valueNode) {
-            currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+        if (self->exprNode) {
+            currentCodeLine = VTableCall::appendToLine(self->exprNode, currentCodeLine);
         }
 
         //int formerParentDepth = self->context->parentDepth;
@@ -205,8 +205,8 @@ namespace smart {
 
             auto *funcCallNode = Alloc::newFuncCallNode(context, parent);
 
-            funcCallNode->valueNode = context->virtualCodeNode;
-            funcCallNode->valueNode->parentNode = Cast::upcast(funcCallNode);
+            funcCallNode->exprNode = context->virtualCodeNode;
+            funcCallNode->exprNode->parentNode = Cast::upcast(funcCallNode);
 
             auto *leftNode = context->leftNode;
 
@@ -240,7 +240,7 @@ namespace smart {
     {
         auto *node = context->newMem<CallFuncNodeStruct>();
         INIT_NODE(node, context, parentNode, VTables::CallFuncVTable);
-        node->valueNode = nullptr;
+        node->exprNode = nullptr;
         node->parsePhase = phase::EXPECT_VALUE;
 
         Init::initSymbolNode(&node->openNode, context, node, '(');
