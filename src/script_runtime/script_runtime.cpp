@@ -46,7 +46,7 @@ namespace smart {
                 for (int i = 0; i < scriptEnv->typeEntryListNextIndex; i++) { // NOLINT(altera-unroll-loops)
                     scriptEnv->typeEntryList[i] = (TypeEntry*)oldListPointer[i];
                 }
-                delete oldListPointer;
+                free(oldListPointer);
             }
 
             return true;
