@@ -95,8 +95,8 @@ namespace smart {
 
         auto *returnNode = Cast::downcast<ReturnStatementNodeStruct *>(parent);
         int result;
-        if (-1 < (result = Tokenizers::valueTokenizer(Cast::upcast(returnNode), ch,
-                                                          start, context))) {
+        if (-1 < (result = Tokenizers::expressionTokenizer(Cast::upcast(returnNode), ch,
+                                                           start, context))) {
             returnNode->valueNode = context->virtualCodeNode;
             context->scanEnd = true;
 

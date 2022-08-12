@@ -22,22 +22,13 @@ int main()
 fn main() {
     let a = 0
     int b = 0
-    print("test日本語")
+    print("test日本語", 4321)
 }
 )";
 
-    const char* chars = text;// .c_str();
-    auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
-    DocumentUtils::parseText(document, chars, sizeof(text)-1);
-    DocumentUtils::generateHashTables(document);
-
-    char* treeText = DocumentUtils::getTextFromTree(document);
-    //printf("%s\n", treeText);
-
-    startScript(document);
+    startScript((char*)text, sizeof(text)-1);
 
 
-    Alloc::deleteDocument(document);
 
     /*
     auto* item = document->hashMap->get2("method");

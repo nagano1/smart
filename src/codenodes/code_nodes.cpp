@@ -440,7 +440,7 @@ namespace smart {
     }
 
 
-    int Tokenizers::valueTokenizer(TokenizerParams_parent_ch_start_context) {
+    int Tokenizers::expressionTokenizer(TokenizerParams_parent_ch_start_context) {
         int result = Tokenizers::numberTokenizer(TokenizerParams_pass);
         if (result > -1) {
             return result;

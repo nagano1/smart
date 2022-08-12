@@ -17,6 +17,7 @@
 #include "parse_util.hpp"
 #include "common.hpp"
 #include "errors.hpp"
+#include "script_runtime/script_runtime.hpp"
 
 
 //using utf8byte = char;
@@ -264,7 +265,7 @@ namespace smart {
     using FuncArgumentItemStruct = struct {
         NODE_HEADER;
 
-        NodeBase *valueNode;
+        NodeBase *exprNode; // expression Node
         SymbolStruct follwingComma;
         bool hasComma;
     };
@@ -739,8 +740,8 @@ namespace smart {
             decltype(std::declval<vtableT<T>>().selfTextLength) f1,
             decltype(std::declval<vtableT<T>>().selfText) f2,
             decltype(std::declval<vtableT<T>>().appendToLine) f3,
-            const char(&f4)[SIZE],
-            NodeTypeId f5
+            const char(&f5)[SIZE],
+            NodeTypeId f6
     ) noexcept {
         return 0;
     }
@@ -1056,7 +1057,7 @@ namespace smart {
     struct Tokenizers {
         static int nameTokenizer(TokenizerParams_parent_ch_start_context);
         static int variableTokenizer(TokenizerParams_parent_ch_start_context);
-        static int valueTokenizer(TokenizerParams_parent_ch_start_context);
+        static int expressionTokenizer(TokenizerParams_parent_ch_start_context);
         static int parenthesesTokenizer(TokenizerParams_parent_ch_start_context);
         static int funcCallTokenizer(TokenizerParams_parent_ch_start_context);
 

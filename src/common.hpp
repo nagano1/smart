@@ -94,6 +94,8 @@ inline void console_log(const char *str) {
 #endif
 
 
+
+
 struct MemBufferBlock {
     void *list = nullptr;
     MemBufferBlock *next = nullptr;

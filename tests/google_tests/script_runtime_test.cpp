@@ -35,7 +35,7 @@ namespace smart {
 
 
 
-    TEST(ScriptTest_, scriptDemo) {
+    TEST(ScriptEngine, scriptDemo) {
 
         constexpr char source[] = R"(
 fn main()
@@ -45,19 +45,26 @@ fn main()
     print("test日本語")
 }
 )";
-        auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
-        DocumentUtils::parseText(document, source, sizeof(source) - 1);
-        DocumentUtils::generateHashTables(document);
 
-        char* treeText = DocumentUtils::getTextFromTree(document);
-        printf("%s\n", treeText);
 
-        EXPECT_EQ(strcmp(treeText, source), 0);
-
-        startScript(document);
+        startScript((char*)source, sizeof(source)-1);
     }
 
     ENDTEST
 
+        TEST(ScriptEngine, scriptEngine) {
+
+        constexpr char source[] = R"(
+fn main()
+{
+    let a = 0
+    int b = 0
+    print("test日本語")
+}
+)";
+        startScript((char*)source, sizeof(source)-1);
+    }
+
+    ENDTEST
 
 }

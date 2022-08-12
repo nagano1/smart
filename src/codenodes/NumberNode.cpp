@@ -155,6 +155,8 @@ namespace smart {
             TEXT_MEMCPY(numberNode->text, context->chars + start, found_count);
             numberNode->text[found_count] = '\0';
 
+            numberNode->num = atoi(numberNode->text);
+
             return start + found_count;
         }
 
@@ -235,8 +237,8 @@ namespace smart {
             }
             else {
                 int result;
-                if (-1 < (result = Tokenizers::valueTokenizer(Cast::upcast(fnNode), ch, start,
-                                                              context))) {
+                if (-1 < (result = Tokenizers::expressionTokenizer(Cast::upcast(fnNode), ch, start,
+                                                                   context))) {
                     fnNode->valueNode = context->virtualCodeNode;
                     fnNode->valueNode->found = start;
 

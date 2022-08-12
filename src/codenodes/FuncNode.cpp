@@ -37,8 +37,8 @@ namespace smart {
 
         currentCodeLine->appendNode(self);
 
-        if (self->valueNode) {
-            currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+        if (self->exprNode) {
+            currentCodeLine = VTableCall::appendToLine(self->exprNode, currentCodeLine);
         }
 
         if (self->hasComma) {
@@ -57,7 +57,6 @@ namespace smart {
         return 0;
     }
 
-
     static const node_vtable _funcArgumentItemVTable = CREATE_VTABLE(FuncArgumentItemStruct,
                                                                      FuncArgument_selfTextLength2,
                                                                      FuncArgument_selfText,
@@ -75,7 +74,7 @@ namespace smart {
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
 
         keyValueItem->hasComma = false;
-        keyValueItem->valueNode = nullptr;
+        keyValueItem->exprNode = nullptr;
 
         return keyValueItem;
     }
@@ -89,7 +88,7 @@ namespace smart {
     //    +--------------------------+
     static CodeLine *callfunc_appendToLine(CallFuncNodeStruct *self, CodeLine *currentCodeLine)
     {
-        // currentCodeLine = currentCodeLine->addPrevLineBreakNode(self->valueNode);
+        // currentCodeLine = currentCodeLine->addPrevLineBreakNode(self->exprNode);
 
         if (self->valueNode) {
             currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
@@ -159,7 +158,7 @@ namespace smart {
         if (-1 < (result = Tokenizers::jsonValueTokenizer2(TokenizerParams_pass))) {
             auto *nextItem = Alloc::newFuncArgumentItem(context, parent);
 
-            nextItem->valueNode = context->virtualCodeNode;
+            nextItem->exprNode = context->virtualCodeNode;
             appendRootNode(funcCallNode, nextItem);
             funcCallNode->parsePhase = phase::EXPECT_COMMA;
             return result;
@@ -202,7 +201,7 @@ namespace smart {
     int Tokenizers::funcCallTokenizer(TokenizerParams_parent_ch_start_context)
     {
         if ('(' == ch) {
-            assert(context->virtualCodeNode != null);
+            assert(context->virtualCodeNode != nullptr);
 
             auto *funcCallNode = Alloc::newFuncCallNode(context, parent);
 
@@ -394,7 +393,7 @@ namespace smart {
                 else {
                     // value as a statement
                     int result;
-                    if (-1 < (result = Tokenizers::valueTokenizer(TokenizerParams_pass))) {
+                    if (-1 < (result = Tokenizers::expressionTokenizer(TokenizerParams_pass))) {
                         appendChildNode(body, context->virtualCodeNode);
                         return result;
                     }
@@ -463,8 +462,8 @@ namespace smart {
 
         currentCodeLine->appendNode(self);
 
-        if (self->valueNode) {
-            currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+        if (self->exprNode) {
+            currentCodeLine = VTableCall::appendToLine(self->exprNode, currentCodeLine);
         }
 
         if (self->hasComma) {
@@ -503,7 +502,7 @@ namespace smart {
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
 
         keyValueItem->hasComma = false;
-        keyValueItem->valueNode = nullptr;
+        keyValueItem->exprNode = nullptr;
 
         return keyValueItem;
     }

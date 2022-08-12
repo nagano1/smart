@@ -31,6 +31,7 @@ namespace smart {
         return ""; // self->useMut ? "mut" : "let";
     }
 
+
     static CodeLine *appendToLine(AssignStatementNodeStruct *self, CodeLine *currentCodeLine) {
 
         if (!self->onlyAssign) {
@@ -146,8 +147,8 @@ namespace smart {
             }
         } else {
             int result;
-            if (-1 < (result = Tokenizers::valueTokenizer(Cast::upcast(assignment), ch,
-                                                              start, context))) {
+            if (-1 < (result = Tokenizers::expressionTokenizer(Cast::upcast(assignment), ch,
+                                                               start, context))) {
                 assignment->valueNode = context->virtualCodeNode;
                 context->scanEnd = true;
 
