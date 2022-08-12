@@ -91,7 +91,7 @@ namespace smart {
     char *int32_toString(ValueBase *value)
     {
         auto * chars = (char*)malloc(sizeof(char) * 64);
-        sprintf(chars, "%d", *(int*)value->ptr);
+        //sprintf(chars, "%d", *(int*)value->ptr);
         return chars;
     }
 
