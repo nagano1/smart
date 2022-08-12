@@ -88,7 +88,7 @@ namespace smart {
         return newValue(false);
     }
 
-    char *int32_toString(ValueBase *value)
+    char* int32_toString(ValueBase *value)
     {
         auto * chars = (char*)malloc(sizeof(char) * 64);
         sprintf(chars, "%d", *(int*)value->ptr);
@@ -102,17 +102,17 @@ namespace smart {
 
     static void _registerBuiltInTypes(ScriptEnv* scriptEnv)
     {
+        // int32
         TypeEntry *int32Type = scriptEnv->newTypeEntry();
         int32Type->toString = int32_toString;
         scriptEnv->registerTypeEntry(int32Type);
         BuiltInTypeIndex::int32 = int32Type->typeIndex;
 
-
+        // heap string
         TypeEntry* heapStringType = scriptEnv->newTypeEntry();
         heapStringType->toString = heapString_toString;
         scriptEnv->registerTypeEntry(heapStringType);
         BuiltInTypeIndex::heapString = heapStringType->typeIndex;
-
     }
 
     int BuiltInTypeIndex::int32 = 0;
@@ -183,7 +183,7 @@ namespace smart {
 
             auto *value = ScriptEnv::newValueForHeap();
             value->typeIndex = BuiltInTypeIndex::heapString;
-            int size = (1 + strNode->strLength)*sizeof(char);
+            unsigned int size = (1 + strNode->strLength) * sizeof(char);
             auto *array = (char*)malloc(size);
             array[strNode->strLength] = '\0';
             memcpy(array, strNode->str, strNode->strLength);

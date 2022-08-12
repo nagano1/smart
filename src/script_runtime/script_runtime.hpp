@@ -27,7 +27,7 @@ namespace smart {
     using ValueBase = struct _valueBase {
         int typeIndex;
         void* ptr;
-        int size; // byte size
+        unsigned int size; // byte size
         bool isHeap;
     };
 
