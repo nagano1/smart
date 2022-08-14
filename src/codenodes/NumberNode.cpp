@@ -203,7 +203,7 @@ namespace smart {
             auto formerArithmeticDepth = self->context->arithmeticBaseDepth;
             self->context->arithmeticBaseDepth = -1;
 
-            int diff = currentCodeLine->depth == self->context->parentDepth ? 1 : 1;
+            int diff = currentCodeLine->depth == self->context->parentDepth ? 0 : 1;
             int formerParentDepth = self->context->parentDepth;
             self->context->parentDepth += diff;
             currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
@@ -314,44 +314,33 @@ namespace smart {
 
     static CodeLine *binaryop_appendToLine(BinaryOperationNodeStruct *self, CodeLine *currentCodeLine)
     {
-        auto *baseLine = currentCodeLine;
-
-
         if (self->leftExprNode) {
             currentCodeLine = VTableCall::appendToLine(self->leftExprNode, currentCodeLine);
         }
 
 
         int formerParentDepth = self->context->parentDepth;
+        int formerArithmeticDepth = self->context->arithmeticBaseDepth;
 
         int diff = currentCodeLine->depth == self->context->parentDepth ? 0 : 1;
 
         int newDepth = self->context->arithmeticBaseDepth > -1 ?
                        self->context->arithmeticBaseDepth : formerParentDepth + diff;
 
-        auto formerArithmeticDepth = self->context->arithmeticBaseDepth;
-        if (self->context->arithmeticBaseDepth == -1) {
-            self->context->arithmeticBaseDepth = formerParentDepth + diff;
-        }
-
-
+        self->context->arithmeticBaseDepth = newDepth;
 
 
         self->context->parentDepth = newDepth;
 
-
         currentCodeLine = VTableCall::appendToLine(&self->opNode, currentCodeLine);
-        //if (baseLine != currentCodeLine) {
-//            self->context->parentDepth = newDepth;
-        //}
+
 
         if (self->rightExprNode) {
             currentCodeLine = VTableCall::appendToLine(self->rightExprNode, currentCodeLine);
         }
 
         self->context->parentDepth = formerParentDepth;
-
-        self->context->arithmeticBaseDepth = formerParentDepth;
+        self->context->arithmeticBaseDepth = formerArithmeticDepth;
 
         return currentCodeLine;
     }
