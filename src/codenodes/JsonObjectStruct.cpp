@@ -197,7 +197,6 @@ namespace smart {
         auto formerParentDepth = self->context->parentDepth;
         self->context->parentDepth += 1;
 
-
         JsonKeyValueItemStruct *item = self->firstKeyValueItem;
         while (item != nullptr) {
             currentCodeLine = VTableCall::appendToLine(item, currentCodeLine);

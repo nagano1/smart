@@ -245,6 +245,15 @@ namespace smart {
     };
 
 
+    using BinaryOperationNodeStruct = struct {
+        NODE_HEADER;
+
+        NodeBase *leftExprNode;
+        SymbolStruct opNode;
+        NodeBase *rightExprNode;
+    };
+
+
     /* ($int point) */
     using FuncParameterItemStruct = struct {
         NODE_HEADER;
@@ -483,7 +492,8 @@ namespace smart {
         SyntaxErrorInfo syntaxErrorInfo;
         bool has_cancel_request{false};
         bool has_depth_error{false};
-        int parentDepth{ -1 };
+        int parentDepth { -1 };
+        int arithmeticBaseDepth{ -1 };
 
         // node caches
         AssignStatementNodeStruct *unusedAssignment;
@@ -702,8 +712,9 @@ namespace smart {
         Parentheses = 26,
         CallFunc = 27,
         FuncArgument = 28,
-        FuncParameter = 29
+        FuncParameter = 29,
 
+        BinaryOperation = 30
     };
 
     #define VTABLE_DEF(T) \
@@ -782,6 +793,9 @@ namespace smart {
                 *const ParenthesesVTable,
                 *const CallFuncVTable,
                 *const FuncArgumentVTable,
+
+                // operation
+                *const BinaryOperationVTable,
 
                 *const LineCommentVTable,
                 *const BlockCommentVTable,
@@ -1013,6 +1027,9 @@ namespace smart {
         static BlockCommentNodeStruct *newBlockCommentNode(ParseContext *context, NodeBase *parentNode);
         static BlockCommentFragmentStruct *newBlockCommentFragmentNode(ParseContext *context, NodeBase *parentNode);
 
+        // operations
+        static BinaryOperationNodeStruct *newBinaryOperationNode(ParseContext *context, NodeBase *parentNode, char op);
+
 
 
 
@@ -1059,6 +1076,8 @@ namespace smart {
         static int expressionTokenizer(TokenizerParams_parent_ch_start_context);
         static int parenthesesTokenizer(TokenizerParams_parent_ch_start_context);
         static int funcCallTokenizer(TokenizerParams_parent_ch_start_context);
+        static int binaryOperationTokenizer(TokenizerParams_parent_ch_start_context);
+
 
         static int typeTokenizer(TokenizerParams_parent_ch_start_context);
         static int numberTokenizer(TokenizerParams_parent_ch_start_context);

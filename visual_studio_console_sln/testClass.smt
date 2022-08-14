@@ -39,8 +39,21 @@ class ClassMine
         /* fjaoiwe */
 
         let *abc = "joifwjoe01234"
-        let f = 343
-        int a = 3124
+        
+        (343
+            + 23142    
+            - 1234132
+        + 1234)
+        
+        (
+            343
+                - 1234132
+                - (3241
+                    + 214
+                )
+        )
+            
+        int a = (3124)
 
         printf("jfowi")
 
@@ -50,7 +63,6 @@ class ClassMine
 
         return 30
     }
-
 }
 
 /* */

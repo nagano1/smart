@@ -610,6 +610,7 @@ namespace smart {
         context->remaindPrevChars = 0;
         context->baseIndent = 4;
         context->parentDepth = -1;
+        context->arithmeticBaseDepth = -1;
         context->afterLineBreak = false;
 
         context->unusedAssignment = nullptr;

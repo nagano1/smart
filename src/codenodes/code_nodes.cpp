@@ -441,50 +441,40 @@ namespace smart {
 
 
     int Tokenizers::expressionTokenizer(TokenizerParams_parent_ch_start_context) {
-        int result = Tokenizers::numberTokenizer(TokenizerParams_pass);
-        if (result > -1) {
-            return result;
+        int result = numberTokenizer(TokenizerParams_pass);
+
+        if (result == -1) result = boolTokenizer(TokenizerParams_pass);
+        if (result == -1) result = nullTokenizer(TokenizerParams_pass);
+        if (result == -1) result = parenthesesTokenizer(TokenizerParams_pass);
+        if (result == -1) result = variableTokenizer(TokenizerParams_pass);
+        if (result == -1) result = stringLiteralTokenizer(TokenizerParams_pass);
+
+        if (result == -1) return -1;
+
+        // access operator
+        // pointer->val
+        // "jfiowj".length
+
+
+        // call func expression
+        // func()
+        int extraPos;
+        if (-1 < (extraPos = Tokenizers::funcCallTokenizer(parent, context->chars[result],
+                                                           result, context))) {
+            result = extraPos;
         }
 
-        if (-1 < (result = Tokenizers::boolTokenizer(TokenizerParams_pass))) {
-            return result;
-        }
-
-        if (-1 < (result = Tokenizers::nullTokenizer(TokenizerParams_pass))) {
-            return result;
-        }
-
-        if (-1 < (result = Tokenizers::parenthesesTokenizer(TokenizerParams_pass))) {
-            // try to find FuncCall Node
-
-            return result;
-        }
-
-        if (-1 < (result = Tokenizers::variableTokenizer(TokenizerParams_pass))) {
-            // try to find FuncCall Node
-            int callFuncPos;
-            if (-1 < (callFuncPos = Tokenizers::funcCallTokenizer(parent, context->chars[result],
+        //  binary operator expression
+        // calc() + 421431
+        if (-1 < (extraPos = Tokenizers::binaryOperationTokenizer(parent, context->chars[result],
                                                                   result, context))) {
-                return callFuncPos;
-            }
-            return result;
-        }
-/*
-        if (-1 < (result = Tokenizers::jsonObjectTokenizer(TokenizerParams_pass))) {
-            return result;
+            result = extraPos;
         }
 
-        if (-1 < (result = Tokenizers::jsonArrayTokenizer(TokenizerParams_pass))) {
-            return result;
-        }
-*/
+
+        return result;
 
 
-        if (-1 < (result = Tokenizers::stringLiteralTokenizer(TokenizerParams_pass))) {
-            return result;
-        }
-
-        return -1;
     }
 
 }

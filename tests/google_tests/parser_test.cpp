@@ -926,7 +926,12 @@ class fjawioejap
 
         let f = 3
 
-        (3214)
+        
+        (
+            324 
+                - 1243213
+        )
+        
         funcA(true, "jfiwo")
 
         return
