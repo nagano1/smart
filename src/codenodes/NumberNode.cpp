@@ -205,7 +205,7 @@ namespace smart {
             self->context->parentDepth = formerParentDepth;
         }
 
-        currentCodeLine = VTableCall::appendToLine(&self->closeNode2, currentCodeLine);
+        currentCodeLine = VTableCall::appendToLine(&self->closeNode, currentCodeLine);
 
         return currentCodeLine;
     }
@@ -227,7 +227,7 @@ namespace smart {
         auto *fnNode = Cast::downcast<ParenthesesNodeStruct *>(parent);
 
         if (ch == ')') {
-            context->setCodeNode(&fnNode->closeNode2);
+            context->setCodeNode(&fnNode->closeNode);
             context->scanEnd = true;
             return start + 1;
         } else {

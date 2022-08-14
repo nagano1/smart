@@ -239,7 +239,7 @@ namespace smart {
         NODE_HEADER;
 
         SymbolStruct openNode;
-        SymbolStruct closeNode2;
+        SymbolStruct closeNode;
 
         NodeBase *valueNode;
     };

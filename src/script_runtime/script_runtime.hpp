@@ -71,8 +71,8 @@ namespace smart {
 
         ScriptEngingContext *context;
 
-        ValueBase* evaluateNode(NodeBase* expressionNode);
-        ValueBase *evaluateNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer);
+        ValueBase* evaluateExprNode(NodeBase* expressionNode);
+        ValueBase *evaluateExprNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer);
 
 
         static void deleteScriptEnv(_ScriptEnv *doc);

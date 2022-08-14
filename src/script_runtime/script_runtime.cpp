@@ -169,12 +169,21 @@ namespace smart {
         return nullptr;
     }
 
-    ValueBase *ScriptEnv::evaluateNode(NodeBase *expressionNode)
+    ValueBase *ScriptEnv::evaluateExprNode(NodeBase *expressionNode)
     {
-        return ScriptEnv::evaluateNodeOrTest(expressionNode, nullptr);
+        return ScriptEnv::evaluateExprNodeOrTest(expressionNode, nullptr);
     }
 
-    ValueBase *ScriptEnv::evaluateNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer)
+    static inline ValueBase *genValueBase(int type, int size, void *ptr) {
+        auto *value = ScriptEnv::newValueForHeap();
+        value->typeIndex = type;
+        value->ptr = malloc(size);
+        *(void**)ptr = value->ptr;
+        value->size = size;
+        return value;
+    }
+
+    ValueBase *ScriptEnv::evaluateExprNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer)
     {
         assert(expressionNode != nullptr);
         assert(expressionNode->vtable != nullptr);
@@ -184,14 +193,12 @@ namespace smart {
 
             if (testPointer) { return testPointer; }
 
-            auto *value = ScriptEnv::newValueForHeap();
-            value->typeIndex = BuiltInTypeIndex::heapString;
-            unsigned int size = (1 + strNode->strLength) * sizeof(char);
-            auto *array = (char*)malloc(size);
-            array[strNode->strLength] = '\0';
-            memcpy(array, strNode->str, strNode->strLength);
-            value->ptr = array;
-            value->size = size;
+            int size = (1 + strNode->strLength) * (int)sizeof(char);
+            char *chars;
+            auto *value = genValueBase(BuiltInTypeIndex::heapString, size, &chars);
+            memcpy(chars, strNode->str, strNode->strLength);
+            chars[strNode->strLength] = '\0';
+
             return value;
         }
 
@@ -200,19 +207,15 @@ namespace smart {
 
             if (testPointer) { return testPointer; }
 
-            auto *value = ScriptEnv::newValueForHeap();
-            value->typeIndex = BuiltInTypeIndex::int32;
-            int size = sizeof(int);
-            auto *int32val = (int*)malloc(size);
-            *int32val = numberNode->num;
-            value->ptr = int32val;
-            value->size = size;
+            int *int32ptr;
+            auto *value = genValueBase(BuiltInTypeIndex::int32, sizeof(int), &int32ptr);
+            *int32ptr = numberNode->num;
             return value;
         }
 
         if (expressionNode->vtable == VTables::CallFuncVTable) {
             //auto *funcCall = Cast::downcast<CallFuncNodeStruct *>(expressionNode);
-            //auto *valueBase = this->evaluateNode(funcCall->exprNode);
+            //auto *valueBase = this->evaluateExprNode(funcCall->exprNode);
             if (testPointer) { return testPointer; }
 
         }
@@ -232,7 +235,7 @@ namespace smart {
                     while (true) {
                         printf("arg = <%s>\n", arg->exprNode->vtable->typeChars);
 
-                        auto *valueBase = env->evaluateNode(arg->exprNode);
+                        auto *valueBase = env->evaluateExprNode(arg->exprNode);
                         auto *chars = env->typeEntryList[valueBase->typeIndex]->toString(valueBase);
                         printf("chars = [%s]\n", chars);
 

@@ -158,9 +158,9 @@ namespace smart {
                       int start,
                       ParseContext *context
     ) {
+
         return Scanner::scan_for_root(parentNode, tokenizer, start, context, false, false);
     }
-
 
     // scan until scanEnd==true
     int Scanner::scanMulti(void *parentNode,
