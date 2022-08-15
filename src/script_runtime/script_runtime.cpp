@@ -213,6 +213,10 @@ namespace smart {
             return value;
         }
 
+        if (expressionNode->vtable == VTables::VariableVTable) {
+
+        }
+
         if (expressionNode->vtable == VTables::CallFuncVTable) {
             //auto *funcCall = Cast::downcast<CallFuncNodeStruct *>(expressionNode);
             //auto *valueBase = this->evaluateExprNode(funcCall->exprNode);
@@ -223,6 +227,7 @@ namespace smart {
         return nullptr;
     }
 
+
     static void executeMain(ScriptEnv* env, FuncNodeStruct* mainFunc)
     {
         auto* childNode = mainFunc->bodyNode.firstChildNode;
@@ -230,6 +235,8 @@ namespace smart {
 
             if (childNode->vtable == VTables::CallFuncVTable) {
                 auto* funcCall = Cast::downcast<CallFuncNodeStruct*>(childNode);
+                funcCall->exprNode
+
                 auto* arg = funcCall->firstArgumentItem;
                 if (arg != nullptr) {
                     while (true) {

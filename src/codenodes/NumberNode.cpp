@@ -200,16 +200,17 @@ namespace smart {
         int form = currentCodeLine->depth;
 
         if (self->valueNode) {
+            int formerParentDepth = self->context->parentDepth;
             auto formerArithmeticDepth = self->context->arithmeticBaseDepth;
             self->context->arithmeticBaseDepth = -1;
 
             int diff = currentCodeLine->depth == self->context->parentDepth ? 0 : 1;
-            int formerParentDepth = self->context->parentDepth;
             self->context->parentDepth += diff;
             currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
-            self->context->parentDepth = formerParentDepth;
+
 
             self->context->arithmeticBaseDepth = formerArithmeticDepth;
+            self->context->parentDepth = formerParentDepth;
 
         }
 
@@ -372,7 +373,7 @@ namespace smart {
     static int inner_op_binaryOpTokenizer(TokenizerParams_parent_ch_start_context) {
 
         if (ch == '+' || ch == '*' || ch == '-' || ch == '/' || ch == '%'
-            || ch == '&' || ch == '|'){
+            || ch == '&' || ch == '|') {
 
             auto *binaryOpNode = Alloc::newBinaryOperationNode(context, parent, ch);
 
@@ -383,6 +384,7 @@ namespace smart {
 
         return -1;
     }
+
 
     int Tokenizers::binaryOperationTokenizer(TokenizerParams_parent_ch_start_context)
     {

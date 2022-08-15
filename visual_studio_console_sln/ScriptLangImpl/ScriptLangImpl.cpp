@@ -20,9 +20,11 @@ int main()
 
     constexpr char text[] = R"(
 fn main() {
-    let a = 0
+    let a = (
+        3 + 5 + 6
+    )
     int b = 0
-    print("test日本語", 4321)
+    print("test日本語", 4321, "432")
 }
 )";
 
@@ -38,8 +40,6 @@ fn main() {
     auto* strNode = Cast::downcast<StringLiteralNodeStruct*>(item);
     strNode->strLength;
     strNode->textLength;
-
-
     */
 
     printf("\n\n...end\n");
