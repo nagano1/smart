@@ -197,11 +197,13 @@ namespace smart {
     {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self)
                                          ->appendNode(self);
-        int form = currentCodeLine->depth;
+        int formerDepth = currentCodeLine->depth;
 
+
+        int formerParentDepth = self->context->parentDepth;
+        auto formerArithmeticDepth = self->context->arithmeticBaseDepth;
         if (self->valueNode) {
-            int formerParentDepth = self->context->parentDepth;
-            auto formerArithmeticDepth = self->context->arithmeticBaseDepth;
+
             self->context->arithmeticBaseDepth = -1;
 
             int diff = currentCodeLine->depth == self->context->parentDepth ? 0 : 1;
@@ -209,14 +211,41 @@ namespace smart {
             currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
 
 
-            self->context->arithmeticBaseDepth = formerArithmeticDepth;
-            self->context->parentDepth = formerParentDepth;
-
         }
+
+        self->context->arithmeticBaseDepth = formerArithmeticDepth;
+        self->context->parentDepth = formerParentDepth;
 
         currentCodeLine = VTableCall::appendToLine(&self->closeNode, currentCodeLine);
 
-        currentCodeLine->depth = form;
+
+        bool hasNonBracketEntity = false;
+        auto* node = currentCodeLine->firstNode;
+        while (node) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
+            if (node->vtable == VTables::SymbolVTable) {
+                auto* symbol = Cast::downcast<SymbolStruct*>(node);
+                bool end = symbol->symbol[0] == ')' || symbol->symbol[0] == '}';
+                if (!end) {
+                    hasNonBracketEntity = true;
+                    break;
+                }
+            }
+            else if (node->vtable != VTables::LineBreakVTable
+                     && node->vtable != VTables::LineCommentVTable
+                        && node->vtable != VTables::BlockCommentFragmentVTable
+                           && node->vtable != VTables::BlockCommentVTable
+                     && node->vtable != VTables::EndOfFileVTable
+                    ) {
+                hasNonBracketEntity = true;
+                break;
+            }
+            node = node->nextNode;
+        }
+
+        if (!hasNonBracketEntity) {
+            currentCodeLine->depth = formerDepth;
+        }
+
         return currentCodeLine;
     }
 

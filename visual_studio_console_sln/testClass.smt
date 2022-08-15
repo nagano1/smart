@@ -34,31 +34,40 @@ class ClassMine
         jofijeiowajiwa
         */
 
-        /*世界が傾いてました。*/日本語完璧文字🎃🎞🦺🎨/**/
+        /* 世界が傾いてました。*/日本語完璧文字🎃🎞🦺🎨 /**/
         let a = "jifowjeoj"
         /* fjaoiwe */
 
         let *abc = "joifwjoe01234"
+        int gseven7 = 3421
         
-        (343 + 23142    
+        343 + 23142
             - 1234132
-            + 1234)
+            + 1234
 
         (343 - 1234132 - (3241
             + 3241 + 2412
             + fjowie()
-        ))
+            /**/ // jfoiawje
+        ))/**/
 
-        343
+        (343
             - 1234132
-            - (3241
-                + 214
+            - (
+                324321 + 214
             )
+        )
         
-        int a = (3124)
+        int a = (3124
             - 421
+            - 421
+        )
 
-        printf("jfowi")
+        true + false/**/+/**/(//fout of gantyuu
+            324112 - 32142
+        )
+
+        printf("jfowi") // jfoiwjaeoi
 
         afwfiiaeawe
         true

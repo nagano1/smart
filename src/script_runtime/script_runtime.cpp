@@ -235,7 +235,7 @@ namespace smart {
 
             if (childNode->vtable == VTables::CallFuncVTable) {
                 auto* funcCall = Cast::downcast<CallFuncNodeStruct*>(childNode);
-                funcCall->exprNode
+                //funcCall->exprNode
 
                 auto* arg = funcCall->firstArgumentItem;
                 if (arg != nullptr) {

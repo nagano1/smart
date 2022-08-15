@@ -927,9 +927,8 @@ class fjawioejap
         let f = 3
 
         
-        (
-            324 
-                - 1243213
+        (true) + false + (
+            241
         )
         
         funcA(true, "jfiwo")
