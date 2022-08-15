@@ -63,7 +63,7 @@ class ClassMine
             - 421
         )
 
-        true + false/**/+/**/(//fout of gantyuu
+        true + false + (
             324112 - 32142
         )
 

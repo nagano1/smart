@@ -232,16 +232,15 @@ namespace smart {
             }
             else if (node->vtable != VTables::LineBreakVTable
                      && node->vtable != VTables::LineCommentVTable
-                        && node->vtable != VTables::BlockCommentFragmentVTable
-                           && node->vtable != VTables::BlockCommentVTable
+                     && node->vtable != VTables::BlockCommentFragmentVTable
+                     && node->vtable != VTables::BlockCommentVTable
                      && node->vtable != VTables::EndOfFileVTable
-                    ) {
+            ) {
                 hasNonBracketEntity = true;
                 break;
             }
             node = node->nextNode;
         }
-
         if (!hasNonBracketEntity) {
             currentCodeLine->depth = formerDepth;
         }
