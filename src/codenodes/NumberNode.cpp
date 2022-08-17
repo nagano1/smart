@@ -341,17 +341,19 @@ namespace smart {
 
 
     //    +--------------------------+
-    //    | Binary Operation         |
+    //    |  Binary Operation        |
     //    +--------------------------+
 
     static CodeLine *binaryop_appendToLine(BinaryOperationNodeStruct *self, CodeLine *currentCodeLine)
     {
+
+        int formerParentDepth = self->context->parentDepth;
+
         if (self->leftExprNode) {
+            // leftExpr
             currentCodeLine = VTableCall::appendToLine(self->leftExprNode, currentCodeLine);
         }
 
-
-        int formerParentDepth = self->context->parentDepth;
         int formerArithmeticDepth = self->context->arithmeticBaseDepth;
 
         int diff = currentCodeLine->depth == self->context->parentDepth ? 0 : 1;
@@ -360,14 +362,14 @@ namespace smart {
                        self->context->arithmeticBaseDepth : formerParentDepth + diff;
 
         self->context->arithmeticBaseDepth = newDepth;
-
-
         self->context->parentDepth = newDepth;
 
+        // operator +
         currentCodeLine = VTableCall::appendToLine(&self->opNode, currentCodeLine);
 
 
         if (self->rightExprNode) {
+            // rightExpr
             currentCodeLine = VTableCall::appendToLine(self->rightExprNode, currentCodeLine);
         }
 

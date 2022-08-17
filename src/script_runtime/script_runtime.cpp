@@ -132,6 +132,8 @@ namespace smart {
         if (scriptEnv) {
             auto *context = simpleMalloc2<ScriptEngingContext>();
             context->memBuffer.init();
+            context->memBufferForMalloc.init();
+
             scriptEnv->context = context;
 
             scriptEnv->typeEntryList = nullptr;

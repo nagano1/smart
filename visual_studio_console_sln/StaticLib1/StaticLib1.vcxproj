@@ -191,6 +191,7 @@
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
     <ClCompile Include="..\..\src\script_runtime\script_runtime.cpp" />
     <ClCompile Include="..\..\src\thread_pool.cpp" />
+    <ClCompile Include="..\..\src\utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

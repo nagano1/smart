@@ -36,8 +36,6 @@ file(GLOB script_runtime_files "${lib_src_dir}/script_runtime/*.cpp")
 file(GLOB test_files "${tests_src_dir}/*.cpp")
 
 
-
-
 add_library( # Sets the name of the library.
         native-lib
 
@@ -49,6 +47,7 @@ add_library( # Sets the name of the library.
         ./native-lib.cpp
 
         ${lib_src_dir}/thread_pool.cpp
+        ${lib_src_dir}/utils.cpp
 
         ${lib_src_dir}/LSP_server/LSPMain.cpp
         ${lib_src_dir}/LSP_server/LSPLocalServer.cpp
