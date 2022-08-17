@@ -2,8 +2,8 @@ set(BINARY ${CMAKE_PROJECT_NAME}_tst_long_running)
 
 file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false
         ../../src/codenodes/*.cpp
-        ../../src/utils/*.cpp
         ../../src/thread_pool.cpp
+        ../../src/utils.cpp
         ./long_running.cpp
         ./long_running.h
         )
