@@ -12,6 +12,39 @@ using letterCheckerType = bool(*)(int, char);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // --------------------------------------------------------------------------
 // 
 //                               ParseUtils
@@ -79,7 +112,7 @@ static constexpr unsigned int hex_asciicode_table[256]{
 
     // \u8e60
     int ParseUtil::parseJsonUtf16Sequense(const char* utf16_chars, unsigned int len, int index, int *consumed,
-                                      unsigned char* ch1, unsigned  char* ch2, unsigned char* ch3, unsigned char* ch4) {
+                                      unsigned char* ch1, unsigned char* ch2, unsigned char* ch3, unsigned char* ch4) {
 
         // \u6382
         if (index + 6 > (int)len) {
@@ -89,11 +122,11 @@ static constexpr unsigned int hex_asciicode_table[256]{
         const unsigned char* chars = (unsigned char*)(utf16_chars + index);
         assert(chars[0] == '\\' && chars[1] == 'u');
 
-        int first8bit = hex_asciicode_table[(int)chars[2]] << 4 | hex_asciicode_table[(int)chars[3]];
-        bool hasPair = (first8bit >> 2) == 0b110110; // 110110ww
+        unsigned int first8bit = hex_asciicode_table[(int)chars[2]] << 4u | hex_asciicode_table[(int)chars[3]];
+        bool hasPair = (first8bit >> 2u) == 0b110110; // 110110ww
 
-        int codePoint = first8bit << 8
-                        | hex_asciicode_table[(int)chars[4]] << 4
+        unsigned int codePoint = first8bit << 8u
+                        | hex_asciicode_table[(int)chars[4]] << 4u
                         | hex_asciicode_table[(int)chars[5]];
 
         if (hasPair) {
@@ -103,17 +136,17 @@ static constexpr unsigned int hex_asciicode_table[256]{
             }
 
             int bitArray1 = codePoint & 0b0000001111111111; // 110110wwwwxxxxxx
-            int bitArray2 = hex_asciicode_table[(int)chars[9]] << 8
-                            | hex_asciicode_table[(int)chars[10]] << 4
+            int bitArray2 = hex_asciicode_table[(int)chars[9]] << 8u
+                            | hex_asciicode_table[(int)chars[10]] << 4u
                             | hex_asciicode_table[(int)chars[11]];
             bitArray2 = bitArray2 & 0b0000001111111111; // 110111xxxxxxxxxx
 
             // utf16 uuuuuxxxxxxxxxxxxxxxx 	110110wwww_xxxx_xx 110111xxxx_xxxxxx 	(wwww = uuuuu - 1)
             // utf8 11110yyy 10yyxxxx 10xxxxxx 10xxxxxx 65536 - 0x10FFFF
-            int u5bit = (bitArray1 >> 6) + 1;
-            *ch1 = u5bit >> 3 | 0b11110000;
-            *ch2 = (u5bit & 0b11) << 4 | ((bitArray1 >> 2) & 0b1111) | 0x80;
-            *ch3 = (bitArray1 & 0b11) << 4 | bitArray2 >> 6 | 0x80;
+            int u5bit = (bitArray1 >> 6u) + 1;
+            *ch1 = u5bit >> 3u | 0b11110000;
+            *ch2 = (u5bit & 0b11) << 4u | ((bitArray1 >> 2u) & 0b1111) | 0x80;
+            *ch3 = (bitArray1 & 0b11) << 4u | bitArray2 >> 6u | 0x80;
             *ch4 = (bitArray2 & 0b111111) | 0x80;
             *consumed = 12;
             return 4;

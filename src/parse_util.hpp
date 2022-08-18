@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+/*
 #include <string>
 #include <condition_variable>
 
@@ -12,7 +12,7 @@
 
 #include <cstdint>
 #include <ctime>
-
+*/
 #include "common.hpp"
 
 using letterCheckerType = bool(*)(int, char);
