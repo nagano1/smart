@@ -162,8 +162,8 @@ static constexpr unsigned int hex_asciicode_table[256]{
                 *ch2 = (codePoint & 0x3F) | 0x80;
                 return 2;
             } else if (codePoint <= 65535) { // 1110yyyy 10yxxxxx 10xxxxxx 2048 - 65535
-                *ch1 = codePoint >> 12 | 0b11100000;
-                *ch2 = (codePoint & 0b111111000000) >> 6 | 0x80;
+                *ch1 = codePoint >> 12u | 0b11100000;
+                *ch2 = (codePoint & 0b111111000000) >> 6u | 0x80;
                 *ch3 = (codePoint & 0b111111) | 0x80;
                 return 3;
             }
