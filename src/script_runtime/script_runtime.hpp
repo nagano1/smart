@@ -106,10 +106,8 @@ namespace smart {
 
                     }
                 }
-
                 block = block->next;
             }
-
             this->memBufferForMalloc.freeAll();
         }
     };
@@ -133,16 +131,16 @@ namespace smart {
         static void deleteScriptEnv(_ScriptEnv *doc);
         static _ScriptEnv *newScriptEnv();
         TypeEntry *newTypeEntry() const;
-
+/*
         template<typename T>
         T *newMem() {
             return (T *) context->memBufferForMalloc.newMem<T>(1);
         }
 
         void deleteMem(void *ptr) {
-            return context->memBufferForMalloc.tryDelete(ptr);// newMem<T>(1);
+            return context->memBufferForMalloc.tryDelete(ptr);
         }
-
+*/
 
         static ValueBase *newValueForHeap();
         static ValueBase *newValueForStack();

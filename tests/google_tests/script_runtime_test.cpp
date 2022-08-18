@@ -32,6 +32,8 @@ namespace smart {
     */
 
 
+    /// <summary>
+    /// </summary>
     TEST(ScriptEngine, mallocItem_test1) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
