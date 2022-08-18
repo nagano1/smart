@@ -37,6 +37,12 @@ namespace smart {
         static int heapString;
     };
 
+
+    using MallocItem = struct Item {
+        void *ptr{nullptr};
+        bool freed{false};
+    };
+
     using ScriptEngingContext = struct _scriptEngineContext {
         //SyntaxErrorInfo syntaxErrorInfo;
 
@@ -58,6 +64,21 @@ namespace smart {
             return (T *) memBuffer.newMem<T>(len);
         }
 
+        void* mallocItem(int bytes) {
+            auto *mallocItem = this->memBufferForMalloc.newMem<MallocItem>(1);
+            mallocItem->freed = false;
+            mallocItem->ptr = malloc(bytes);
+            return (void*)mallocItem->ptr;
+        }
+
+        void freeItem(void *ptr) {
+            MallocItem *item = (MallocItem*)ptr;
+            this->memBufferForMalloc.tryDelete<MallocItem>(item);
+            if (!item->freed) {
+                free(item->ptr);
+                item->freed = true;
+            }
+        }
     };
 
     using TypeEntry = struct _typeEntry {
@@ -72,7 +93,7 @@ namespace smart {
 
         ScriptEngingContext *context;
 
-        ValueBase* evaluateExprNode(NodeBase* expressionNode);
+        ValueBase *evaluateExprNode(NodeBase* expressionNode);
         ValueBase *evaluateExprNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer);
 
 

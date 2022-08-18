@@ -97,8 +97,9 @@ inline void console_log(const char *str) {
 
 
 struct MemBufferBlock {
-    void *list = nullptr;
+    void *chunk = nullptr;
     MemBufferBlock *next = nullptr;
+    MemBufferBlock *prev = nullptr;
     bool isLast = true;
     int itemCount = 0;
 };
@@ -120,7 +121,7 @@ struct MemBuffer {
         MemBufferBlock *bufferList = this->firstBufferBlock;
 
         while (bufferList) {
-            free(bufferList->list);
+            free(bufferList->chunk);
 
             auto *temp = bufferList;
             bufferList = bufferList->next;
@@ -130,13 +131,37 @@ struct MemBuffer {
 
     template<typename Type>
     void tryDelete(Type *ptr) {
-        auto *targetBufferList = *((MemBufferBlock **)((st_byte*)ptr - sizeof(MemBufferBlock*)));
+        if (this->firstBufferBlock == nullptr) {
+            return;
+        }
+
+        MemBufferBlock *targetBufferList = *((MemBufferBlock **) ((st_byte *) ptr - sizeof(MemBufferBlock *)));
         targetBufferList->itemCount--;
-        auto *next = targetBufferList->next;
-        if (next) {
-            if (next->itemCount == 0 && next->isLast == false) {
-                // can delete & free
+
+        this->tryFreeMemoryBlock(targetBufferList);
+    }
+
+    inline void tryFreeMemoryBlock(MemBufferBlock *memBufferBlock)
+    {
+        assert(memBufferBlock != nullptr);
+
+        if (memBufferBlock->itemCount == 0 && !memBufferBlock->isLast) {
+            assert(memBufferBlock->next != nullptr);
+
+            // can delete & free
+            auto *prev = memBufferBlock->prev;
+            if (prev == nullptr) {
+                assert(targetBufferList == this->firstBufferBlock);
+
+                this->firstBufferBlock = memBufferBlock->next;
+                memBufferBlock->next->prev = nullptr;
+            } else {
+                prev->next = memBufferBlock->next;
+                memBufferBlock->next->prev = prev;
             }
+
+            free(memBufferBlock->chunk);
+            free(memBufferBlock);
         }
     }
 
@@ -152,16 +177,24 @@ struct MemBuffer {
 
         }
         else {
+            MemBufferBlock* tryDeleteBlock = nullptr;
+
             st_size assign_size = DEFAULT_BUFFER_SIZE < length ? length : DEFAULT_BUFFER_SIZE;
             if (firstBufferBlock == nullptr) {
                 firstBufferBlock = currentBufferBlock = (MemBufferBlock*)malloc(sizeof(MemBufferBlock));
-                firstBufferBlock->list = (void *)malloc(assign_size);
+                firstBufferBlock->chunk = (void *)malloc(assign_size);
+                firstBufferBlock->prev = nullptr;
             }
             else {
                 auto *newNode = (MemBufferBlock*)malloc(sizeof(MemBufferBlock));
-                newNode->list = (void *)malloc(assign_size);
+                newNode->chunk = (void *)malloc(assign_size);
 
                 currentBufferBlock->next = newNode;
+                newNode->prev = currentBufferBlock;
+                if (currentBufferBlock->itemCount == 0) {
+                    tryDeleteBlock = currentBufferBlock;
+                }
+
                 currentBufferBlock->isLast = false;
                 currentBufferBlock = newNode;
             }
@@ -171,9 +204,13 @@ struct MemBuffer {
             currentBufferBlock->next = nullptr;
 
             currentMemOffset = 0;
+
+            if (tryDeleteBlock) {
+                this->tryFreeMemoryBlock(tryDeleteBlock);
+            }
         }
         currentBufferBlock->itemCount++;
-        Type *node = (Type*)((st_byte*)(currentBufferBlock->list) + currentMemOffset);
+        Type *node = (Type*)((st_byte*)(currentBufferBlock->chunk) + currentMemOffset);
 
         auto **address = (MemBufferBlock **)node;
         *address = currentBufferBlock;
