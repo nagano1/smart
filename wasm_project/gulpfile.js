@@ -55,7 +55,7 @@ let wasmLinker = "";
 
 let groupASrc = ['wasm.cpp'];
 let groupBSrc = ['subwasm.cpp'];
-let libCppSrc = ['../src/codenodes/*.cpp'];
+let libCppSrc = ['../src/codenodes/*.cpp', "../src/utils.cpp"];
 
 let includeGlobs = ["./include/*.hpp", "../src/*.hpp"];
 let outTop = "out";
