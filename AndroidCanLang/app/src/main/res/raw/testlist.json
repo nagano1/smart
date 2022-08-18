@@ -151,7 +151,7 @@
 		"testname": "SameLength_01",
 		"filepath": "tests/google_tests/parser_test.cpp",
 		"filename": "parser_test.cpp",
-		"body": "TEST(ParserTest_, SameLength_01) {\r\n\r\n    // std::string text = \"   class           A   {    }   \";\r\n    //            $let *list: string* | null = null As string* | null\r\n    // \r\n    constexpr char text[] = R\"(\r\nclass fjawioejap\r\n{\r\n    fn funcB()\r\n    {\r\n        // comment\r\n        let a = 893214 // fawoiefjiawo\r\n        let *str = \"0jfoiwjoie\" // comment\r\n        int a = 123412\r\n\r\n        $float f = 4503\r\n        ?let *f = null\r\n        $let g = true\r\n        \r\n        \"jfoiwjeioaf\"\r\n            /*\r\n                /*fajowefjao \r\n                    /*\r\n                    */\r\n                */\r\n\r\n\r\n                 /*ajowiefaiow  \r\n                 joafwieコメント張りさん\r\n                 */\r\n            */\r\n\r\n            /*\r\n            comment here\r\n            */\r\n\r\n        let f = 3\r\n\r\n        (3214)\r\n        funcA(true, \"jfiwo\")\r\n\r\n        return\r\n        return 3421\r\n    }\r\n}\r\n\r\nclass/**/A/**/{\r\n\r\n}\r\n)\";\r\n\r\n    testCodeEquality(text, sizeof(text)-1);\r\n}\r\n\r\n"
+		"body": "TEST(ParserTest_, SameLength_01) {\r\n\r\n    // std::string text = \"   class           A   {    }   \";\r\n    //            $let *list: string* | null = null As string* | null\r\n    // \r\n    constexpr char text[] = R\"(\r\nclass fjawioejap\r\n{\r\n    fn funcB()\r\n    {\r\n        // comment\r\n        let a = 893214 // fawoiefjiawo\r\n        let *str = \"0jfoiwjoie\" // comment\r\n        int a = 123412\r\n\r\n        $float f = 4503\r\n        ?let *f = null\r\n        $let g = true\r\n        \r\n        \"jfoiwjeioaf\"\r\n            /*\r\n                /*fajowefjao \r\n                    /*\r\n                    */\r\n                */\r\n\r\n\r\n                 /*ajowiefaiow  \r\n                 joafwieコメント張りさん\r\n                 */\r\n            */\r\n\r\n            /*\r\n            comment here\r\n            */\r\n\r\n        let f = 3\r\n\r\n        \r\n        (true) + false + (\r\n            241\r\n        )\r\n        \r\n        funcA(true, \"jfiwo\")\r\n\r\n        return\r\n        return 3421\r\n    }\r\n}\r\n\r\nclass/**/A/**/{\r\n\r\n}\r\n)\";\r\n\r\n    testCodeEquality(text, sizeof(text)-1);\r\n}\r\n\r\n"
 	},
 	{
 		"testcasename": "ParserTest_",
@@ -232,10 +232,10 @@
 	},
 	{
 		"testcasename": "ScriptEngine",
-		"testname": "scriptDemo",
+		"testname": "mallocItem_test1",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, scriptDemo) {\r\n\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    let a = 0\r\n    int b = 0\r\n    print(\"test日本語\")\r\n}\r\n)\";\r\n\r\n\r\n        startScript((char*)source, sizeof(source)-1);\r\n    }\r\n\r\n    "
+		"body": "TEST(ScriptEngine, mallocItem_test1) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        int* mem;\r\n        for (int i = 0; i < 1000; i++) {\r\n            mem = (int*)env->context->mallocItem(sizeof(int));\r\n            *mem = 53;\r\n\r\n            //env->context->freeItem(mem);\r\n        }\r\n\r\n        //EXPECT_EQ(*mem, 3);\r\n        //EXPECT_EQ(env->context->memBufferForMalloc.firstBufferBlock, env->context->memBufferForMalloc.currentBufferBlock);\r\n\r\n        env->deleteScriptEnv(env);\r\n\r\n        EXPECT_EQ(3, 3);\r\n\r\n    }\r\n    "
 	},
 	{
 		"testcasename": "ScriptEngine",

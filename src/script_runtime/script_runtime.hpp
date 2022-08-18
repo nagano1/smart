@@ -100,7 +100,6 @@ namespace smart {
                                 free(item2->ptr);
                             }
                             offset += sizeof(MemBufferBlock*) + sizeof(MallocItem);
-
                         }
                         else {
                             break;

@@ -47,6 +47,9 @@ namespace smart {
         //EXPECT_EQ(env->context->memBufferForMalloc.firstBufferBlock, env->context->memBufferForMalloc.currentBufferBlock);
 
         env->deleteScriptEnv(env);
+
+        EXPECT_EQ(3, 3);
+
     }
     ENDTEST
 
