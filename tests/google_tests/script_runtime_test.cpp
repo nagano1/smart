@@ -44,11 +44,12 @@ namespace smart {
                 env->context->freeItem(mem);
             }
         }
+        console_log("test");
 
         //EXPECT_EQ(*mem, 3);
-        //EXPECT_EQ(env->context->memBufferForMalloc.firstBufferBlock, env->context->memBufferForMalloc.currentBufferBlock);
+        EXPECT_EQ(env->context->memBufferForMalloc.firstBufferBlock, env->context->memBufferForMalloc.currentBufferBlock);
 
-        env->deleteScriptEnv(env);
+        ScriptEnv::deleteScriptEnv(env);
 
         EXPECT_EQ(3, 3);
 

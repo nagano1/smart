@@ -16,7 +16,6 @@
 //
 #include "parse_util.hpp"
 #include "common.hpp"
-
 #include "code_nodes.hpp"
 //
 
@@ -85,7 +84,6 @@ namespace smart {
 
         /* this can be use only for same size item*/
         void freeAll() {
-
             this->memBuffer.freeAll();
 
             auto *block = this->memBufferForMalloc.firstBufferBlock;
