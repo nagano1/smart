@@ -179,15 +179,15 @@ struct MemBuffer {
         else {
             MemBufferBlock* tryDeleteBlock = nullptr;
 
-            st_size assign_size = DEFAULT_BUFFER_SIZE < length ? length : DEFAULT_BUFFER_SIZE;
+            st_size assign_size = (DEFAULT_BUFFER_SIZE < length ? length : DEFAULT_BUFFER_SIZE);
             if (firstBufferBlock == nullptr) {
                 firstBufferBlock = currentBufferBlock = (MemBufferBlock*)malloc(sizeof(MemBufferBlock));
-                firstBufferBlock->chunk = (void *)malloc(assign_size);
+                firstBufferBlock->chunk = (void *)calloc(assign_size, 1);
                 firstBufferBlock->prev = nullptr;
             }
             else {
                 auto *newNode = (MemBufferBlock*)malloc(sizeof(MemBufferBlock));
-                newNode->chunk = (void *)malloc(assign_size);
+                newNode->chunk = (void *)calloc(assign_size, 1);
 
                 currentBufferBlock->next = newNode;
                 newNode->prev = currentBufferBlock;

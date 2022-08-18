@@ -40,7 +40,9 @@ namespace smart {
             mem = (int*)env->context->mallocItem(sizeof(int));
             *mem = 53;
 
-            //env->context->freeItem(mem);
+            if (i % 3 == 2) {
+                env->context->freeItem(mem);
+            }
         }
 
         //EXPECT_EQ(*mem, 3);

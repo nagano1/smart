@@ -98,6 +98,7 @@ namespace smart {
                             MallocItem* item2 = (MallocItem*)((char*)block->chunk + offset + sizeof(MemBufferBlock*));
                             if (!item2->freed) {
                                 free(item2->ptr);
+                                item2->freed = true;
                             }
                             offset += sizeof(MemBufferBlock*) + sizeof(MallocItem);
                         }
