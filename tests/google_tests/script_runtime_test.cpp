@@ -32,27 +32,27 @@ namespace smart {
     */
 
 
+    TEST(ScriptEngine, mallocItem_test1) {
+        ScriptEnv* env = ScriptEnv::newScriptEnv();
 
+        int* mem;
+        for (int i = 0; i < 1000; i++) {
+            mem = (int*)env->context->mallocItem(sizeof(int));
+            *mem = 53;
 
+            //env->context->freeItem(mem);
+        }
 
-    TEST(ScriptEngine, scriptDemo) {
+        //EXPECT_EQ(*mem, 3);
+        //EXPECT_EQ(env->context->memBufferForMalloc.firstBufferBlock, env->context->memBufferForMalloc.currentBufferBlock);
 
-        constexpr char source[] = R"(
-fn main()
-{
-    let a = 0
-    int b = 0
-    print("test日本語")
-}
-)";
-
-
-        startScript((char*)source, sizeof(source)-1);
+        env->deleteScriptEnv(env);
     }
-
     ENDTEST
 
-        TEST(ScriptEngine, scriptEngine) {
+
+
+    TEST(ScriptEngine, scriptEngine) {
 
         constexpr char source[] = R"(
 fn main()

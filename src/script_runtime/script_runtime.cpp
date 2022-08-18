@@ -147,7 +147,7 @@ namespace smart {
 
     void ScriptEnv::deleteScriptEnv(ScriptEnv *scriptEnv)
     {
-        scriptEnv->context->memBuffer.freeAll();
+        scriptEnv->context->freeAll();
         free(scriptEnv->context);
         free(scriptEnv);
     }

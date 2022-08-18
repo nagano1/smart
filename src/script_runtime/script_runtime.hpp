@@ -44,8 +44,6 @@ namespace smart {
     };
 
     using ScriptEngingContext = struct _scriptEngineContext {
-        //SyntaxErrorInfo syntaxErrorInfo;
-
         MemBuffer memBuffer;
         MemBuffer memBufferForMalloc;
 
@@ -67,17 +65,54 @@ namespace smart {
         void* mallocItem(int bytes) {
             auto *mallocItem = this->memBufferForMalloc.newMem<MallocItem>(1);
             mallocItem->freed = false;
-            mallocItem->ptr = malloc(bytes);
-            return (void*)mallocItem->ptr;
+            mallocItem->ptr = malloc(bytes + sizeof(MallocItem*));
+            
+            MallocItem** addressPtr = (MallocItem**)mallocItem->ptr;
+            *addressPtr = mallocItem;
+
+            return ((char*)mallocItem->ptr) + sizeof(MallocItem*);
         }
 
         void freeItem(void *ptr) {
-            MallocItem *item = (MallocItem*)ptr;
-            this->memBufferForMalloc.tryDelete<MallocItem>(item);
+            MallocItem *item = *(MallocItem**)((char*)ptr - sizeof(MallocItem*));
+            assert(item != nullptr);
             if (!item->freed) {
                 free(item->ptr);
                 item->freed = true;
             }
+            this->memBufferForMalloc.tryDelete<MallocItem>(item);
+        }
+
+        /* this can be use only for same size item*/
+        void freeAll() {
+
+            this->memBuffer.freeAll();
+
+            auto *block = this->memBufferForMalloc.firstBufferBlock;
+            while (block) {
+                if (block->itemCount > 0) {
+                    int offset = 0;
+                    while (true) {
+                        MemBufferBlock* item = *(MemBufferBlock**)((char*)block->chunk + offset);
+                        if (item == block) {
+                            MallocItem* item2 = (MallocItem*)((char*)block->chunk + offset + sizeof(MemBufferBlock*));
+                            if (!item2->freed) {
+                                free(item2->ptr);
+                            }
+                            offset += sizeof(MemBufferBlock*) + sizeof(MallocItem);
+
+                        }
+                        else {
+                            break;
+                        }
+
+                    }
+                }
+
+                block = block->next;
+            }
+
+            this->memBufferForMalloc.freeAll();
         }
     };
 
