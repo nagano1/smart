@@ -43,7 +43,8 @@ namespace smart {
     };
 
     using ScriptEngingContext = struct _scriptEngineContext {
-        MemBuffer memBuffer;
+        MemBuffer memBuffer; // for ScriptEnv::newTypeEntry()
+
         MemBuffer memBufferForMalloc;
 
         template<typename T>
@@ -82,7 +83,6 @@ namespace smart {
             this->memBufferForMalloc.tryDelete<MallocItem>(item);
         }
 
-        /* this can be use only for same size item*/
         void freeAll() {
             this->memBuffer.freeAll();
 
@@ -90,6 +90,7 @@ namespace smart {
             while (block) {
                 if (block->itemCount > 0) {
                     int offset = 0;
+                    // this strategy can be used only for same size items
                     while (true) {
                         MemBufferBlock* item = *(MemBufferBlock**)((char*)block->chunk + offset);
                         if (item == block) {
@@ -103,7 +104,6 @@ namespace smart {
                         else {
                             break;
                         }
-
                     }
                 }
                 block = block->next;
