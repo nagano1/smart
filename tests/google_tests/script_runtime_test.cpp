@@ -33,11 +33,8 @@ namespace smart {
         EXPECT_NE(env->context->memBufferForMalloc.firstBufferBlock, env->context->memBufferForMalloc.currentBufferBlock);
         
         ScriptEnv::deleteScriptEnv(env);
-
-        EXPECT_EQ(3, 3);
     }
     ENDTEST
-
 
 
     TEST(ScriptEngine, scriptEngine) {
