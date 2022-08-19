@@ -700,8 +700,6 @@ ENDTEST
 
 
 TEST(ParserTest_, aaHashMap) {
-
-
     {
         auto hashKey = VoidHashMap::calc_hash2("ak", 10000);
         auto hashKey2 = VoidHashMap::calc_hash2("ka", 10000);
