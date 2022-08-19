@@ -155,7 +155,7 @@ namespace smart {
     static inline int parseNextValue(TokenizerParams_parent_ch_start_context, CallFuncNodeStruct* funcCallNode)
     {
         int result;
-        if (-1 < (result = Tokenizers::jsonValueTokenizer2(TokenizerParams_pass))) {
+        if (-1 < (result = Tokenizers::expressionTokenizer(TokenizerParams_pass))) {
             auto *nextItem = Alloc::newFuncArgumentItem(context, parent);
 
             nextItem->exprNode = context->virtualCodeNode;

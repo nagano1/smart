@@ -242,7 +242,7 @@
 		"testname": "scriptEngine",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, scriptEngine) {\r\n\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    let a = 0\r\n    int b = 0\r\n    print(\"test日本語\")\r\n}\r\n)\";\r\n        startScript((char*)source, sizeof(source)-1);\r\n    }\r\n\r\n    "
+		"body": "TEST(ScriptEngine, scriptEngine) {\r\n\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    let a = 0\r\n    int b = 0\r\n    print(\"test日本語\", 3 + 56)\r\n}\r\n)\";\r\n        startScript((char*)source, sizeof(source)-1);\r\n    }\r\n\r\n    "
 	},
 	{
 		"testcasename": "SpeedTest",
