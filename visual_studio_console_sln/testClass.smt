@@ -46,10 +46,10 @@ class ClassMine
             + 1234
 
         (343 - 1234132 - (3241
+            /* やみくそ */
             + 3241 + 2412
             + fjowie()
-            /**/ // jfoiawje
-        ))/**/
+        ))
 
         (
             343
@@ -68,7 +68,9 @@ class ClassMine
             324112 - 32142
         )
 
-        printf("jfowi") // jfoiwjaeoi
+        printf("jfowi", (
+            5 + 5
+        )) // jfoiwjaeoi
 
         afwfiiaeawe
         true

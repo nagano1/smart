@@ -52,6 +52,8 @@ namespace smart {
 
         ValueBase *newValueForHeap();
         ValueBase *newValueForStack();
+        ValueBase *genValueBase(int type, int size, void *ptr);
+
 
 
         void* mallocItem(int bytes) {
@@ -109,7 +111,8 @@ namespace smart {
 
     using TypeEntry = struct _typeEntry {
         int typeIndex;
-        char *(*toString)(ValueBase* value);
+        char *(*toString)(ScriptEngineContext *context, ValueBase* value);
+        ValueBase* (*operate_add)(ScriptEngineContext *context, ValueBase* leftValue, ValueBase* rightValue);
     };
 
     using ScriptEnv = struct _ScriptEnv {

@@ -24,7 +24,8 @@ fn main() {
         3 + 5 + 6
     )
     int b = 0
-    print("test日本語", 4321, "432")
+    
+    print("test日本語", 4321 + 5)
 }
 )";
 

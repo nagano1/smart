@@ -44,7 +44,7 @@ fn main()
 {
     let a = 0
     int b = 0
-    print("test日本語")
+    print("test日本語", 3 + 56)
 }
 )";
         startScript((char*)source, sizeof(source)-1);
