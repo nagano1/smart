@@ -76,9 +76,7 @@ namespace smart {
         }
 
         void freeAll() {
-            this->memBuffer.freeAll();
-            this->memBufferForValueBase.freeAll();
-
+            
             auto *block = this->memBufferForMalloc.firstBufferBlock;
             while (block) {
                 if (block->itemCount > 0) {
@@ -102,6 +100,10 @@ namespace smart {
                 block = block->next;
             }
             this->memBufferForMalloc.freeAll();
+            this->memBufferForValueBase.freeAll();
+            this->memBuffer.freeAll();
+
+
         }
     };
 

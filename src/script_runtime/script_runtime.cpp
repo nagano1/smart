@@ -70,7 +70,6 @@ namespace smart {
     }
 
 
-
     char* int32_toString(ValueBase *value)
     {
         auto * chars = (char*)malloc(sizeof(char) * 64);
@@ -104,7 +103,7 @@ namespace smart {
 
     //--------------------------------------------------------------------------------------------
     //
-    //                                        Script Engine Context
+    //                                    Script Engine Context
     //
     //--------------------------------------------------------------------------------------------
 
@@ -129,10 +128,9 @@ namespace smart {
         return newValue(this, false);
     }
 
-
     //--------------------------------------------------------------------------------------------
     //
-    //                                        Script Engine
+    //                                       Script Engine
     //
     //--------------------------------------------------------------------------------------------
 
@@ -170,7 +168,7 @@ namespace smart {
     static FuncNodeStruct* findMainFunc(DocumentStruct *document)
     {
         auto *rootNode = document->firstRootNode;
-        while (rootNode != nullptr) {
+        while (rootNode != nullptr) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
             if (rootNode->vtable == VTables::FnVTable) {
                 // fn
                 auto *fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
