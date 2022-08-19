@@ -42,25 +42,17 @@ namespace smart {
         bool freed{false};
     };
 
-    using ScriptEngingContext = struct _scriptEngineContext {
-        MemBuffer memBuffer; // for ScriptEnv::newTypeEntry()
+    using ScriptEngineContext = struct _scriptEngineContext {
+        MemBuffer memBuffer; // for TypeEntry, variable->value map
 
-        MemBuffer memBufferForMalloc;
+        MemBuffer memBufferForValueBase; // for value base
+        MemBuffer memBufferForMalloc; // for value
 
-        template<typename T>
-        T *newMem() {
-            return (T *) memBuffer.newMem<T>(1);
-        }
+        VoidHashMap *variableMap;
 
-        template<typename T>
-        void tryDelete(T *m) {
-            return (T *) memBuffer.tryDelete(m);
-        }
+        ValueBase *newValueForHeap();
+        ValueBase *newValueForStack();
 
-        template<typename T>
-        T *newMemArray(st_size len) {
-            return (T *) memBuffer.newMem<T>(len);
-        }
 
         void* mallocItem(int bytes) {
             auto *mallocItem = this->memBufferForMalloc.newMem<MallocItem>(1);
@@ -85,6 +77,7 @@ namespace smart {
 
         void freeAll() {
             this->memBuffer.freeAll();
+            this->memBufferForValueBase.freeAll();
 
             auto *block = this->memBufferForMalloc.firstBufferBlock;
             while (block) {
@@ -122,10 +115,11 @@ namespace smart {
         int typeEntryListCapacity;
         int typeEntryListNextIndex;
 
-        ScriptEngingContext *context;
+        ScriptEngineContext *context;
 
         ValueBase *evaluateExprNode(NodeBase* expressionNode);
         ValueBase *evaluateExprNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer);
+
 
 
         static void deleteScriptEnv(_ScriptEnv *doc);
@@ -142,8 +136,6 @@ namespace smart {
         }
 */
 
-        static ValueBase *newValueForHeap();
-        static ValueBase *newValueForStack();
 
         void registerTypeEntry(TypeEntry* typeEntry);
     };

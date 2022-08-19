@@ -64,30 +64,12 @@ namespace smart {
 
     TypeEntry *ScriptEnv::newTypeEntry() const
     {
-        auto *emptyTypeEntry = this->context->newMem<TypeEntry>();
+        auto *emptyTypeEntry = this->context->memBuffer.newMem<TypeEntry>(1);
         emptyTypeEntry->toString = nullptr;
         return emptyTypeEntry;
     }
 
 
-    static ValueBase *newValue(bool heap)
-    {
-        auto *emptyTypeEntry = (ValueBase*)malloc(sizeof(ValueBase));// this->context->newMem<TypeEntry>();
-        emptyTypeEntry->ptr = nullptr;
-        emptyTypeEntry->size = 0;
-        emptyTypeEntry->isHeap = heap;
-        return emptyTypeEntry;
-    }
-
-    ValueBase *ScriptEnv::newValueForHeap()
-    {
-        return newValue(true);
-    }
-
-    ValueBase *ScriptEnv::newValueForStack()
-    {
-        return newValue(false);
-    }
 
     char* int32_toString(ValueBase *value)
     {
@@ -122,6 +104,34 @@ namespace smart {
 
     //--------------------------------------------------------------------------------------------
     //
+    //                                        Script Engine Context
+    //
+    //--------------------------------------------------------------------------------------------
+
+
+    static ValueBase *newValue(ScriptEngineContext *context, bool heap)
+    {
+        //auto *valueBase = (ValueBase*)malloc(sizeof(ValueBase));// this->context->newMem<TypeEntry>();
+        auto *valueBase = (ValueBase*)context->memBufferForValueBase.newMem<ValueBase>(1);
+        valueBase->ptr = nullptr;
+        valueBase->size = 0;
+        valueBase->isHeap = heap;
+        return valueBase;
+    }
+
+    ValueBase *ScriptEngineContext::newValueForHeap()
+    {
+        return newValue(this, true);
+    }
+
+    ValueBase *ScriptEngineContext::newValueForStack()
+    {
+        return newValue(this, false);
+    }
+
+
+    //--------------------------------------------------------------------------------------------
+    //
     //                                        Script Engine
     //
     //--------------------------------------------------------------------------------------------
@@ -130,9 +140,13 @@ namespace smart {
     {
         auto *scriptEnv = (ScriptEnv*)malloc(sizeof(ScriptEnv));
         if (scriptEnv) {
-            auto *context = simpleMalloc2<ScriptEngingContext>();
+            auto *context = simpleMalloc2<ScriptEngineContext>();
             context->memBuffer.init();
             context->memBufferForMalloc.init();
+            context->memBufferForValueBase.init();
+
+            context->variableMap = context->memBuffer.newMem<VoidHashMap>(1);
+            context->variableMap->init(&context->memBuffer);
 
             scriptEnv->context = context;
 
@@ -176,10 +190,12 @@ namespace smart {
         return ScriptEnv::evaluateExprNodeOrTest(expressionNode, nullptr);
     }
 
-    static inline ValueBase *genValueBase(int type, int size, void *ptr) {
-        auto *value = ScriptEnv::newValueForHeap();
+    static inline ValueBase *genValueBase(ScriptEngineContext *context, int type, int size, void *ptr) {
+        auto *value = context->newValueForHeap();
         value->typeIndex = type;
-        value->ptr = malloc(size);
+//        value->ptr = context->memBufferForMalloc.newBytesMem(size); ////malloc(size);
+        value->ptr = (void*)context->mallocItem(size);
+
         *(void**)ptr = value->ptr;
         value->size = size;
         return value;
@@ -197,7 +213,7 @@ namespace smart {
 
             int size = (1 + strNode->strLength) * (int)sizeof(char);
             char *chars;
-            auto *value = genValueBase(BuiltInTypeIndex::heapString, size, &chars);
+            auto *value = genValueBase(this->context, BuiltInTypeIndex::heapString, size, &chars);
             memcpy(chars, strNode->str, strNode->strLength);
             chars[strNode->strLength] = '\0';
 
@@ -210,7 +226,7 @@ namespace smart {
             if (testPointer) { return testPointer; }
 
             int *int32ptr;
-            auto *value = genValueBase(BuiltInTypeIndex::int32, sizeof(int), &int32ptr);
+            auto *value = genValueBase(this->context, BuiltInTypeIndex::int32, sizeof(int), &int32ptr);
             *int32ptr = numberNode->num;
             return value;
         }

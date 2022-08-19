@@ -172,6 +172,10 @@ struct MemBuffer {
     template<typename Type>
     Type *newMem(unsigned int count) {
         auto bytes = st_size_of(Type) * count;
+        return (Type*)this->newBytesMem(bytes);
+    }
+
+    void *newBytesMem(unsigned int bytes) {
         auto sizeOfPointerToBlock = st_size_of(MemBufferBlock*);
         auto length = bytes + sizeOfPointerToBlock;
 
@@ -213,14 +217,14 @@ struct MemBuffer {
             }
         }
         currentBufferBlock->itemCount++;
-        Type *node = (Type*)((st_byte*)(currentBufferBlock->chunk) + currentMemOffset);
+        void *node = (void*)((st_byte*)(currentBufferBlock->chunk) + currentMemOffset);
 
         auto **address = (MemBufferBlock **)node;
         *address = currentBufferBlock;
 
         this->currentMemOffset += length;
 
-        return (Type*)((st_byte*)node + sizeOfPointerToBlock);
+        return (void*)((st_byte*)node + sizeOfPointerToBlock);
     }
 };
 
