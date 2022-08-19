@@ -74,7 +74,7 @@ namespace smart {
     char* int32_toString(ScriptEngineContext *context, ValueBase *value)
     {
         auto * chars = (char*)malloc(sizeof(char) * 64);
-        sprintf(chars, "%d", *(int*)value->ptr);
+        sprintf(chars, "%d", *(int32_t*)value->ptr);
         return chars;
     }
 
@@ -242,10 +242,9 @@ namespace smart {
         assert(expressionNode->vtable != nullptr);
 
         if (expressionNode->vtable == VTables::StringLiteralVTable) {
-            auto* strNode = Cast::downcast<StringLiteralNodeStruct *>(expressionNode);
-
             if (testPointer) { return testPointer; }
 
+            auto* strNode = Cast::downcast<StringLiteralNodeStruct *>(expressionNode);
             int size = (1 + strNode->strLength) * (int)sizeof(char);
             char *chars;
             auto *value = this->context->genValueBase(BuiltInTypeIndex::heapString, size, &chars);
@@ -256,12 +255,11 @@ namespace smart {
         }
 
         if (expressionNode->vtable == VTables::NumberVTable) {
-            auto* numberNode = Cast::downcast<NumberNodeStruct *>(expressionNode);
-
             if (testPointer) { return testPointer; }
 
-            int *int32ptr;
-            auto *value = this->context->genValueBase(BuiltInTypeIndex::int32, sizeof(int), &int32ptr);
+            auto* numberNode = Cast::downcast<NumberNodeStruct *>(expressionNode);
+            int32_t *int32ptr;
+            auto *value = this->context->genValueBase(BuiltInTypeIndex::int32, sizeof(int32_t), &int32ptr);
             *int32ptr = numberNode->num;
             return value;
         }
@@ -271,14 +269,15 @@ namespace smart {
         }
 
         if (expressionNode->vtable == VTables::BinaryOperationVTable) {
-            auto* binaryNode = Cast::downcast<BinaryOperationNodeStruct *>(expressionNode);
-
             if (testPointer) { return testPointer; }
+
+            auto* binaryNode = Cast::downcast<BinaryOperationNodeStruct *>(expressionNode);
 
             auto *leftValue = this->evaluateExprNode(binaryNode->leftExprNode);
             auto *rightValue = this->evaluateExprNode(binaryNode->rightExprNode);
             if (binaryNode->opNode.symbol[0] == '+') {
-                auto *retValue = typeEntryList[leftValue->typeIndex]->operate_add(this->context, leftValue, rightValue);
+                auto *typeEntry = this->typeEntryList[leftValue->typeIndex];
+                auto *retValue = typeEntry->operate_add(this->context, leftValue, rightValue);
                 return retValue;
             }
 
