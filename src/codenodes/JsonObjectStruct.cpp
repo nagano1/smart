@@ -228,8 +228,8 @@ namespace smart {
         jsonObjectNode->lastKeyValueItem = nullptr;
         jsonObjectNode->parsePhase = phase::EXPECT_NAME;
 
-        jsonObjectNode->hashMap = context->newMem<HashMap>();
-        jsonObjectNode->hashMap->init(context);
+        jsonObjectNode->hashMap = context->newMem<VoidHashMap>();
+        jsonObjectNode->hashMap->init(&context->memBuffer);
 
         Init::initSymbolNode(&jsonObjectNode->endBodyNode, context, parentNode, '}');
 

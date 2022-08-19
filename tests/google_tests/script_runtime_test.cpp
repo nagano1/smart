@@ -14,31 +14,11 @@
 
 namespace smart {
 
-
-    /*
-    static void testJson(const char* codeText);
-
-
-    static void testJson(const char* codeText) {
-        auto *document = Alloc::newDocument(DocumentType::JsonDocument, nullptr);
-        DocumentUtils::parseText(document, codeText, strlen(codeText));
-
-        char *treeText = DocumentUtils::getTextFromTree(document);
-        DocumentUtils::generateHashTables(document);
-        EXPECT_EQ(std::string{ treeText }, std::string{ codeText });
-
-        Alloc::deleteDocument(document);
-    }
-    */
-
-
-    /// <summary>
-    /// </summary>
     TEST(ScriptEngine, mallocItem_test1) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
         int* mem;
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 1024; i++) {
             mem = (int*)env->context->mallocItem(sizeof(int));
             *mem = 53;
 
@@ -55,7 +35,6 @@ namespace smart {
         ScriptEnv::deleteScriptEnv(env);
 
         EXPECT_EQ(3, 3);
-
     }
     ENDTEST
 

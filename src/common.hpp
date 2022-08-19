@@ -94,8 +94,6 @@ inline void console_log(const char *str) {
 #endif
 
 
-
-
 struct MemBufferBlock {
     void *chunk = nullptr;
     MemBufferBlock *next = nullptr;
@@ -165,6 +163,11 @@ struct MemBuffer {
         }
     }
 
+    template<typename T>
+    T *newMemArray(st_size len) {
+        return (T *) this->newMem<T>(len);
+    }
+
 
     template<typename Type>
     Type *newMem(unsigned int count) {
@@ -179,7 +182,7 @@ struct MemBuffer {
         else {
             MemBufferBlock* tryDeleteBlock = nullptr;
 
-            st_size assign_size = (DEFAULT_BUFFER_SIZE < length ? length : DEFAULT_BUFFER_SIZE);
+            st_size assign_size = DEFAULT_BUFFER_SIZE < length ? length : DEFAULT_BUFFER_SIZE;
             if (firstBufferBlock == nullptr) {
                 firstBufferBlock = currentBufferBlock = (MemBufferBlock*)malloc(sizeof(MemBufferBlock));
                 firstBufferBlock->chunk = (void *)calloc(assign_size, 1);
@@ -218,6 +221,48 @@ struct MemBuffer {
         this->currentMemOffset += length;
 
         return (Type*)((st_byte*)node + sizeOfPointerToBlock);
+    }
+};
+
+
+
+#define HashNode_TABLE_SIZE 104
+
+struct VoidHashNode {
+    VoidHashNode *next;
+    char *key;
+    int keyLength;
+    void *nodeBase;
+};
+
+struct VoidHashMap {
+    VoidHashNode **entries;// [HashNode_TABLE_SIZE] = {};
+    size_t entries_length;
+    MemBuffer *memBuffer;
+    //MallocBuffer charBuffer;
+
+    void init(MemBuffer *memBuffer1);
+
+    template<std::size_t SIZE>
+    static int calc_hash2(const char(&f4)[SIZE], size_t max) {
+        return VoidHashMap::calc_hash((const char *) f4, SIZE - 1, max);
+    }
+    int calc_hash0(const char *key, int keyLength) {
+        return VoidHashMap::calc_hash(key, keyLength, this->entries_length);
+    }
+    static int calc_hash(const char *key, int keyLength, size_t max);
+    void put(const char *keyA, int keyLength, void *val) const;
+    void *get(const char *key, int keyLength);
+    bool has(const char *key, int keyLength);
+    void deleteKey(const char *key, int keyLength);
+
+    template<std::size_t SIZE>
+    void *get2(const char(&f4)[SIZE]) {
+        return this->get((const char *) f4, SIZE - 1);
+    }
+    template<std::size_t SIZE>
+    void put2(const char(&f4)[SIZE], void *val) {
+        return this->put((const char *) f4, SIZE - 1, val);
     }
 };
 

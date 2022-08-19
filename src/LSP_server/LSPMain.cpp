@@ -346,7 +346,7 @@ void LSPManager::nextRequest(char *chars, int length) {
         fflush(stderr);
     }
     if (rootJson) {
-        auto *item = rootJson->hashMap->get2("method");
+        auto *item = (NodeBase*)rootJson->hashMap->get2("method");
         if (item) {
             auto *methodNode = Cast::downcast<StringLiteralNodeStruct*>(item);
             //if (debugLog) {
@@ -395,7 +395,7 @@ void LSPManager::nextRequest(char *chars, int length) {
                 auto isReqOfFullSemanticTokens = 0 == strcmp(methodNode->str, "textDocument/semanticTokens/full");
                 auto rangeSemanticTokens = 0 == strcmp(methodNode->str, "textDocument/semanticTokens/range");
 
-                auto* params = Cast::downcast<JsonObjectStruct*>(rootJson->hashMap->get2("params"));
+                auto* params = Cast::downcast<JsonObjectStruct*>((NodeBase*)rootJson->hashMap->get2("params"));
 
                 if (didOpen || didChange) {
                     auto* textDocument = Cast::downcast<JsonObjectStruct*>(params->hashMap->get2("textDocument"));

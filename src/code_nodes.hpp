@@ -318,49 +318,6 @@ namespace smart {
         bool hasComma;
     };
 
-
-    #define HashNode_TABLE_SIZE 104
-
-    struct HashNode {
-        HashNode *next;
-        char *key;
-        int keyLength;
-        NodeBase *nodeBase;
-    };
-
-    struct HashMap {
-        HashNode **entries;// [HashNode_TABLE_SIZE] = {};
-        size_t entries_length;
-        ParseContext *context;
-        //MallocBuffer charBuffer;
-
-        void init(ParseContext *context);
-
-        template<std::size_t SIZE>
-        static int calc_hash2(const char(&f4)[SIZE], size_t max) {
-            return HashMap::calc_hash((const char *) f4, SIZE - 1, max);
-        }
-        int calc_hash0(const char *key, int keyLength) {
-            return HashMap::calc_hash(key, keyLength, this->entries_length);
-        }
-        static int calc_hash(const char *key, int keyLength, size_t max);
-        void put(const char *keyA, int keyLength, NodeBase *val) const;
-        NodeBase *get(const char *key, int keyLength);
-        bool has(const char *key, int keyLength);
-        void deleteKey(const char *key, int keyLength);
-
-        template<std::size_t SIZE>
-        NodeBase *get2(const char(&f4)[SIZE]) {
-            return this->get((const char *) f4, SIZE - 1);
-        }
-        template<std::size_t SIZE>
-        void put2(const char(&f4)[SIZE], NodeBase *val) {
-            return this->put((const char *) f4, SIZE - 1, val);
-        }
-    };
-
-
-
     // --------- Json Object --------- //
     using JsonObjectStruct = struct {
         NODE_HEADER;
@@ -371,7 +328,7 @@ namespace smart {
         SymbolStruct endBodyNode;
         JsonKeyValueItemStruct *firstKeyValueItem;
         JsonKeyValueItemStruct *lastKeyValueItem;
-        HashMap *hashMap;
+        VoidHashMap *hashMap;
     };
 
     // --------- Json Array Item --------- //
@@ -662,7 +619,7 @@ namespace smart {
 
     struct Cast {
         template<typename T>
-        static inline T downcast(NodeBase *node) {
+        static inline T downcast(void *node) {
             return (T) node;
         }
 

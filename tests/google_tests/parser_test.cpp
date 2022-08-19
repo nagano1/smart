@@ -53,7 +53,7 @@ TEST(ParserTest_, JsonParseTest) {
         EXPECT_NE(rootJson, nullptr);
 
         DocumentUtils::generateHashTables(document);
-        auto *item = rootJson->hashMap->get2("method");
+        auto *item = (NodeBase*)rootJson->hashMap->get2("method");
 
         EXPECT_NE(item, nullptr);
         EXPECT_EQ(item->vtable, VTables::StringLiteralVTable);
@@ -703,14 +703,14 @@ TEST(ParserTest_, aaHashMap) {
 
 
     {
-        auto hashKey = HashMap::calc_hash2("ak", 10000);
-        auto hashKey2 = HashMap::calc_hash2("ka", 10000);
+        auto hashKey = VoidHashMap::calc_hash2("ak", 10000);
+        auto hashKey2 = VoidHashMap::calc_hash2("ka", 10000);
         EXPECT_NE(hashKey, hashKey2);
     }
 
     {
-        auto hashKey = HashMap::calc_hash2("N01", 10000);
-        auto hashKey2 = HashMap::calc_hash2("N01234C", 10000);
+        auto hashKey = VoidHashMap::calc_hash2("N01", 10000);
+        auto hashKey2 = VoidHashMap::calc_hash2("N01234C", 10000);
         EXPECT_NE(hashKey, hashKey2);
     }
 
@@ -719,8 +719,8 @@ TEST(ParserTest_, aaHashMap) {
 
     for (int i = 0; i < 100; i++) {
 
-        auto *hashMap = context->newMem<HashMap>();
-        hashMap->init(context);
+        auto *hashMap = context->newMem<VoidHashMap>();
+        hashMap->init(&context->memBuffer);
 
         auto *first = Cast::upcast(context->newMem<DocumentStruct>());
         const char key[] = "firstAA";
@@ -731,14 +731,14 @@ TEST(ParserTest_, aaHashMap) {
         hashMap->put2("jfiow", Cast::upcast(context->newMem<DocumentStruct>()));
         hashMap->put("jfiow", sizeof("jfiow") - 1, Cast::upcast(context->newMem<DocumentStruct>()));
 
-        auto *node = hashMap->get2("firstAA");
+        auto *node = (NodeBase*)hashMap->get2("firstAA");
         EXPECT_EQ(node, first);
 
-        node = hashMap->get2("jfiow");
+        node = (NodeBase*)hashMap->get2("jfiow");
         EXPECT_EQ(node != nullptr, true);
         {
-            auto *node = hashMap->get2("empty");
-            EXPECT_EQ(node, nullptr);
+            auto *node2 = hashMap->get2("empty");
+            EXPECT_EQ(node2, nullptr);
         }
 
         //free(hashMap);
