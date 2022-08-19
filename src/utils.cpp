@@ -95,11 +95,12 @@ void VoidHashMap::init(MemBuffer* membuffer) {
     this->memBuffer = membuffer;
     this->entries = (VoidHashNode**)this->memBuffer->newMemArray<VoidHashNode>(HashNode_TABLE_SIZE);
     this->entries_length = HashNode_TABLE_SIZE;
-
+/*
     memset(this->entries, 0, sizeof(VoidHashNode*)*this->entries_length);
     for (unsigned int i = 0; i < this->entries_length; i++) {
         this->entries[i] = nullptr;
     }
+    */
 }
 
 bool VoidHashMap::has(const char * key, int keyLength) {
