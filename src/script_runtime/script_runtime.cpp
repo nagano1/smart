@@ -21,6 +21,17 @@
 #include "script_runtime.hpp"
 
 namespace smart {
+    //--------------------------------------------------------------------------------------------
+    //
+    //                                      StackMemory
+    //
+    //--------------------------------------------------------------------------------------------
+
+    void StackMemory::push(int bytes)
+    {
+        //this->currentOffset += bytes;
+
+    }
 
     //--------------------------------------------------------------------------------------------
     //
@@ -85,7 +96,7 @@ namespace smart {
         if (rightValue->typeIndex == BuiltInTypeIndex::int32) {
             unsigned int size = sizeof(int32_t);
             int32_t *int32ptr;
-            auto *value = context->genValueBase(BuiltInTypeIndex::heapString, (int)size, &int32ptr);
+            auto *value = context->genValueBase(BuiltInTypeIndex::int32, (int)size, &int32ptr);
             *int32ptr = *(int32_t*)leftValue->ptr + *(int32_t*)rightValue->ptr;
             return value;
         }

@@ -22,6 +22,17 @@
 
 namespace smart {
 
+    using StackMemory = struct _StackMemory {
+        int alignBytes{4}; // 8, 16
+        void *chunk{nullptr};
+
+
+        int stackPointer{0}; // esp, stack pointer
+        int stackBasePointer{0}; // ebp, stack base pointer
+        int returnPointer{0}; // EAX Accumulator Register
+
+        void push(int bytes);
+    };
 
     using ValueBase = struct _valueBase {
         int typeIndex;
