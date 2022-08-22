@@ -20,19 +20,34 @@
 //
 
 
-namespace smart {
-
+namespace smart
+{
     using StackMemory = struct _StackMemory {
+
         int alignBytes{4}; // 8, 16
-        void *chunk{nullptr};
+
+        st_byte *chunk{nullptr};
+        int stackSize{2 * 1024 * 1024}; // 2MB
 
 
         int stackPointer{0}; // esp, stack pointer
         int stackBasePointer{0}; // ebp, stack base pointer
-        int returnPointer{0}; // EAX Accumulator Register
 
-        void push(int bytes);
+        // func(55, c:48) 0b101000...  for func(int a, int b = 32, int c = 8) // 32
+        uint64_t argumentBits{0};
+
+        uint64_t returnValue{6}; // EAX, Accumulator Register
+        bool useBigStructForReturnValue{false};
+
+        // methods
+        void push(uint64_t bytes);
+        void sub(int bytes); // assign variable on local
+        uint64_t pop();
+        void call();
+        void ret();
+        void move(int offsetFromBase, uint64_t val) const;
     };
+
 
     using ValueBase = struct _valueBase {
         int typeIndex;
@@ -47,11 +62,11 @@ namespace smart {
         static int heapString;
     };
 
-
     using MallocItem = struct Item {
         void *ptr{nullptr};
         bool freed{false};
     };
+
 
     using ScriptEngineContext = struct _scriptEngineContext {
         MemBuffer memBuffer; // for TypeEntry, variable->value map
@@ -115,8 +130,6 @@ namespace smart {
             this->memBufferForMalloc.freeAll();
             this->memBufferForValueBase.freeAll();
             this->memBuffer.freeAll();
-
-
         }
     };
 
@@ -136,8 +149,6 @@ namespace smart {
         ValueBase *evaluateExprNode(NodeBase* expressionNode);
         ValueBase *evaluateExprNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer);
 
-
-
         static void deleteScriptEnv(_ScriptEnv *doc);
         static _ScriptEnv *newScriptEnv();
         TypeEntry *newTypeEntry() const;
@@ -151,7 +162,6 @@ namespace smart {
             return context->memBufferForMalloc.tryDelete(ptr);
         }
 */
-
 
         void registerTypeEntry(TypeEntry* typeEntry);
     };

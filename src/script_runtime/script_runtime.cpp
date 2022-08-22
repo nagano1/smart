@@ -21,23 +21,80 @@
 #include "script_runtime.hpp"
 
 namespace smart {
-    //--------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
     //
     //                                      StackMemory
     //
-    //--------------------------------------------------------------------------------------------
-
-    void StackMemory::push(int bytes)
+    //------------------------------------------------------------------------------------------
+    void StackMemory::push(uint64_t bytes)
     {
-        //this->currentOffset += bytes;
-
+        if (this->stackPointer + 8 > this->stackSize) {
+            // stack overvlow
+        }
+        int offset = this->stackPointer;
+        *(uint64_t*)(this->chunk + offset) = bytes;
+        this->stackPointer += 8;
     }
 
-    //--------------------------------------------------------------------------------------------
+    // variable
+    void StackMemory::sub(int bytes)
+    {
+        if (this->stackPointer + bytes > this->stackSize) {
+            // stack overvlow
+        }
+
+        stackPointer += bytes;
+    }
+
+
+    uint64_t StackMemory::pop()
+    {
+        auto pos = this->chunk + this->stackPointer;
+        this->stackPointer -= 8;
+        return *(uint64_t*)pos;
+    }
+
+    // assign value to stack
+    void StackMemory::move(int offsetFromBase, uint64_t val) const
+    {
+        int offset = this->stackBasePointer + offsetFromBase;
+        if (offset > this->stackSize) {
+            // stack overflow
+        }
+        *(uint64_t*)(this->chunk + offset) = val;
+    }
+
+
+    void StackMemory::call()
+    {
+        // caller side
+        this->push(23); // arg1
+        this->push(5); // arg2
+        this->argumentBits = 0b101;
+        this->useBigStructForReturnValue = false;
+
+        // called side
+        this->stackBasePointer = this->stackPointer;
+        this->push(this->stackBasePointer);
+    }
+
+    void StackMemory::ret()
+    {
+        this->returnValue = 33;
+        if (this->useBigStructForReturnValue) {
+            this->push(3);
+        }
+
+        this->stackBasePointer = (int)this->pop();
+    }
+
+
+
+    //------------------------------------------------------------------------------------------
     //
     //                                        TypeEntry
     //
-    //--------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
 
     static bool expandTypeEntryList(ScriptEnv *scriptEnv)
     {
@@ -147,11 +204,11 @@ namespace smart {
     int BuiltInTypeIndex::heapString = 0;
 
 
-    //--------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
     //
-    //                                    Script Engine Context
+    //                                Script Engine Context
     //
-    //--------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
 
     static ValueBase *newValue(ScriptEngineContext *context, bool heap)
     {
@@ -185,11 +242,11 @@ namespace smart {
         return value;
     }
 
-    //--------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
     //
     //                                       Script Engine
     //
-    //--------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------
 
     ScriptEnv *ScriptEnv::newScriptEnv()
     {
@@ -300,6 +357,7 @@ namespace smart {
             //auto *valueBase = this->evaluateExprNode(funcCall->exprNode);
             if (testPointer) { return testPointer; }
 
+            // proceed Stack
         }
 
         return nullptr;

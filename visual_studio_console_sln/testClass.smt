@@ -27,6 +27,7 @@ class ClassMine
         null
         false
         let *a = "完"
+        
         /*
         ofijaweifaow 
         /**/
@@ -68,9 +69,7 @@ class ClassMine
             324112 - 32142
         )
 
-        printf("jfowi", (
-            5 + 5
-        )) // jfoiwjaeoi
+        printf("jfowi", 5 + 5) // jfoiwjaeoi /* as you wish */
 
         afwfiiaeawe
         true
