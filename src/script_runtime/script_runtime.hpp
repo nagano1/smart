@@ -27,7 +27,7 @@ namespace smart
         int alignBytes{4}; // 8, 16
 
         st_byte *chunk{nullptr};
-        int stackSize{2 * 1024 * 1024}; // 2MB
+        int stackSize; // 2MB
 
 
         int stackPointer{0}; // esp, stack pointer
@@ -40,6 +40,8 @@ namespace smart
         bool useBigStructForReturnValue{false};
 
         // methods
+        void init();
+        void freeAll();
         void push(uint64_t bytes);
         void sub(int bytes); // assign variable on local
         uint64_t pop();
@@ -75,6 +77,7 @@ namespace smart
         MemBuffer memBufferForMalloc; // for value
 
         VoidHashMap *variableMap;
+        StackMemory stackMemory;
 
         ValueBase *newValueForHeap();
         ValueBase *newValueForStack();
@@ -130,6 +133,7 @@ namespace smart
             this->memBufferForMalloc.freeAll();
             this->memBufferForValueBase.freeAll();
             this->memBuffer.freeAll();
+            this->stackMemory.freeAll();
         }
     };
 

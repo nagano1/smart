@@ -37,6 +37,22 @@ namespace smart {
     ENDTEST
 
 
+    TEST(ScriptEngine, MemoryStackTest) {
+        ScriptEnv* env = ScriptEnv::newScriptEnv();
+
+        auto& stackMemory = env->context->stackMemory;
+        stackMemory.push((char)5);
+        stackMemory.push(6);
+        EXPECT_EQ(6, stackMemory.pop());
+        EXPECT_EQ(5, stackMemory.pop());
+        
+        
+        EXPECT_EQ(0, stackMemory.stackPointer);
+
+        ScriptEnv::deleteScriptEnv(env);
+    }
+    ENDTEST
+
     TEST(ScriptEngine, scriptEngine) {
 
         constexpr char source[] = R"(

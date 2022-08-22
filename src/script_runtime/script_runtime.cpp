@@ -36,6 +36,24 @@ namespace smart {
         this->stackPointer += 8;
     }
 
+    void StackMemory::init()
+    {
+        this->alignBytes = 4; // 8, 16
+
+        this->stackSize = 2 * 1024 * 1024; // 2MB
+        this->chunk = (st_byte *)malloc(this->stackSize);
+        this->stackPointer = 0;
+    }
+
+    void StackMemory::freeAll()
+    {
+        if (this->chunk) {
+            free(this->chunk);
+        }
+        this->chunk = nullptr;
+        this->stackPointer = 0;
+    }
+
     // variable
     void StackMemory::sub(int bytes)
     {
@@ -43,14 +61,14 @@ namespace smart {
             // stack overvlow
         }
 
-        stackPointer += bytes;
+        this->stackPointer += bytes;
     }
 
 
     uint64_t StackMemory::pop()
     {
-        auto pos = this->chunk + this->stackPointer;
         this->stackPointer -= 8;
+        auto pos = this->chunk + this->stackPointer;
         return *(uint64_t*)pos;
     }
 
@@ -256,6 +274,7 @@ namespace smart {
             context->memBuffer.init();
             context->memBufferForMalloc.init();
             context->memBufferForValueBase.init();
+            context->stackMemory.init();
 
             context->variableMap = context->memBuffer.newMem<VoidHashMap>(1);
             context->variableMap->init(&context->memBuffer);
