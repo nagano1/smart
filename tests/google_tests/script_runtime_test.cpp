@@ -45,10 +45,12 @@ namespace smart {
         stackMemory.push(6);
         EXPECT_EQ(6, stackMemory.pop());
         EXPECT_EQ(5, stackMemory.pop());
-        
-        
-        EXPECT_EQ(0, stackMemory.stackPointer);
 
+        stackMemory.sub(8 * 4);
+        stackMemory.moveTo(8, 100);
+        EXPECT_EQ(100, stackMemory.moveFrom(8));
+
+        //EXPECT_EQ(0, stackMemory.stackPointer);
         ScriptEnv::deleteScriptEnv(env);
     }
     ENDTEST

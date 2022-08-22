@@ -24,14 +24,14 @@ namespace smart
 {
     using StackMemory = struct _StackMemory {
 
-        int alignBytes{4}; // 8, 16
+        int alignBytes; // 8, 16
 
-        st_byte *chunk{nullptr};
+        st_byte *chunk;
         int stackSize; // 2MB
 
 
-        int stackPointer{0}; // esp, stack pointer
-        int stackBasePointer{0}; // ebp, stack base pointer
+        st_byte *stackPointer; // esp, stack pointer
+        st_byte *stackBasePointer; // ebp, stack base pointer
 
         // func(55, c:48) 0b101000...  for func(int a, int b = 32, int c = 8) // 32
         uint64_t argumentBits{0};
@@ -47,7 +47,9 @@ namespace smart
         uint64_t pop();
         void call();
         void ret();
-        void move(int offsetFromBase, uint64_t val) const;
+
+        void moveTo(int offsetFromBase, uint64_t val) const;
+        uint64_t moveFrom(int offsetFromBase) const;
     };
 
 

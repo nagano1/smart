@@ -13,9 +13,18 @@
 
 using namespace smart;
 
+void call() {
+    char b = 3;
+    uint64_t addr = (uint64_t)&b;
+    printf("%llu", addr);
+
+}
 
 int main()
 {
+    int a = 3;
+    printf("%llu\n", &a);
+    call();
     printf("Smart Lang v0.0.1\n");
 
     constexpr char text[] = R"(

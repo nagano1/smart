@@ -26,15 +26,6 @@ namespace smart {
     //                                      StackMemory
     //
     //------------------------------------------------------------------------------------------
-    void StackMemory::push(uint64_t bytes)
-    {
-        if (this->stackPointer + 8 > this->stackSize) {
-            // stack overvlow
-        }
-        int offset = this->stackPointer;
-        *(uint64_t*)(this->chunk + offset) = bytes;
-        this->stackPointer += 8;
-    }
 
     void StackMemory::init()
     {
@@ -42,7 +33,9 @@ namespace smart {
 
         this->stackSize = 2 * 1024 * 1024; // 2MB
         this->chunk = (st_byte *)malloc(this->stackSize);
-        this->stackPointer = 0;
+
+        this->stackPointer = this->chunk + this->stackSize;
+        this->stackBasePointer = this->chunk + this->stackSize;
     }
 
     void StackMemory::freeAll()
@@ -51,37 +44,48 @@ namespace smart {
             free(this->chunk);
         }
         this->chunk = nullptr;
-        this->stackPointer = 0;
+    }
+    
+    void StackMemory::push(uint64_t bytes)
+    {
+        if (this->stackPointer - 8 <= this->chunk) {
+            // stack overvlow
+        }
+        this->stackPointer -= 8;
+        *(uint64_t*)this->stackPointer = bytes;
     }
 
     // variable
     void StackMemory::sub(int bytes)
     {
-        if (this->stackPointer + bytes > this->stackSize) {
+        if (this->stackPointer - bytes <= this->chunk) {
             // stack overvlow
         }
 
-        this->stackPointer += bytes;
+        this->stackPointer -= bytes;
     }
 
 
     uint64_t StackMemory::pop()
     {
-        this->stackPointer -= 8;
-        auto pos = this->chunk + this->stackPointer;
-        return *(uint64_t*)pos;
+        uint64_t data = *(uint64_t*)this->stackPointer;
+        this->stackPointer += 8;
+        return data;
     }
 
     // assign value to stack
-    void StackMemory::move(int offsetFromBase, uint64_t val) const
+    void StackMemory::moveTo(int offsetFromBase, uint64_t val) const
     {
-        int offset = this->stackBasePointer + offsetFromBase;
-        if (offset > this->stackSize) {
+        if (this->stackBasePointer + offsetFromBase <= this->chunk) {
             // stack overflow
         }
-        *(uint64_t*)(this->chunk + offset) = val;
+        *(uint64_t*)(this->stackBasePointer - offsetFromBase) = val;
     }
 
+    uint64_t StackMemory::moveFrom(int offsetFromBase) const
+    {
+        return *(uint64_t*)(this->stackBasePointer - offsetFromBase);
+    }
 
     void StackMemory::call()
     {
@@ -93,7 +97,7 @@ namespace smart {
 
         // called side
         this->stackBasePointer = this->stackPointer;
-        this->push(this->stackBasePointer);
+        this->push((uint64_t)this->stackBasePointer);
     }
 
     void StackMemory::ret()
@@ -103,7 +107,7 @@ namespace smart {
             this->push(3);
         }
 
-        this->stackBasePointer = (int)this->pop();
+        this->stackBasePointer = (st_byte*)this->pop(); // NOLINT(performance-no-int-to-ptr)
     }
 
 
