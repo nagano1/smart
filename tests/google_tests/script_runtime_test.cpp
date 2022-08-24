@@ -64,8 +64,8 @@ namespace smart {
         stackMemory.call();
         stackMemory.localVariables(8 * 4);
         stackMemory.localVariables(8 * 4);
-        stackMemory.moveTo(-8, 100);
-        EXPECT_EQ(100, stackMemory.moveFrom(-8));
+        stackMemory.moveTo(-stackMemory.baseBytes, 100);
+        EXPECT_EQ(100, stackMemory.moveFrom(-stackMemory.baseBytes));
         stackMemory.ret();
 
         EXPECT_EQ(basePointer0, stackMemory.stackBasePointer);
@@ -120,7 +120,7 @@ namespace smart {
 
         auto& stackMemory = env->context->stackMemory;
 
-        for (int i = 0; i < stackMemory.stackSize/8 - 1; i++) {
+        for (int i = 0; i < stackMemory.stackSize/stackMemory.baseBytes - 1; i++) {
             stackMemory.push(5);
         }
         EXPECT_EQ(stackMemory.isOverflowed, false);
@@ -136,7 +136,7 @@ namespace smart {
 
         auto& stackMemory = env->context->stackMemory;
 
-        for (int i = 0; i < stackMemory.stackSize / 8 - 1; i++) {
+        for (int i = 0; i < stackMemory.stackSize / stackMemory.baseBytes - 1; i++) {
             stackMemory.call();
         }
         EXPECT_EQ(stackMemory.isOverflowed, false);

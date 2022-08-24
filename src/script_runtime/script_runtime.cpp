@@ -32,6 +32,8 @@ namespace smart {
     void StackMemory::init()
     {
         this->alignBytes = 4; // 8, 16
+        this->baseBytes = 8; // sizeof(uint64_t)
+
         this->isOverflowed = false;
 
         this->stackSize = 2 * 1024 * 1024; // 2MB
@@ -52,12 +54,12 @@ namespace smart {
     
     void StackMemory::push(uint64_t bytes)
     {
-        if (this->stackPointer - 8 <= this->chunk) {
+        if (this->stackPointer - this->baseBytes <= this->chunk) {
             // stack overvlow
             this->isOverflowed = true;
             return;
         }
-        this->stackPointer -= 8;
+        this->stackPointer -= this->baseBytes;
         *(uint64_t*)this->stackPointer = bytes;
     }
 
@@ -76,7 +78,7 @@ namespace smart {
     uint64_t StackMemory::pop()
     {
         uint64_t data = *(uint64_t*)this->stackPointer;
-        this->stackPointer += 8;
+        this->stackPointer += this->baseBytes;
         return data;
     }
 

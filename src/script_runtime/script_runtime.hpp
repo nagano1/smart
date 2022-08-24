@@ -25,6 +25,7 @@ namespace smart
     using StackMemory = struct _StackMemory {
 
         int alignBytes; // 8, 16
+        int baseBytes; // 8
 
         st_byte *chunk;
         int stackSize; // 2MB
