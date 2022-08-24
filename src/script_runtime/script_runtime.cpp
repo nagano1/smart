@@ -21,6 +21,8 @@
 #include "script_runtime.hpp"
 
 namespace smart {
+
+
     //------------------------------------------------------------------------------------------
     //
     //                                      StackMemory
@@ -30,10 +32,12 @@ namespace smart {
     void StackMemory::init()
     {
         this->alignBytes = 4; // 8, 16
+        this->isOverflowed = false;
 
         this->stackSize = 2 * 1024 * 1024; // 2MB
         this->chunk = (st_byte *)malloc(this->stackSize);
 
+        this->argumentBits = 0;
         this->stackPointer = this->chunk + this->stackSize;
         this->stackBasePointer = this->chunk + this->stackSize;
     }
@@ -50,21 +54,24 @@ namespace smart {
     {
         if (this->stackPointer - 8 <= this->chunk) {
             // stack overvlow
+            this->isOverflowed = true;
+            return;
         }
         this->stackPointer -= 8;
         *(uint64_t*)this->stackPointer = bytes;
     }
 
     // variable
-    void StackMemory::sub(int bytes)
+    void StackMemory::localVariables(int bytes)
     {
         if (this->stackPointer - bytes <= this->chunk) {
             // stack overvlow
+            this->isOverflowed = true;
+            return;
         }
 
         this->stackPointer -= bytes;
     }
-
 
     uint64_t StackMemory::pop()
     {
@@ -79,35 +86,72 @@ namespace smart {
         if (this->stackBasePointer + offsetFromBase <= this->chunk) {
             // stack overflow
         }
-        *(uint64_t*)(this->stackBasePointer - offsetFromBase) = val;
+        *(uint64_t*)(this->stackBasePointer + offsetFromBase) = val;
     }
 
     uint64_t StackMemory::moveFrom(int offsetFromBase) const
     {
-        return *(uint64_t*)(this->stackBasePointer - offsetFromBase);
+        return *(uint64_t*)(this->stackBasePointer + offsetFromBase);
+    }
+
+    // 11111111 11111111 11111111 11111111
+    static constexpr unsigned char BYTE_BIT_COUNTS[256]{
+        0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,
+        1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+        1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+        2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+        1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+        2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+        2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+        3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+        1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+        2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+        2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+        3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+        2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+        3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+        3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+        4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8
+    };
+
+    // EXPECT_EQ(4, GetSetBitsCount(0b1111));
+
+    int GetSetBitsCount(uint32_t n)
+    {
+        auto counts = BYTE_BIT_COUNTS;
+        return n <= 0xff ? counts[n]
+            : n <= 0xffff ? counts[n & 0xff] + counts[n >> 8]
+            : n <= 0xffffff ? counts[n & 0xff] + counts[(n >> 8) & 0xff] + counts[(n >> 16) & 0xff]
+            : counts[n & 0xff] + counts[(n >> 8) & 0xff] + counts[(n >> 16) & 0xff] + counts[(n >> 24) & 0xff];
     }
 
     void StackMemory::call()
     {
         // caller side
-        this->push(23); // arg1
-        this->push(5); // arg2
+        //this->push(23); // arg1
+        //this->push(5); // arg2
         this->argumentBits = 0b101;
         this->useBigStructForReturnValue = false;
 
         // called side
-        this->stackBasePointer = this->stackPointer;
         this->push((uint64_t)this->stackBasePointer);
+        this->stackBasePointer = this->stackPointer;
+
     }
 
     void StackMemory::ret()
     {
         this->returnValue = 33;
         if (this->useBigStructForReturnValue) {
-            this->push(3);
+            //this->push(3);
         }
 
+        this->stackPointer = this->stackBasePointer;
         this->stackBasePointer = (st_byte*)this->pop(); // NOLINT(performance-no-int-to-ptr)
+
+        // sub for arguments
+        // this->sub(88);
+        this->argumentBits = 0;
     }
 
 

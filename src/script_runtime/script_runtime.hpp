@@ -29,12 +29,13 @@ namespace smart
         st_byte *chunk;
         int stackSize; // 2MB
 
+        bool isOverflowed;
 
         st_byte *stackPointer; // esp, stack pointer
         st_byte *stackBasePointer; // ebp, stack base pointer
 
         // func(55, c:48) 0b101000...  for func(int a, int b = 32, int c = 8) // 32
-        uint64_t argumentBits{0};
+        uint32_t argumentBits;
 
         uint64_t returnValue{6}; // EAX, Accumulator Register
         bool useBigStructForReturnValue{false};
@@ -43,7 +44,7 @@ namespace smart
         void init();
         void freeAll();
         void push(uint64_t bytes);
-        void sub(int bytes); // assign variable on local
+        void localVariables(int bytes); // assign variable on local
         uint64_t pop();
         void call();
         void ret();

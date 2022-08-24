@@ -14,7 +14,7 @@
 
 namespace smart {
 
-    TEST(ScriptEngine, mallocItem_test1) {
+    TEST(ScriptEngine, MallocItem_test1) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
         int* mem;
@@ -36,24 +36,129 @@ namespace smart {
     }
     ENDTEST
 
-
-    TEST(ScriptEngine, MemoryStackTest) {
+    TEST(ScriptEngine, StackMemoryTest_push_pop) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
         auto& stackMemory = env->context->stackMemory;
-        stackMemory.push((char)5);
+        auto* stackPointer1 = stackMemory.stackPointer;
+
+        stackMemory.push(5);
         stackMemory.push(6);
+        
+        EXPECT_NE(stackPointer1, stackMemory.stackPointer);
+
         EXPECT_EQ(6, stackMemory.pop());
         EXPECT_EQ(5, stackMemory.pop());
 
-        stackMemory.sub(8 * 4);
-        stackMemory.moveTo(8, 100);
-        EXPECT_EQ(100, stackMemory.moveFrom(8));
+        EXPECT_EQ(stackPointer1, stackMemory.stackPointer);
+    }
+    ENDTEST
 
-        //EXPECT_EQ(0, stackMemory.stackPointer);
+    TEST(ScriptEngine, StackMemoryTest_call_ret) {
+        ScriptEnv* env = ScriptEnv::newScriptEnv();
+
+        auto& stackMemory = env->context->stackMemory;
+        auto *basePointer0 = stackMemory.stackBasePointer;
+        auto *stackPointer0 = stackMemory.stackPointer;
+
+        stackMemory.call();
+        stackMemory.localVariables(8 * 4);
+        stackMemory.localVariables(8 * 4);
+        stackMemory.moveTo(-8, 100);
+        EXPECT_EQ(100, stackMemory.moveFrom(-8));
+        stackMemory.ret();
+
+        EXPECT_EQ(basePointer0, stackMemory.stackBasePointer);
+        EXPECT_EQ(stackPointer0, stackMemory.stackPointer);
+
         ScriptEnv::deleteScriptEnv(env);
     }
     ENDTEST
+
+    TEST(ScriptEngine, StackMemoryTest_call_ret_2) {
+        ScriptEnv* env = ScriptEnv::newScriptEnv();
+
+        auto& stackMemory = env->context->stackMemory;
+
+        auto* basePointer0 = stackMemory.stackBasePointer;
+        auto* stackPointer0 = stackMemory.stackPointer;
+
+        // call func1
+        stackMemory.call();
+
+        stackMemory.push(8);
+        auto* stackPointer1 = stackMemory.stackPointer;
+        auto* basePointer1 = stackMemory.stackBasePointer;
+
+
+        // call func2
+        stackMemory.call();
+
+        stackMemory.localVariables(8 * 4);
+
+        stackMemory.ret();
+        // retruned from func2
+
+        EXPECT_EQ(basePointer1, stackMemory.stackBasePointer);
+        EXPECT_EQ(stackPointer1, stackMemory.stackPointer);
+
+        stackMemory.ret();
+        // returned from func1
+
+        EXPECT_EQ(basePointer0, stackMemory.stackBasePointer);
+        EXPECT_EQ(stackPointer0, stackMemory.stackPointer);
+
+        ScriptEnv::deleteScriptEnv(env);
+    }
+    ENDTEST
+
+
+
+
+    TEST(ScriptEngine, StackMemoryTest_overflow_push) {
+        ScriptEnv* env = ScriptEnv::newScriptEnv();
+
+        auto& stackMemory = env->context->stackMemory;
+
+        for (int i = 0; i < stackMemory.stackSize/8 - 1; i++) {
+            stackMemory.push(5);
+        }
+        EXPECT_EQ(stackMemory.isOverflowed, false);
+        stackMemory.push(5);
+
+        EXPECT_EQ(stackMemory.isOverflowed, true);
+    }
+    ENDTEST
+
+
+    TEST(ScriptEngine, StackMemoryTest_overflow_call) {
+        ScriptEnv* env = ScriptEnv::newScriptEnv();
+
+        auto& stackMemory = env->context->stackMemory;
+
+        for (int i = 0; i < stackMemory.stackSize / 8 - 1; i++) {
+            stackMemory.call();
+        }
+        EXPECT_EQ(stackMemory.isOverflowed, false);
+        stackMemory.call();
+
+        EXPECT_EQ(stackMemory.isOverflowed, true);
+    }
+    ENDTEST
+
+
+    TEST(ScriptEngine, StackMemoryTest_overflow_localVariables) {
+        ScriptEnv* env = ScriptEnv::newScriptEnv();
+        auto& stackMemory = env->context->stackMemory;
+        
+        stackMemory.localVariables(stackMemory.stackSize);
+        EXPECT_EQ(stackMemory.isOverflowed, true);
+    }
+    ENDTEST
+
+
+
+
 
     TEST(ScriptEngine, scriptEngine) {
 
