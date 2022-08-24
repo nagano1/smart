@@ -48,8 +48,8 @@ namespace smart {
     {
         if (this->chunk) {
             free(this->chunk);
+            this->chunk = nullptr;
         }
-        this->chunk = nullptr;
     }
     
     void StackMemory::push(uint64_t bytes)
