@@ -55,7 +55,13 @@ namespace smart {
 	}
 
 
-	/*
+    void DocumentUtils::calcStackSize(DocumentStruct *doc)
+    {
+
+    }
+
+
+    /*
 	* Before editing this file, it is required to modify indentation to follow ZM's indent rule
 	*/
 	void DocumentUtils::assignIndents(DocumentStruct* doc)

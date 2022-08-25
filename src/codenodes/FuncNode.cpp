@@ -24,9 +24,6 @@ namespace smart {
     static constexpr unsigned int size_of_fn = sizeof(fn_chars) - 1;
 
 
-
-
-
     // -----------------------------------------------------------------------------------
     //
     //                              FuncArgumentItemStruct
@@ -81,11 +78,12 @@ namespace smart {
 
 
 
+    // -----------------------------------------------------------------------------------
+    //
+    //                              CallFunc Node
+    //
+    // -----------------------------------------------------------------------------------
 
-
-    //    +--------------------------+
-    //    | CallFunc Node            |
-    //    +--------------------------+
     static CodeLine *callfunc_appendToLine(CallFuncNodeStruct *self, CodeLine *currentCodeLine)
     {
         // currentCodeLine = currentCodeLine->addPrevLineBreakNode(self->exprNode);
@@ -255,31 +253,11 @@ namespace smart {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //    +--------------------------+
-    //    | BodyNode                 |
-    //    +--------------------------+
+    // -----------------------------------------------------------------------------------
+    //
+    //                                    BodyNode
+    //
+    // -----------------------------------------------------------------------------------
     static int selfTextLength2(BodyNodeStruct *) {
         return 1;
     }
@@ -437,34 +415,18 @@ namespace smart {
 
 
 
-
-
-
-
-
-
-
-
-
-    // --------------------- Defines FuncNode VTable ---------------------- /
-
-
-
-
     // -----------------------------------------------------------------------------------
     //
-    //                              FuncCallParameterItemStruct
+    //                              FuncParameterItemStruct
     //
     // -----------------------------------------------------------------------------------
-    /*
-    static CodeLine *appendToLine2(FuncParameterItemStruct *self, CodeLine *currentCodeLine) {
+
+    static CodeLine *appendToLine_FuncParameterItemStruct(FuncParameterItemStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
 
         currentCodeLine->appendNode(self);
 
-        if (self->exprNode) {
-            currentCodeLine = VTableCall::appendToLine(self->exprNode, currentCodeLine);
-        }
+        currentCodeLine = VTableCall::appendToLine(&self->typeNode, currentCodeLine);
 
         if (self->hasComma) {
             currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
@@ -475,38 +437,36 @@ namespace smart {
 
 
     // virtual
-    static const utf8byte *selfText_JsonKeyValueItemStruct(FuncParameterItemStruct *) {
+    static const utf8byte *selfText_FuncParameterItemStruct(FuncParameterItemStruct *) {
         return "";
     }
 
-    static int selfTextLength2(FuncParameterItemStruct *) {
+    static int selfTextLength_FuncParameterItemStruct(FuncParameterItemStruct *) {
         return 0;
     }
 
 
-    static const node_vtable _jsonArrayItemVTable = CREATE_VTABLE(FuncParameterItemStruct,
-                                                                  selfTextLength2,
-                                                                  selfText_JsonKeyValueItemStruct,
-                                                                  appendToLine2,
+    static const node_vtable _funcParameterItemVTable = CREATE_VTABLE(FuncParameterItemStruct,
+                                                                      selfTextLength_FuncParameterItemStruct,
+                                                                      selfText_FuncParameterItemStruct,
+                                                                      appendToLine_FuncParameterItemStruct,
                                                                   "<FuncParameterItem>",
                                                                   NodeTypeId::FuncParameter);
 
-    const struct node_vtable *const VTables::JsonArrayItemVTable = &_jsonArrayItemVTable;
+    const struct node_vtable *const VTables::FuncParameterVTable = &_funcParameterItemVTable;
 
 
     FuncParameterItemStruct *Alloc::newFuncParameterItem(ParseContext *context, NodeBase *parentNode) {
         auto *keyValueItem = context->newMem<FuncParameterItemStruct>();
 
-        INIT_NODE(keyValueItem, context, parentNode, &_jsonArrayItemVTable);
+        INIT_NODE(keyValueItem, context, parentNode, &_funcParameterItemVTable);
 
         Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
 
         keyValueItem->hasComma = false;
-        keyValueItem->exprNode = nullptr;
 
         return keyValueItem;
     }
-*/
 
 
 
@@ -522,11 +482,11 @@ namespace smart {
 
 
 
-
-    //    +--------------------------+
-    //    | FuncDefNode                 |
-    //    +--------------------------+
-
+    //=======================================================================================
+    //
+    //                                    FuncNodeStruct
+    //
+    //=======================================================================================
     static int selfTextLength(FuncNodeStruct *) {
         return size_of_fn;
     }

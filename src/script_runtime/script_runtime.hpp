@@ -205,11 +205,11 @@ namespace smart
             return context->memBufferForMalloc.tryDelete(ptr);
         }
 */
+        static int startScript(char *script, int byteLength);
 
         void registerTypeEntry(TypeEntry* typeEntry);
     };
 
 
-    void startScript(char *script, int byteLength);
-    
+
 }

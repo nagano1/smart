@@ -22,10 +22,9 @@
 
 namespace smart {
 
-
     //------------------------------------------------------------------------------------------
     //
-    //                                      StackMemory
+    //                                       StackMemory
     //
     //------------------------------------------------------------------------------------------
 
@@ -182,6 +181,13 @@ namespace smart {
         sprintf(chars, "%d", *(int32_t*)value->ptr);
         return chars;
     }
+
+    static int32_t int32_value(ValueBase *value)
+    {
+        return  *(int32_t*)value->ptr;
+    }
+
+
 
     ValueBase* int32_operate_add(ScriptEngineContext *context, ValueBase *leftValue, ValueBase *rightValue)
     {
@@ -360,6 +366,13 @@ namespace smart {
             return value;
         }
 
+        if (expressionNode->vtable == VTables::ParenthesesVTable) {
+            if (testPointer) { return testPointer; }
+            auto* parentheses = Cast::downcast<ParenthesesNodeStruct *>(expressionNode);
+            return evaluateExprNodeOrTest(parentheses->valueNode, testPointer);
+        }
+
+
         if (expressionNode->vtable == VTables::NumberVTable) {
             if (testPointer) { return testPointer; }
 
@@ -401,28 +414,37 @@ namespace smart {
         return nullptr;
     }
 
-
-    static void executeMain(ScriptEnv* env, FuncNodeStruct* mainFunc)
+    static int calcStackSizeInFunc(FuncNodeStruct* func)
     {
-        auto* childNode = mainFunc->bodyNode.firstChildNode;
-        while (childNode) {
+        auto* statementNode = func->bodyNode.firstChildNode;
+        int stackSize = 0;
+        while (statementNode) {
+            if (statementNode->vtable == VTables::AssignStatementVTable) {
+                //auto* assignment = Cast::downcast<AssignStatementNodeStruct *>(statementNode);
+                //assignment->letOrType;
 
-            if (childNode->vtable == VTables::CallFuncVTable) {
-                auto* funcCall = Cast::downcast<CallFuncNodeStruct*>(childNode);
-                //funcCall->exprNode
+            }
+            statementNode = statementNode->nextNode;
+        }
+        return stackSize;
+    }
+
+    static int executeMain(ScriptEnv* env, FuncNodeStruct* mainFunc)
+    {
+        calcStackSizeInFunc(mainFunc);
+
+        auto* statementNode = mainFunc->bodyNode.firstChildNode;
+        while (statementNode) {
+            if (statementNode->vtable == VTables::CallFuncVTable) {
+                auto* funcCall = Cast::downcast<CallFuncNodeStruct*>(statementNode);
 
                 auto* arg = funcCall->firstArgumentItem;
                 if (arg != nullptr) {
                     while (true) {
                         printf("arg = <%s>\n", arg->exprNode->vtable->typeChars);
-
                         auto *valueBase = env->evaluateExprNode(arg->exprNode);
                         auto *chars = env->typeEntryList[valueBase->typeIndex]->toString(env->context, valueBase);
                         printf("chars = [%s]\n", chars);
-
-                        if (arg->exprNode->vtable == VTables::StringLiteralVTable) {
-                            //auto* stringArg = Cast::downcast<StringLiteralNodeStruct*>(arg->exprNode);
-                        }
 
                         if (arg->nextNode == nullptr) {
                             break;
@@ -430,16 +452,27 @@ namespace smart {
                         else {
                             arg = Cast::downcast<FuncArgumentItemStruct*>(arg->nextNode);
                         }
-
                     }
                 }
             }
-            childNode = childNode->nextNode;
+
+            // return
+            if (statementNode->vtable == VTables::ReturnStatementVTable) {
+                auto* returnNode = Cast::downcast<ReturnStatementNodeStruct*>(statementNode);
+                auto* valueBase = env->evaluateExprNode(returnNode->valueNode);
+                if (valueBase->typeIndex == BuiltInTypeIndex::int32) {
+                    return int32_value(valueBase);
+                }
+            }
+            statementNode = statementNode->nextNode;
         }
+
+        return 0;
     }
 
-    void startScript(char* script, int scriptLength)
+    int ScriptEnv::startScript(char* script, int scriptLength)
     {
+        int ret = 0;
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
         auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
@@ -451,7 +484,7 @@ namespace smart {
         if (mainFunc) {
             printf("main Found");
             printf("<%s()>\n", mainFunc->nameNode.name);
-            executeMain(env, mainFunc);
+            ret = executeMain(env, mainFunc);
         }
 
         ScriptEnv::deleteScriptEnv(env);
@@ -473,5 +506,6 @@ namespace smart {
         }
         Alloc::deleteDocument(document);
 
+        return ret;
     }
 }

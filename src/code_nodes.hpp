@@ -162,6 +162,7 @@ namespace smart {
 
         // $int a = 5
         // ?let *ptr = "jfwio"
+        int stackSize; // $
 
         bool hasMutMark; // $
         bool hasNullableMark; // ?
@@ -223,6 +224,7 @@ namespace smart {
         NODE_HEADER;
 
         NameNodeStruct nameNode;
+        int stackSize;
 
         SymbolStruct parameterStartNode;
         SymbolStruct parameterEndNode;
@@ -257,17 +259,12 @@ namespace smart {
     /* ($int point) */
     using FuncParameterItemStruct = struct {
         NODE_HEADER;
-
-        NameNodeStruct nameNode;
-
-        SymbolStruct delimeter;
-
         TypeNodeStruct typeNode;
-
+        SymbolStruct delimeter;
+        NameNodeStruct nameNode;
         SymbolStruct follwingComma;
         bool hasComma;
     };
-
 
 
     using FuncArgumentItemStruct = struct {
@@ -750,6 +747,7 @@ namespace smart {
                 *const ParenthesesVTable,
                 *const CallFuncVTable,
                 *const FuncArgumentVTable,
+                *const FuncParameterVTable,
 
                 // operation
                 *const BinaryOperationVTable,
@@ -930,6 +928,7 @@ namespace smart {
 
         static void checkIndentSyntaxErrors(DocumentStruct *doc);
         static void assignIndents(DocumentStruct *doc);
+        static void calcStackSize(DocumentStruct *doc);
         static void formatIndent(DocumentStruct *doc);
 
         static utf8byte *getTextFromTree(DocumentStruct *doc);

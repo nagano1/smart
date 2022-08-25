@@ -86,6 +86,8 @@ namespace smart {
 
         assignStatement->hasMutMark = false;
         assignStatement->hasNullableMark = false;
+        assignStatement->stackSize = 0;
+
         assignStatement->useLet = false;
         assignStatement->onlyAssign = false;
 

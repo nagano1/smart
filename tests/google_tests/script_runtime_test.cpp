@@ -168,9 +168,12 @@ fn main()
     let a = 0
     int b = 0
     print("test日本語", 3 + 56)
+    
+    return (4 + 5);
 }
 )";
-        startScript((char*)source, sizeof(source)-1);
+        int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);
+        EXPECT_EQ(ret, 9);
     }
 
     ENDTEST

@@ -38,7 +38,7 @@ fn main() {
 }
 )";
 
-    startScript((char*)text, sizeof(text)-1);
+    ScriptEnv::startScript((char*)text, sizeof(text)-1);
 
 
 
