@@ -172,6 +172,7 @@ namespace smart {
 
         bool onlyAssign; // has not declare
         TypeNodeStruct typeOrLet; // $let, int, ?string, etc..
+        bool hasType; // $let, int, ?string, etc..
         SymbolStruct pointerAsterisk; // *
 
         NameNodeStruct nameNode; // varName
@@ -222,6 +223,17 @@ namespace smart {
     };
 
 
+
+    /* ($int point) */
+    using FuncParameterItemStruct = struct {
+        NODE_HEADER;
+        //TypeNodeStruct typeNode;
+        //NameNodeStruct nameNode;
+        AssignStatementNodeStruct *assignStatementNodeStruct;
+        SymbolStruct follwingComma;
+        bool hasComma;
+    };
+
     using FuncNodeStruct = struct {
         NODE_HEADER;
 
@@ -233,8 +245,9 @@ namespace smart {
 
         BodyNodeStruct bodyNode;
 
-        NodeBase *firstChildParameterNode;
-        NodeBase *lastChildParameterNode;
+        int parameterParsePhase;
+        FuncParameterItemStruct *firstChildParameterNode;
+        FuncParameterItemStruct *lastChildParameterNode;
         int parameterChildCount;
     };
 
@@ -258,15 +271,6 @@ namespace smart {
     };
 
 
-    /* ($int point) */
-    using FuncParameterItemStruct = struct {
-        NODE_HEADER;
-        TypeNodeStruct typeNode;
-        SymbolStruct delimeter;
-        NameNodeStruct nameNode;
-        SymbolStruct follwingComma;
-        bool hasComma;
-    };
 
 
     using FuncArgumentItemStruct = struct {

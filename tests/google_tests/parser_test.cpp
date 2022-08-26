@@ -894,12 +894,13 @@ TEST(ParserTest_, SameLength_01) {
     constexpr char text[] = R"(
 class fjawioejap
 {
-    fn funcB()
+    fn funcB(int a, int k = 31)
     {
         // comment
         let a = 893214 // fawoiefjiawo
         let *str = "0jfoiwjoie" // comment
         int a = 123412
+        float test
 
         $float f = 4503
         ?let *f = null
@@ -980,6 +981,7 @@ void testCodeEquality(const char* codeText, int length) {
     DocumentUtils::parseText(document, codeText, length);
 
 
+    EXPECT_EQ(document->context->syntaxErrorInfo.errorId, 10000);
     EXPECT_EQ(document->context->syntaxErrorInfo.hasError, false);
     EXPECT_EQ(document->context->syntaxErrorInfo.errorCode, ErrorCode::no_syntax_error);
 

@@ -415,26 +415,91 @@ namespace smart {
 
 
 
-    // -----------------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------
     //
-    //                              FuncParameterItemStruct
+    //                               FuncParameterItemStruct
     //
-    // -----------------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------------------
+    enum FuncParamParsePhase {
+        EXPECT_Type = 0,
+        EXPECT_COMMA2 = 3
+    };
 
     static CodeLine *appendToLine_FuncParameterItemStruct(FuncParameterItemStruct *self, CodeLine *currentCodeLine) {
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(self);
 
         currentCodeLine->appendNode(self);
 
-        currentCodeLine = VTableCall::appendToLine(&self->typeNode, currentCodeLine);
+        if (self->assignStatementNodeStruct) {
+            currentCodeLine = VTableCall::appendToLine(self->assignStatementNodeStruct, currentCodeLine);
+        }
+        //currentCodeLine = VTableCall::appendToLine(&self->typeNode, currentCodeLine);
+        //currentCodeLine = VTableCall::appendToLine(&self->nameNode, currentCodeLine);
 
         if (self->hasComma) {
             currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
         }
 
         return currentCodeLine;
-    };
+    }
 
+    // --------------------- Implements ClassNode Parser ----------------------
+    static void appendChildParameterNode(FuncNodeStruct *fnNode, FuncParameterItemStruct *node) {
+        if (fnNode->firstChildParameterNode == nullptr) {
+            fnNode->firstChildParameterNode = node;
+        }
+        if (fnNode->lastChildParameterNode != nullptr) {
+            fnNode->lastChildParameterNode->nextNode = Cast::upcast(node);
+        }
+        fnNode->lastChildParameterNode = node;
+        fnNode->parameterChildCount++;
+    }
+
+
+    static inline int parseNextValue(TokenizerParams_parent_ch_start_context, FuncNodeStruct* funcNode)
+    {
+        auto *nextParam = Alloc::newFuncParameterItem(context, parent);
+        int result;
+        if (-1 < (result = Tokenizers::assignStatementTokenizer(Cast::upcast(nextParam), ch, start, context))) {
+            nextParam->assignStatementNodeStruct = Cast::downcast<AssignStatementNodeStruct *>(context->virtualCodeNode);
+                appendChildParameterNode(funcNode, nextParam);
+
+                funcNode->parameterParsePhase = FuncParamParsePhase::EXPECT_COMMA2;
+                return result;
+        }
+        return -1;
+    }
+
+    static int internal_parameterListTokenizerMulti(TokenizerParams_parent_ch_start_context) {
+        auto *funcNode = Cast::downcast<FuncNodeStruct *>(parent);
+
+        if (ch == ')') {
+            context->scanEnd = true;
+            context->setCodeNode(Cast::upcast(&funcNode->parameterEndNode));
+            return start + 1;
+        }
+
+        if (funcNode->parameterParsePhase == FuncParamParsePhase::EXPECT_Type) {
+            return parseNextValue(TokenizerParams_pass, funcNode);
+        }
+
+        auto *currentKeyValueItem = funcNode->lastChildParameterNode;
+
+        if (funcNode->parameterParsePhase == FuncParamParsePhase::EXPECT_COMMA2) {
+            if (ch == ',') { // try to find ',' which leads to next key-value
+                currentKeyValueItem->hasComma = true;
+                context->setCodeNode(Cast::upcast(&currentKeyValueItem->follwingComma));
+                funcNode->parameterParsePhase = FuncParamParsePhase::EXPECT_Type;
+                return start + 1;
+            } else if (context->afterLineBreak) {
+                // comma is not needed after a line break
+                return parseNextValue(TokenizerParams_pass, funcNode);
+            }
+            return -1;
+        }
+
+        return -1;
+    }
 
     // virtual
     static const utf8byte *selfText_FuncParameterItemStruct(FuncParameterItemStruct *) {
@@ -457,24 +522,18 @@ namespace smart {
 
 
     FuncParameterItemStruct *Alloc::newFuncParameterItem(ParseContext *context, NodeBase *parentNode) {
-        auto *keyValueItem = context->newMem<FuncParameterItemStruct>();
+        auto *funcParameterItem = context->newMem<FuncParameterItemStruct>();
 
-        INIT_NODE(keyValueItem, context, parentNode, &_funcParameterItemVTable);
+        INIT_NODE(funcParameterItem, context, parentNode, &_funcParameterItemVTable);
 
-        Init::initSymbolNode(&keyValueItem->follwingComma, context, keyValueItem, ',');
+        Init::initSymbolNode(&funcParameterItem->follwingComma, context, funcParameterItem, ',');
 
-        keyValueItem->hasComma = false;
+        funcParameterItem->hasComma = false;
+        funcParameterItem->nextNode = nullptr;
+        funcParameterItem->assignStatementNodeStruct = nullptr;
 
-        return keyValueItem;
+        return funcParameterItem;
     }
-
-
-
-
-
-
-
-
 
 
 
@@ -498,11 +557,9 @@ namespace smart {
     static CodeLine *appendToLine(FuncNodeStruct *self, CodeLine *currentCodeLine) {
         auto *classNode = self;
 
-
         currentCodeLine = currentCodeLine->addPrevLineBreakNode(classNode);
 
         currentCodeLine->appendNode(classNode);
-
 
         auto formerParentDepth = self->context->parentDepth;
         self->context->parentDepth += 1;
@@ -513,6 +570,17 @@ namespace smart {
 
 
         currentCodeLine = VTableCall::appendToLine(&classNode->parameterStartNode, currentCodeLine);
+
+        self->context->parentDepth += 1;
+
+        auto *item = self->firstChildParameterNode;
+        while (item != nullptr) {
+            currentCodeLine = VTableCall::appendToLine(item, currentCodeLine);
+            item = Cast::downcast<FuncParameterItemStruct *>(item->nextNode);
+        }
+
+        self->context->parentDepth -= 1;
+
         currentCodeLine = VTableCall::appendToLine(&classNode->parameterEndNode, currentCodeLine);
 
         currentCodeLine = VTableCall::appendToLine(&classNode->bodyNode, currentCodeLine);
@@ -543,6 +611,7 @@ namespace smart {
 
         INIT_NODE(funcNode, context, parentNode, &_fnVTable);
 
+        funcNode->parameterParsePhase = FuncParamParsePhase::EXPECT_Type;
         funcNode->lastChildParameterNode = nullptr;
         funcNode->firstChildParameterNode = nullptr;
 
@@ -558,54 +627,8 @@ namespace smart {
     }
 
 
-    // --------------------- Implements ClassNode Parser ----------------------
-/*
-    static void appendChildBodyNode(FuncNodeStruct *fnNode, NodeBase *node) {
-        if (fnNode->firstChildBodyNode == nullptr) {
-            fnNode->firstChildBodyNode = node;
-        }
-        if (fnNode->lastChildBodyNode != nullptr) {
-            fnNode->lastChildBodyNode->nextNode = node;
-        }
-        fnNode->lastChildBodyNode = node;
-        fnNode->childCount++;
-    }
-*/
 
-/*
-    int internal_parameterListTokenizer(TokenizerParams_parent_ch_start_context) {
-        auto *jsonArray = Cast::downcast<JsonArrayStruct *>(parent);
-
-        if (ch == ']') {
-            context->scanEnd = true;
-            context->codeNode = Cast::upcast(&jsonArray->endBodyNode);
-            return start + 1;
-        }
-
-        if (jsonArray->parsePhase == phase::EXPECT_VALUE) {
-            return parseNextValue(TokenizerParams_pass, jsonArray);
-        }
-
-        auto *currentKeyValueItem = jsonArray->lastItem;
-
-        if (jsonArray->parsePhase == phase::EXPECT_COMMA) {
-            if (ch == ',') { // try to find ',' which leads to next key-value
-                currentKeyValueItem->hasComma = true;
-                context->codeNode = Cast::upcast(&currentKeyValueItem->follwingComma);
-                jsonArray->parsePhase = phase::EXPECT_VALUE;
-                return start + 1;
-            } else if (context->afterLineBreak) {
-                // comma is not needed after a line break
-                return parseNextValue(TokenizerParams_pass, jsonArray);
-            }
-            return -1;
-        }
-
-        return -1;
-    }
- */
-
-    static int inner_fnBodyTokenizerMulti(TokenizerParams_parent_ch_start_context) {
+    static int inner_fnParamsAndBodyTokenizer(TokenizerParams_parent_ch_start_context) {
         auto *fnNode = Cast::downcast<FuncNodeStruct *>(parent);
 
         //console_log(std::string(""+ch).c_str());
@@ -615,36 +638,26 @@ namespace smart {
             if (ch == '(') {
                 fnNode->parameterStartNode.found = start;
                 context->setCodeNode(&fnNode->parameterStartNode);
-                return start + 1;
+                int nextPos =  start + 1;
+                int result = Scanner::scanMulti(fnNode,
+                                                internal_parameterListTokenizerMulti,
+                                                nextPos,
+                                                context);
+                if (result > -1) {
+                    int result2;
+                    if (-1 < (result2 = Scanner::scanOnce(Cast::upcast(&fnNode->bodyNode), Tokenizers::bodyTokenizer,  result, context))) {
+                        context->scanEnd = true;
+                        context->leftNode = Cast::upcast(&fnNode->parameterStartNode);
+                        return result2;
+                    }
+                }
+
+
             } else {
                 context->setError(ErrorCode::expect_parenthesis_for_fn_params, context->prevFoundPos);
             }
         } else {
-            if (fnNode->parameterEndNode.found == -1) {
-                if (ch == ')') {
-                    fnNode->parameterEndNode.found = start;
-                    context->setCodeNode(&fnNode->parameterEndNode);
-                    return start + 1;
-                } else {
-                    context->setError(ErrorCode::expect_end_parenthesis_for_fn_params, context->prevFoundPos);
-
-                    /*
-                        int result;
-                        if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
-                            auto *innerClassNode = Cast::downcast<ClassNodeStruct *>(parent);
-                            appendChildNode(innerClassNode, context->codeNode);
-                            return result;
-                        }
-                    */
-
-                }
-            } else {
-                int result;
-                if (-1 < (result = Tokenizers::bodyTokenizer(Cast::upcast(&fnNode->bodyNode), ch, start, context))) {
-                    context->scanEnd = true;
-                    return result;
-                }
-            }
+            context->setError(ErrorCode::expect_parenthesis_for_fn_params, context->prevFoundPos);
         }
         return -1;
     }
@@ -678,10 +691,10 @@ namespace smart {
 
                 // Parse body
                 currentPos = resultPos;
-                if (-1 == (resultPos = Scanner::scanMulti(fnNode, inner_fnBodyTokenizerMulti,
-                                                          currentPos, context))) {
+                if (-1 == (resultPos = Scanner::scanOnce(fnNode, inner_fnParamsAndBodyTokenizer,
+                                                         currentPos, context))) {
 
-                    context->setError(ErrorCode::invalid_fn_name, context->prevFoundPos);
+                    context->setError(ErrorCode::syntax_error, context->prevFoundPos);
 
                     context->setCodeNode(fnNode);
                     return currentPos;

@@ -85,7 +85,7 @@ namespace smart {
         INIT_NODE(assignStatement, context, parentNode, &_assignVTable);
 
         assignStatement->onlyAssign = false;
-
+        assignStatement->hasType = false;
         assignStatement->valueNode = nullptr;
 
 
@@ -116,6 +116,7 @@ namespace smart {
             if (-1 < (result = Tokenizers::nameTokenizer(Cast::upcast(&assignment->nameNode)
                                                         , ch, start, context))
             ) {
+                assignment->nameNode.found = result;
                 context->setCodeNode(&assignment->nameNode);
                 return result;
             }
@@ -132,16 +133,19 @@ namespace smart {
                 return start+1;
             }
             else {
-                if (assignment->typeOrLet.hasMutMark) {
+                fprintf(stderr, "<maybe>");
+                fflush(stderr);
+
+                if (assignment->hasType) {
                     context->setCodeNode(nullptr);
                     context->scanEnd = true;
-                    return context->prevFoundPos; // revert to name
+                    return context->prevFoundPos;// assignment->nameNode.found;//context->prevFoundPos; // revert to name
                 }
-                else {
+                //else {
                     //context->scanEnd = true;
                     //context->setError(ErrorCode::syntax_error, start);
-                    return -1;
-                }
+//                    return -1;
+                //}
             }
         }
         else {
@@ -196,6 +200,7 @@ namespace smart {
 
     // let a = 3
     // $int m = 5
+    // int a
     int Tokenizers::assignStatementTokenizer(TokenizerParams_parent_ch_start_context)
     {
         AssignStatementNodeStruct *assignStatement;
@@ -211,6 +216,7 @@ namespace smart {
         int resul = Tokenizers::typeTokenizer(Cast::upcast(&assignStatement->typeOrLet), ch, start, context);
         if (resul > -1) {
             assignStatement->onlyAssign = false;
+            assignStatement->hasType = true;
 
             int resultPos;
             if (-1 < (resultPos = Scanner::scanMulti(assignStatement,

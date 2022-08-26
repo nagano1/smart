@@ -322,8 +322,8 @@ namespace smart {
     }
 
 
-    int internal_JsonObjectTokenizerMulti(TokenizerParams_parent_ch_start_context) {
-
+    int internal_JsonObjectTokenizerMulti(TokenizerParams_parent_ch_start_context)
+    {
         auto *jsonObject = Cast::downcast<JsonObjectStruct *>(parent);
 
         if (jsonObject->parsePhase == phase::EXPECT_NAME) {
@@ -332,7 +332,6 @@ namespace smart {
                 context->setCodeNode(&jsonObject->endBodyNode);
                 return start + 1;
             }
-
 
             return parseObjectKey(TokenizerParams_pass, jsonObject);
         }

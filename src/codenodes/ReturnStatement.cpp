@@ -118,6 +118,7 @@ namespace smart {
                 auto *returnNode = Alloc::newReturnStatement(context, parent);
                 Init::assignText_SimpleTextNode(&returnNode->returnText, context, start, returnTextSize);
 
+                context->afterLineBreak = false;
                 int currentPos = idx + returnTextSize;
                 int resultPos;
                 if (-1 < (resultPos = Scanner::scanMulti(returnNode,

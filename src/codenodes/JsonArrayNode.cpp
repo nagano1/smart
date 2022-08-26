@@ -147,7 +147,7 @@ namespace smart {
 
 
 
-    static int internal_JsonArrayTokenizer(TokenizerParams_parent_ch_start_context);
+    static int internal_JsonArrayTokenizerMulti(TokenizerParams_parent_ch_start_context);
 
     int Tokenizers::jsonArrayTokenizer(TokenizerParams_parent_ch_start_context) {
         if (ch == '[') {
@@ -156,10 +156,9 @@ namespace smart {
             jsonArray->parsePhase = phase::EXPECT_VALUE;
 
             int result = Scanner::scanMulti(jsonArray,
-                internal_JsonArrayTokenizer,
-                returnPosition,
-                context);
-
+                                            internal_JsonArrayTokenizerMulti,
+                                            returnPosition,
+                                            context);
             if (result > -1) {
                 context->setCodeNode(jsonArray);
                 return result;
@@ -168,9 +167,6 @@ namespace smart {
 
         return -1;
     }
-
-
-
 
     static inline void appendRootNode(JsonArrayStruct *arr, JsonArrayItemStruct *arrayItem) {
         assert(arr != nullptr && arrayItem != nullptr);
@@ -201,7 +197,7 @@ namespace smart {
     }
 
 
-    int internal_JsonArrayTokenizer(TokenizerParams_parent_ch_start_context) {
+    int internal_JsonArrayTokenizerMulti(TokenizerParams_parent_ch_start_context) {
         auto *jsonArray = Cast::downcast<JsonArrayStruct *>(parent);
 
         if (ch == ']') {
