@@ -1047,7 +1047,7 @@ TEST(ParserTest_, TypeTreeTest) {
 <Symbol>        {<lineBreak>
 <fn>            fn<Name> func<Symbol>(<Symbol>)<lineBreak>
 <body>            {<lineBreak>
-<SimpleText>                $let<Name> aw<Symbol> =<number> 242<lineBreak>
+<Type>                $let<Name> aw<Symbol> =<number> 242<lineBreak>
 <bool>                true<lineBreak>
 <NULL>                null<lineBreak>
 <Variable>                printf<Symbol>(<FuncArgument><number>214<Symbol>)<lineBreak>

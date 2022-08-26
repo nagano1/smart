@@ -56,7 +56,6 @@ namespace smart {
 
         ENDTEST
     }
-
     TEST(ScriptEngine, StackMemoryTest_Call_Ret) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
@@ -104,14 +103,14 @@ namespace smart {
         stackMemory.ret();
         // retruned from func2
 
-        EXPECT_EQ(basePointer1, stackMemory.stackBasePointer);
-        EXPECT_EQ(stackPointer1, stackMemory.stackPointer);
+        EXPECT_EQ((uint64_t)basePointer1, (uint64_t)stackMemory.stackBasePointer);
+        EXPECT_EQ((uint64_t)stackPointer1, (uint64_t)stackMemory.stackPointer);
 
         stackMemory.ret();
         // returned from func1
 
-        EXPECT_EQ(basePointer0, stackMemory.stackBasePointer);
-        EXPECT_EQ(stackPointer0, stackMemory.stackPointer);
+        EXPECT_EQ((uint64_t)basePointer0, (uint64_t)stackMemory.stackBasePointer);
+        EXPECT_EQ((uint64_t)stackPointer0, (uint64_t)stackMemory.stackPointer);
 
         ScriptEnv::deleteScriptEnv(env);
         

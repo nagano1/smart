@@ -10,7 +10,8 @@ class ClassMine
         ?let *f = null
         ?let g = true
 
-        int a = "fjoiw"
+        int a = "jfoiwjieo"
+
 
         /*
         Let's fucking GO!!!
