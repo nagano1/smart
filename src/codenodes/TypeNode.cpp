@@ -41,8 +41,8 @@ namespace smart
 
         int currentPos = start;
 
-        //static constexpr const char let_chars[] = "let";
-        //static constexpr int size_of_let = sizeof(let_chars) - 1;
+        static constexpr const char let_chars[] = "let";
+        static constexpr int size_of_let = sizeof(let_chars) - 1;
 
         bool hasMutMark = false;
         bool hasNullableMark = false;
@@ -61,7 +61,7 @@ namespace smart
         int result = Tokenizers::nameTokenizer_ignore(Cast::upcast(&typeNode->nameNode), context->chars[currentPos], start, context, currentPos);
 
         if (result > -1) {
-            typeNode->useLet = ParseUtil::equal(typeNode->nameNode.name, typeNode->nameNode.nameLength, "let", 3);
+            typeNode->useLet = ParseUtil::equal(typeNode->nameNode.name, typeNode->nameNode.nameLength,let_chars, size_of_let);
 
             context->setCodeNode(typeNode);
             return result;

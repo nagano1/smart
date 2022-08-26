@@ -118,7 +118,8 @@ namespace smart {
             ) {
                 context->setCodeNode(&assignment->nameNode);
                 return result;
-            } else {
+            }
+            else {
                 //context->scanEnd = true;
                 //context->setError(ErrorCode::syntax_error, start);
 
@@ -129,7 +130,8 @@ namespace smart {
                 assignment->equalSymbol.found = start;
                 context->setCodeNode(&assignment->equalSymbol);
                 return start+1;
-            } else {
+            }
+            else {
                 if (assignment->typeOrLet.hasMutMark) {
                     context->setCodeNode(nullptr);
                     context->scanEnd = true;

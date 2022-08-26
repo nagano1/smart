@@ -9,7 +9,7 @@ class ClassMine
         $float floata = 4503
         ?let *f = null
         ?let g = true
-
+        alt a = foijwae
         int a = "jfoiwjieo"
 
 
