@@ -14,7 +14,8 @@
 
 namespace smart {
 
-    TEST(ScriptEngine, MallocItem_test1) {
+    TEST(ScriptEngine, MallocItem_test1)
+    {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
         int* mem;
@@ -31,12 +32,13 @@ namespace smart {
 
         EXPECT_EQ(*mem, 53);
         EXPECT_NE(env->context->memBufferForMalloc.firstBufferBlock, env->context->memBufferForMalloc.currentBufferBlock);
-        
-        ScriptEnv::deleteScriptEnv(env);
-    }
-    ENDTEST
 
-    TEST(ScriptEngine, StackMemoryTest_push_pop) {
+        ScriptEnv::deleteScriptEnv(env);
+
+        ENDTEST
+    }
+
+    TEST(ScriptEngine, StackMemory_PushPop) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
         auto& stackMemory = env->context->stackMemory;
@@ -51,10 +53,11 @@ namespace smart {
         EXPECT_EQ(5, stackMemory.pop());
 
         EXPECT_EQ(stackPointer1, stackMemory.stackPointer);
-    }
-    ENDTEST
 
-    TEST(ScriptEngine, StackMemoryTest_call_ret) {
+        ENDTEST
+    }
+
+    TEST(ScriptEngine, StackMemoryTest_Call_Ret) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
         auto& stackMemory = env->context->stackMemory;
@@ -72,10 +75,12 @@ namespace smart {
         EXPECT_EQ(stackPointer0, stackMemory.stackPointer);
 
         ScriptEnv::deleteScriptEnv(env);
-    }
-    ENDTEST
 
-    TEST(ScriptEngine, StackMemoryTest_call_ret_2) {
+        ENDTEST
+    }
+
+
+    TEST(ScriptEngine, StackMemoryTest_cal_ret_2) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
         auto& stackMemory = env->context->stackMemory;
@@ -109,13 +114,11 @@ namespace smart {
         EXPECT_EQ(stackPointer0, stackMemory.stackPointer);
 
         ScriptEnv::deleteScriptEnv(env);
+        
+        ENDTEST
     }
-    ENDTEST
 
-
-
-
-    TEST(ScriptEngine, StackMemoryTest_overflow_push) {
+    TEST(ScriptEngine, StackMemoryTest_Overflow_Push) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
         auto& stackMemory = env->context->stackMemory;
@@ -127,11 +130,11 @@ namespace smart {
         stackMemory.push(5);
 
         EXPECT_EQ(stackMemory.isOverflowed, true);
+
+        ENDTEST
     }
-    ENDTEST
 
-
-    TEST(ScriptEngine, StackMemoryTest_overflow_call) {
+    TEST(ScriptEngine, SktackMemoryTest_overflow_call) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
 
         auto& stackMemory = env->context->stackMemory;
@@ -143,24 +146,21 @@ namespace smart {
         stackMemory.call();
 
         EXPECT_EQ(stackMemory.isOverflowed, true);
+
+        ENDTEST
     }
-    ENDTEST
 
-
-    TEST(ScriptEngine, StackMemoryTest_overflow_localVariables) {
+    TEST(ScriptEngine, StackMemoryTest3_overflow_localVariables) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
         auto& stackMemory = env->context->stackMemory;
         
         stackMemory.localVariables(stackMemory.stackSize);
         EXPECT_EQ(stackMemory.isOverflowed, true);
+
+        ENDTEST
     }
-    ENDTEST
 
-
-
-
-
-    TEST(ScriptEngine, scriptEngine) {
+    TEST(ScriptEngine, ScriptEngineTestSomeScript0) {
 
         constexpr char source[] = R"(
 fn main()
@@ -169,13 +169,12 @@ fn main()
     int b = 0
     print("test日本語", 3 + 56)
     
-    return (4 + 5);
+    return (4 + 5)
 }
 )";
         int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);
         EXPECT_EQ(ret, 9);
+
+        ENDTEST
     }
-
-    ENDTEST
-
 }

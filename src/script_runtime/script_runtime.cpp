@@ -478,6 +478,9 @@ namespace smart {
         auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
         DocumentUtils::parseText(document, script, scriptLength);
         DocumentUtils::generateHashTables(document);
+        if (document->context->syntaxErrorInfo.hasError) {
+            return - 1;
+        }
 
 
         auto *mainFunc = findMainFunc(document);

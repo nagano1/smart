@@ -189,6 +189,7 @@
     <ClCompile Include="..\..\src\codenodes\SimpleTextNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\StringLiteralNode.cpp" />
     <ClCompile Include="..\..\src\codenodes\SymbolNode.cpp" />
+    <ClCompile Include="..\..\src\codenodes\TypeNode.cpp" />
     <ClCompile Include="..\..\src\script_runtime\script_runtime.cpp" />
     <ClCompile Include="..\..\src\thread_pool.cpp" />
     <ClCompile Include="..\..\src\utils.cpp" />

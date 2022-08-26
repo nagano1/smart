@@ -112,15 +112,6 @@ namespace smart {
 
     using VariableNodeStruct = NameNodeStruct;
 
-    using TypeNodeStruct = struct _TypeNodeStruct {
-        NODE_HEADER;
-
-        NameNodeStruct nameNode;
-        _TypeNodeStruct *typeNode; // generics
-    };
-
-
-
     using StringLiteralNodeStruct = struct {
         NODE_HEADER;
         char *text; // unparsed, includes ""
@@ -157,19 +148,30 @@ namespace smart {
         utf8byte symbol[2];
     };
 
+
+    // $let
+    // ?string a
+    // alt
+    using TypeNodeStruct = struct _TypeNodeStruct {
+        NODE_HEADER;
+
+        bool hasMutMark; // $
+        bool hasNullableMark; // ?
+        int stackSize; // $
+        bool useLet; // or has type
+
+        NameNodeStruct nameNode;
+        _TypeNodeStruct *typeNode; // generics
+    };
+
     using AssignStatementNodeStruct = struct {
         NODE_HEADER;
 
         // $int a = 5
         // ?let *ptr = "jfwio"
-        int stackSize; // $
 
-        bool hasMutMark; // $
-        bool hasNullableMark; // ?
-
-        bool useLet; // or has type
         bool onlyAssign; // has not declare
-        SimpleTextNodeStruct letOrType; // $let, int, ?string, etc..
+        TypeNodeStruct typeOrLet; // $let, int, ?string, etc..
         SymbolStruct pointerAsterisk; // *
 
         NameNodeStruct nameNode; // varName
@@ -946,8 +948,8 @@ namespace smart {
         static void initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context,
                                           NodeBase *parentNode);
 
-        static void
-        initSymbolNode(SymbolStruct *self, ParseContext *context, void *parent, utf8byte letter);
+        static void initSymbolNode(SymbolStruct *self, ParseContext *context, void *parent, utf8byte letter);
+        static void initTypeNode(TypeNodeStruct *self, ParseContext *context, void *parent);
 
         static void initSimpleTextNode(SimpleTextNodeStruct *name, ParseContext *context, void *parentNode, int charLen);
         static void assignText_SimpleTextNode(SimpleTextNodeStruct *name, ParseContext *context, int pos, int charLen);

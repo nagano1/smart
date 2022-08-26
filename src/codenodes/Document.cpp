@@ -318,7 +318,7 @@ namespace smart {
         }
         else if (targetNode->vtable == VTables::AssignStatementVTable) {
             auto *assign = Cast::downcast<AssignStatementNodeStruct*>(targetNode);
-            if (assign->hasMutMark || assign->hasNullableMark) {
+            if (assign->typeOrLet.hasMutMark || assign->typeOrLet.hasNullableMark) {
                 if (i == 0) {
                     return (int) TokenTypeIds::numberId;
                 }
@@ -352,7 +352,7 @@ namespace smart {
 
         if (targetNode->vtable == VTables::AssignStatementVTable) {
             auto *assign = Cast::downcast<AssignStatementNodeStruct*>(targetNode);
-            if (assign->hasMutMark || assign->hasNullableMark) {
+            if (assign->typeOrLet.hasMutMark || assign->typeOrLet.hasNullableMark) {
                 *utf16Len1 = *utf16Len0 - 1;
                 *len0 = 1;
                 *utf16Len0 = 1;

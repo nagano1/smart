@@ -37,15 +37,37 @@ namespace smart
 
 
     int Tokenizers::typeTokenizer(TokenizerParams_parent_ch_start_context) {
-        auto *typeNode  = Alloc::newTypeNode(context, parent);
+        auto *typeNode  = Cast::downcast<TypeNodeStruct*>(parent);// Alloc::newTypeNode(context, parent);
 
-        auto returnPos = Tokenizers::nameTokenizer(Cast::upcast(&typeNode->nameNode), ch, start, context);
-        if (returnPos > -1) {
-            //if (context->codeNode) {
-                context->setCodeNode(typeNode);
-            //}
+        int currentPos = start;
+
+        //static constexpr const char let_chars[] = "let";
+        //static constexpr int size_of_let = sizeof(let_chars) - 1;
+
+        bool hasMutMark = false;
+        bool hasNullableMark = false;
+
+        if ('$' == ch) { // $ is mutable mark
+            hasMutMark = true;
+            currentPos += 1;
+        } else if ('?' == ch) { // ? is nullable mark
+            hasNullableMark = true;
+            currentPos += 1;
         }
-        return returnPos;
+
+        typeNode->hasNullableMark = hasNullableMark;
+        typeNode->hasMutMark = hasMutMark;
+
+        int result = Tokenizers::nameTokenizer(Cast::upcast(&typeNode->nameNode), context->chars[currentPos], currentPos, context);
+
+        if (result > -1) {
+            typeNode->useLet = ParseUtil::equal(typeNode->nameNode.name, typeNode->nameNode.nameLength, "let", 3);
+
+            context->setCodeNode(typeNode);
+            return result;
+        }
+
+        return -1;
     }
 
     static constexpr const char typeTypeText[] = "<Type>";
@@ -57,12 +79,21 @@ namespace smart
 
     TypeNodeStruct *Alloc::newTypeNode(ParseContext *context, NodeBase *parentNode) {
         auto *node = context->newMem<TypeNodeStruct>();
+        Init::initTypeNode(node, context, parentNode);
+        return node;
+    }
+
+    void Init::initTypeNode(TypeNodeStruct *node, ParseContext *context, void *parentNode) {
         INIT_NODE(node, context, parentNode, VTables::TypeVTable);
 
         node->typeNode = nullptr;
 
-        Init::initNameNode(&node->nameNode, context, node);
+        node->hasMutMark = false;
+        node->hasNullableMark = false;
+        node->stackSize = 0;
+        node->useLet = false;
 
-        return node;
+        Init::initNameNode(&node->nameNode, context, node);
     }
+
 }
