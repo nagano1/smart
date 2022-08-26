@@ -35,8 +35,12 @@ namespace smart {
     }
 
     int Tokenizers::nameTokenizer(TokenizerParams_parent_ch_start_context) {
-        int found_count = 0;
-        for (int_fast32_t i = start; i < context->length; i++) {
+        return Tokenizers::nameTokenizer_ignore(TokenizerParams_pass, start);
+    }
+
+    int Tokenizers::nameTokenizer_ignore(TokenizerParams_parent_ch_start_context, int ignorePos) {
+        int found_count = ignorePos - start;
+        for (int_fast32_t i = ignorePos; i < context->length; i++) {
             if (ParseUtil::isIdentifierLetter(context->chars[i])) {
                 found_count++;
             } else {

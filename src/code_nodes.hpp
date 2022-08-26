@@ -1030,6 +1030,7 @@ namespace smart {
 
     struct Tokenizers {
         static int nameTokenizer(TokenizerParams_parent_ch_start_context);
+        static int nameTokenizer_ignore(TokenizerParams_parent_ch_start_context, int ignorePos);
         static int variableTokenizer(TokenizerParams_parent_ch_start_context);
         static int expressionTokenizer(TokenizerParams_parent_ch_start_context);
         static int parenthesesTokenizer(TokenizerParams_parent_ch_start_context);
