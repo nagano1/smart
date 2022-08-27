@@ -230,16 +230,16 @@ namespace smart {
     {
         // int32
         TypeEntry *int32Type = scriptEnv->newTypeEntry();
-        int32Type->setMethods(int32_toString, int32_operate_add,
-                           "int32", BuildinTypeId::Int32);
+        int32Type->initAsBuiltInType(int32_toString, int32_operate_add,
+                                     "int32", BuildinTypeId::Int32);
         scriptEnv->registerTypeEntry(int32Type);
         BuiltInTypeIndex::int32 = int32Type->typeIndex;
         BuiltInTypeIndex::int_ = int32Type->typeIndex;
 
         // heap string
         TypeEntry* heapStringType = scriptEnv->newTypeEntry();
-        heapStringType->setMethods(heapString_toString, heapString_operate_add,
-                           "heapString", BuildinTypeId::HeapString);
+        heapStringType->initAsBuiltInType(heapString_toString, heapString_operate_add,
+                                          "heapString", BuildinTypeId::HeapString);
         scriptEnv->registerTypeEntry(heapStringType);
         BuiltInTypeIndex::heapString = heapStringType->typeIndex;
     }

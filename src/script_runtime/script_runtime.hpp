@@ -198,8 +198,8 @@ namespace smart
         bool isBuiltIn;
 
         template<std::size_t SIZE>
-        void setMethods(decltype(toString) f1, decltype(operate_add) f2,
-                        const char(&f3)[SIZE], decltype(typeId) f4
+        void initAsBuiltInType(decltype(toString) f1, decltype(operate_add) f2,
+                               const char(&f3)[SIZE], decltype(typeId) f4
         ) {
             this->toString = f1;
             this->operate_add = f2;
