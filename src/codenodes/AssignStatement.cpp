@@ -97,14 +97,17 @@ namespace smart {
     }
 
 
-    // --------------------- Implements ClassNode Parser ----------------------
     static int inner_assignStatementTokenizerMulti(TokenizerParams_parent_ch_start_context) {
         auto *assignment = Cast::downcast<AssignStatementNodeStruct *>(parent);
 
         // console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
 
         if (assignment->nameNode.found == -1) {
-            if (assignment->pointerAsterisk.found == -1) {
+             if (assignment->hasType && context->afterLineBreak) {
+                 return -1;
+             }
+
+             if (assignment->pointerAsterisk.found == -1) {
                 if (ch == '*') {
                     assignment->pointerAsterisk.found = start;
                     context->setCodeNode(&assignment->pointerAsterisk);
@@ -218,6 +221,7 @@ namespace smart {
             assignStatement->onlyAssign = false;
             assignStatement->hasType = true;
 
+            context->afterLineBreak = false;
             int resultPos;
             if (-1 < (resultPos = Scanner::scanMulti(assignStatement,
                                                      inner_assignStatementTokenizerMulti,

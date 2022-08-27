@@ -351,30 +351,24 @@ namespace smart {
             if (!body->firstStatementFound || context->afterLineBreak) {
                 body->firstStatementFound = true;
                 int nextPos;
-                if (-1 <
-                    (nextPos = Tokenizers::assignStatementTokenizer(parent, ch, start, context))) {
+                // value as a statement
+                if (-1 < (nextPos = Tokenizers::returnStatementTokenizer(parent, ch, start, context))) {
                     appendChildNode(body, context->virtualCodeNode);
                     return nextPos;
                 }
-                else if (-1 <
-                           (nextPos = Tokenizers::assignStatementWithoutLetTokenizer(parent, ch,
+                else if (-1 < (nextPos = Tokenizers::assignStatementTokenizer(parent, ch, start, context))) {
+                    appendChildNode(body, context->virtualCodeNode);
+                    return nextPos;
+                }
+                else if (-1 < (nextPos = Tokenizers::assignStatementWithoutLetTokenizer(parent, ch,
                                                                                      start,
                                                                                      context))) {
                     appendChildNode(body, context->virtualCodeNode);
                     return nextPos;
                 }
-                else if (-1 <
-                         (nextPos = Tokenizers::returnStatementTokenizer(parent, ch, start, context))) {
+                else if (-1 < (nextPos = Tokenizers::expressionTokenizer(TokenizerParams_pass))) {
                     appendChildNode(body, context->virtualCodeNode);
                     return nextPos;
-                }
-                else {
-                    // value as a statement
-                    int result;
-                    if (-1 < (result = Tokenizers::expressionTokenizer(TokenizerParams_pass))) {
-                        appendChildNode(body, context->virtualCodeNode);
-                        return result;
-                    }
                 }
             } else {
                 context->setError(ErrorCode::should_break_line, start);

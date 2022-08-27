@@ -57,10 +57,34 @@ namespace smart
 
         typeNode->hasNullableMark = hasNullableMark;
         typeNode->hasMutMark = hasMutMark;
-
         int result = Tokenizers::nameTokenizer_ignore(Cast::upcast(&typeNode->nameNode), context->chars[currentPos], start, context, currentPos);
 
         if (result > -1) {
+
+            /*
+                if (ch == 'n') {
+                    if (ParseUtil::equal(typeNode->nameNode.name, typeNode->nameNode.nameLength, "null", 4))
+                    {
+                        return -1;
+                    }
+                }
+                else if (ch == 't') {
+                    if (ParseUtil::equal(typeNode->nameNode.name, typeNode->nameNode.nameLength, "true", 4))
+                    {
+                        return -1;
+                    }
+                }
+                else if (ch == 'f') {
+                    if (ParseUtil::equal(typeNode->nameNode.name, typeNode->nameNode.nameLength, "false", 4))
+                    {
+                        return -1;
+                    }
+                }
+*/
+
+
+
+
             typeNode->useLet = ParseUtil::equal(typeNode->nameNode.name, typeNode->nameNode.nameLength,let_chars, size_of_let);
 
             context->setCodeNode(typeNode);
