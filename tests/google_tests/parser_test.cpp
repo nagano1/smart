@@ -894,7 +894,7 @@ TEST(ParserTest_, SameLength_01) {
     constexpr char text[] = R"(
 class fjawioejap
 {
-    fn funcB(int a, int k = 31)
+    fn funcB(int a, int *k = 31)
     {
         // comment
         let a = 893214 // fawoiefjiawo
@@ -905,6 +905,8 @@ class fjawioejap
         $float f = 4503
         ?let *f = null
         $let g = true
+        a = 5
+        varibleAjoawiefjaipo
         
         "jfoiwjeioaf"
             /*

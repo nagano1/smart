@@ -139,7 +139,7 @@ namespace smart {
                 if (assignment->hasType) {
                     context->setCodeNode(nullptr);
                     context->scanEnd = true;
-                    return context->prevFoundPos;// assignment->nameNode.found;//context->prevFoundPos; // revert to name
+                    return context->prevFoundPos;// assignment->nameNode.found;
                 }
                 //else {
                     //context->scanEnd = true;
@@ -232,7 +232,6 @@ namespace smart {
         }
 
         context->unusedAssignment = assignStatement;
-
         return -1;
     }
 }

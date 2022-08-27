@@ -12,7 +12,6 @@ class ClassMine
         alt a = foijwae
         int a = "jfoiwjieo"
 
-
         /*
         Let's fucking GO!!!
         */
@@ -77,6 +76,12 @@ class ClassMine
         "jofoajwieofawo"
 
         return 30
+    }
+
+    fn func2(int arg, int 0arg3, float g, float gggk)
+    {
+        funB()
+        // gosa nohani //brilliant
     }
 }
 
