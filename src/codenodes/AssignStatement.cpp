@@ -136,9 +136,6 @@ namespace smart {
                 return start+1;
             }
             else {
-                fprintf(stderr, "<maybe>");
-                fflush(stderr);
-
                 if (assignment->hasType) {
                     context->setCodeNode(nullptr);
                     context->scanEnd = true;
