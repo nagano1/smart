@@ -100,6 +100,7 @@ namespace smart
 
     struct BuiltInTypeIndex {
         static int int32;
+        static int int_;
         static int heapString;
     };
 
@@ -107,6 +108,10 @@ namespace smart
         void *ptr{nullptr};
         bool freed{false};
     };
+
+
+
+
 
 
     using ScriptEngineContext = struct _scriptEngineContext {
@@ -128,7 +133,7 @@ namespace smart
             auto *mallocItem = this->memBufferForMalloc.newMem<MallocItem>(1);
             mallocItem->freed = false;
             mallocItem->ptr = malloc(bytes + sizeof(MallocItem*));
-            
+
             MallocItem** addressPtr = (MallocItem**)mallocItem->ptr;
             *addressPtr = mallocItem;
 
@@ -146,7 +151,7 @@ namespace smart
         }
 
         void freeAll() {
-            
+
             auto *block = this->memBufferForMalloc.firstBufferBlock;
             while (block) {
                 if (block->itemCount > 0) {
@@ -176,11 +181,35 @@ namespace smart
         }
     };
 
+
+
+    enum class BuildinTypeId {
+        Int32 = 1,
+        HeapString = 2
+    };
+
     using TypeEntry = struct _typeEntry {
         int typeIndex;
         char *(*toString)(ScriptEngineContext *context, ValueBase* value);
         ValueBase* (*operate_add)(ScriptEngineContext *context, ValueBase* leftValue, ValueBase* rightValue);
+        char *typeChars;
+        int typeCharsLength;
+        BuildinTypeId typeId;
+        bool isBuiltIn;
+
+        template<std::size_t SIZE>
+        void setMethods(decltype(toString) f1, decltype(operate_add) f2,
+                        const char(&f3)[SIZE], decltype(typeId) f4
+        ) {
+            this->toString = f1;
+            this->operate_add = f2;
+            this->typeChars = (char*)f3;
+            this->typeCharsLength = SIZE;
+            this->typeId = f4;
+            this->isBuiltIn = true;
+        }
     };
+
 
     using ScriptEnv = struct _ScriptEnv {
         TypeEntry **typeEntryList;

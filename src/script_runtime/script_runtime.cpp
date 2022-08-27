@@ -230,20 +230,22 @@ namespace smart {
     {
         // int32
         TypeEntry *int32Type = scriptEnv->newTypeEntry();
-        int32Type->toString = int32_toString;
-        int32Type->operate_add = int32_operate_add;
+        int32Type->setMethods(int32_toString, int32_operate_add,
+                           "int32", BuildinTypeId::Int32);
         scriptEnv->registerTypeEntry(int32Type);
         BuiltInTypeIndex::int32 = int32Type->typeIndex;
+        BuiltInTypeIndex::int_ = int32Type->typeIndex;
 
         // heap string
         TypeEntry* heapStringType = scriptEnv->newTypeEntry();
-        heapStringType->toString = heapString_toString;
-        heapStringType->operate_add = heapString_operate_add;
+        heapStringType->setMethods(heapString_toString, heapString_operate_add,
+                           "heapString", BuildinTypeId::HeapString);
         scriptEnv->registerTypeEntry(heapStringType);
         BuiltInTypeIndex::heapString = heapStringType->typeIndex;
     }
 
     int BuiltInTypeIndex::int32 = 0;
+    int BuiltInTypeIndex::int_ = 0;
     int BuiltInTypeIndex::heapString = 0;
 
 
@@ -420,8 +422,13 @@ namespace smart {
         int stackSize = 0;
         while (statementNode) {
             if (statementNode->vtable == VTables::AssignStatementVTable) {
-                //auto* assignment = Cast::downcast<AssignStatementNodeStruct *>(statementNode);
-                //assignment->letOrType;
+                auto* assignment = Cast::downcast<AssignStatementNodeStruct *>(statementNode);
+                auto& typeName = assignment->typeOrLet.nameNode;
+                
+                bool isInt = ParseUtil::equal(typeName.name, typeName.nameLength, "int", 3);
+                if (isInt) {
+                    //continue;
+                }
 
             }
             statementNode = statementNode->nextNode;

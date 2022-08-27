@@ -29,13 +29,12 @@ class ClassMine
         let *a = "完"
         
         /*
-        ofijaweifaow 
-        /**/
+        ofijaweifaow
         aiwjeofijaw jpawijfw4213
         jofijeiowajiwa
         */
 
-        /* 世界が傾いてました。*/日本語完璧文字🎃🎞🦺🎨 /**/
+        // /* 世界が傾いてました。*/日本語完璧文字🎃🎞🦺🎨 /**/
         let a = "jifowjeoj"
         /* fjaoiwe */
 
@@ -51,6 +50,10 @@ class ClassMine
             + 3241 + 2412
             + fjowie()
         ))
+
+        longlonglonglonglonglongType
+            longlonglonglonglonglonglonglonglonglonglongVariable
+                = 3214213
 
         (
             343
@@ -71,7 +74,7 @@ class ClassMine
 
         printf("jfowi", 5 + 5) // jfoiwjaeoi /* as you wish */
 
-        afwfiiaeawe
+        afwfiiaeaweVariable
         true
         "jofoajwieofawo"
 
