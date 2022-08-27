@@ -900,7 +900,7 @@ class fjawioejap
         let a = 893214 // fawoiefjiawo
         let *str = "0jfoiwjoie" // comment
         int a = 123412
-        float test
+        float test = 3214
 
         $float f = 4503
         ?let *f = null

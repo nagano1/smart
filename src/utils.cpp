@@ -11,7 +11,8 @@ using letterCheckerType = bool(*)(int, char);
 // 
 // --------------------------------------------------------------------------
 
-int VoidHashMap::calc_hash(const char *key, int keyLength, size_t max) {
+int VoidHashMap::calc_hash(const char *key, int keyLength, size_t max)
+{
     unsigned int sum = keyLength;
     int border = 128;
 
@@ -33,7 +34,8 @@ int VoidHashMap::calc_hash(const char *key, int keyLength, size_t max) {
     return (sum + salt) % max;
 }
 
-void VoidHashMap::put(const char *keyA, int keyLength, void* val) const {
+void VoidHashMap::put(const char *keyA, int keyLength, void* val) const
+{
 
     auto hashInt = calc_hash(keyA, keyLength, this->entries_length);
     VoidHashNode* hashNode = this->entries[hashInt];
@@ -91,7 +93,8 @@ void VoidHashMap::put(const char *keyA, int keyLength, void* val) const {
 }
 
 
-void VoidHashMap::init(MemBuffer* membuffer) {
+void VoidHashMap::init(MemBuffer* membuffer)
+{
     this->memBuffer = membuffer;
     this->entries = (VoidHashNode**)this->memBuffer->newMemArray<VoidHashNode>(HashNode_TABLE_SIZE);
     this->entries_length = HashNode_TABLE_SIZE;
@@ -103,17 +106,20 @@ void VoidHashMap::init(MemBuffer* membuffer) {
     */
 }
 
-bool VoidHashMap::has(const char * key, int keyLength) {
+bool VoidHashMap::has(const char * key, int keyLength)
+{
     return this->entries[calc_hash0(key, keyLength)] != nullptr;
 }
 
-void VoidHashMap::deleteKey(const char * key, int keyLength) {
+void VoidHashMap::deleteKey(const char * key, int keyLength)
+{
     if (this->entries[calc_hash0(key, keyLength)] != nullptr) {
         free(this->entries[calc_hash0(key, keyLength)]);
     }
 }
 
-void* VoidHashMap::get(const char * key, int keyLength) {
+void* VoidHashMap::get(const char * key, int keyLength)
+{
     auto keyInt = calc_hash0(key, keyLength);
     if (this->entries[keyInt] != nullptr) {
         auto * hashNode = this->entries[keyInt];

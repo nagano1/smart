@@ -140,14 +140,17 @@ namespace smart {
                 classNode->startFound = true;
                 context->setCodeNode(&classNode->bodyStartNode);
                 return start + 1;
-            } else {
+            }
+            else {
                 context->setError(ErrorCode::no_brace_for_class, classNode->found);
             }
-        } else if (ch == '}') {
+        }
+        else if (ch == '}') {
             context->scanEnd = true;
             context->setCodeNode(&classNode->endBodyNode);
             return start + 1;
-        } else {
+        }
+        else {
             int result;
             if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
                 auto *innerClassNode = Cast::downcast<ClassNodeStruct *>(parent);

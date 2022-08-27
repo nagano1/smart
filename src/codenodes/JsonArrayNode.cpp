@@ -218,7 +218,8 @@ namespace smart {
                 context->setCodeNode(&currentKeyValueItem->follwingComma);
                 jsonArray->parsePhase = phase::EXPECT_VALUE;
                 return start + 1;
-            } else if (context->afterLineBreak) {
+            }
+            else if (context->afterLineBreak) {
                 // comma is not required after a line break
                 return parseNextValue(TokenizerParams_pass, jsonArray);
             }

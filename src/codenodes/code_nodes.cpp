@@ -290,7 +290,8 @@ namespace smart {
                     newLineBreak->text[1] = '\n';
                     newLineBreak->text[2] = '\0';
                     currentIndex = idxOfCommentEnd + 2;
-                } else {
+                }
+                else {
                     currentIndex = idxOfCommentEnd + 1;
                 }
 
@@ -303,7 +304,8 @@ namespace smart {
                 if (blockComment->firstCommentFragment == nullptr) {
                     blockComment->firstCommentFragment = commentFragment;
                 }
-            } else {
+            }
+            else {
                 break;
             }
         }
@@ -345,8 +347,5 @@ namespace smart {
 
 
         return result;
-
-
     }
-
 }

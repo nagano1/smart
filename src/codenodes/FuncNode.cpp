@@ -394,7 +394,8 @@ namespace smart {
                 context->setCodeNode(bodyNode);
                 return result;
             }
-        } else {
+        }
+        else {
             context->setError(ErrorCode::expect_bracket_for_fn_body, context->prevFoundPos);
         }
         return -1;
@@ -485,7 +486,8 @@ namespace smart {
                 context->setCodeNode(Cast::upcast(&currentKeyValueItem->follwingComma));
                 funcNode->parameterParsePhase = FuncParamParsePhase::EXPECT_Type;
                 return start + 1;
-            } else if (context->afterLineBreak) {
+            }
+            else if (context->afterLineBreak) {
                 // comma is not needed after a line break
                 return parseNextValue(TokenizerParams_pass, funcNode);
             }
@@ -580,7 +582,7 @@ namespace smart {
         currentCodeLine = VTableCall::appendToLine(&classNode->bodyNode, currentCodeLine);
 
         return currentCodeLine;
-    };
+    }
 
 
     static constexpr const char fnTypeText[] = "<fn>";
@@ -647,10 +649,12 @@ namespace smart {
                 }
 
 
-            } else {
+            }
+            else {
                 context->setError(ErrorCode::expect_parenthesis_for_fn_params, context->prevFoundPos);
             }
-        } else {
+        }
+        else {
             context->setError(ErrorCode::expect_parenthesis_for_fn_params, context->prevFoundPos);
         }
         return -1;

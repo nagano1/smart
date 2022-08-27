@@ -43,7 +43,8 @@ namespace smart {
         for (int_fast32_t i = ignorePos; i < context->length; i++) {
             if (ParseUtil::isIdentifierLetter(context->chars[i])) {
                 found_count++;
-            } else {
+            }
+            else {
                 break;
             }
         }
@@ -66,7 +67,8 @@ namespace smart {
     }
 
 
-    VariableNodeStruct *Alloc::newVariableNode(ParseContext *context, NodeBase *parentNode) {
+    VariableNodeStruct *Alloc::newVariableNode(ParseContext *context, NodeBase *parentNode)
+    {
         auto *node = context->newMem<VariableNodeStruct>();
         INIT_NODE(node, context, parentNode, VTables::VariableVTable);
 
@@ -75,7 +77,8 @@ namespace smart {
         return node;
     }
 
-    int Tokenizers::variableTokenizer(TokenizerParams_parent_ch_start_context) {
+    int Tokenizers::variableTokenizer(TokenizerParams_parent_ch_start_context)
+    {
         auto *variableNode = Alloc::newVariableNode(context, parent);
         return Tokenizers::nameTokenizer(reinterpret_cast<NodeBase *>(variableNode), ch, start, context);
     }

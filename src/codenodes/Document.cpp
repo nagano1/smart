@@ -117,7 +117,8 @@ namespace smart {
     }
 
 
-    utf8byte *DocumentUtils::getTextFromNode(NodeBase *node) {
+    utf8byte *DocumentUtils::getTextFromNode(NodeBase *node)
+    {
         int len = VTableCall::selfTextLength(node);
 
         int prev_char = node->prev_chars; // = '\0' ? 1 : 0;
@@ -136,7 +137,8 @@ namespace smart {
         return text;
     }
 
-    utf8byte *DocumentUtils::getTextFromLine(CodeLine *line) {
+    utf8byte *DocumentUtils::getTextFromLine(CodeLine *line)
+    {
         return nullptr;
         /*
         int totalCount = 0;
@@ -517,7 +519,8 @@ namespace smart {
     }
 
 
-    static void appendRootNode(DocumentStruct *doc, NodeBase *node) {
+    static void appendRootNode(DocumentStruct *doc, NodeBase *node)
+    {
         if (doc->firstRootNode == nullptr) {
             doc->firstRootNode = node;
         }
@@ -529,14 +532,16 @@ namespace smart {
     }
 
 
-    static int tryTokenize(TokenizerParams_parent_ch_start_context) {
+    static int tryTokenize(TokenizerParams_parent_ch_start_context)
+    {
         int result;
 
         if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
             auto *doc = Cast::downcast<DocumentStruct *>(parent);
             appendRootNode(doc, context->virtualCodeNode);
             return result;
-        } else if (-1 < (result = Tokenizers::fnTokenizer(parent, ch, start, context))) {
+        }
+        else if (-1 < (result = Tokenizers::fnTokenizer(parent, ch, start, context))) {
             auto* doc = Cast::downcast<DocumentStruct*>(parent);
             appendRootNode(doc, context->virtualCodeNode);
             return result;
@@ -554,7 +559,8 @@ namespace smart {
     }
 
 
-    static int tryTokenizeJson(TokenizerParams_parent_ch_start_context) {
+    static int tryTokenizeJson(TokenizerParams_parent_ch_start_context)
+    {
         int result;
         if (-1 < (result = Tokenizers::jsonObjectTokenizer(parent, ch, start, context))) {
             auto *doc = Cast::downcast<DocumentStruct *>(parent);
@@ -566,11 +572,11 @@ namespace smart {
             appendRootNode(doc, context->virtualCodeNode);
             return result;
         }
-
         return -1;
-    };
+    }
 
-    static void callAllLineEvent(DocumentStruct *docStruct, CodeLine *line, ParseContext *context) {
+    static void callAllLineEvent(DocumentStruct *docStruct, CodeLine *line, ParseContext *context)
+    {
         CodeLine *prev = nullptr;
         int lineCount = 0;
         while (line) {
@@ -583,12 +589,11 @@ namespace smart {
         docStruct->lineCount = lineCount;
         // change first line of document
         context->actionCreator(docStruct, nullptr, EventType::FirstLineChanged);
-
     }
 
 
-
-    void DocumentUtils::parseText(DocumentStruct *docStruct, const utf8byte *text, int length) {
+    void DocumentUtils::parseText(DocumentStruct *docStruct, const utf8byte *text, int length)
+    {
         assert(docStruct->context != nullptr);
 
         auto *context = docStruct->context;
@@ -621,12 +626,14 @@ namespace smart {
 
         if (docStruct->documentType == DocumentType::CodeDocument) {
             Scanner::scan_for_root(docStruct, tryTokenize, 0, context, /*root*/true, true);
-        } else {
-            Scanner::scan_for_root(docStruct, tryTokenizeJson, 0, context, /*root*/true, true);
+        }
+        else {
+            Scanner::scan_for_root(docStruct, tryTokenizeJson, 0, context, true, true);
         }
 
         
-        if (!context->syntaxErrorInfo.hasError) {
+        if (!context->syntaxErrorInfo.hasError)
+        {
             if (docStruct->lastRootNode) {
                 //docStruct->lastRootNode->nextNode = Cast::upcast(&docStruct->endOfFile);
             }
