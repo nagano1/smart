@@ -58,6 +58,7 @@ namespace smart {
         invalid_class_name,
         no_brace_for_class,
         no_brace_of_end_for_class,
+        no_variable_defined,
 
         // fn
         invalid_fn_name,
@@ -74,7 +75,6 @@ namespace smart {
         //
         //----------------------------------------------------------------------------------
         //no_logical_error,
-        no_variable_defined,
 
 
         last_keeper
@@ -177,6 +177,7 @@ namespace smart {
             ErrorInfo{ ErrorCode::invalid_class_name, 7777413, "Invalid class name"},
             ErrorInfo{ ErrorCode::no_brace_for_class, 7777414, "no brace for class"},
             ErrorInfo{ ErrorCode::no_brace_of_end_for_class, 7777415, "no brace of end for class"},
+            ErrorInfo{ ErrorCode::no_variable_defined, 7777416, "no_variable_defined"},
 
             // fn
             ErrorInfo{ ErrorCode::invalid_fn_name, 7777815, "invalid fn name"},
@@ -193,7 +194,6 @@ namespace smart {
             //
             //----------------------------------------------------------------------------------
             //ErrorInfo{ ErrorCode::no_logical_error, 57770000, "no_logical_error"},
-            ErrorInfo{ ErrorCode::no_variable_defined, 57770001, "no_variable_defined"},
 
 
 
