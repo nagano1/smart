@@ -206,8 +206,8 @@ namespace smart {
          * 201703L (C++17)
          * 202002L (C++20)
          */
-        #if __cplusplus >= 201402L
-        static_assert(is_sorted(tempList), "error List should be sorted"); // C++14
+        #if __cplusplus > 201402L
+        static_assert(is_sorted(tempList), "error List should be sorted with error code"); // C++14
         #endif
 
         //constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
