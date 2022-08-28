@@ -141,7 +141,7 @@ namespace smart {
     */
 
 
-    static ErrorInfo sortErrorInfoList[errorListSize];
+    static ErrorInfo *sortErrorInfoList[errorListSize];
 
     static int initErrorInfoList()
     {
@@ -214,7 +214,7 @@ namespace smart {
             }
 
             ErrorInfo::ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
-            sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
+            sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = &errorInfo;
         }
 
         // check duplicate of error code
