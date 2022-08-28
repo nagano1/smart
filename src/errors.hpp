@@ -206,7 +206,7 @@ namespace smart {
 
 
         //constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
-        static ErrorInfo *sortErrorInfoList[errorListSize] = {};
+        //static ErrorInfo *sortErrorInfoList[errorListSize] = {};
         for (int i = 0; i < errorListSize; i++) {
             auto &&errorInfo = tempList[i];
             if (static_cast<int>(errorInfo.errorIndex) != i) {
@@ -215,7 +215,7 @@ namespace smart {
             }
 
             ErrorInfo::ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
-            sortErrorInfoList[i] = &errorInfo;
+//            sortErrorInfoList[i] = &errorInfo;
         }
 
         // check duplicate of error code
