@@ -205,9 +205,9 @@ namespace smart {
         //static_assert(is_sorted(tempList), "error List should be sorted"); // C++14
 
 
-        constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
+        //constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
         static ErrorInfo *sortErrorInfoList[errorListSize];
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < errorListSize; i++) {
             auto &&errorInfo = tempList[i];
             if (static_cast<int>(errorInfo.errorIndex) != i) {
                 // printf("error info index\n");
