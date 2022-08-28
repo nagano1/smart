@@ -111,7 +111,7 @@ namespace smart {
 
         if (lhs->errorCode == rhs->errorCode) {
 #if defined(_MSVC_LANG) //_MSC_VER  _MSVC_LANG _MSC_BUILD
-            // printf("duplicate error id(%d)\n ", lhs->errorCode);
+            printf("duplicate error id(%d)\n ", lhs->errorCode);
 #endif
             //exit(9990);
             return 0;
@@ -219,7 +219,7 @@ namespace smart {
 
         // check duplicate of error code
         //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
-        qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
+        //qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
 
         return 0;
     }
