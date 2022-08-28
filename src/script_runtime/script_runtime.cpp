@@ -627,17 +627,22 @@ namespace smart {
         }
     }
 
-    static void *toType(NodeBase *nodeBase)
+    static void *toIntType(NodeBase *nodeBase)
     {
         //auto *numberNode = Cast::downcast<NumberNodeStruct *>(nodeBase);
+        return nullptr;
+    }
 
+    static void *toStringType(NodeBase *nodeBase)
+    {
+        //auto *numberNode = Cast::downcast<NumberNodeStruct *>(nodeBase);
         return nullptr;
     }
 
     static void setupTypeFromNode()
     {
-        ((node_vtable*)VTables::NumberVTable)->toType = toType;
-        ((node_vtable*)VTables::StringLiteralVTable)->toType = toType;
+        ((node_vtable*)VTables::NumberVTable)->toType = toIntType;
+        ((node_vtable*)VTables::StringLiteralVTable)->toType = toStringType;
         if(VTables::NumberVTable->toType(nullptr) != nullptr) {
 
         }
