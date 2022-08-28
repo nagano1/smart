@@ -128,7 +128,7 @@ namespace smart {
 */
 
     // C++-14
-    #if __cplusplus >= 201402L
+    #if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
     static constexpr bool is_sorted(const ErrorInfo tempList[])
     {
         for (std::size_t i = 0; i < errorListSize - 1; ++i) {
@@ -192,16 +192,15 @@ namespace smart {
             ErrorInfo{ErrorCode::no_logical_error, 57770000, "no_logical_error"},
             ErrorInfo{ErrorCode::no_variable_defined, 57770001, "no_variable_defined"},
 
-
-
             ErrorInfo{ ErrorCode::last_keeper, 99999999, "end" },
         };
 
 
 
+
         static_assert(errorListSize == (sizeof tempList) / sizeof(ErrorInfo), "error list should have the same length");
         // 201402L (C++14), 201703L (C++17), 202002L (C++20)
-        #if __cplusplus >= 201402L
+        #if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
         static_assert(is_sorted(tempList), "error List should be sorted with error code"); // C++14
         #endif
 
