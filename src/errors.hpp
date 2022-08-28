@@ -192,8 +192,8 @@ namespace smart {
             //                                  Logical Errors
             //
             //----------------------------------------------------------------------------------
-            ErrorInfo{ ErrorCode::no_logical_error, 57770000, "no_logical_error"},
-            ErrorInfo{ ErrorCode::no_variable_defined, 57770001, "no_variable_defined"},
+            ErrorInfo{ErrorCode::no_logical_error, 57770000, "no_logical_error"},
+            ErrorInfo{ErrorCode::no_variable_defined, 57770001, "no_variable_defined"},
 
 
 
@@ -210,16 +210,16 @@ namespace smart {
             auto &&errorInfo = tempList[i];
             if (static_cast<int>(errorInfo.errorIndex) != i) {
                 // printf("error info index\n");
-                exit(8943210);
+                //exit(8943210);
             }
 
             ErrorInfo::ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
-            sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
+            //sortErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
         }
 
         // check duplicate of error code
         //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
-        qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
+        //qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
 
         return 0;
     }
