@@ -62,7 +62,7 @@ namespace smart
                                      context->chars[currentPos], start, context, currentPos);
 
         if (result > -1) {
-            typeNode->useLet = ParseUtil::equal(
+            typeNode->isLet = ParseUtil::equal(
                                    typeNode->nameNode.name,
                                    typeNode->nameNode.nameLength,let_chars, size_of_let
                                );
@@ -95,7 +95,7 @@ namespace smart
         node->hasMutMark = false;
         node->hasNullableMark = false;
         node->stackSize = 0;
-        node->useLet = false;
+        node->isLet = false;
 
         Init::initNameNode(&node->nameNode, context, node);
     }

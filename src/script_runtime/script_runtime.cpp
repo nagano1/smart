@@ -167,6 +167,12 @@ namespace smart {
         this->typeEntryListNextIndex++;
     }
 
+    void ScriptEnv::addTypeAliasEntity(TypeEntry* typeEntry, char *f3 , int length)
+    {
+        this->context->typeNameMap->put(f3, length, typeEntry);
+    }
+
+
     TypeEntry *ScriptEnv::newTypeEntry() const
     {
         auto *emptyTypeEntry = this->context->memBuffer.newMem<TypeEntry>(1);
@@ -231,16 +237,20 @@ namespace smart {
         // int32
         TypeEntry *int32Type = scriptEnv->newTypeEntry();
         int32Type->initAsBuiltInType(int32_toString, int32_operate_add,
-                                     "int32", BuildinTypeId::Int32);
+                                     "int", BuildinTypeId::Int32, 4); // 4byte
         scriptEnv->registerTypeEntry(int32Type);
         BuiltInTypeIndex::int32 = int32Type->typeIndex;
         BuiltInTypeIndex::int_ = int32Type->typeIndex;
+        scriptEnv->addTypeAlias(int32Type, "int");
+        scriptEnv->addTypeAlias(int32Type, "int32");
+
 
         // heap string
         TypeEntry* heapStringType = scriptEnv->newTypeEntry();
         heapStringType->initAsBuiltInType(heapString_toString, heapString_operate_add,
-                                          "heapString", BuildinTypeId::HeapString);
+                                          "heapString", BuildinTypeId::HeapString, 8); //
         scriptEnv->registerTypeEntry(heapStringType);
+        scriptEnv->addTypeAlias(heapStringType, "String");
         BuiltInTypeIndex::heapString = heapStringType->typeIndex;
     }
 
@@ -303,8 +313,12 @@ namespace smart {
             context->memBufferForValueBase.init();
             context->stackMemory.init();
 
-            context->variableMap = context->memBuffer.newMem<VoidHashMap>(1);
-            context->variableMap->init(&context->memBuffer);
+            context->variableMap2 = context->memBuffer.newMem<VoidHashMap>(1);
+            context->variableMap2->init(&context->memBuffer);
+
+            context->typeNameMap = context->memBuffer.newMem<VoidHashMap>(1);
+            context->typeNameMap->init(&context->memBuffer);
+
 
             scriptEnv->context = context;
 
@@ -416,7 +430,12 @@ namespace smart {
         return nullptr;
     }
 
-    static int calcStackSizeInFunc(FuncNodeStruct* func)
+
+    static void validateFunc(ScriptEnv* env, FuncNodeStruct* func) {
+
+    }
+
+    static int calcStackSizeInFunc(ScriptEnv* env, FuncNodeStruct* func)
     {
         auto* statementNode = func->bodyNode.firstChildNode;
         int stackSize = 0;
@@ -424,10 +443,17 @@ namespace smart {
             if (statementNode->vtable == VTables::AssignStatementVTable) {
                 auto* assignment = Cast::downcast<AssignStatementNodeStruct *>(statementNode);
                 auto& typeName = assignment->typeOrLet.nameNode;
-                
-                bool isInt = ParseUtil::equal(typeName.name, typeName.nameLength, "int", 3);
-                if (isInt) {
-                    //continue;
+                bool isLet = assignment->typeOrLet.isLet;
+                // bool isInt = ParseUtil::equal(typeName.name, typeName.nameLength, "int", 3);
+                if (isLet) {
+
+                }
+                else {
+                    auto *typeEntry = (TypeEntry*)env->context->typeNameMap->get(typeName.name, typeName.nameLength);
+                    if (typeEntry) {
+                        printf("<test %d>", typeEntry->stackSize);
+                        stackSize += typeEntry->stackSize;
+                    }
                 }
 
             }
@@ -438,7 +464,7 @@ namespace smart {
 
     static int executeMain(ScriptEnv* env, FuncNodeStruct* mainFunc)
     {
-        calcStackSizeInFunc(mainFunc);
+        calcStackSizeInFunc(env, mainFunc);
 
         auto* statementNode = mainFunc->bodyNode.firstChildNode;
         while (statementNode) {

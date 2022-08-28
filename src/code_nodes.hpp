@@ -158,7 +158,7 @@ namespace smart {
         bool hasMutMark; // $
         bool hasNullableMark; // ?
         int stackSize; // $
-        bool useLet; // or has type
+        bool isLet; // or has type
 
         NameNodeStruct nameNode;
         _TypeNodeStruct *typeNode; // generics
@@ -172,7 +172,7 @@ namespace smart {
 
         bool onlyAssign; // has not declare
         TypeNodeStruct typeOrLet; // $let, int, ?string, etc..
-        bool hasType; // $let, int, ?string, etc..
+        bool hasTypeDecl; // $let, int, ?string, etc..
         SymbolStruct pointerAsterisk; // *
 
         NameNodeStruct nameNode; // varName

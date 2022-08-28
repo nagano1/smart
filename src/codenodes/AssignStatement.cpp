@@ -85,7 +85,7 @@ namespace smart {
         INIT_NODE(assignStatement, context, parentNode, &_assignVTable);
 
         assignStatement->onlyAssign = false;
-        assignStatement->hasType = false;
+        assignStatement->hasTypeDecl = false;
         assignStatement->valueNode = nullptr;
 
 
@@ -103,7 +103,7 @@ namespace smart {
         // console_log((std::string{"==,"} + std::string{ch} + std::to_string(ch)).c_str());
 
         if (assignment->nameNode.found == -1) {
-             if (assignment->hasType && context->afterLineBreak) {
+             if (assignment->hasTypeDecl && context->afterLineBreak) {
                  return -1;
              }
 
@@ -136,7 +136,7 @@ namespace smart {
                 return start+1;
             }
             else {
-                if (assignment->hasType) {
+                if (assignment->hasTypeDecl) {
                     context->setCodeNode(nullptr);
                     context->scanEnd = true;
                     return context->prevFoundPos;// assignment->nameNode.found;
@@ -185,7 +185,7 @@ namespace smart {
         if (-1 < (resultPos = Scanner::scanMulti(assignment, inner_assignStatementTokenizerMulti,
                                                  start, context))) {
             assignment->onlyAssign = true;
-            assignment->typeOrLet.useLet = false;
+            assignment->typeOrLet.isLet = false;
 
             context->leftNode = Cast::upcast(&assignment->nameNode);
             context->virtualCodeNode = Cast::upcast(assignment);
@@ -216,7 +216,7 @@ namespace smart {
         int resul = Tokenizers::typeTokenizer(Cast::upcast(&assignStatement->typeOrLet), ch, start, context);
         if (resul > -1) {
             assignStatement->onlyAssign = false;
-            assignStatement->hasType = true;
+            assignStatement->hasTypeDecl = true;
 
             context->afterLineBreak = false;
             int resultPos;

@@ -64,11 +64,10 @@ namespace smart {
         last_keeper
     };
 
-    template
-        <
+    template<
         typename tEnum,
         typename std::enable_if<std::is_enum<tEnum>::value, std::nullptr_t>::type = nullptr
-        >
+    >
         std::ostream& operator<<(std::ostream& iOStream, tEnum iEnum)
     {
         typedef typename std::underlying_type<tEnum>::type  Type;
@@ -76,7 +75,9 @@ namespace smart {
         return iOStream;
     }
 
+
     static constexpr int errorListSize = 1 + static_cast<int>(ErrorCode::last_keeper);
+
 
     struct ErrorInfo {
         ErrorCode errorIndex;
@@ -86,8 +87,6 @@ namespace smart {
         static ErrorInfo ErrorInfoList[errorListSize];
         static bool errorInfoInitialized;
     };
-
-
 
 
     static int acompare(void const * alhs, void const * arhs) {
@@ -256,7 +255,6 @@ namespace smart {
         st_uint linePos2;
         st_uint charPos2;
 
-
         int errorId;
         int charEndPosition;
 
@@ -265,8 +263,6 @@ namespace smart {
         int errorDisplayType = 0;
 
         static const int SYNTAX_ERROR_RETURN = -1;
-
-
     };
 
 }

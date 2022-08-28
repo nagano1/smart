@@ -120,7 +120,8 @@ namespace smart
         MemBuffer memBufferForValueBase; // for value base
         MemBuffer memBufferForMalloc; // for value
 
-        VoidHashMap *variableMap;
+        VoidHashMap *variableMap2;
+        VoidHashMap *typeNameMap;
         StackMemory stackMemory;
 
         ValueBase *newValueForHeap();
@@ -190,6 +191,7 @@ namespace smart
 
     using TypeEntry = struct _typeEntry {
         int typeIndex;
+        int stackSize;
         char *(*toString)(ScriptEngineContext *context, ValueBase* value);
         ValueBase* (*operate_add)(ScriptEngineContext *context, ValueBase* leftValue, ValueBase* rightValue);
         char *typeChars;
@@ -199,13 +201,14 @@ namespace smart
 
         template<std::size_t SIZE>
         void initAsBuiltInType(decltype(toString) f1, decltype(operate_add) f2,
-                               const char(&f3)[SIZE], decltype(typeId) f4
+                               const char(&f3)[SIZE], decltype(typeId) f4, decltype(stackSize) f5
         ) {
             this->toString = f1;
             this->operate_add = f2;
             this->typeChars = (char*)f3;
             this->typeCharsLength = SIZE;
             this->typeId = f4;
+            this->stackSize = f5;
             this->isBuiltIn = true;
         }
     };
@@ -237,6 +240,12 @@ namespace smart
         static int startScript(char *script, int byteLength);
 
         void registerTypeEntry(TypeEntry* typeEntry);
+
+        void addTypeAliasEntity(TypeEntry* typeEntry, char *f3 , int length);
+        template<std::size_t SIZE>
+        void addTypeAlias(TypeEntry* typeEntry, const char(&f3)[SIZE]) {
+            this->addTypeAliasEntity(typeEntry , (char*)f3, SIZE-1);
+        }
     };
 
 
