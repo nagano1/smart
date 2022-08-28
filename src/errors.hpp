@@ -104,7 +104,6 @@ namespace smart {
         static bool errorInfoInitialized;
     };
 
-/*
     static int acompare(void const * alhs, void const * arhs) {
         ErrorInfo* lhs = (ErrorInfo*)alhs;
         ErrorInfo* rhs = (ErrorInfo*)arhs;
@@ -125,7 +124,6 @@ namespace smart {
         //return lhs->errorCode - rhs->errorCode;
         return 0;
     }
-*/
 
     // C++-14
     /*
@@ -206,7 +204,7 @@ namespace smart {
 
 
         //constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
-        //static ErrorInfo *sortErrorInfoList[errorListSize] = {};
+        static ErrorInfo *sortErrorInfoList[errorListSize] = {};
         for (int i = 0; i < errorListSize; i++) {
             auto &&errorInfo = tempList[i];
             if (static_cast<int>(errorInfo.errorIndex) != i) {
@@ -215,12 +213,12 @@ namespace smart {
             }
 
             ErrorInfo::ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
-//            sortErrorInfoList[i] = &errorInfo;
+            sortErrorInfoList[i] = &errorInfo;
         }
 
         // check duplicate of error code
         //std::sort(sortErrorInfoList, sortErrorInfoList + errorListSize, acompare);
-        //qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
+        qsort(sortErrorInfoList, sizeof(sortErrorInfoList) / sizeof(sortErrorInfoList[0]), sizeof(ErrorInfo), acompare);
 
         return 0;
     }
