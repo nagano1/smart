@@ -81,10 +81,10 @@ namespace smart {
     };
 
     template<
-        typename tEnum,
-        typename std::enable_if<std::is_enum<tEnum>::value, std::nullptr_t>::type = nullptr
+            typename tEnum,
+            typename std::enable_if<std::is_enum<tEnum>::value, std::nullptr_t>::type = nullptr
     >
-        std::ostream& operator<<(std::ostream& iOStream, tEnum iEnum)
+    std::ostream& operator<<(std::ostream& iOStream, tEnum iEnum)
     {
         typedef typename std::underlying_type<tEnum>::type  Type;
         iOStream << static_cast<Type>(iEnum);
@@ -103,6 +103,7 @@ namespace smart {
         static ErrorInfo ErrorInfoList[errorListSize];
         static bool errorInfoInitialized;
     };
+
 /*
     static int acompare(void const * alhs, void const * arhs) {
         ErrorInfo* lhs = (ErrorInfo*)alhs;
@@ -125,6 +126,7 @@ namespace smart {
         return 0;
     }
 */
+
     // C++-14
     /*
     static constexpr bool is_sorted(const ErrorInfo tempList[])
@@ -146,56 +148,56 @@ namespace smart {
         ErrorInfo::errorInfoInitialized = true;
 
         static ErrorInfo tempList[] = {
-            ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
+                ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
 
-            //----------------------------------------------------------------------------------
-            //
-            //                                     Syntax Errors
-            //
-            //----------------------------------------------------------------------------------
-            ErrorInfo{ ErrorCode::no_syntax_error, 10000, "no_error"},
+                //----------------------------------------------------------------------------------
+                //
+                //                                     Syntax Errors
+                //
+                //----------------------------------------------------------------------------------
+                ErrorInfo{ ErrorCode::no_syntax_error, 10000, "no_error"},
 
-            // common
-            ErrorInfo{ ErrorCode::syntax_error, 418030, "syntax error" },
-            ErrorInfo{ ErrorCode::syntax_error2, 418031, "syntax error2" },
-            ErrorInfo{ ErrorCode::should_break_line, 418032, "should have a line break2" },
-            ErrorInfo{ ErrorCode::indent_error, 418033, "indent error" },
-
-
-            // value
-            ErrorInfo{ ErrorCode::expect_end_parenthesis, 418133, "expect_end_parenthesis" },
-
-            // string
-            ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
-            ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },
-
-            ErrorInfo{ ErrorCode::missing_object_delemeter, 7677812, "missing object delimeter"},
-
-            // class
-            ErrorInfo{ ErrorCode::invalid_class_name, 7777413, "Invalid class name"},
-            ErrorInfo{ ErrorCode::no_brace_for_class, 7777414, "no brace for class"},
-            ErrorInfo{ ErrorCode::no_brace_of_end_for_class, 7777415, "no brace of end for class"},
-
-            // fn
-            ErrorInfo{ ErrorCode::invalid_fn_name, 7777815, "invalid fn name"},
-            ErrorInfo{ ErrorCode::expect_bracket_for_fn_body, 7777816, "expect_bracket_for_fn_body"},
-            ErrorInfo{ ErrorCode::expect_parenthesis_for_fn_params, 7777817, "expect '(' for fn parameters"},
-            ErrorInfo{ ErrorCode::expect_end_parenthesis_for_fn_params, 7777818, "expect ')' for fn parameters"},
-
-            // return
-            ErrorInfo{ ErrorCode::no_value_for_return, 7778818, "no_value_for_return"},
-
-            //----------------------------------------------------------------------------------
-            //
-            //                                  Logical Errors
-            //
-            //----------------------------------------------------------------------------------
-            ErrorInfo{ErrorCode::no_logical_error, 57770000, "no_logical_error"},
-            ErrorInfo{ErrorCode::no_variable_defined, 57770001, "no_variable_defined"},
+                // common
+                ErrorInfo{ ErrorCode::syntax_error, 418030, "syntax error" },
+                ErrorInfo{ ErrorCode::syntax_error2, 418031, "syntax error2" },
+                ErrorInfo{ ErrorCode::should_break_line, 418032, "should have a line break2" },
+                ErrorInfo{ ErrorCode::indent_error, 418033, "indent error" },
 
 
+                // value
+                ErrorInfo{ ErrorCode::expect_end_parenthesis, 418133, "expect_end_parenthesis" },
 
-            ErrorInfo{ ErrorCode::last_keeper, 99999999, "end" },
+                // string
+                ErrorInfo{ ErrorCode::missing_closing_quote, 989800, "missing closing quote" },
+                ErrorInfo{ ErrorCode::missing_closing_quote2, 989900, "missing closing quote" },
+
+                ErrorInfo{ ErrorCode::missing_object_delemeter, 7677812, "missing object delimeter"},
+
+                // class
+                ErrorInfo{ ErrorCode::invalid_class_name, 7777413, "Invalid class name"},
+                ErrorInfo{ ErrorCode::no_brace_for_class, 7777414, "no brace for class"},
+                ErrorInfo{ ErrorCode::no_brace_of_end_for_class, 7777415, "no brace of end for class"},
+
+                // fn
+                ErrorInfo{ ErrorCode::invalid_fn_name, 7777815, "invalid fn name"},
+                ErrorInfo{ ErrorCode::expect_bracket_for_fn_body, 7777816, "expect_bracket_for_fn_body"},
+                ErrorInfo{ ErrorCode::expect_parenthesis_for_fn_params, 7777817, "expect '(' for fn parameters"},
+                ErrorInfo{ ErrorCode::expect_end_parenthesis_for_fn_params, 7777818, "expect ')' for fn parameters"},
+
+                // return
+                ErrorInfo{ ErrorCode::no_value_for_return, 7778818, "no_value_for_return"},
+
+                //----------------------------------------------------------------------------------
+                //
+                //                                  Logical Errors
+                //
+                //----------------------------------------------------------------------------------
+                ErrorInfo{ErrorCode::no_logical_error, 57770000, "no_logical_error"},
+                ErrorInfo{ErrorCode::no_variable_defined, 57770001, "no_variable_defined"},
+
+
+
+                ErrorInfo{ ErrorCode::last_keeper, 99999999, "end" },
         };
 
 
@@ -204,7 +206,7 @@ namespace smart {
 
 
         //constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
-        static ErrorInfo *sortErrorInfoList[errorListSize] = {};
+        //static ErrorInfo *sortErrorInfoList[errorListSize] = {};
         for (int i = 0; i < errorListSize; i++) {
             auto &&errorInfo = tempList[i];
             if (static_cast<int>(errorInfo.errorIndex) != i) {
@@ -213,7 +215,7 @@ namespace smart {
             }
 
             ErrorInfo::ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
-            sortErrorInfoList[i] = &errorInfo;
+//            sortErrorInfoList[i] = &errorInfo;
         }
 
         // check duplicate of error code
@@ -322,4 +324,3 @@ namespace smart {
     };
 
 }
-
