@@ -126,6 +126,7 @@ namespace smart {
         return 0;
     }
 */
+    #if __cplusplus >= 201402L
 
     // C++-14
     static constexpr bool is_sorted(const ErrorInfo tempList[])
@@ -138,6 +139,7 @@ namespace smart {
         return true;
     }
 
+    #endif
 
 
 
@@ -206,7 +208,8 @@ namespace smart {
          * 201703L (C++17)
          * 202002L (C++20)
          */
-        #if __cplusplus > 201402L
+        #if __cplusplus >= 201402L
+        static_assert(is_sorted(tempList), "error List should be sorted with error code"); // C++14
         #endif
 
         //constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
