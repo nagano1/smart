@@ -172,7 +172,6 @@ fn main()
 )";
         int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);
         EXPECT_EQ(ret, 9);
-        EXPECT_EQ(ret, 8);
 
         ENDTEST
     }
