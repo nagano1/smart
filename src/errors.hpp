@@ -73,7 +73,7 @@ namespace smart {
         //                                  Logical Errors
         //
         //----------------------------------------------------------------------------------
-        //no_logical_error,
+        no_logical_error,
         //no_variable_defined,
 
 
@@ -192,12 +192,12 @@ namespace smart {
             //                                  Logical Errors
             //
             //----------------------------------------------------------------------------------
-            //ErrorInfo{ ErrorCode::no_logical_error, 57770000, "no_logical_error"},
+            ErrorInfo{ ErrorCode::no_logical_error, 57770000, "no_logical_error"},
             //ErrorInfo{ ErrorCode::no_variable_defined, 57770001, "no_variable_defined"},
 
 
 
-            ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
+            ErrorInfo{ ErrorCode::last_keeper, 99999999, "end" },
         };
 
 
