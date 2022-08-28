@@ -68,7 +68,14 @@ namespace smart {
         // return
         no_value_for_return,
 
-        no_giride,
+        //----------------------------------------------------------------------------------
+        //
+        //                                  Logical Errors
+        //
+        //----------------------------------------------------------------------------------
+        //no_logical_error,
+        //no_variable_defined,
+
 
         last_keeper
     };
@@ -180,7 +187,14 @@ namespace smart {
             // return
             ErrorInfo{ ErrorCode::no_value_for_return, 7778818, "no_value_for_return"},
 
-                ErrorInfo{ ErrorCode::no_giride, 33333333, "no_variable_defined"},
+            //----------------------------------------------------------------------------------
+            //
+            //                                  Logical Errors
+            //
+            //----------------------------------------------------------------------------------
+            //ErrorInfo{ ErrorCode::no_logical_error, 57770000, "no_logical_error"},
+            //ErrorInfo{ ErrorCode::no_variable_defined, 57770001, "no_variable_defined"},
+
 
 
             ErrorInfo{ ErrorCode::last_keeper, 99999999, "end" },
