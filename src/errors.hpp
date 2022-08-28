@@ -103,7 +103,7 @@ namespace smart {
         static ErrorInfo ErrorInfoList[errorListSize];
         static bool errorInfoInitialized;
     };
-
+/*
     static int acompare(void const * alhs, void const * arhs) {
         ErrorInfo* lhs = (ErrorInfo*)alhs;
         ErrorInfo* rhs = (ErrorInfo*)arhs;
@@ -124,7 +124,7 @@ namespace smart {
         //return lhs->errorCode - rhs->errorCode;
         return 0;
     }
-
+*/
     // C++-14
     /*
     static constexpr bool is_sorted(const ErrorInfo tempList[])
