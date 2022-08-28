@@ -152,7 +152,7 @@ namespace smart {
             //                                     Syntax Errors
             //
             //----------------------------------------------------------------------------------
-            ErrorInfo{ ErrorCode::no_syntax_error, 10000, "no_error"},
+            ErrorInfo{ ErrorCode::no_syntax_error, 10000, "no_syntax_error"},
 
             // common
             ErrorInfo{ ErrorCode::syntax_error, 418030, "syntax error" },

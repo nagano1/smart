@@ -301,7 +301,7 @@ namespace smart {
     {
         this->logicalErrorInfo.hasError = false;
         this->logicalErrorInfo.errorCode = ErrorCode::no_logical_error;
-        this->logicalErrorInfo.errorId = 10000;
+        this->logicalErrorInfo.errorId = 57770000;
         this->logicalErrorInfo.charPosition = -1;
         this->logicalErrorInfo.charPosition2 = -1;
     }
