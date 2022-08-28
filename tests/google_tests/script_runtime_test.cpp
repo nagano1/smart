@@ -35,8 +35,10 @@ namespace smart {
 
         ScriptEnv::deleteScriptEnv(env);
 
-        ENDTEST
+
     }
+
+    ENDTEST
 
     TEST(ScriptEngine, StackMemory_PushPop) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
@@ -149,7 +151,7 @@ namespace smart {
         ENDTEST
     }
 
-    TEST(ScriptEngine, StackMemoryTest3_overflow_localVariables) {
+    TEST(ScriptEngine, StackMemoryTest_overflow_localVariables) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
         auto& stackMemory = env->context->stackMemory;
         

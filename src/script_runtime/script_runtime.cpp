@@ -297,6 +297,15 @@ namespace smart {
         return value;
     }
 
+    void ScriptEngineContext::init()
+    {
+        this->logicalErrorInfo.hasError = false;
+        this->logicalErrorInfo.errorCode = ErrorCode::no_logical_error;
+        this->logicalErrorInfo.errorId = 10000;
+        this->logicalErrorInfo.charPosition = -1;
+        this->logicalErrorInfo.charPosition2 = -1;
+    }
+
     //------------------------------------------------------------------------------------------
     //
     //                                       Script Engine
@@ -321,9 +330,10 @@ namespace smart {
 
 
             scriptEnv->context = context;
+            context->init();
 
             scriptEnv->typeEntryList = nullptr;
-            scriptEnv->typeEntryListNextIndex = 0;
+            scriptEnv->typeEntryListNextIndex = 1;
             scriptEnv->typeEntryListCapacity = 0;
 
             _registerBuiltInTypes(scriptEnv);
@@ -363,6 +373,78 @@ namespace smart {
     }
 
 
+    static constexpr int NodeToTypeLength = 128;
+    static int nodeToType[NodeToTypeLength] = {-2};
+
+    TypeEntry *ScriptEnv::typeFromNode(NodeBase *node)
+    {
+        int typeIndex = -1;
+
+        if (node->vtable == VTables::NumberVTable) {
+            typeIndex = BuiltInTypeIndex::int32;
+        }
+        else {
+            if (nodeToType[0] == -2) {
+                for (int i = 0; i < NodeToTypeLength; i++) { // NOLINT(modernize-loop-convert,altera-unroll-loops)
+                    nodeToType[i] = -1;
+                }
+                nodeToType[2] = BuiltInTypeIndex::heapString;
+                // nodeToType[11] = BuiltInTypeIndex::bool;
+                // nodeToType[16] = BuiltInTypeIndex::NULLId;
+            }
+
+            typeIndex = nodeToType[(int)node->vtable->nodeTypeId];
+        }
+        /*
+        EndOfDoc = 1,
+        StringLiteral = 2,
+        Symbol = 3,
+        Class = 4,
+        Name = 5,
+        SimpleText = 6,
+
+
+        Number = 9,
+        LineBreak = 10,
+        Bool = 11,
+
+
+        JsonObject = 12,
+        JsonObjectKey = 13,
+        JsonKeyValueItem = 14,
+
+        JsonArrayItem = 7,
+        JsonArrayStruct = 8,
+
+        Space = 15,
+
+        Func = 17,
+        NULLId = 16,
+
+        Type = 18,
+        Body = 19,
+        AssignStatement = 20,
+        ReturnStatement = 24,
+
+        LineComment = 21,
+        BlockComment = 22,
+        BlockCommentFragment = 23,
+
+        Variable = 25,
+        Parentheses = 26,
+        CallFunc = 27,
+        FuncArgument = 28,
+        FuncParameter = 29,
+
+        BinaryOperation = 30
+        */
+
+        if (typeIndex > -1) {
+            return this->typeEntryList[typeIndex];
+        }
+
+        return nullptr;
+    }
 
     ValueBase *ScriptEnv::evaluateExprNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer)
     {
@@ -439,20 +521,25 @@ namespace smart {
     {
         auto* statementNode = func->bodyNode.firstChildNode;
         int stackSize = 0;
+        int currentStackOffset = 0;
         while (statementNode) {
             if (statementNode->vtable == VTables::AssignStatementVTable) {
-                auto* assignment = Cast::downcast<AssignStatementNodeStruct *>(statementNode);
-                auto& typeName = assignment->typeOrLet.nameNode;
-                bool isLet = assignment->typeOrLet.isLet;
-                // bool isInt = ParseUtil::equal(typeName.name, typeName.nameLength, "int", 3);
-                if (isLet) {
+                auto *assignment = Cast::downcast<AssignStatementNodeStruct *>(statementNode);
+                if (assignment->hasTypeDecl) {
+                    auto &typeName = assignment->typeOrLet.nameNode;
+                    bool isLet = assignment->typeOrLet.isLet;
+                    // bool isInt = ParseUtil::equal(typeName.name, typeName.nameLength, "int", 3);
+                    if (isLet) {
 
-                }
-                else {
-                    auto *typeEntry = (TypeEntry*)env->context->typeNameMap->get(typeName.name, typeName.nameLength);
-                    if (typeEntry) {
-                        printf("<test %d>", typeEntry->stackSize);
-                        stackSize += typeEntry->stackSize;
+                    } else {
+                        auto *typeEntry = (TypeEntry *) env->context->typeNameMap->get(
+                                typeName.name, typeName.nameLength);
+                        if (typeEntry) {
+                            //printf("<test %d>", typeEntry->stackSize);
+                            assignment->stackOffset = currentStackOffset;
+                            stackSize += typeEntry->stackSize;
+                            currentStackOffset += typeEntry->stackSize;
+                        }
                     }
                 }
 
@@ -464,7 +551,10 @@ namespace smart {
 
     static int executeMain(ScriptEnv* env, FuncNodeStruct* mainFunc)
     {
-        calcStackSizeInFunc(env, mainFunc);
+        validateFunc(env, mainFunc);
+        int stackSize = calcStackSizeInFunc(env, mainFunc);
+        env->context->stackMemory.call();
+        env->context->stackMemory.localVariables(stackSize);
 
         auto* statementNode = mainFunc->bodyNode.firstChildNode;
         while (statementNode) {
@@ -489,6 +579,21 @@ namespace smart {
                 }
             }
 
+            /*
+            // assign
+            // int a = 3
+            if (statementNode->vtable == VTables::AssignStatementVTable) {
+                auto* assignStatement = Cast::downcast<AssignStatementNodeStruct *>(statementNode);
+                if (assignStatement->hasTypeDecl) {
+                    auto* valueBase = env->evaluateExprNode(assignStatement->valueNode);
+                    if (valueBase->typeIndex == BuiltInTypeIndex::int32) {
+                        return int32_value(valueBase);
+                    }
+                }
+
+            }
+            */
+
             // return
             if (statementNode->vtable == VTables::ReturnStatementVTable) {
                 auto* returnNode = Cast::downcast<ReturnStatementNodeStruct*>(statementNode);
@@ -497,16 +602,49 @@ namespace smart {
                     return int32_value(valueBase);
                 }
             }
+
+
             statementNode = statementNode->nextNode;
         }
 
+        env->context->stackMemory.ret();
+
         return 0;
+    }
+
+
+
+    static void validateTypes(ScriptEnv *env, DocumentStruct *document)
+    {
+        //env->typeFromNode()
+
+        auto *child = document->firstRootNode;
+        while (child) { // NOLINT(altera-unroll-loops,altera-id-dependent-backward-branch)
+            if (child->vtable == VTables::AssignStatementVTable) {
+
+            }
+            child = child->nextNode;
+        }
+    }
+
+
+    static void *toType(NodeBase *nodeBase)
+    {
+        //auto *numberNode = Cast::downcast<NumberNodeStruct *>(nodeBase);
+
+        return nullptr;
+    }
+
+    static void setupTypeFromNode()
+    {
+        VTables::NumberVTable->toType = toType;
     }
 
     int ScriptEnv::startScript(char* script, int scriptLength)
     {
         int ret = 0;
         ScriptEnv* env = ScriptEnv::newScriptEnv();
+        setupTypeFromNode();
 
         auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
         DocumentUtils::parseText(document, script, scriptLength);
@@ -515,6 +653,7 @@ namespace smart {
             return - 1;
         }
 
+        validateTypes(env, document);
 
         auto *mainFunc = findMainFunc(document);
         if (mainFunc) {

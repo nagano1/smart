@@ -30,6 +30,13 @@ namespace smart {
 
     enum class ErrorCode {
         first_keeper,
+
+        //----------------------------------------------------------------------------------
+        //
+        //                                  Syntax Errors
+        //
+        //----------------------------------------------------------------------------------
+
         no_syntax_error,
 
         // common
@@ -60,6 +67,15 @@ namespace smart {
 
         // return
         no_value_for_return,
+
+        //----------------------------------------------------------------------------------
+        //
+        //                                  Logical Errors
+        //
+        //----------------------------------------------------------------------------------
+        no_logical_error,
+        no_variable_defined,
+
 
         last_keeper
     };
@@ -133,6 +149,12 @@ namespace smart {
 
         ErrorInfo tempList[] = {
             ErrorInfo{ ErrorCode::first_keeper, 9912, "start"},
+
+            //----------------------------------------------------------------------------------
+            //
+            //                                     Syntax Errors
+            //
+            //----------------------------------------------------------------------------------
             ErrorInfo{ ErrorCode::no_syntax_error, 10000, "no_error"},
 
             // common
@@ -164,6 +186,16 @@ namespace smart {
 
             // return
             ErrorInfo{ ErrorCode::no_value_for_return, 7778818, "no_value_for_return"},
+
+            //----------------------------------------------------------------------------------
+            //
+            //                                  Logical Errors
+            //
+            //----------------------------------------------------------------------------------
+            ErrorInfo{ ErrorCode::no_logical_error, 57770000, "no_logical_error"},
+            ErrorInfo{ ErrorCode::no_variable_defined, 57770001, "no_variable_defined"},
+
+
 
             ErrorInfo{ ErrorCode::last_keeper, 9999999, "end" },
         };
@@ -241,6 +273,31 @@ namespace smart {
      * Syntax error is allowed only once
      */
     using SyntaxErrorInfo = struct _errorInfo {
+        bool hasError{false};
+
+        ErrorCode errorCode;
+        char reason[MAX_REASON_LENGTH + 1];
+        int reasonLength = 0;
+
+        st_uint charPosition;
+        st_uint charPosition2;
+
+        st_uint linePos1;
+        st_uint charPos1;
+        st_uint linePos2;
+        st_uint charPos2;
+
+        int errorId;
+        int charEndPosition;
+
+        // 0: "between start and  end"
+        // 1: "from start to end of line,"
+        int errorDisplayType = 0;
+
+        static const int SYNTAX_ERROR_RETURN = -1;
+    };
+
+    using LogicalErrorInfo = struct _logicalErrorInfo {
         bool hasError{false};
 
         ErrorCode errorCode;

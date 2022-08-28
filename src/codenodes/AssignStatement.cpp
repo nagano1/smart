@@ -87,6 +87,7 @@ namespace smart {
         assignStatement->onlyAssign = false;
         assignStatement->hasTypeDecl = false;
         assignStatement->valueNode = nullptr;
+        assignStatement->stackOffset = 0;
 
 
         Init::initSymbolNode(&assignStatement->pointerAsterisk, context, assignStatement, '*');

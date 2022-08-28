@@ -175,6 +175,7 @@ namespace smart {
         bool hasTypeDecl; // $let, int, ?string, etc..
         SymbolStruct pointerAsterisk; // *
 
+        int stackOffset;
         NameNodeStruct nameNode; // varName
         SymbolStruct equalSymbol; // =
         NodeBase *valueNode; // 32
@@ -459,7 +460,6 @@ namespace smart {
         AssignStatementNodeStruct *unusedAssignment;
         ClassNodeStruct *unusedClassNode;
 
-
         void (*actionCreator)(void *node1, void *node2, int actionRequest);
 
 
@@ -683,6 +683,7 @@ namespace smart {
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
         const char *typeChars; \
         int typeCharsLength; \
+        void *(*toType)(NodeBase *self); \
         NodeTypeId nodeTypeId; \
 
 
@@ -722,6 +723,7 @@ namespace smart {
             , reinterpret_cast<appendToLineFunction> (f3) \
             , (const char *)(f4) \
             , (sizeof(f4)-1) \
+            , nullptr \
             , f5 \
         } \
         ;static const int check_result_##T = vtable_type_check<T>(f1,f2,f3,f4,f5)

@@ -115,6 +115,8 @@ namespace smart
 
 
     using ScriptEngineContext = struct _scriptEngineContext {
+        LogicalErrorInfo logicalErrorInfo;
+
         MemBuffer memBuffer; // for TypeEntry, variable->value map
 
         MemBuffer memBufferForValueBase; // for value base
@@ -128,6 +130,7 @@ namespace smart
         ValueBase *newValueForStack();
         ValueBase *genValueBase(int type, int size, void *ptr);
 
+        void init();
 
 
         void* mallocItem(int bytes) {
@@ -223,6 +226,8 @@ namespace smart
 
         ValueBase *evaluateExprNode(NodeBase* expressionNode);
         ValueBase *evaluateExprNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer);
+
+        TypeEntry *typeFromNode(NodeBase *expressionNode);
 
         static void deleteScriptEnv(_ScriptEnv *doc);
         static _ScriptEnv *newScriptEnv();
