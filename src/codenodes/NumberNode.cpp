@@ -164,12 +164,12 @@ namespace smart {
     }
 
 
-    static const node_vtable _numberVTable_ = CREATE_VTABLE(NumberNodeStruct, selfTextLength,
+    static node_vtable _numberVTable_ = CREATE_VTABLE(NumberNodeStruct, selfTextLength,
                                                             selfText,
                                                             appendToLine, numberNodeTypeText,
                                                             NodeTypeId::Number);
 
-    const node_vtable *const VTables::NumberVTable = &_numberVTable_;
+    const node_vtable *VTables::NumberVTable = &_numberVTable_;
 
 
 

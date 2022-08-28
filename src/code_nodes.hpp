@@ -745,7 +745,7 @@ namespace smart {
                 *const BodyVTable,
                 *const TypeVTable,
                 *const StringLiteralVTable,
-                *const NumberVTable,
+                *NumberVTable,
                 *const BoolVTable,
                 *const SymbolVTable,
                 *const SimpleTextVTable,

@@ -627,7 +627,6 @@ namespace smart {
         }
     }
 
-
     static void *toType(NodeBase *nodeBase)
     {
         //auto *numberNode = Cast::downcast<NumberNodeStruct *>(nodeBase);
@@ -637,7 +636,10 @@ namespace smart {
 
     static void setupTypeFromNode()
     {
-        VTables::NumberVTable->toType = toType;
+        ((node_vtable*)VTables::NumberVTable)->toType = toType;
+        if(VTables::NumberVTable->toType(nullptr) != nullptr) {
+
+        }
     }
 
     int ScriptEnv::startScript(char* script, int scriptLength)

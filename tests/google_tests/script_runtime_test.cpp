@@ -49,12 +49,12 @@ namespace smart {
         stackMemory.push(5);
         stackMemory.push(6);
         
-        EXPECT_NE(stackPointer1, stackMemory.stackPointer);
+        EXPECT_NE((uint64_t)stackPointer1, (uint64_t)stackMemory.stackPointer);
 
         EXPECT_EQ(6, stackMemory.pop());
         EXPECT_EQ(5, stackMemory.pop());
 
-        EXPECT_EQ(stackPointer1, stackMemory.stackPointer);
+        EXPECT_EQ((uint64_t)stackPointer1, (uint64_t)stackMemory.stackPointer);
 
         ENDTEST
     }
@@ -72,8 +72,8 @@ namespace smart {
         EXPECT_EQ(100, stackMemory.moveFrom(-stackMemory.baseBytes));
         stackMemory.ret();
 
-        EXPECT_EQ(basePointer0, stackMemory.stackBasePointer);
-        EXPECT_EQ(stackPointer0, stackMemory.stackPointer);
+        EXPECT_EQ((uint64_t)basePointer0, (uint64_t)stackMemory.stackBasePointer);
+        EXPECT_EQ((uint64_t)stackPointer0, (uint64_t)stackMemory.stackPointer);
 
         ScriptEnv::deleteScriptEnv(env);
 
