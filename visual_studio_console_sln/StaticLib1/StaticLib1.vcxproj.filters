@@ -33,6 +33,9 @@
     <ClInclude Include="..\..\src\script_runtime\script_runtime.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\errors.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\codenodes\ClassNode.cpp">

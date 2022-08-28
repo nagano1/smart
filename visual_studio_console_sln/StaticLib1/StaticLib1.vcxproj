@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\src\code_nodes.hpp" />
     <ClInclude Include="..\..\src\common.hpp" />
+    <ClInclude Include="..\..\src\errors.hpp" />
     <ClInclude Include="..\..\src\parse_util.hpp" />
     <ClInclude Include="..\..\src\script_runtime\script_runtime.hpp" />
     <ClInclude Include="..\..\src\thread_pool.hpp" />
