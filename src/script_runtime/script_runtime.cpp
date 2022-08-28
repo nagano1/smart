@@ -637,6 +637,7 @@ namespace smart {
     static void setupTypeFromNode()
     {
         ((node_vtable*)VTables::NumberVTable)->toType = toType;
+        ((node_vtable*)VTables::StringLiteralVTable)->toType = toType;
         if(VTables::NumberVTable->toType(nullptr) != nullptr) {
 
         }
