@@ -199,9 +199,16 @@ namespace smart {
         };
 
 
-        static_assert(errorListSize == (sizeof tempList) / sizeof(ErrorInfo), "error list should have the same length");
-        static_assert(is_sorted(tempList), "error List should be sorted"); // C++14
 
+        static_assert(errorListSize == (sizeof tempList) / sizeof(ErrorInfo), "error list should have the same length");
+        /*
+         * 201402L (C++14)
+         * 201703L (C++17)
+         * 202002L (C++20)
+         */
+        #if __cplusplus >= 201402L
+        static_assert(is_sorted(tempList), "error List should be sorted"); // C++14
+        #endif
 
         //constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
         //static ErrorInfo *sortErrorInfoList[errorListSize] = {};
