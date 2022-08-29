@@ -128,7 +128,11 @@ namespace smart {
 */
 
     // C++-14
+    // 201402L (C++14), 201703L (C++17), 202002L (C++20)
     #if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
+    #define  use_static_sort
+    #endif
+    #ifdef use_static_sort
     static constexpr bool is_sorted(const ErrorInfo tempList[])
     {
         for (std::size_t i = 0; i < errorListSize - 1; ++i) {
@@ -199,8 +203,7 @@ namespace smart {
 
 
         static_assert(errorListSize == (sizeof tempList) / sizeof(ErrorInfo), "error list should have the same length");
-        // 201402L (C++14), 201703L (C++17), 202002L (C++20)
-        #if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
+        #ifdef use_static_sort
         static_assert(is_sorted(tempList), "error List should be sorted with error code"); // C++14
         #endif
 
