@@ -33,9 +33,9 @@ namespace smart {
 
     static constexpr const char SymbolTypeText[] = "<Symbol>";
 
-    static const node_vtable _nameVTable = CREATE_VTABLE(SymbolStruct, selfTextLength,
+    static node_vtable _nameVTable = CREATE_VTABLE(SymbolStruct, selfTextLength,
                                                     self_text, appendToLine, SymbolTypeText, NodeTypeId::Symbol);
-    const node_vtable *const VTables::SymbolVTable = &_nameVTable;
+    const node_vtable *VTables::SymbolVTable = &_nameVTable;
 
 
     void Init::initSymbolNode(SymbolStruct *node, ParseContext *context, void *parentNode,

@@ -82,10 +82,10 @@ namespace smart {
 
 
     static constexpr const char boolNodeTypeText[] = "<bool>";
-    static const node_vtable _boolVTable = CREATE_VTABLE(BoolNodeStruct, selfTextLength2,
+    static node_vtable _boolVTable = CREATE_VTABLE(BoolNodeStruct, selfTextLength2,
                                                          selfText2, appendToLine2, boolNodeTypeText, NodeTypeId::Bool);
 
-    const node_vtable *const VTables::BoolVTable = &_boolVTable;
+    const node_vtable *VTables::BoolVTable = &_boolVTable;
 
     BoolNodeStruct* Alloc::newBoolNode(ParseContext *context, NodeBase *parentNode) {
         auto *node = context->newMem<BoolNodeStruct>();
@@ -313,14 +313,14 @@ namespace smart {
     }
 
 
-    static const node_vtable _parenthesesVTable = CREATE_VTABLE(ParenthesesNodeStruct,
+    static node_vtable _parenthesesVTable = CREATE_VTABLE(ParenthesesNodeStruct,
                                                                 parentheses_selfTextLength,
                                                                 parentheses_selfText,
                                                                 parentheses_appendToLine,
                                                                 parenthesesNodeTypeText,
                                                             NodeTypeId::Parentheses);
 
-    const node_vtable *const VTables::ParenthesesVTable = &_parenthesesVTable;
+    const node_vtable *VTables::ParenthesesVTable = &_parenthesesVTable;
 
     ParenthesesNodeStruct *Alloc::newParenthesesNode(ParseContext *context, NodeBase *parentNode)
     {
@@ -392,14 +392,14 @@ namespace smart {
 
     static constexpr const char binaryop_NodeTypeText[] = "<binary op>";
 
-    static const node_vtable binaryop_VTable = CREATE_VTABLE(BinaryOperationNodeStruct ,
+    static node_vtable binaryop_VTable = CREATE_VTABLE(BinaryOperationNodeStruct ,
                                                              binaryop_selfTextLength,
                                                              binaryop_selfText,
                                                              binaryop_appendToLine,
                                                              binaryop_NodeTypeText,
                                                                 NodeTypeId::BinaryOperation);
 
-    const node_vtable *const VTables::BinaryOperationVTable = &binaryop_VTable;
+    const node_vtable *VTables::BinaryOperationVTable = &binaryop_VTable;
 
 
 

@@ -36,12 +36,12 @@ namespace smart {
 
     static constexpr const char simpleTextTypeText[] = "<SimpleText>";
 
-    static const struct node_vtable simpleTextVTABLE = CREATE_VTABLE(SimpleTextNodeStruct,
+    static struct node_vtable simpleTextVTABLE = CREATE_VTABLE(SimpleTextNodeStruct,
                                                                 selfTextLength,
                                                                 self_text,
                                                                 appendToLine, simpleTextTypeText
                                                                   , NodeTypeId::SimpleText);
-    const struct node_vtable *const VTables::SimpleTextVTable = &simpleTextVTABLE;
+    const struct node_vtable *VTables::SimpleTextVTable = &simpleTextVTABLE;
 
 
 
@@ -49,39 +49,39 @@ namespace smart {
 
     static constexpr const char spaceTextTypeText[] = "<SpaceText>";
 
-    static const node_vtable _spaceVTable = CREATE_VTABLE(SpaceNodeStruct,
+    static node_vtable _spaceVTable = CREATE_VTABLE(SpaceNodeStruct,
                                                             selfTextLength,
                                                             self_text,
                                                             appendToLine, spaceTextTypeText, NodeTypeId::Space
     );
-    const struct node_vtable *const VTables::SpaceVTable = &_spaceVTable;
+    const struct node_vtable *VTables::SpaceVTable = &_spaceVTable;
 
 
-    static const node_vtable _nullVTable = CREATE_VTABLE(NullNodeStruct,
+    static node_vtable _nullVTable = CREATE_VTABLE(NullNodeStruct,
                                                            selfTextLength,
                                                            self_text,
                                                            appendToLine, "<NULL>", NodeTypeId::NULLId
     );
 
-    const struct node_vtable *const VTables::NullVTable = &_nullVTable;
+    const struct node_vtable *VTables::NullVTable = &_nullVTable;
 
 
-    static const node_vtable _lineCommentVTable = CREATE_VTABLE(LineCommentNodeStruct,
+    static node_vtable _lineCommentVTable = CREATE_VTABLE(LineCommentNodeStruct,
                                                            selfTextLength,
                                                            self_text,
                                                            appendToLine, "<Line Comment>", NodeTypeId::LineComment
     );
 
-    const struct node_vtable *const VTables::LineCommentVTable = &_lineCommentVTable;
+    const struct node_vtable *VTables::LineCommentVTable = &_lineCommentVTable;
 
 
-    static const node_vtable _blockCommentFragmentVTable = CREATE_VTABLE(BlockCommentFragmentStruct,
+    static node_vtable _blockCommentFragmentVTable = CREATE_VTABLE(BlockCommentFragmentStruct,
                                                                  selfTextLength,
                                                                  self_text,
                                                                  appendToLine, "<Comment Fragment>",
                                                                 NodeTypeId::BlockCommentFragment);
 
-    const struct node_vtable *const VTables::BlockCommentFragmentVTable = &_blockCommentFragmentVTable;
+    const struct node_vtable *VTables::BlockCommentFragmentVTable = &_blockCommentFragmentVTable;
 
 
 
@@ -109,13 +109,13 @@ namespace smart {
     }
 
 
-    static const node_vtable _blockCommentVTable = CREATE_VTABLE(BlockCommentNodeStruct,
+    static node_vtable _blockCommentVTable = CREATE_VTABLE(BlockCommentNodeStruct,
                                                                   selfTextLength_blockcomment,
                                                                   self_text_blockcomment,
                                                                  appendToLineForBlockComment, "<BlockComment>", NodeTypeId::BlockComment
     );
 
-    const struct node_vtable *const VTables::BlockCommentVTable = &_blockCommentVTable;
+    const struct node_vtable *VTables::BlockCommentVTable = &_blockCommentVTable;
 
 
 

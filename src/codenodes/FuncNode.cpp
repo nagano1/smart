@@ -54,14 +54,14 @@ namespace smart {
         return 0;
     }
 
-    static const node_vtable _funcArgumentItemVTable = CREATE_VTABLE(FuncArgumentItemStruct,
+    static node_vtable _funcArgumentItemVTable = CREATE_VTABLE(FuncArgumentItemStruct,
                                                                      FuncArgument_selfTextLength2,
                                                                      FuncArgument_selfText,
                                                                      FuncArgument_appendToLine2,
                                                                      "<FuncArgument>",
                                                                      NodeTypeId::FuncArgument);
 
-    const struct node_vtable *const VTables::FuncArgumentVTable  = &_funcArgumentItemVTable;
+    const struct node_vtable *VTables::FuncArgumentVTable  = &_funcArgumentItemVTable;
 
     FuncArgumentItemStruct *Alloc::newFuncArgumentItem(ParseContext *context, NodeBase *parentNode) {
         auto *keyValueItem = context->newMem<FuncArgumentItemStruct>();
@@ -224,14 +224,14 @@ namespace smart {
     }
 
 
-    static const node_vtable _callfuncVTable = CREATE_VTABLE(CallFuncNodeStruct,
+    static node_vtable _callfuncVTable = CREATE_VTABLE(CallFuncNodeStruct,
                                                              callfun_selfTextLength,
                                                              callfunc_selfText,
                                                              callfunc_appendToLine,
                                                              callfuncNodeTypeText,
                                                              NodeTypeId::CallFunc);
 
-    const node_vtable *const VTables::CallFuncVTable = &_callfuncVTable;
+    const node_vtable *VTables::CallFuncVTable = &_callfuncVTable;
 
 
     CallFuncNodeStruct *Alloc::newFuncCallNode(ParseContext *context, NodeBase *parentNode)
@@ -308,13 +308,13 @@ namespace smart {
  *
  * }
  */
-    static const node_vtable _bodyVTable = CREATE_VTABLE(BodyNodeStruct,
+    static node_vtable _bodyVTable = CREATE_VTABLE(BodyNodeStruct,
                                                          selfTextLength2,
                                                          selfText2,
                                                          appendToLine2,
                                                          bodyTypeText, NodeTypeId::Body);
 
-    const struct node_vtable *const VTables::BodyVTable = &_bodyVTable;
+    const struct node_vtable *VTables::BodyVTable = &_bodyVTable;
 
     void Init::initBodyNode(BodyNodeStruct *node, ParseContext *context, void *parentNode) {
         INIT_NODE(node, context, parentNode, VTables::BodyVTable);
@@ -507,14 +507,14 @@ namespace smart {
     }
 
 
-    static const node_vtable _funcParameterItemVTable = CREATE_VTABLE(FuncParameterItemStruct,
+    static node_vtable _funcParameterItemVTable = CREATE_VTABLE(FuncParameterItemStruct,
                                                                       selfTextLength_FuncParameterItemStruct,
                                                                       selfText_FuncParameterItemStruct,
                                                                       appendToLine_FuncParameterItemStruct,
                                                                   "<FuncParameterItem>",
                                                                   NodeTypeId::FuncParameter);
 
-    const struct node_vtable *const VTables::FuncParameterVTable = &_funcParameterItemVTable;
+    const struct node_vtable *VTables::FuncParameterVTable = &_funcParameterItemVTable;
 
 
     FuncParameterItemStruct *Alloc::newFuncParameterItem(ParseContext *context, NodeBase *parentNode) {
@@ -593,13 +593,13 @@ namespace smart {
  *
  * }
  */
-    static const node_vtable _fnVTable = CREATE_VTABLE(FuncNodeStruct,
+    static node_vtable _fnVTable = CREATE_VTABLE(FuncNodeStruct,
                                                        selfTextLength,
                                                        selfText,
                                                        appendToLine,
                                                        fnTypeText, NodeTypeId::Func);
 
-    const struct node_vtable *const VTables::FnVTable = &_fnVTable;
+    const struct node_vtable *VTables::FnVTable = &_fnVTable;
 
     FuncNodeStruct* Alloc::newFuncNode(ParseContext *context, NodeBase *parentNode)
     {

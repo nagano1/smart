@@ -57,14 +57,14 @@ namespace smart {
 
     static constexpr const char lineBreakTypeText[] = "<lineBreak>";
 
-    static const node_vtable _lineBreakVTable = CREATE_VTABLE(LineBreakNodeStruct,
+    static node_vtable _lineBreakVTable = CREATE_VTABLE(LineBreakNodeStruct,
                                                               selfTextLength,
                                                               self_text,
                                                               appendToLine,
                                                               lineBreakTypeText,
                                                               NodeTypeId::LineBreak);
 
-    const node_vtable *const VTables::LineBreakVTable = &_lineBreakVTable;
+    const node_vtable *VTables::LineBreakVTable = &_lineBreakVTable;
 
     LineBreakNodeStruct *Alloc::newLineBreakNode(ParseContext *context, NodeBase *parentNode) {
         auto *lineNode = context->newLineBreakNode();

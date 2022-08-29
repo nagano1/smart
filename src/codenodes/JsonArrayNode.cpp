@@ -54,14 +54,14 @@ namespace smart {
     }
 
 
-    static const node_vtable _jsonArrayItemVTable = CREATE_VTABLE(JsonArrayItemStruct,
+    static node_vtable _jsonArrayItemVTable = CREATE_VTABLE(JsonArrayItemStruct,
                                                                   selfTextLength2,
                                                                   selfText_JsonKeyValueItemStruct,
                                                                   appendToLine2,
                                                                   "<JsonArrayItem>",
                                                                   NodeTypeId::JsonArrayItem);
 
-    const struct node_vtable *const VTables::JsonArrayItemVTable = &_jsonArrayItemVTable;
+    const struct node_vtable *VTables::JsonArrayItemVTable = &_jsonArrayItemVTable;
 
 
     JsonArrayItemStruct *Alloc::newJsonArrayItem(ParseContext *context, NodeBase *parentNode) {
@@ -122,10 +122,10 @@ namespace smart {
 
 
 
-    static const node_vtable _jsonArrayVTable = CREATE_VTABLE(JsonArrayStruct,
+    static node_vtable _jsonArrayVTable = CREATE_VTABLE(JsonArrayStruct,
                                                               selfTextLength, selfText,
                                                               appendToLine, _typeName, NodeTypeId::JsonArrayStruct);
-    const struct node_vtable *const VTables::JsonArrayVTable = &_jsonArrayVTable;
+    const struct node_vtable *VTables::JsonArrayVTable = &_jsonArrayVTable;
 
 
 

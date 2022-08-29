@@ -55,14 +55,14 @@ namespace smart {
     /*
      * return statement
      */
-    static const node_vtable _returnVTable = CREATE_VTABLE(ReturnStatementNodeStruct,
+    static node_vtable _returnVTable = CREATE_VTABLE(ReturnStatementNodeStruct,
                                                           selfTextLength,
                                                           selfText,
                                                           appendToLine,
                                                           assignTypeText
                                                           , NodeTypeId::ReturnStatement);
 
-    const struct node_vtable *const VTables::ReturnStatementVTable = &_returnVTable;
+    const struct node_vtable *VTables::ReturnStatementVTable = &_returnVTable;
 
 
     // -------------------- Implements AssignStatement Allocator --------------------- //

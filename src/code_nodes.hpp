@@ -731,47 +731,47 @@ namespace smart {
 
     struct VTables {
         static const node_vtable
-                *const DocumentVTable,
+                *DocumentVTable,
 
-                *const AssignStatementVTable,
-                *const ReturnStatementVTable,
+                *AssignStatementVTable,
+                *ReturnStatementVTable,
 
-                *const ClassVTable,
+                *ClassVTable,
 
-                *const FnVTable,
+                *FnVTable,
 
-                *const NameVTable,
-                *const VariableVTable,
-                *const BodyVTable,
-                *const TypeVTable,
+                *NameVTable,
+                *VariableVTable,
+                *BodyVTable,
+                *TypeVTable,
                 *StringLiteralVTable,
                 *NumberVTable,
-                *const BoolVTable,
-                *const SymbolVTable,
-                *const SimpleTextVTable,
-                *const NullVTable,
-                *const SpaceVTable,
-                *const LineBreakVTable,
-                *const ParenthesesVTable,
-                *const CallFuncVTable,
-                *const FuncArgumentVTable,
-                *const FuncParameterVTable,
+                *BoolVTable,
+                *SymbolVTable,
+                *SimpleTextVTable,
+                *NullVTable,
+                *SpaceVTable,
+                *LineBreakVTable,
+                *ParenthesesVTable,
+                *CallFuncVTable,
+                *FuncArgumentVTable,
+                *FuncParameterVTable,
 
                 // operation
-                *const BinaryOperationVTable,
+                *BinaryOperationVTable,
 
-                *const LineCommentVTable,
-                *const BlockCommentVTable,
-                *const BlockCommentFragmentVTable,
+                *LineCommentVTable,
+                *BlockCommentVTable,
+                *BlockCommentFragmentVTable,
 
 
-                *const JsonObjectVTable,
-                *const JsonArrayVTable,
-                *const JsonKeyValueItemVTable,
-                *const JsonArrayItemVTable,
-                *const JsonObjectKeyVTable,
+                *JsonObjectVTable,
+                *JsonArrayVTable,
+                *JsonKeyValueItemVTable,
+                *JsonArrayItemVTable,
+                *JsonObjectKeyVTable,
 
-                *const EndOfFileVTable;
+                *EndOfFileVTable;
     };
 
 

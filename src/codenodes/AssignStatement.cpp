@@ -64,14 +64,14 @@ namespace smart {
      *
      * }
      */
-    static const node_vtable _assignVTable = CREATE_VTABLE(AssignStatementNodeStruct,
+    static node_vtable _assignVTable = CREATE_VTABLE(AssignStatementNodeStruct,
                                                           selfTextLength,
                                                           selfText,
                                                           appendToLine,
                                                           assignTypeText
                                                           , NodeTypeId::AssignStatement);
 
-    const struct node_vtable *const VTables::AssignStatementVTable = &_assignVTable;
+    const struct node_vtable *VTables::AssignStatementVTable = &_assignVTable;
 
 
     // -------------------- Implements AssignStatement Allocator --------------------- //

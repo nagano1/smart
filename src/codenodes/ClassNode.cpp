@@ -86,14 +86,14 @@ namespace smart {
      *
      * }
      */
-    static const node_vtable _classVTable = CREATE_VTABLE(ClassNodeStruct,
+    static node_vtable _classVTable = CREATE_VTABLE(ClassNodeStruct,
                                                           selfTextLength,
                                                           selfText,
                                                           appendToLine,
                                                           classTypeText
                                                           , NodeTypeId::Class);
 
-    const struct node_vtable *const VTables::ClassVTable = &_classVTable;
+    const struct node_vtable *VTables::ClassVTable = &_classVTable;
 
 
     // -------------------- Implements ClassNode Allocator --------------------- //

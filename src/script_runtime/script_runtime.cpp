@@ -630,7 +630,6 @@ namespace smart {
             child = child->nextNode;
         }
     }
-
     static TypeEntry* evaluateTypeFromNumberNode(ScriptEnv *env, NumberNodeStruct *numberNode)
     {
         return env->typeEntryList[BuiltInTypeIndex::int32];
@@ -642,6 +641,14 @@ namespace smart {
         return env->typeEntryList[BuiltInTypeIndex::heapString];
     }
 
+    static TypeEntry* evaluateTypeFromParentheses(ScriptEnv *env, ParenthesesNodeStruct *parenthesis)
+    {
+        if (parenthesis->valueNode) {
+            return env->typeFromNode(parenthesis->valueNode);
+        }
+        return nullptr;
+    }
+
     template<typename T>
     static void setTypeEvaluator(const node_vtable* vtable, TypeEntry *(*argToType)(ScriptEnv *, T *)) {
         ((node_vtable*)vtable)->typeEvaluator = reinterpret_cast<void *(*)(void *, NodeBase *)>(argToType);
@@ -651,6 +658,7 @@ namespace smart {
     {
         setTypeEvaluator(VTables::NumberVTable, evaluateTypeFromNumberNode);
         setTypeEvaluator(VTables::StringLiteralVTable, evaluateTypeFromStringNode);
+        setTypeEvaluator(VTables::ParenthesesVTable, evaluateTypeFromParentheses);
 
         if (VTables::NumberVTable->typeEvaluator(env, nullptr) != nullptr) {
         }

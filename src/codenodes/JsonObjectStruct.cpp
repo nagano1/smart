@@ -64,13 +64,13 @@ namespace smart {
 
     static constexpr const char class_chars[] = "<JsonKeyValueItem>";
 
-    static const node_vtable _jsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
+    static node_vtable _jsonObjectKeyValueStructVTable = CREATE_VTABLE(JsonKeyValueItemStruct,
                                                                              selfTextLength2,
                                                                              selfText_JsonKeyValueItemStruct,
                                                                              appendToLine2,
                                                                              class_chars, NodeTypeId::JsonKeyValueItem);
 
-    const struct node_vtable *const VTables::JsonKeyValueItemVTable = &_jsonObjectKeyValueStructVTable;
+    const struct node_vtable *VTables::JsonKeyValueItemVTable = &_jsonObjectKeyValueStructVTable;
 
 
     JsonKeyValueItemStruct *
@@ -109,7 +109,7 @@ namespace smart {
         return self->textLength;
     }
 
-    static const node_vtable _jsonObjectKeyStructVTable = CREATE_VTABLE(JsonObjectKeyNodeStruct,
+    static node_vtable _jsonObjectKeyStructVTable = CREATE_VTABLE(JsonObjectKeyNodeStruct,
                                                                         selfTextLength3, selfText3,
                                                                         appendToLine3,
                                                                         "<JsonObjectKeyNodeStruct>"
@@ -171,7 +171,7 @@ namespace smart {
     }
 
 
-    const struct node_vtable *const VTables::JsonObjectKeyVTable = &_jsonObjectKeyStructVTable;
+    const struct node_vtable *VTables::JsonObjectKeyVTable = &_jsonObjectKeyStructVTable;
 
 
     // ---------------------------------------------------------------------------------
@@ -215,10 +215,10 @@ namespace smart {
     }
 
 
-    static const node_vtable _jsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,
+    static node_vtable _jsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,
                                                                selfTextLength, selfText,
                                                                appendToLine, _typeName, NodeTypeId::JsonObject);
-    const struct node_vtable *const VTables::JsonObjectVTable = &_jsonObjectVTable;
+    const struct node_vtable *VTables::JsonObjectVTable = &_jsonObjectVTable;
 
 
     JsonObjectStruct *Alloc::newJsonObject(ParseContext *context, NodeBase *parentNode) {
