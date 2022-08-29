@@ -631,8 +631,9 @@ namespace smart {
         }
     }
 
-    static TypeEntry* evaluateTypeFromNumberNode(ScriptEnv *env, NumberNodeStruct *nodeBase)
+    static TypeEntry* evaluateTypeFromNumberNode(ScriptEnv *env, NumberNodeStruct *numberNode)
     {
+        return env->typeEntryList[BuiltInTypeIndex::int32];
         return nullptr;
     }
 
@@ -646,11 +647,12 @@ namespace smart {
         ((node_vtable*)vtable)->typeEvaluator = reinterpret_cast<void *(*)(void *, NodeBase *)>(argToType);
     }
 
-    static void setupTypeFromNode(ScriptEnv *env)
+    static void setupTypeEvaluators(ScriptEnv *env)
     {
         setTypeEvaluator(VTables::NumberVTable, evaluateTypeFromNumberNode);
         setTypeEvaluator(VTables::StringLiteralVTable, evaluateTypeFromStringNode);
-        if(VTables::NumberVTable->typeEvaluator(env, nullptr) != nullptr) {
+
+        if (VTables::NumberVTable->typeEvaluator(env, nullptr) != nullptr) {
         }
     }
 
@@ -658,7 +660,7 @@ namespace smart {
     {
         int ret = 0;
         ScriptEnv* env = ScriptEnv::newScriptEnv();
-        setupTypeFromNode(env);
+        setupTypeEvaluators(env);
 
         auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
         DocumentUtils::parseText(document, script, scriptLength);
