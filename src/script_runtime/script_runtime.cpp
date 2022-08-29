@@ -378,6 +378,10 @@ namespace smart {
 
     TypeEntry *ScriptEnv::typeFromNode(NodeBase *node)
     {
+        if (node->vtable->typeEvaluator != nullptr) {
+            return (TypeEntry*)node->vtable->typeEvaluator(this, node);
+        }
+
         int typeIndex = -1;
 
         if (node->vtable == VTables::NumberVTable) {
@@ -627,24 +631,26 @@ namespace smart {
         }
     }
 
-    static void *toIntType(NodeBase *nodeBase)
+    static TypeEntry* evaluateTypeFromNumberNode(ScriptEnv *env, NumberNodeStruct *nodeBase)
     {
-        //auto *numberNode = Cast::downcast<NumberNodeStruct *>(nodeBase);
         return nullptr;
     }
 
-    static void *toStringType(NodeBase *nodeBase)
+    static TypeEntry* evaluateTypeFromStringNode(ScriptEnv *env, StringLiteralNodeStruct *nodeBase)
     {
-        //auto *numberNode = Cast::downcast<NumberNodeStruct *>(nodeBase);
-        return nullptr;
+        return env->typeEntryList[BuiltInTypeIndex::heapString];
     }
 
-    static void setupTypeFromNode()
-    {
-        ((node_vtable*)VTables::NumberVTable)->toType = toIntType;
-        ((node_vtable*)VTables::StringLiteralVTable)->toType = toStringType;
-        if(VTables::NumberVTable->toType(nullptr) != nullptr) {
+    template<typename T>
+    static void setTypeEvaluator(const node_vtable* vtable, TypeEntry *(*argToType)(ScriptEnv *, T *)) {
+        ((node_vtable*)vtable)->typeEvaluator = reinterpret_cast<void *(*)(void *, NodeBase *)>(argToType);
+    }
 
+    static void setupTypeFromNode(ScriptEnv *env)
+    {
+        setTypeEvaluator(VTables::NumberVTable, evaluateTypeFromNumberNode);
+        setTypeEvaluator(VTables::StringLiteralVTable, evaluateTypeFromStringNode);
+        if(VTables::NumberVTable->typeEvaluator(env, nullptr) != nullptr) {
         }
     }
 
@@ -652,7 +658,7 @@ namespace smart {
     {
         int ret = 0;
         ScriptEnv* env = ScriptEnv::newScriptEnv();
-        setupTypeFromNode();
+        setupTypeFromNode(env);
 
         auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
         DocumentUtils::parseText(document, script, scriptLength);

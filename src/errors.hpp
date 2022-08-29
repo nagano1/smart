@@ -205,7 +205,6 @@ namespace smart {
 
 
         static_assert(errorListSize == (sizeof tempList) / sizeof(ErrorInfo), "error list should have the same length");
-
         static_assert(0 == (int)ErrorCode::first_keeper, "first keeper id = 0");
         static_assert(errorListSize-1 == (int)ErrorCode::last_keeper, "last keeper id = ");
 
