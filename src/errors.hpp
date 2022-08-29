@@ -130,13 +130,16 @@ namespace smart {
     // C++-14
     // 201402L (C++14), 201703L (C++17), 202002L (C++20)
     #if __cplusplus >= 201402L || _MSVC_LANG >= 201402L
-    #define  use_static_sort
+    #define  USE_STATIC_SORT
     #endif
-    #ifdef use_static_sort
+    #ifdef USE_STATIC_SORT
     static constexpr bool is_sorted(const ErrorInfo tempList[])
     {
         for (std::size_t i = 0; i < errorListSize - 1; ++i) {
             if (tempList[i].errorCode >= tempList[i + 1].errorCode) {
+                return false;
+            }
+            if (tempList[i].errorIndex >= tempList[i + 1].errorIndex) {
                 return false;
             }
         }
@@ -201,20 +204,17 @@ namespace smart {
 
 
 
-
         static_assert(errorListSize == (sizeof tempList) / sizeof(ErrorInfo), "error list should have the same length");
-        #ifdef use_static_sort
+
+        static_assert(0 == (int)ErrorCode::first_keeper, "first keeper id = 0");
+        static_assert(errorListSize-1 == (int)ErrorCode::last_keeper, "last keeper id = ");
+
+        #ifdef USE_STATIC_SORT
         static_assert(is_sorted(tempList), "error List should be sorted with error code"); // C++14
         #endif
 
-        //constexpr int len = (sizeof tempList) / (sizeof tempList[0]);
         for (int i = 0; i < errorListSize; i++) {
             auto &&errorInfo = tempList[i];
-            if (static_cast<int>(errorInfo.errorIndex) != i) {
-                // printf("error info index\n");
-                exit(8943210);
-            }
-
             ErrorInfo::ErrorInfoList[static_cast<int>(tempList[i].errorIndex)] = errorInfo;
         }
 
