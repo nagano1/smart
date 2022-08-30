@@ -683,7 +683,7 @@ namespace smart {
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
         const char *typeChars; \
         int typeCharsLength; \
-        void *(*typeEvaluator)(void *env, NodeBase *self); \
+        int (*typeEvaluator)(void *env, NodeBase *self); \
         NodeTypeId nodeTypeId; \
 
 

@@ -128,7 +128,7 @@ namespace smart {
 
     //------------------------------------------------------------------------------------------
     //
-    //                                        TypeEntry
+    //                                TypeEntry and Built-in Types
     //
     //------------------------------------------------------------------------------------------
 
@@ -259,146 +259,19 @@ namespace smart {
     int BuiltInTypeIndex::heapString = 0;
 
 
-    //------------------------------------------------------------------------------------------
-    //
-    //                                Script Engine Context
-    //
-    //------------------------------------------------------------------------------------------
-
-    static ValueBase *newValue(ScriptEngineContext *context, bool heap)
-    {
-        auto *valueBase = (ValueBase*)context->memBufferForValueBase.newMem<ValueBase>(1);
-        valueBase->ptr = nullptr;
-        valueBase->size = 0;
-        valueBase->isHeap = heap;
-        return valueBase;
-    }
-
-    ValueBase *ScriptEngineContext::newValueForHeap()
-    {
-        return newValue(this, true);
-    }
-
-    ValueBase *ScriptEngineContext::newValueForStack()
-    {
-        return newValue(this, false);
-    }
-
-
-    ValueBase *ScriptEngineContext::genValueBase(int type, int size, void *ptr)
-    {
-        auto *value = this->newValueForHeap();
-        value->typeIndex = type;
-        // value->ptr = context->memBufferForMalloc.newBytesMem(size); ////malloc(size);
-        value->ptr = (void*)this->mallocItem(size);
-
-        *(void**)ptr = value->ptr;
-        value->size = size;
-        return value;
-    }
-
-    void ScriptEngineContext::init()
-    {
-        this->logicalErrorInfo.hasError = false;
-        this->logicalErrorInfo.errorCode = ErrorCode::no_logical_error;
-        this->logicalErrorInfo.errorId = 57770000;
-        this->logicalErrorInfo.charPosition = -1;
-        this->logicalErrorInfo.charPosition2 = -1;
-    }
 
     //------------------------------------------------------------------------------------------
     //
-    //                                       Script Engine
+    //                                      Node to Type
     //
     //------------------------------------------------------------------------------------------
 
-    ScriptEnv *ScriptEnv::newScriptEnv()
-    {
-        auto *scriptEnv = (ScriptEnv*)malloc(sizeof(ScriptEnv));
-        if (scriptEnv) {
-            auto *context = simpleMalloc2<ScriptEngineContext>();
-            context->memBuffer.init();
-            context->memBufferForMalloc.init();
-            context->memBufferForValueBase.init();
-            context->stackMemory.init();
-
-            context->variableMap2 = context->memBuffer.newMem<VoidHashMap>(1);
-            context->variableMap2->init(&context->memBuffer);
-
-            context->typeNameMap = context->memBuffer.newMem<VoidHashMap>(1);
-            context->typeNameMap->init(&context->memBuffer);
-
-
-            scriptEnv->context = context;
-            context->init();
-
-            scriptEnv->typeEntryList = nullptr;
-            scriptEnv->typeEntryListNextIndex = 1;
-            scriptEnv->typeEntryListCapacity = 0;
-
-            _registerBuiltInTypes(scriptEnv);
-        }
-        return scriptEnv;
-    }
-
-    void ScriptEnv::deleteScriptEnv(ScriptEnv *scriptEnv)
-    {
-        scriptEnv->context->freeAll();
-        free(scriptEnv->context);
-        free(scriptEnv);
-    }
-
-
-    static FuncNodeStruct* findMainFunc(DocumentStruct *document)
-    {
-        auto *rootNode = document->firstRootNode;
-        while (rootNode != nullptr) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
-            if (rootNode->vtable == VTables::FnVTable) {
-                // fn
-                auto *fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
-                auto *nameNode = &fnNode->nameNode;
-                if (ParseUtil::equal(nameNode->name, nameNode->nameLength, "main", 4))
-                {
-                    return fnNode;
-                }
-            }
-            rootNode = rootNode->nextNode;
-        }
-        return nullptr;
-    }
-
-    ValueBase *ScriptEnv::evaluateExprNode(NodeBase *expressionNode)
-    {
-        return ScriptEnv::evaluateExprNodeOrTest(expressionNode, nullptr);
-    }
-
-
-    static constexpr int NodeToTypeLength = 128;
-    static int nodeToType[NodeToTypeLength] = {-2};
-
-    TypeEntry *ScriptEnv::typeFromNode(NodeBase *node)
+    int ScriptEnv::typeFromNode(NodeBase *node)
     {
         if (node->vtable->typeEvaluator != nullptr) {
-            return (TypeEntry*)node->vtable->typeEvaluator(this, node);
+            return node->vtable->typeEvaluator(this, node);
         }
-
-        int typeIndex = -1;
-
-        if (node->vtable == VTables::NumberVTable) {
-            typeIndex = BuiltInTypeIndex::int32;
-        }
-        else {
-            if (nodeToType[0] == -2) {
-                for (int i = 0; i < NodeToTypeLength; i++) { // NOLINT(modernize-loop-convert,altera-unroll-loops)
-                    nodeToType[i] = -1;
-                }
-                nodeToType[2] = BuiltInTypeIndex::heapString;
-                // nodeToType[11] = BuiltInTypeIndex::bool;
-                // nodeToType[16] = BuiltInTypeIndex::NULLId;
-            }
-
-            typeIndex = nodeToType[(int)node->vtable->nodeTypeId];
-        }
+        return -1;
         /*
         EndOfDoc = 1,
         StringLiteral = 2,
@@ -442,13 +315,68 @@ namespace smart {
 
         BinaryOperation = 30
         */
-
-        if (typeIndex > -1) {
-            return this->typeEntryList[typeIndex];
-        }
-
-        return nullptr;
+        //return nullptr;
     }
+
+    static void validateTypes(ScriptEnv *env, DocumentStruct *document)
+    {
+        // int a = func(214 + 24)
+        // env->typeFromNode()
+        auto *child = document->firstRootNode;
+        while (child) { // NOLINT(altera-unroll-loops,altera-id-dependent-backward-branch)
+            if (child->vtable == VTables::AssignStatementVTable) {
+
+            }
+            child = child->nextNode;
+        }
+    }
+
+
+    static int evaluateTypeFromNumberNode(ScriptEnv *env, NumberNodeStruct *numberNode)
+    {
+        return BuiltInTypeIndex::int32;
+    }
+
+    static int evaluateTypeFromStringNode(ScriptEnv *env, StringLiteralNodeStruct *nodeBase)
+    {
+        return BuiltInTypeIndex::heapString;
+    }
+
+    static int evaluateTypeFromParentheses(ScriptEnv *env, ParenthesesNodeStruct *parenthesis)
+    {
+        if (parenthesis->valueNode) {
+            return env->typeFromNode(parenthesis->valueNode);
+        }
+        return -1;
+    }
+
+    template<typename T>
+    static void setTypeEvaluator(const node_vtable* vtable, int (*argToType)(ScriptEnv *, T *)) {
+        ((node_vtable*)vtable)->typeEvaluator = reinterpret_cast<int (*)(void *, NodeBase *)>(argToType);
+    }
+
+    static void setupBuiltInTypeEvaluators(ScriptEnv *env)
+    {
+        setTypeEvaluator(VTables::NumberVTable, evaluateTypeFromNumberNode);
+        setTypeEvaluator(VTables::StringLiteralVTable, evaluateTypeFromStringNode);
+        setTypeEvaluator(VTables::ParenthesesVTable, evaluateTypeFromParentheses);
+
+        if (VTables::NumberVTable->typeEvaluator(env, nullptr) != -1) {
+        }
+    }
+
+    //------------------------------------------------------------------------------------------
+    //
+    //                                      Node to Value
+    //
+    //------------------------------------------------------------------------------------------
+
+    ValueBase *ScriptEnv::evaluateExprNode(NodeBase *expressionNode)
+    {
+        return ScriptEnv::evaluateExprNodeOrTest(expressionNode, nullptr);
+    }
+
+
 
     ValueBase *ScriptEnv::evaluateExprNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer)
     {
@@ -517,6 +445,119 @@ namespace smart {
     }
 
 
+
+    //------------------------------------------------------------------------------------------
+    //
+    //                                Script Engine Context
+    //
+    //------------------------------------------------------------------------------------------
+
+    static ValueBase *newValue(ScriptEngineContext *context, bool heap)
+    {
+        auto *valueBase = (ValueBase*)context->memBufferForValueBase.newMem<ValueBase>(1);
+        valueBase->ptr = nullptr;
+        valueBase->size = 0;
+        valueBase->isHeap = heap;
+        return valueBase;
+    }
+
+    ValueBase *ScriptEngineContext::newValueForHeap()
+    {
+        return newValue(this, true);
+    }
+
+    ValueBase *ScriptEngineContext::newValueForStack()
+    {
+        return newValue(this, false);
+    }
+
+
+    ValueBase *ScriptEngineContext::genValueBase(int type, int size, void *ptr)
+    {
+        auto *value = this->newValueForHeap();
+        value->typeIndex = type;
+        // value->ptr = context->memBufferForMalloc.newBytesMem(size); ////malloc(size);
+        value->ptr = (void*)this->mallocItem(size);
+
+        *(void**)ptr = value->ptr;
+        value->size = size;
+        return value;
+    }
+
+    void ScriptEngineContext::init()
+    {
+        this->logicalErrorInfo.hasError = false;
+        this->logicalErrorInfo.errorCode = ErrorCode::no_logical_error;
+        this->logicalErrorInfo.errorId = 57770000;
+        this->logicalErrorInfo.charPosition = -1;
+        this->logicalErrorInfo.charPosition2 = -1;
+    }
+
+
+
+    //------------------------------------------------------------------------------------------
+    //
+    //                                       Script Engine
+    //
+    //------------------------------------------------------------------------------------------
+
+    ScriptEnv *ScriptEnv::newScriptEnv()
+    {
+        auto *scriptEnv = (ScriptEnv*)malloc(sizeof(ScriptEnv));
+        if (scriptEnv) {
+            auto *context = simpleMalloc2<ScriptEngineContext>();
+            context->memBuffer.init();
+            context->memBufferForMalloc.init();
+            context->memBufferForValueBase.init();
+            context->stackMemory.init();
+
+            context->variableMap2 = context->memBuffer.newMem<VoidHashMap>(1);
+            context->variableMap2->init(&context->memBuffer);
+
+            context->typeNameMap = context->memBuffer.newMem<VoidHashMap>(1);
+            context->typeNameMap->init(&context->memBuffer);
+
+
+            scriptEnv->context = context;
+            context->init();
+
+            scriptEnv->typeEntryList = nullptr;
+            scriptEnv->typeEntryListNextIndex = 1;
+            scriptEnv->typeEntryListCapacity = 0;
+
+            _registerBuiltInTypes(scriptEnv);
+        }
+        return scriptEnv;
+    }
+
+    void ScriptEnv::deleteScriptEnv(ScriptEnv *scriptEnv)
+    {
+        scriptEnv->context->freeAll();
+        free(scriptEnv->context);
+        free(scriptEnv);
+    }
+
+
+    static FuncNodeStruct* findMainFunc(DocumentStruct *document)
+    {
+        auto *rootNode = document->firstRootNode;
+        while (rootNode != nullptr) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
+            if (rootNode->vtable == VTables::FnVTable) {
+                // fn
+                auto *fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
+                auto *nameNode = &fnNode->nameNode;
+                if (ParseUtil::equal(nameNode->name, nameNode->nameLength, "main", 4))
+                {
+                    return fnNode;
+                }
+            }
+            rootNode = rootNode->nextNode;
+        }
+        return nullptr;
+    }
+
+
+
     static void validateFunc(ScriptEnv* env, FuncNodeStruct* func) {
 
     }
@@ -535,7 +576,8 @@ namespace smart {
                     // bool isInt = ParseUtil::equal(typeName.name, typeName.nameLength, "int", 3);
                     if (isLet) {
 
-                    } else {
+                    }
+                    else {
                         auto *typeEntry = (TypeEntry *) env->context->typeNameMap->get(
                                 typeName.name, typeName.nameLength);
                         if (typeEntry) {
@@ -594,7 +636,6 @@ namespace smart {
                         return int32_value(valueBase);
                     }
                 }
-
             }
             */
 
@@ -618,52 +659,6 @@ namespace smart {
 
 
 
-    static void validateTypes(ScriptEnv *env, DocumentStruct *document)
-    {
-        // int a = func(214 + 24)
-        // env->typeFromNode()
-        auto *child = document->firstRootNode;
-        while (child) { // NOLINT(altera-unroll-loops,altera-id-dependent-backward-branch)
-            if (child->vtable == VTables::AssignStatementVTable) {
-
-            }
-            child = child->nextNode;
-        }
-    }
-
-
-    static TypeEntry* evaluateTypeFromNumberNode(ScriptEnv *env, NumberNodeStruct *numberNode)
-    {
-        return env->typeEntryList[BuiltInTypeIndex::int32];
-    }
-
-    static TypeEntry* evaluateTypeFromStringNode(ScriptEnv *env, StringLiteralNodeStruct *nodeBase)
-    {
-        return env->typeEntryList[BuiltInTypeIndex::heapString];
-    }
-
-    static TypeEntry* evaluateTypeFromParentheses(ScriptEnv *env, ParenthesesNodeStruct *parenthesis)
-    {
-        if (parenthesis->valueNode) {
-            return env->typeFromNode(parenthesis->valueNode);
-        }
-        return nullptr;
-    }
-
-    template<typename T>
-    static void setTypeEvaluator(const node_vtable* vtable, TypeEntry *(*argToType)(ScriptEnv *, T *)) {
-        ((node_vtable*)vtable)->typeEvaluator = reinterpret_cast<void *(*)(void *, NodeBase *)>(argToType);
-    }
-
-    static void setupBuiltInTypeEvaluators(ScriptEnv *env)
-    {
-        setTypeEvaluator(VTables::NumberVTable, evaluateTypeFromNumberNode);
-        setTypeEvaluator(VTables::StringLiteralVTable, evaluateTypeFromStringNode);
-        setTypeEvaluator(VTables::ParenthesesVTable, evaluateTypeFromParentheses);
-
-        if (VTables::NumberVTable->typeEvaluator(env, nullptr) != nullptr) {
-        }
-    }
 
     int ScriptEnv::startScript(char* script, int scriptLength)
     {

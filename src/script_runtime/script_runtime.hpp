@@ -227,7 +227,7 @@ namespace smart
         ValueBase *evaluateExprNode(NodeBase* expressionNode);
         ValueBase *evaluateExprNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer);
 
-        TypeEntry *typeFromNode(NodeBase *expressionNode);
+        int typeFromNode(NodeBase *expressionNode);
 
         static void deleteScriptEnv(_ScriptEnv *doc);
         static _ScriptEnv *newScriptEnv();
