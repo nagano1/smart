@@ -262,14 +262,14 @@ namespace smart {
 
     //------------------------------------------------------------------------------------------
     //
-    //                                      Node to Type
+    //                                 Type Selector from Node (static)
     //
     //------------------------------------------------------------------------------------------
 
     int ScriptEnv::typeFromNode(NodeBase *node)
     {
-        if (node->vtable->typeEvaluator != nullptr) {
-            return node->vtable->typeEvaluator(this, node);
+        if (node->vtable->typeSelector != nullptr) {
+            return node->vtable->typeSelector(this, node);
         }
         return -1;
         /*
@@ -352,7 +352,7 @@ namespace smart {
 
     template<typename T>
     static void setTypeEvaluator(const node_vtable* vtable, int (*argToType)(ScriptEnv *, T *)) {
-        ((node_vtable*)vtable)->typeEvaluator = reinterpret_cast<int (*)(void *, NodeBase *)>(argToType);
+        ((node_vtable*)vtable)->typeSelector = reinterpret_cast<int (*)(void *, NodeBase *)>(argToType);
     }
 
     static void setupBuiltInTypeEvaluators(ScriptEnv *env)
@@ -361,7 +361,7 @@ namespace smart {
         setTypeEvaluator(VTables::StringLiteralVTable, evaluateTypeFromStringNode);
         setTypeEvaluator(VTables::ParenthesesVTable, evaluateTypeFromParentheses);
 
-        if (VTables::NumberVTable->typeEvaluator(env, nullptr) != -1) {
+        if (VTables::NumberVTable->typeSelector(env, nullptr) != -1) {
         }
     }
 
