@@ -620,8 +620,8 @@ namespace smart {
 
     static void validateTypes(ScriptEnv *env, DocumentStruct *document)
     {
-        //env->typeFromNode()
-
+        // int a = func(214 + 24)
+        // env->typeFromNode()
         auto *child = document->firstRootNode;
         while (child) { // NOLINT(altera-unroll-loops,altera-id-dependent-backward-branch)
             if (child->vtable == VTables::AssignStatementVTable) {
@@ -630,10 +630,11 @@ namespace smart {
             child = child->nextNode;
         }
     }
+
+
     static TypeEntry* evaluateTypeFromNumberNode(ScriptEnv *env, NumberNodeStruct *numberNode)
     {
         return env->typeEntryList[BuiltInTypeIndex::int32];
-        return nullptr;
     }
 
     static TypeEntry* evaluateTypeFromStringNode(ScriptEnv *env, StringLiteralNodeStruct *nodeBase)
@@ -654,7 +655,7 @@ namespace smart {
         ((node_vtable*)vtable)->typeEvaluator = reinterpret_cast<void *(*)(void *, NodeBase *)>(argToType);
     }
 
-    static void setupTypeEvaluators(ScriptEnv *env)
+    static void setupBuiltInTypeEvaluators(ScriptEnv *env)
     {
         setTypeEvaluator(VTables::NumberVTable, evaluateTypeFromNumberNode);
         setTypeEvaluator(VTables::StringLiteralVTable, evaluateTypeFromStringNode);
@@ -668,7 +669,7 @@ namespace smart {
     {
         int ret = 0;
         ScriptEnv* env = ScriptEnv::newScriptEnv();
-        setupTypeEvaluators(env);
+        setupBuiltInTypeEvaluators(env);
 
         auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
         DocumentUtils::parseText(document, script, scriptLength);
