@@ -332,17 +332,17 @@ namespace smart {
     }
 
 
-    static int evaluateTypeFromNumberNode(ScriptEnv *env, NumberNodeStruct *numberNode)
+    static int selectTypeFromNumberNode(ScriptEnv *env, NumberNodeStruct *numberNode)
     {
         return BuiltInTypeIndex::int32;
     }
 
-    static int evaluateTypeFromStringNode(ScriptEnv *env, StringLiteralNodeStruct *nodeBase)
+    static int selectTypeFromStringNode(ScriptEnv *env, StringLiteralNodeStruct *nodeBase)
     {
         return BuiltInTypeIndex::heapString;
     }
 
-    static int evaluateTypeFromParentheses(ScriptEnv *env, ParenthesesNodeStruct *parenthesis)
+    static int selectTypeFromParentheses(ScriptEnv *env, ParenthesesNodeStruct *parenthesis)
     {
         if (parenthesis->valueNode) {
             return env->typeFromNode(parenthesis->valueNode);
@@ -351,15 +351,15 @@ namespace smart {
     }
 
     template<typename T>
-    static void setTypeEvaluator(const node_vtable* vtable, int (*argToType)(ScriptEnv *, T *)) {
+    static void setTypeSelector(const node_vtable* vtable, int (*argToType)(ScriptEnv *, T *)) {
         ((node_vtable*)vtable)->typeSelector = reinterpret_cast<int (*)(void *, NodeBase *)>(argToType);
     }
 
-    static void setupBuiltInTypeEvaluators(ScriptEnv *env)
+    static void setupBuiltInTypeSelectors(ScriptEnv *env)
     {
-        setTypeEvaluator(VTables::NumberVTable, evaluateTypeFromNumberNode);
-        setTypeEvaluator(VTables::StringLiteralVTable, evaluateTypeFromStringNode);
-        setTypeEvaluator(VTables::ParenthesesVTable, evaluateTypeFromParentheses);
+        setTypeSelector(VTables::NumberVTable, selectTypeFromNumberNode);
+        setTypeSelector(VTables::StringLiteralVTable, selectTypeFromStringNode);
+        setTypeSelector(VTables::ParenthesesVTable, selectTypeFromParentheses);
 
         if (VTables::NumberVTable->typeSelector(env, nullptr) != -1) {
         }
@@ -664,7 +664,7 @@ namespace smart {
     {
         int ret = 0;
         ScriptEnv* env = ScriptEnv::newScriptEnv();
-        setupBuiltInTypeEvaluators(env);
+        setupBuiltInTypeSelectors(env);
 
         auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
         DocumentUtils::parseText(document, script, scriptLength);
