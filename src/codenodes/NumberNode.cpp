@@ -80,10 +80,29 @@ namespace smart {
         return -1;
     }
 
+    static int BoolNodeStruct_applyFuncToDescendants(
+            BoolNodeStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+        //if (node->valueNode) {
+//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode,
+//                                                            targetVTable, func, arg, argLen);
+//        }
+        return 0;
+    }
+
+
 
     static constexpr const char boolNodeTypeText[] = "<bool>";
     static node_vtable _boolVTable = CREATE_VTABLE(BoolNodeStruct, selfTextLength2,
-                                                         selfText2, appendToLine2, boolNodeTypeText, NodeTypeId::Bool);
+                                                         selfText2, appendToLine2,
+                                                   BoolNodeStruct_applyFuncToDescendants,
+                                                         boolNodeTypeText, NodeTypeId::Bool);
 
     const node_vtable *VTables::BoolVTable = &_boolVTable;
 
@@ -164,9 +183,28 @@ namespace smart {
     }
 
 
+    static int NumberNodeStruct_applyFuncToDescendants(
+            NumberNodeStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+        //if (node->valueNode) {
+//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode,
+//                                                            targetVTable, func, arg, argLen);
+//        }
+        return 0;
+    }
+
+
     static node_vtable _numberVTable_ = CREATE_VTABLE(NumberNodeStruct, selfTextLength,
                                                             selfText,
-                                                            appendToLine, numberNodeTypeText,
+                                                            appendToLine,
+                                                      NumberNodeStruct_applyFuncToDescendants,
+                                                            numberNodeTypeText,
                                                             NodeTypeId::Number);
 
     const node_vtable *VTables::NumberVTable = &_numberVTable_;
@@ -312,11 +350,19 @@ namespace smart {
         return -1;
     }
 
+    static int parentheses_applyFuncToDescendants(ParenthesesNodeStruct *node, void *targetVTable, int (*func)(NodeBase *, void *, void *, void *, int ), void *arg, int argLen) {
+
+        if (node->valueNode) {
+            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+        }
+        return 0;
+    }
 
     static node_vtable _parenthesesVTable = CREATE_VTABLE(ParenthesesNodeStruct,
                                                                 parentheses_selfTextLength,
                                                                 parentheses_selfText,
                                                                 parentheses_appendToLine,
+                                                          parentheses_applyFuncToDescendants,
                                                                 parenthesesNodeTypeText,
                                                             NodeTypeId::Parentheses);
 
@@ -389,6 +435,27 @@ namespace smart {
         return 0;
     }
 
+    static int BinaryOperationNodeStruct_applyFuncToDescendants(
+            BinaryOperationNodeStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+        if (node->leftExprNode) {
+            node->rightExprNode->vtable->applyFuncToDescendants(node->rightExprNode,
+                                                           targetVTable, func, arg, argLen);
+        }
+
+        if (node->rightExprNode) {
+            node->rightExprNode->vtable->applyFuncToDescendants(node->rightExprNode,
+                                                            targetVTable, func, arg, argLen);
+        }
+        return 0;
+    }
+
 
     static constexpr const char binaryop_NodeTypeText[] = "<binary op>";
 
@@ -396,6 +463,7 @@ namespace smart {
                                                              binaryop_selfTextLength,
                                                              binaryop_selfText,
                                                              binaryop_appendToLine,
+                                                       BinaryOperationNodeStruct_applyFuncToDescendants,
                                                              binaryop_NodeTypeText,
                                                                 NodeTypeId::BinaryOperation);
 

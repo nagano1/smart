@@ -74,11 +74,25 @@ namespace smart
         return -1;
     }
 
+    static int applyFuncToDescendants(
+            TypeNodeStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+        //if (node->valueNode) {
+//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+        //}
+        return 0;
+    }
+
     static constexpr const char typeTypeText[] = "<Type>";
 
     static node_vtable _typeVTable = CREATE_VTABLE(TypeNodeStruct, selfTextLength,
                                                          self_text,
-                                                         appendToLine, typeTypeText, NodeTypeId::Type);
+                                                         appendToLine,  applyFuncToDescendants, typeTypeText, NodeTypeId::Type);
     const node_vtable *VTables::TypeVTable = &_typeVTable;
 
     TypeNodeStruct *Alloc::newTypeNode(ParseContext *context, NodeBase *parentNode) {

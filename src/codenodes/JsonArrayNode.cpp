@@ -53,11 +53,25 @@ namespace smart {
         return 0;
     }
 
+    static int applyFuncToDescendants(JsonArrayItemStruct *node, void *targetVTable,
+                               int (*func)(NodeBase *, void *, void *, void *, int )
+                               , void *arg, int argLen) {
+
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+        if (node->valueNode) {
+            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+        }
+        return 0;
+    }
 
     static node_vtable _jsonArrayItemVTable = CREATE_VTABLE(JsonArrayItemStruct,
                                                                   selfTextLength2,
                                                                   selfText_JsonKeyValueItemStruct,
                                                                   appendToLine2,
+                                                            applyFuncToDescendants,
                                                                   "<JsonArrayItem>",
                                                                   NodeTypeId::JsonArrayItem);
 
@@ -120,11 +134,24 @@ namespace smart {
         return VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
     }
 
+    static int JsonArrayStruct_applyFuncToDescendants(JsonArrayStruct *node, void *targetVTable,
+                                      int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen) {
+
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+//        if (node->valueNode) {
+//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+//        }
+        return 0;
+    }
 
 
-    static node_vtable _jsonArrayVTable = CREATE_VTABLE(JsonArrayStruct,
-                                                              selfTextLength, selfText,
-                                                              appendToLine, _typeName, NodeTypeId::JsonArrayStruct);
+
+    static node_vtable _jsonArrayVTable = CREATE_VTABLE(JsonArrayStruct, selfTextLength, selfText,
+                                                              appendToLine, JsonArrayStruct_applyFuncToDescendants, _typeName, NodeTypeId::JsonArrayStruct);
     const struct node_vtable *VTables::JsonArrayVTable = &_jsonArrayVTable;
 
 

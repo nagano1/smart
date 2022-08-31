@@ -182,9 +182,23 @@ namespace smart {
 
     static constexpr const char nameTypeText[] = "<string>";
 
+    static int applyFuncToDescendants(
+            StringLiteralNodeStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+        //if (node->valueNode) {
+//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+        //}
+        return 0;
+    }
+
     static node_vtable _stringVTable = CREATE_VTABLE(StringLiteralNodeStruct, selfTextLength,
                                                           self_text,
-                                                          appendToLine, nameTypeText, NodeTypeId::StringLiteral);
+                                                          appendToLine, applyFuncToDescendants, nameTypeText, NodeTypeId::StringLiteral);
     const node_vtable *VTables::StringLiteralVTable = &_stringVTable;
 
     void Init::initStringLiteralNode(StringLiteralNodeStruct *name, ParseContext *context, NodeBase *parentNode) {

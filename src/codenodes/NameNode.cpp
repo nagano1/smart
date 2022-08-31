@@ -72,6 +72,8 @@ namespace smart {
         auto *node = context->newMem<VariableNodeStruct>();
         INIT_NODE(node, context, parentNode, VTables::VariableVTable);
 
+        node->stackPos = 0;
+
         //Init::initNameNode(reinterpret_cast<NameNodeStruct *>(&node), context, parentNode);
 
         return node;
@@ -83,12 +85,29 @@ namespace smart {
         return Tokenizers::nameTokenizer(reinterpret_cast<NodeBase *>(variableNode), ch, start, context);
     }
 
+    static int NameNodeStruct_applyFuncToDescendants(
+            NameNodeStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+        //if (node->valueNode) {
+//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode,
+//                                                            targetVTable, func, arg, argLen);
+//        }
+        return 0;
+    }
+
+
     static constexpr const char nameTypeText[] = "<Name>";
 
     static node_vtable _nameVTable = CREATE_VTABLE(NameNodeStruct, selfTextLength,
-                                                         self_text,
-                                                         appendToLine, nameTypeText,
-                                                         NodeTypeId::Name);
+                                                         self_text, appendToLine,
+                                                   NameNodeStruct_applyFuncToDescendants,
+                                                         nameTypeText, NodeTypeId::Name);
     const node_vtable *VTables::NameVTable = &_nameVTable;
 
 
@@ -96,8 +115,9 @@ namespace smart {
     static constexpr const char variableTypeText[] = "<Variable>";
 
     static node_vtable _variableVTable = CREATE_VTABLE(VariableNodeStruct, selfTextLength,
-                                                         self_text,
-                                                         appendToLine, variableTypeText,
+                                                         self_text, appendToLine,
+                                                       NameNodeStruct_applyFuncToDescendants,
+                                                       variableTypeText,
                                                          NodeTypeId::Variable);
     const node_vtable *VTables::VariableVTable = &_variableVTable;
 

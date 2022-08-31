@@ -31,10 +31,25 @@ namespace smart {
         return 1;
     }
 
+    static int applyFuncToDescendants(SymbolStruct *node, void *targetVTable,
+                                                       int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen) {
+
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+//        if (node->valueNode) {
+//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+//        }
+        return 0;
+    }
+
+
     static constexpr const char SymbolTypeText[] = "<Symbol>";
 
-    static node_vtable _nameVTable = CREATE_VTABLE(SymbolStruct, selfTextLength,
-                                                    self_text, appendToLine, SymbolTypeText, NodeTypeId::Symbol);
+    static node_vtable _nameVTable = CREATE_VTABLE(SymbolStruct, selfTextLength, self_text,
+                                                   appendToLine, applyFuncToDescendants, SymbolTypeText, NodeTypeId::Symbol);
     const node_vtable *VTables::SymbolVTable = &_nameVTable;
 
 

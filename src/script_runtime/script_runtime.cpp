@@ -128,7 +128,7 @@ namespace smart {
 
     //------------------------------------------------------------------------------------------
     //
-    //                                TypeEntry and Built-in Types
+    //                                TypeEntry / Built-in Types
     //
     //------------------------------------------------------------------------------------------
 
@@ -562,11 +562,21 @@ namespace smart {
 
     }
 
+
+    int applyFuncToDescendants(NodeBase *node, void *targetVTable, void *func, void* arg, int argLen) {
+        //auto *vari = Cast::downcast<VariableNodeStruct *>(node);
+        //if (ParseUtil::equal(vari->name, vari->nameLength, "")
+
+        return 0;
+    }
+
     static int calcStackSizeInFunc(ScriptEnv* env, FuncNodeStruct* func)
     {
         auto* statementNode = func->bodyNode.firstChildNode;
         int stackSize = 0;
         int currentStackOffset = 0;
+
+
         while (statementNode) {
             if (statementNode->vtable == VTables::AssignStatementVTable) {
                 auto *assignment = Cast::downcast<AssignStatementNodeStruct *>(statementNode);
@@ -585,11 +595,22 @@ namespace smart {
                             assignment->stackOffset = currentStackOffset;
                             stackSize += typeEntry->stackSize;
                             currentStackOffset += typeEntry->stackSize;
+
+
+                            func->vtable->applyFuncToDescendants(Cast::upcast(func),
+                                                                 (void *) VTables::VariableVTable,
+                                                                 applyFuncToDescendants,
+                                                                 assignment->nameNode.name,
+                                                                 assignment->nameNode.nameLength);
                         }
                     }
                 }
+            }
+
+            if (statementNode->vtable == VTables::VariableVTable) {
 
             }
+
             statementNode = statementNode->nextNode;
         }
         return stackSize;

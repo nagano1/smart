@@ -50,6 +50,21 @@ namespace smart {
         return currentCodeLine;
     }
 
+
+    static int ReturnStatementNodeStruct_applyFuncToDescendants(
+            ReturnStatementNodeStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+        if (node->valueNode) {
+            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+        }
+        return 0;
+    }
+
     static constexpr const char assignTypeText[] = "<ReturnStatement>";
 
     /*
@@ -59,6 +74,7 @@ namespace smart {
                                                           selfTextLength,
                                                           selfText,
                                                           appendToLine,
+                                                          ReturnStatementNodeStruct_applyFuncToDescendants,
                                                           assignTypeText
                                                           , NodeTypeId::ReturnStatement);
 

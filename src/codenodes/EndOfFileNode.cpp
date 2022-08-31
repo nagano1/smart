@@ -37,10 +37,20 @@ namespace smart {
 
     static const char endOfFileTypeText[] = "<EndOfFile>";
 
+
+    static int applyFuncToDescendants(EndOfFileNodeStruct *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, int argLen), void *arg, int argLen) {
+
+
+        return 0;
+    }
+
+
+
     static node_vtable _endOfDocVTable = CREATE_VTABLE(EndOfFileNodeStruct,
                                                              selfTextLength,
                                                              selfText,
                                                              appendToLine,
+                                                             applyFuncToDescendants,
                                                              endOfFileTypeText,
                                                              NodeTypeId::EndOfDoc);
 

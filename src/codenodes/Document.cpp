@@ -37,11 +37,17 @@ namespace smart {
         return currentCodeLine;
     }
 
+    static int applyFuncToDescendants(DocumentStruct *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, int argLen), void *arg, int argLen) {
+
+
+        return 0;
+    }
+
 
     static constexpr const char DocumentTypeText[] = "<Document>";
 
     static node_vtable DocumentVTable_ = CREATE_VTABLE(DocumentStruct, selfTextLength, selfText,
-                                                       appendToLine, DocumentTypeText, NodeTypeId::Document);
+                                                       appendToLine, applyFuncToDescendants, DocumentTypeText, NodeTypeId::Document);
 
     const node_vtable *VTables::DocumentVTable = &DocumentVTable_;
 
@@ -651,7 +657,7 @@ namespace smart {
             DocumentUtils::assignIndents(docStruct);
             DocumentUtils::checkIndentSyntaxErrors(docStruct);
 
-            DocumentUtils::calcStackSize(docStruct);
+            //DocumentUtils::calcStackSize(docStruct);
 
             callAllLineEvent(docStruct, docStruct->firstCodeLine, context);
         }

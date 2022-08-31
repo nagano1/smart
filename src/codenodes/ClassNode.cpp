@@ -80,6 +80,12 @@ namespace smart {
 
     static constexpr const char classTypeText[] = "<Class>";
 
+    static int applyFuncToDescendants(ClassNodeStruct *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, int argLen), void *arg, int argLen) {
+
+
+        return 0;
+    }
+
     /*
      * class A {
      *
@@ -90,6 +96,7 @@ namespace smart {
                                                           selfTextLength,
                                                           selfText,
                                                           appendToLine,
+                                                          applyFuncToDescendants,
                                                           classTypeText
                                                           , NodeTypeId::Class);
 

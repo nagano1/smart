@@ -58,6 +58,22 @@ namespace smart {
 
     static constexpr const char assignTypeText[] = "<AssignStatement>";
 
+    static int applyFuncToDescendants(
+            AssignStatementNodeStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+        if (node->valueNode) {
+            node->valueNode->vtable->applyFuncToDescendants(node->valueNode,
+                                                            targetVTable, func, arg, argLen);
+        }
+        return 0;
+    }
+
     /*
      * class A {
      *
@@ -67,7 +83,7 @@ namespace smart {
     static node_vtable _assignVTable = CREATE_VTABLE(AssignStatementNodeStruct,
                                                           selfTextLength,
                                                           selfText,
-                                                          appendToLine,
+                                                          appendToLine, applyFuncToDescendants,
                                                           assignTypeText
                                                           , NodeTypeId::AssignStatement);
 

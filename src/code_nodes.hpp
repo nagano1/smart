@@ -106,6 +106,8 @@ namespace smart {
     using NameNodeStruct = struct {
         NODE_HEADER;
 
+        int stackPos;
+
         char *name;
         int_fast32_t nameLength;
     };
@@ -681,9 +683,10 @@ namespace smart {
         int (*selfTextLength)(T *self); \
         const utf8byte *(*selfText)(T *self); \
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
+        int (*applyFuncToDescendants)(T *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, int argLen), void *arg, int argLen); \
         const char *typeChars; \
         int typeCharsLength; \
-        int (*typeSelector)(void *env, NodeBase *self); \
+        int (*typeSelector)(void *env, NodeBase *self);     \
         NodeTypeId nodeTypeId; \
 
 
@@ -705,28 +708,31 @@ namespace smart {
     using selfTextLengthFunction = decltype(std::declval<NodeVTable>().selfTextLength);
     using selfTextFunction = decltype(std::declval<NodeVTable>().selfText);
     using appendToLineFunction = decltype(std::declval<NodeVTable>().appendToLine);
+    using applyFuncToDescendantsFunction = decltype(std::declval<NodeVTable>().applyFuncToDescendants);
 
     template<typename T, std::size_t SIZE>
     static int vtable_type_check(
             decltype(std::declval<vtableT<T>>().selfTextLength) f1,
             decltype(std::declval<vtableT<T>>().selfText) f2,
             decltype(std::declval<vtableT<T>>().appendToLine) f3,
+            decltype(std::declval<vtableT<T>>().applyFuncToDescendants) f4,
             const char(&f5)[SIZE],
             NodeTypeId f6
     ) noexcept {
         return 0;
     }
-    #define CREATE_VTABLE(T, f1, f2, f3, f4, f5) \
+    #define CREATE_VTABLE(T, f1, f2, f3, f4, f5, f6) \
         node_vtable { \
             reinterpret_cast<selfTextLengthFunction> (f1) \
             , reinterpret_cast<selfTextFunction> (f2) \
             , reinterpret_cast<appendToLineFunction> (f3) \
-            , (const char *)(f4) \
-            , (sizeof(f4)-1) \
+            , reinterpret_cast<applyFuncToDescendantsFunction> (f4) \
+            , (const char *)(f5) \
+            , (sizeof(f5)-1) \
             , nullptr \
-            , f5 \
+            , f6 \
         } \
-        ;static const int check_result_##T = vtable_type_check<T>(f1,f2,f3,f4,f5)
+        ;static const int check_result_##T = vtable_type_check<T>(f1,f2,f3,f4,f5,f6)
     // static_assert(std::is_same<F2, decltype(std::declval<vtableT<T>>().selfText)>::value, "");
 
     struct VTables {

@@ -61,6 +61,11 @@ namespace smart {
         return 0;
     }
 
+    static int applyFuncToDescendants(JsonKeyValueItemStruct *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, int argLen), void *arg, int argLen) {
+
+
+        return 0;
+    }
 
     static constexpr const char class_chars[] = "<JsonKeyValueItem>";
 
@@ -68,6 +73,7 @@ namespace smart {
                                                                              selfTextLength2,
                                                                              selfText_JsonKeyValueItemStruct,
                                                                              appendToLine2,
+                                                                       applyFuncToDescendants,
                                                                              class_chars, NodeTypeId::JsonKeyValueItem);
 
     const struct node_vtable *VTables::JsonKeyValueItemVTable = &_jsonObjectKeyValueStructVTable;
@@ -109,9 +115,24 @@ namespace smart {
         return self->textLength;
     }
 
+    static int JsonObjectKeyNodeStruct_applyFuncToDescendants(JsonObjectKeyNodeStruct *node, void *targetVTable,
+                               int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen) {
+
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+//        if (node->valueNode) {
+//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+//        }
+        return 0;
+    }
+
     static node_vtable _jsonObjectKeyStructVTable = CREATE_VTABLE(JsonObjectKeyNodeStruct,
                                                                         selfTextLength3, selfText3,
                                                                         appendToLine3,
+                                                                  JsonObjectKeyNodeStruct_applyFuncToDescendants,
                                                                         "<JsonObjectKeyNodeStruct>"
                                                                         , NodeTypeId::JsonObjectKey);
 
@@ -214,10 +235,31 @@ namespace smart {
         return currentCodeLine;
     }
 
+    static int JsonObjectStruct_applyFuncToDescendants(
+            JsonObjectStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+        JsonKeyValueItemStruct *item = node->firstKeyValueItem;
+        while (item != nullptr) {
+            item->vtable->applyFuncToDescendants(Cast::upcast(item), targetVTable, func, arg, argLen);
+
+            if (item->nextNode == nullptr) { break; }
+            item = Cast::downcast<JsonKeyValueItemStruct *>(item->nextNode);
+        }
+        //if (node->valueNode) {
+//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+        //}
+        return 0;
+    }
 
     static node_vtable _jsonObjectVTable = CREATE_VTABLE(JsonObjectStruct,
                                                                selfTextLength, selfText,
-                                                               appendToLine, _typeName, NodeTypeId::JsonObject);
+                                                               appendToLine, JsonObjectStruct_applyFuncToDescendants,  _typeName, NodeTypeId::JsonObject);
     const struct node_vtable *VTables::JsonObjectVTable = &_jsonObjectVTable;
 
 

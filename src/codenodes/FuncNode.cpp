@@ -54,10 +54,29 @@ namespace smart {
         return 0;
     }
 
+
+    static int FuncArgumentItemStruct_applyFuncToDescendants(
+            FuncArgumentItemStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+        if (node->exprNode) {
+            node->exprNode->vtable->applyFuncToDescendants(
+                Cast::upcast(node->exprNode),
+                targetVTable, func, arg, argLen);
+        }
+        return 0;
+    }
+
+
     static node_vtable _funcArgumentItemVTable = CREATE_VTABLE(FuncArgumentItemStruct,
                                                                      FuncArgument_selfTextLength2,
                                                                      FuncArgument_selfText,
                                                                      FuncArgument_appendToLine2,
+                                                               FuncArgumentItemStruct_applyFuncToDescendants,
                                                                      "<FuncArgument>",
                                                                      NodeTypeId::FuncArgument);
 
@@ -224,10 +243,28 @@ namespace smart {
     }
 
 
+    static int callfunc_applyFuncToDescendants(
+            CallFuncNodeStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+        if (node->exprNode) {
+            node->exprNode->vtable->applyFuncToDescendants(
+                    Cast::upcast(node->exprNode),
+                    targetVTable, func, arg, argLen);
+        }
+        return 0;
+    }
+
     static node_vtable _callfuncVTable = CREATE_VTABLE(CallFuncNodeStruct,
                                                              callfun_selfTextLength,
                                                              callfunc_selfText,
                                                              callfunc_appendToLine,
+                                                       callfunc_applyFuncToDescendants,
                                                              callfuncNodeTypeText,
                                                              NodeTypeId::CallFunc);
 
@@ -303,7 +340,34 @@ namespace smart {
 
     static constexpr const char bodyTypeText[] = "<body>";
 
-/*
+
+    static int BodyNodeStruct_applyFuncToDescendants(
+            BodyNodeStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+
+        auto *child = node->firstChildNode;
+        while (child) {
+            child->vtable->applyFuncToDescendants(
+                    Cast::upcast(child),
+                    targetVTable, func, arg, argLen);
+            child = child->nextNode;
+        }
+
+//        if (node->assignStatementNodeStruct) {
+//            node->assignStatementNodeStruct->vtable->applyFuncToDescendants(
+//                    Cast::upcast(node->assignStatementNodeStruct),
+//                    targetVTable, func, arg, argLen);
+//        }
+        return 0;
+    }
+
+
+    /*
  * static low fn A<T>(a: int, b: String) {
  *
  * }
@@ -312,6 +376,7 @@ namespace smart {
                                                          selfTextLength2,
                                                          selfText2,
                                                          appendToLine2,
+                                                   BodyNodeStruct_applyFuncToDescendants,
                                                          bodyTypeText, NodeTypeId::Body);
 
     const struct node_vtable *VTables::BodyVTable = &_bodyVTable;
@@ -506,11 +571,29 @@ namespace smart {
         return 0;
     }
 
+    static int FuncParameterItemStruct_applyFuncToDescendants(
+            FuncParameterItemStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+//        if (node->assignStatementNodeStruct) {
+//            node->assignStatementNodeStruct->vtable->applyFuncToDescendants(
+//                    Cast::upcast(node->assignStatementNodeStruct),
+//                    targetVTable, func, arg, argLen);
+//        }
+        return 0;
+    }
+
+
 
     static node_vtable _funcParameterItemVTable = CREATE_VTABLE(FuncParameterItemStruct,
                                                                       selfTextLength_FuncParameterItemStruct,
                                                                       selfText_FuncParameterItemStruct,
                                                                       appendToLine_FuncParameterItemStruct,
+                                                                FuncParameterItemStruct_applyFuncToDescendants,
                                                                   "<FuncParameterItem>",
                                                                   NodeTypeId::FuncParameter);
 
@@ -585,6 +668,23 @@ namespace smart {
     }
 
 
+    static int FuncNodeStruct_applyFuncToDescendants(
+            FuncNodeStruct *node, void *targetVTable,
+            int (*func)(NodeBase *, void *, void *, void *, int )
+            , void *arg, int argLen)
+    {
+        if (targetVTable == nullptr || node->vtable == targetVTable) {
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+        }
+        //if (node->bodyNode) {
+            node->bodyNode.vtable->applyFuncToDescendants(
+                    reinterpret_cast<NodeBase *>(&node->bodyNode),
+                    targetVTable, func, arg, argLen);
+        //}
+        return 0;
+    }
+
+
     static constexpr const char fnTypeText[] = "<fn>";
 
 /*
@@ -597,6 +697,7 @@ namespace smart {
                                                        selfTextLength,
                                                        selfText,
                                                        appendToLine,
+                                                 FuncNodeStruct_applyFuncToDescendants,
                                                        fnTypeText, NodeTypeId::Func);
 
     const struct node_vtable *VTables::FnVTable = &_fnVTable;
