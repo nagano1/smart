@@ -318,6 +318,7 @@ namespace smart {
         //return nullptr;
     }
 
+
     static void validateTypes(ScriptEnv *env, DocumentStruct *document)
     {
         // int a = func(214 + 24)
@@ -564,11 +565,14 @@ namespace smart {
 
 
     int applyFuncToDescendants(NodeBase *node, void *targetVTable, void *func, void* arg, int argLen) {
-        //auto *vari = Cast::downcast<VariableNodeStruct *>(node);
-        //if (ParseUtil::equal(vari->name, vari->nameLength, "")
+        auto *vari = Cast::downcast<VariableNodeStruct *>(node);
+        if (ParseUtil::equal(vari->name, vari->nameLength, (char*)arg, argLen)) {
+            vari->stackPos = 3;
+        }
 
         return 0;
     }
+
 
     static int calcStackSizeInFunc(ScriptEnv* env, FuncNodeStruct* func)
     {
@@ -576,33 +580,54 @@ namespace smart {
         int stackSize = 0;
         int currentStackOffset = 0;
 
-
         while (statementNode) {
             if (statementNode->vtable == VTables::AssignStatementVTable) {
                 auto *assignment = Cast::downcast<AssignStatementNodeStruct *>(statementNode);
                 if (assignment->hasTypeDecl) {
                     auto &typeName = assignment->typeOrLet.nameNode;
                     bool isLet = assignment->typeOrLet.isLet;
-                    // bool isInt = ParseUtil::equal(typeName.name, typeName.nameLength, "int", 3);
-                    if (isLet) {
 
+                    TypeEntry *typeEntry = nullptr;
+                    TypeEntry *rightValueTypeEntry = nullptr;
+                    // bool isInt = ParseUtil::equal(typeName.name, typeName.nameLength, "int", 3);
+
+                    // validate
+                    if (assignment->valueNode) {
+                        int typeIndex = env->typeFromNode(assignment->valueNode);
+                        if (typeIndex > -1) {
+                            rightValueTypeEntry = env->typeEntryList[typeIndex];
+                        }
+                    }
+
+                    if (isLet) {
+                        if (rightValueTypeEntry) {
+                            typeEntry = rightValueTypeEntry;
+                        }
+                        else {
+                            // error
+                        }
                     }
                     else {
-                        auto *typeEntry = (TypeEntry *) env->context->typeNameMap->get(
+                        // get typeEntry by type name
+                        typeEntry = (TypeEntry *) env->context->typeNameMap->get(
                                 typeName.name, typeName.nameLength);
-                        if (typeEntry) {
-                            //printf("<test %d>", typeEntry->stackSize);
-                            assignment->stackOffset = currentStackOffset;
-                            stackSize += typeEntry->stackSize;
-                            currentStackOffset += typeEntry->stackSize;
+                    }
 
 
-                            func->vtable->applyFuncToDescendants(Cast::upcast(func),
-                                                                 (void *) VTables::VariableVTable,
-                                                                 applyFuncToDescendants,
-                                                                 assignment->nameNode.name,
-                                                                 assignment->nameNode.nameLength);
-                        }
+                    if (typeEntry) {
+                        //printf("<test %d>", typeEntry->stackSize);
+                        assignment->stackOffset = currentStackOffset;
+                        stackSize += typeEntry->stackSize;
+                        currentStackOffset += typeEntry->stackSize;
+
+                        func->vtable->applyFuncToDescendants(Cast::upcast(func),
+                                                             (void *) VTables::VariableVTable,
+                                                             applyFuncToDescendants,
+                                                             assignment->nameNode.name,
+                                                             assignment->nameNode.nameLength);
+                    }
+                    else {
+                        // type resolve error
                     }
                 }
             }
@@ -615,6 +640,7 @@ namespace smart {
         }
         return stackSize;
     }
+
 
     static int executeMain(ScriptEnv* env, FuncNodeStruct* mainFunc)
     {

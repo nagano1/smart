@@ -657,7 +657,7 @@ namespace smart {
             DocumentUtils::assignIndents(docStruct);
             DocumentUtils::checkIndentSyntaxErrors(docStruct);
 
-            //DocumentUtils::calcStackSize(docStruct);
+            DocumentUtils::calcStackSize(docStruct);
 
             callAllLineEvent(docStruct, docStruct->firstCodeLine, context);
         }

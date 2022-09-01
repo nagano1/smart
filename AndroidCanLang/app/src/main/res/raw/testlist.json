@@ -130,7 +130,7 @@
 		"testname": "parser_benchmark",
 		"filepath": "tests/google_tests/parser_test.cpp",
 		"filename": "parser_test.cpp",
-		"body": "TEST(ParserTest_, parser_benchmark) {\r\n\r\n    auto start = std::chrono::high_resolution_clock::now().time_since_epoch();\r\n    uint64_t loopCount = 100 * 1000LLU;\r\n    //std::string text = \"   class           A   {    }   \";\r\n    std::string text = u8R\"(\r\nclass TestCl😂日本語10234ass {\r\n    fn func() {\r\n\r\n    }\r\n}\r\n\r\n\r\n\r\n\r\nclass a {\r\n\r\n}\r\nclass agiplkmp {\r\n\r\n}\r\n\r\nclass jips {\r\n\r\n}\r\n\r\n \r\n\r\n\r\n  )\";\r\n\r\n    const char *chars = text.c_str();\r\n    int nodeCount = 0;\r\n    bool parsedGood = false;\r\n    for (unsigned long long i = 0; i < loopCount; i++) {\r\n        auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);\r\n        DocumentUtils::parseText(document, chars, text.size());\r\n        nodeCount = document->nodeCount;\r\n\r\n        parsedGood = !document->context->syntaxErrorInfo.hasError;\r\n\r\n        //console_log((\"i:\" + std::to_string()).c_str());\r\n        Alloc::deleteDocument(document);\r\n    }\r\n    \r\n    EXPECT_EQ(nodeCount, 4);\r\n    EXPECT_EQ(parsedGood, true);\r\n\r\n    auto elapsed = std::chrono::high_resolution_clock::now().time_since_epoch() - start;\r\n    auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();\r\n    auto one_op_nanosec = nanoseconds / static_cast<double>(loopCount);\r\n\r\n    EXPECT_LT(one_op_nanosec, 15000);\r\n    //EXPECT_LT(one_op_nanosec, 35000);\r\n    std::cout << \"one\" << one_op_nanosec;\r\n}\r\n\r\n"
+		"body": "TEST(ParserTest_, parser_benchmark) {\r\n//\r\n//    auto start = std::chrono::high_resolution_clock::now().time_since_epoch();\r\n//    uint64_t loopCount = 100 * 1000LLU;\r\n//    //std::string text = \"   class           A   {    }   \";\r\n//    std::string text = u8R\"(\r\n//class TestCl😂日本語10234ass {\r\n//    fn func() {\r\n//\r\n//    }\r\n//}\r\n//\r\n//\r\n//\r\n//\r\n//class a {\r\n//\r\n//}\r\n//class agiplkmp {\r\n//\r\n//}\r\n//\r\n//class jips {\r\n//\r\n//}\r\n//\r\n// \r\n//\r\n//\r\n//  )\";\r\n//\r\n//    const char *chars = text.c_str();\r\n//    int nodeCount = 0;\r\n//    bool parsedGood = false;\r\n//    for (unsigned long long i = 0; i < loopCount; i++) {\r\n//        auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);\r\n//        DocumentUtils::parseText(document, chars, text.size());\r\n//        nodeCount = document->nodeCount;\r\n//\r\n//        parsedGood = !document->context->syntaxErrorInfo.hasError;\r\n//\r\n//        //console_log((\"i:\" + std::to_string()).c_str());\r\n//        Alloc::deleteDocument(document);\r\n//    }\r\n//    \r\n//    EXPECT_EQ(nodeCount, 4);\r\n//    EXPECT_EQ(parsedGood, true);\r\n//\r\n//    auto elapsed = std::chrono::high_resolution_clock::now().time_since_epoch() - start;\r\n//    auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();\r\n//    auto one_op_nanosec = nanoseconds / static_cast<double>(loopCount);\r\n//\r\n//    EXPECT_LT(one_op_nanosec, 15000);\r\n//    //EXPECT_LT(one_op_nanosec, 35000);\r\n//    std::cout << \"one\" << one_op_nanosec;\r\n//}\r\n//\r\n//"
 	},
 	{
 		"testcasename": "ParserTest_",
@@ -229,6 +229,62 @@
 		"filepath": "tests/google_tests/parser_test.cpp",
 		"filename": "parser_test.cpp",
 		"body": "TEST(ParserTest_, ParseUtil) {\r\n\r\n\r\n    EXPECT_EQ(true, ParseUtil::isIdentifierLetter('a'));\r\n\r\n    ParseUtil::letterCheck(&func);\r\n\r\n    // static inline int indexOfBreakOrEnd(const char *chars, int charsLength, int startIndex)\r\n    {\r\n        static constexpr char chars[] = \"class\\n A{}\";\r\n        EXPECT_EQ(5, ParseUtil::indexOfBreakOrEnd(chars, sizeof(chars)-1, 0));\r\n\r\n        static constexpr char chars2[] = \"class\\0 A{}\";\r\n        EXPECT_EQ(5, ParseUtil::indexOfBreakOrEnd(chars2, sizeof(chars2) - 1, 3));\r\n\r\n        static constexpr char chars3[] = \"class\\0 A{}\";\r\n        EXPECT_EQ(10, ParseUtil::indexOfBreakOrEnd(chars3, sizeof(chars3) - 1, 7));\r\n    }\r\n\r\n    {\r\n        static constexpr char chars[] = \"class\\n A{}\";\r\n        EXPECT_EQ(7, ParseUtil::indexOf(chars, sizeof(chars)-1, 0, 'A'));\r\n\r\n        static constexpr char chars2[] = \"class\\n A{}\";\r\n        EXPECT_EQ(-1, ParseUtil::indexOf(chars2, sizeof(chars2)-1, 0, 'G'));\r\n\r\n    }\r\n\r\n\r\n\r\n    {\r\n        static constexpr char chars[] = \"return    \\n\";\r\n        EXPECT_EQ(false, ParseUtil::hasCharBeforeLineBreak(chars, sizeof(chars)-1, 6));\r\n\r\n        static constexpr char chars2[] = \"return    a\\r\\n\";\r\n        EXPECT_EQ(true, ParseUtil::hasCharBeforeLineBreak(chars2, sizeof(chars2)-1, 6));\r\n\r\n    }\r\n\r\n    EXPECT_EQ(true, ParseUtil::isIdentifierLetter('a'));\r\n    EXPECT_EQ(true, ParseUtil::isIdentifierLetter(std::string{ u8\"😂\" }.c_str()[0]));\r\n    EXPECT_EQ(false, ParseUtil::isIdentifierLetter('\\n'));\r\n\r\n\r\n    static constexpr char chars[] = \"class A{}\";\r\n    EXPECT_EQ(0, ParseUtil::matchAt(chars, sizeof(chars) - 1, 0, \"class\"));\r\n\r\n    EXPECT_EQ(-1, ParseUtil::matchAt(\"\", 0, 0, \"class\"));\r\n    EXPECT_EQ(-1, ParseUtil::matchAt(\"\", 0, 0, \"\"));\r\n\r\n    constexpr char txt[] = \"aefvariable aowef \\n\";\r\n    EXPECT_EQ(-1, ParseUtil::matchAt(txt, sizeof(txt)-1, 2, \"false\"));\r\n\r\n\r\n    {\r\n        std::string class_text(u8\"     \\tclassauto * 😂日本語=10234;\");\r\n        int index = ParseUtil::matchAt(class_text.c_str(), class_text.length(), 0, \"class\");\r\n        EXPECT_EQ(index, 6);\r\n    }\r\n\r\n\r\n    {\r\n        std::string class_text(u8\"😂classauto;\");\r\n        int index = ParseUtil::matchAt(class_text.c_str(), class_text.length(), 0, \"class\");\r\n        EXPECT_EQ(index, -1);\r\n    }\r\n\r\n\r\n    // matchWord\r\n    {\r\n        std::string class_text(u8\"class\");\r\n        EXPECT_EQ(class_text.length(), 5);\r\n        auto result = ParseUtil::matchWord(class_text.c_str(), class_text.length(), \"class\", 5, 0);\r\n        EXPECT_EQ(result, true);\r\n    }\r\n\r\n    {\r\n        std::string class_text(u8\" class\"); //space\r\n        auto result = ParseUtil::matchWord(class_text.c_str(), class_text.length(), \"class\", 5, 0);\r\n        EXPECT_EQ(result, false);\r\n    }\r\n\r\n    {\r\n        std::string class_text(u8\"abcclass\");\r\n        auto result = ParseUtil::matchWord(class_text.c_str(), class_text.length(), \"class\", 5, 3);\r\n        EXPECT_EQ(result, true);\r\n    }\r\n\r\n    {\r\n        std::string class_text(u8\"classauto;\");\r\n        auto result = ParseUtil::matchWord(class_text.c_str(), class_text.length(), \"class\", 5, 0);\r\n        EXPECT_EQ(result, true);\r\n    }\r\n\r\n    {\r\n        std::string text(u8\"ab\");\r\n        auto result = ParseUtil::matchWord(text.c_str(), text.length(), \"abcdefg\", 5, 0);\r\n        EXPECT_EQ(result, false);\r\n    }\r\n\r\n\r\n\r\n    {\r\n        // endsWith\r\n        {\r\n            std::string text(u8\"ab\");\r\n            auto result = ParseUtil::endsWith2(text.c_str(), text.length(), \"ab\");\r\n            EXPECT_EQ(result, true);\r\n        }\r\n\r\n        {\r\n            std::string text(u8\"abcdefg\");\r\n            auto result = ParseUtil::endsWith2(text.c_str(), text.length(), \"efg\");\r\n            EXPECT_EQ(result, true);\r\n        }\r\n        {\r\n            std::string text(u8\"abcd\");\r\n            auto result = ParseUtil::endsWith2(text.c_str(), text.length(), \"aabcd\");\r\n            EXPECT_EQ(result, false);\r\n        }\r\n    }\r\n}\r\n\r\n"
+	},
+	{
+		"testcasename": "ScriptEngine",
+		"testname": "MallocItem_test1",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, MallocItem_test1)\r\n    {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        int* mem;\r\n        for (int i = 0; i < 1024; i++) {\r\n            mem = (int*)env->context->mallocItem(sizeof(int));\r\n            *mem = 53;\r\n\r\n            if (i % 3 == 2) {\r\n                env->context->freeItem(mem);\r\n            }\r\n        }\r\n\r\n        console_log(\"test\");\r\n\r\n        EXPECT_EQ(*mem, 53);\r\n        EXPECT_NE(env->context->memBufferForMalloc.firstBufferBlock, env->context->memBufferForMalloc.currentBufferBlock);\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n\r\n\r\n    }\r\n\r\n    "
+	},
+	{
+		"testcasename": "ScriptEngine",
+		"testname": "StackMemory_PushPop",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, StackMemory_PushPop) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n        auto* stackPointer1 = stackMemory.stackPointer;\r\n\r\n        stackMemory.push(5);\r\n        stackMemory.push(6);\r\n        \r\n        EXPECT_NE((uint64_t)stackPointer1, (uint64_t)stackMemory.stackPointer);\r\n\r\n        EXPECT_EQ(6, stackMemory.pop());\r\n        EXPECT_EQ(5, stackMemory.pop());\r\n\r\n        EXPECT_EQ((uint64_t)stackPointer1, (uint64_t)stackMemory.stackPointer);\r\n\r\n        "
+	},
+	{
+		"testcasename": "ScriptEngine",
+		"testname": "StackMemoryTest_Call_Ret",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, StackMemoryTest_Call_Ret) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n        auto *basePointer0 = stackMemory.stackBasePointer;\r\n        auto *stackPointer0 = stackMemory.stackPointer;\r\n\r\n        stackMemory.call();\r\n        stackMemory.localVariables(8 * 4);\r\n        stackMemory.localVariables(8 * 4);\r\n        stackMemory.moveTo(-stackMemory.baseBytes, 100);\r\n        EXPECT_EQ(100, stackMemory.moveFrom(-stackMemory.baseBytes));\r\n        stackMemory.ret();\r\n\r\n        EXPECT_EQ((uint64_t)basePointer0, (uint64_t)stackMemory.stackBasePointer);\r\n        EXPECT_EQ((uint64_t)stackPointer0, (uint64_t)stackMemory.stackPointer);\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n\r\n        "
+	},
+	{
+		"testcasename": "ScriptEngine",
+		"testname": "StackMemoryTest_cal_ret_2",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, StackMemoryTest_cal_ret_2) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n\r\n        auto* basePointer0 = stackMemory.stackBasePointer;\r\n        auto* stackPointer0 = stackMemory.stackPointer;\r\n\r\n        // call func1\r\n        stackMemory.call();\r\n\r\n        stackMemory.push(8);\r\n        auto* stackPointer1 = stackMemory.stackPointer;\r\n        auto* basePointer1 = stackMemory.stackBasePointer;\r\n\r\n\r\n        // call func2\r\n        stackMemory.call();\r\n\r\n        stackMemory.localVariables(8 * 4);\r\n\r\n        stackMemory.ret();\r\n        // retruned from func2\r\n\r\n        EXPECT_EQ((uint64_t)basePointer1, (uint64_t)stackMemory.stackBasePointer);\r\n        EXPECT_EQ((uint64_t)stackPointer1, (uint64_t)stackMemory.stackPointer);\r\n\r\n        stackMemory.ret();\r\n        // returned from func1\r\n\r\n        EXPECT_EQ((uint64_t)basePointer0, (uint64_t)stackMemory.stackBasePointer);\r\n        EXPECT_EQ((uint64_t)stackPointer0, (uint64_t)stackMemory.stackPointer);\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n        \r\n        "
+	},
+	{
+		"testcasename": "ScriptEngine",
+		"testname": "StackMemoryTest_Overflow_Push",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, StackMemoryTest_Overflow_Push) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n\r\n        for (int i = 0; i < stackMemory.stackSize/stackMemory.baseBytes - 1; i++) {\r\n            stackMemory.push(5);\r\n        }\r\n        EXPECT_EQ(stackMemory.isOverflowed, false);\r\n        stackMemory.push(5);\r\n\r\n        EXPECT_EQ(stackMemory.isOverflowed, true);\r\n\r\n        "
+	},
+	{
+		"testcasename": "ScriptEngine",
+		"testname": "SktackMemoryTest_overflow_call",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, SktackMemoryTest_overflow_call) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n\r\n        for (int i = 0; i < stackMemory.stackSize / stackMemory.baseBytes - 1; i++) {\r\n            stackMemory.call();\r\n        }\r\n        EXPECT_EQ(stackMemory.isOverflowed, false);\r\n        stackMemory.call();\r\n\r\n        EXPECT_EQ(stackMemory.isOverflowed, true);\r\n\r\n        "
+	},
+	{
+		"testcasename": "ScriptEngine",
+		"testname": "StackMemoryTest_overflow_localVariables",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, StackMemoryTest_overflow_localVariables) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n        auto& stackMemory = env->context->stackMemory;\r\n        \r\n        stackMemory.localVariables(stackMemory.stackSize);\r\n        EXPECT_EQ(stackMemory.isOverflowed, true);\r\n\r\n        "
+	},
+	{
+		"testcasename": "ScriptEngine",
+		"testname": "ScriptEngineTestSomeScript0",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, ScriptEngineTestSomeScript0) {\r\n\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    int b = 0\r\n    print(\"test日本語\", 3 + 56)\r\n    \r\n    return (4 + b)\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);\r\n        EXPECT_EQ(ret, 9);\r\n\r\n        "
 	},
 	{
 		"testcasename": "SpeedTest",
