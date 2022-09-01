@@ -9,10 +9,10 @@
 - **CoreTestApp** : iOS app
 - **lib** : contains Google Test
 - **llvm_ir_test** : Simulation for generating a final output from new
-- **lsp_vscode_server** : Visual Studio Code Extension for providing new lang dev experienc 
+- **lsp_vscode_server** : lsp server implementation for new lang 
 - **src** : Main C/C++  source code
 - **test_vscode_vsix** : Visual Studio Code Extension for providing new lang dev experienc
-- **tests** : Visual Studio Code Extension for providing new lang dev experienc
+- **tests** : unittest code
 - **visual_studio_console_sln** : Visual Studio Cosole Project
 - **wasm_project** : building Wasm project (contains wasi-sdk-11)
 - **wasm_project_test** : npm project folder for `npm install puppeteer` and run a test on Github actions
