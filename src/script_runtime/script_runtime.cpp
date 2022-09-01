@@ -566,11 +566,31 @@ namespace smart {
 
     int applyFuncToDescendants(NodeBase *node, void *targetVTable, void *func, void* arg, int argLen) {
         auto *vari = Cast::downcast<VariableNodeStruct *>(node);
-        if (ParseUtil::equal(vari->name, vari->nameLength, (char*)arg, argLen)) {
-            vari->stackPos = 3;
-        }
+        auto *assignment = Cast::downcast<AssignStatementNodeStruct*>(arg);
 
+        if (ParseUtil::equal(vari->name, vari->nameLength,
+                             assignment->nameNode.name, assignment->nameNode.nameLength)) {
+            vari->stackOffset2 = assignment->stackOffset;
+        }
         return 0;
+    }
+
+
+    static void setStackOffsetToVariables(
+                                FuncNodeStruct *func,
+                                const AssignStatementNodeStruct *assignment,
+                                _NodeBase *currentStatement)
+    {
+        auto* statementNode = currentStatement->nextNode;
+        while (statementNode) {
+            statementNode->vtable->applyFuncToDescendants(Cast::upcast(statementNode),
+                                                 (void *) VTables::VariableVTable,
+                                                 applyFuncToDescendants,
+                                                          (void *) assignment,
+                                                 0);
+
+            statementNode = statementNode->nextNode;
+        }
     }
 
 
@@ -620,20 +640,12 @@ namespace smart {
                         stackSize += typeEntry->stackSize;
                         currentStackOffset += typeEntry->stackSize;
 
-                        func->vtable->applyFuncToDescendants(Cast::upcast(func),
-                                                             (void *) VTables::VariableVTable,
-                                                             applyFuncToDescendants,
-                                                             assignment->nameNode.name,
-                                                             assignment->nameNode.nameLength);
+                        setStackOffsetToVariables(func, assignment, statementNode);
                     }
                     else {
                         // type resolve error
                     }
                 }
-            }
-
-            if (statementNode->vtable == VTables::VariableVTable) {
-
             }
 
             statementNode = statementNode->nextNode;

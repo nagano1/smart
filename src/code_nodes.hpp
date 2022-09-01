@@ -106,7 +106,7 @@ namespace smart {
     using NameNodeStruct = struct {
         NODE_HEADER;
 
-        int stackPos;
+        int stackOffset2;
 
         char *name;
         int_fast32_t nameLength;

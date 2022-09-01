@@ -166,6 +166,7 @@ namespace smart {
         constexpr char source[] = R"(
 fn main()
 {
+    int a = 0
     int b = 0
     print("test日本語", 3 + 56)
     

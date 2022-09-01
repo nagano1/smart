@@ -445,7 +445,7 @@ namespace smart {
         }
 
         if (node->leftExprNode) {
-            node->rightExprNode->vtable->applyFuncToDescendants(node->rightExprNode,
+            node->leftExprNode->vtable->applyFuncToDescendants(node->leftExprNode,
                                                            targetVTable, func, arg, argLen);
         }
 
