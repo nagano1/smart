@@ -190,9 +190,7 @@ namespace smart {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
             func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
         }
-        //if (node->valueNode) {
-//            node->valueNode->vtable->setStackOffsetToVariables(node->valueNode, targetVTable, func, arg, argLen);
-        //}
+
         return 0;
     }
 

@@ -358,11 +358,6 @@ namespace smart {
             child = child->nextNode;
         }
 
-//        if (node->assignStatementNodeStruct) {
-//            node->assignStatementNodeStruct->vtable->setStackOffsetToVariables(
-//                    Cast::upcast(node->assignStatementNodeStruct),
-//                    targetVTable, func, arg, argLen);
-//        }
         return 0;
     }
 
@@ -579,11 +574,6 @@ namespace smart {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
             func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
         }
-//        if (node->assignStatementNodeStruct) {
-//            node->assignStatementNodeStruct->vtable->setStackOffsetToVariables(
-//                    Cast::upcast(node->assignStatementNodeStruct),
-//                    targetVTable, func, arg, argLen);
-//        }
         return 0;
     }
 

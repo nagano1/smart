@@ -564,7 +564,7 @@ namespace smart {
     }
 
 
-    int setStackOffsetToVariables(NodeBase *node, void *targetVTable, void *func, void* arg, int argLen) {
+    int setStackOffsetToVariable(NodeBase *node, void *targetVTable, void *func, void* arg, int argLen) {
         auto *vari = Cast::downcast<VariableNodeStruct *>(node);
         auto *assignment = Cast::downcast<AssignStatementNodeStruct*>(arg);
 
@@ -585,7 +585,7 @@ namespace smart {
         while (statementNode) {
             statementNode->vtable->applyFuncToDescendants(Cast::upcast(statementNode),
                                                           (void *) VTables::VariableVTable,
-                                                          setStackOffsetToVariables,
+                                                          setStackOffsetToVariable,
                                                           (void *) assignment,
                                                           0);
 
