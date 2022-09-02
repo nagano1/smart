@@ -218,6 +218,8 @@ namespace smart
 
 
     using ScriptEnv = struct _ScriptEnv {
+
+        DocumentStruct* document;
         TypeEntry **typeEntryList;
         int typeEntryListCapacity;
         int typeEntryListNextIndex;
@@ -242,7 +244,11 @@ namespace smart
             return context->memBufferForMalloc.tryDelete(ptr);
         }
 */
-        static int startScript(char *script, int byteLength);
+        static int startScript(char* script, int byteLength);
+
+        static _ScriptEnv* loadScript(char* script, int byteLength);
+        int validateScript();
+        int runScriptEnv();
 
         void registerTypeEntry(TypeEntry* typeEntry);
 

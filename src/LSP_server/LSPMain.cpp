@@ -193,6 +193,7 @@ static void publishDiagnostics(const char *text, int textLength, const char * co
     auto *document = Alloc::newDocument(isCode ? DocumentType::CodeDocument : DocumentType::JsonDocument, nullptr);
     DocumentUtils::parseText(document, text, textLength);
 
+
     if (document->context->syntaxErrorInfo.hasError) {
         int line = document->context->syntaxErrorInfo.linePos1;
         int charactor = document->context->syntaxErrorInfo.charPos1;

@@ -124,7 +124,7 @@ namespace smart {
         }
 
 //        if (node->valueNode) {
-//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+//            node->valueNode->vtable->setStackOffsetToVariables(node->valueNode, targetVTable, func, arg, argLen);
 //        }
         return 0;
     }
@@ -252,7 +252,7 @@ namespace smart {
             item = Cast::downcast<JsonKeyValueItemStruct *>(item->nextNode);
         }
         //if (node->valueNode) {
-//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+//            node->valueNode->vtable->setStackOffsetToVariables(node->valueNode, targetVTable, func, arg, argLen);
         //}
         return 0;
     }

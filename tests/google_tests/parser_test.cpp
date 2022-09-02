@@ -638,65 +638,65 @@ TEST(parser_test, ParserStream) {
 ENDTEST
 */
 
-//
-//TEST(ParserTest_, parser_benchmark) {
-//
-//    auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
-//    uint64_t loopCount = 100 * 1000LLU;
-//    //std::string text = "   class           A   {    }   ";
-//    std::string text = u8R"(
-//class TestCl😂日本語10234ass {
-//    fn func() {
-//
-//    }
-//}
-//
-//
-//
-//
-//class a {
-//
-//}
-//class agiplkmp {
-//
-//}
-//
-//class jips {
-//
-//}
-//
-// 
-//
-//
-//  )";
-//
-//    const char *chars = text.c_str();
-//    int nodeCount = 0;
-//    bool parsedGood = false;
-//    for (unsigned long long i = 0; i < loopCount; i++) {
-//        auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
-//        DocumentUtils::parseText(document, chars, text.size());
-//        nodeCount = document->nodeCount;
-//
-//        parsedGood = !document->context->syntaxErrorInfo.hasError;
-//
-//        //console_log(("i:" + std::to_string()).c_str());
-//        Alloc::deleteDocument(document);
-//    }
-//    
-//    EXPECT_EQ(nodeCount, 4);
-//    EXPECT_EQ(parsedGood, true);
-//
-//    auto elapsed = std::chrono::high_resolution_clock::now().time_since_epoch() - start;
-//    auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
-//    auto one_op_nanosec = nanoseconds / static_cast<double>(loopCount);
-//
-//    EXPECT_LT(one_op_nanosec, 15000);
-//    //EXPECT_LT(one_op_nanosec, 35000);
-//    std::cout << "one" << one_op_nanosec;
-//}
-//
-//ENDTEST
+
+TEST(ParserTest_, parser_benchmark) {
+
+    auto start = std::chrono::high_resolution_clock::now().time_since_epoch();
+    uint64_t loopCount = 100 * 1000LLU;
+    //std::string text = "   class           A   {    }   ";
+    std::string text = u8R"(
+class TestCl😂日本語10234ass {
+    fn func() {
+
+    }
+}
+
+
+
+
+class a {
+
+}
+class agiplkmp {
+
+}
+
+class jips {
+
+}
+
+ 
+
+
+  )";
+
+    const char *chars = text.c_str();
+    int nodeCount = 0;
+    bool parsedGood = false;
+    for (unsigned long long i = 0; i < loopCount; i++) {
+        auto *document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
+        DocumentUtils::parseText(document, chars, text.size());
+        nodeCount = document->nodeCount;
+
+        parsedGood = !document->context->syntaxErrorInfo.hasError;
+
+        //console_log(("i:" + std::to_string()).c_str());
+        Alloc::deleteDocument(document);
+    }
+    
+    EXPECT_EQ(nodeCount, 4);
+    EXPECT_EQ(parsedGood, true);
+
+    auto elapsed = std::chrono::high_resolution_clock::now().time_since_epoch() - start;
+    auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
+    auto one_op_nanosec = nanoseconds / static_cast<double>(loopCount);
+
+    EXPECT_LT(one_op_nanosec, 15000);
+    //EXPECT_LT(one_op_nanosec, 35000);
+    std::cout << "one" << one_op_nanosec;
+}
+
+ENDTEST
 
 
 TEST(ParserTest_, aaHashMap) {

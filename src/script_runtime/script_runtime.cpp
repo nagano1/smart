@@ -564,7 +564,7 @@ namespace smart {
     }
 
 
-    int applyFuncToDescendants(NodeBase *node, void *targetVTable, void *func, void* arg, int argLen) {
+    int setStackOffsetToVariables(NodeBase *node, void *targetVTable, void *func, void* arg, int argLen) {
         auto *vari = Cast::downcast<VariableNodeStruct *>(node);
         auto *assignment = Cast::downcast<AssignStatementNodeStruct*>(arg);
 
@@ -584,10 +584,10 @@ namespace smart {
         auto* statementNode = currentStatement->nextNode;
         while (statementNode) {
             statementNode->vtable->applyFuncToDescendants(Cast::upcast(statementNode),
-                                                 (void *) VTables::VariableVTable,
-                                                 applyFuncToDescendants,
+                                                          (void *) VTables::VariableVTable,
+                                                          setStackOffsetToVariables,
                                                           (void *) assignment,
-                                                 0);
+                                                          0);
 
             statementNode = statementNode->nextNode;
         }
@@ -717,33 +717,41 @@ namespace smart {
     }
 
 
-
-
-    int ScriptEnv::startScript(char* script, int scriptLength)
+    _ScriptEnv* ScriptEnv::loadScript(char* script, int byteLength)
     {
-        int ret = 0;
         ScriptEnv* env = ScriptEnv::newScriptEnv();
         setupBuiltInTypeSelectors(env);
 
         auto* document = Alloc::newDocument(DocumentType::CodeDocument, nullptr);
-        DocumentUtils::parseText(document, script, scriptLength);
+        DocumentUtils::parseText(document, script, byteLength);
         DocumentUtils::generateHashTables(document);
-        if (document->context->syntaxErrorInfo.hasError) {
-            return - 1;
-        }
+        env->document = document;
 
-        validateTypes(env, document);
+        return env;
+    }
 
-        auto *mainFunc = findMainFunc(document);
+    int ScriptEnv::validateScript() {
+        assert(this->document->context->syntaxErrorInfo.hasError == false);
+
+        validateTypes(this, this->document);
+        return 0;
+    }
+
+    int ScriptEnv::runScriptEnv()
+    {
+        assert(this->document->context->syntaxErrorInfo.hasError == false);
+        assert(this->context->logicalErrorInfo.hasError == false);
+
+        int ret = 0;
+        auto *mainFunc = findMainFunc(this->document);
         if (mainFunc) {
             printf("main Found");
             printf("<%s()>\n", mainFunc->nameNode.name);
-            ret = executeMain(env, mainFunc);
+            ret = executeMain(this, mainFunc);
         }
 
-        ScriptEnv::deleteScriptEnv(env);
 
-        auto* rootNode = document->firstRootNode;
+        auto* rootNode = this->document->firstRootNode;
         while (rootNode != nullptr) {
 
             // printf("%s\n", rootNode->vtable->typeChars);
@@ -758,8 +766,25 @@ namespace smart {
 
             rootNode = rootNode->nextNode;
         }
-        Alloc::deleteDocument(document);
 
+        Alloc::deleteDocument(this->document);
+        ScriptEnv::deleteScriptEnv(this);
         return ret;
+    }
+
+
+    int ScriptEnv::startScript(char* script, int scriptLength)
+    {
+        ScriptEnv *env = ScriptEnv::loadScript(script, scriptLength);
+        if (env->document->context->syntaxErrorInfo.hasError) {
+            return env->document->context->syntaxErrorInfo.errorId;
+        }
+
+        env->validateScript();
+        if (env->context->logicalErrorInfo.hasError) {
+            return env->context->logicalErrorInfo.errorId;
+        }
+
+        return env->runScriptEnv();
     }
 }

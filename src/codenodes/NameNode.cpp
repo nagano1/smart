@@ -95,7 +95,7 @@ namespace smart {
         }
 
         //if (node->valueNode) {
-//            node->valueNode->vtable->applyFuncToDescendants(node->valueNode,
+//            node->valueNode->vtable->setStackOffsetToVariables(node->valueNode,
 //                                                            targetVTable, func, arg, argLen);
 //        }
         return 0;

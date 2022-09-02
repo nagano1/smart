@@ -42,7 +42,7 @@ namespace smart {
             func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
         }
 //        if (node->leftExprNode) {
-//            node->rightExprNode->vtable->applyFuncToDescendants(node->rightExprNode,
+//            node->rightExprNode->vtable->setStackOffsetToVariables(node->rightExprNode,
 //                                                                targetVTable, func, arg, argLen);
 //        }
         return 0;
@@ -143,7 +143,7 @@ namespace smart {
             func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
         }
 //        if (node->leftExprNode) {
-//            node->rightExprNode->vtable->applyFuncToDescendants(node->rightExprNode,
+//            node->rightExprNode->vtable->setStackOffsetToVariables(node->rightExprNode,
 //                                                                targetVTable, func, arg, argLen);
 //        }
         return 0;
