@@ -31,7 +31,7 @@ namespace smart {
         console_log("test");
 
         EXPECT_EQ(*mem, 53);
-        EXPECT_NE(env->context->memBufferForMalloc.firstBufferBlock, env->context->memBufferForMalloc.currentBufferBlock);
+        EXPECT_NE(env->context->memBufferForMalloc2.firstBufferBlock, env->context->memBufferForMalloc2.currentBufferBlock);
 
         ScriptEnv::deleteScriptEnv(env);
 

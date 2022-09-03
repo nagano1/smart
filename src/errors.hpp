@@ -75,6 +75,7 @@ namespace smart {
         //----------------------------------------------------------------------------------
         no_logical_error,
         no_variable_defined,
+        type_not_found,
 
 
         last_keeper
@@ -198,6 +199,9 @@ namespace smart {
             //----------------------------------------------------------------------------------
             ErrorInfo{ErrorCode::no_logical_error, 57770000, "no_logical_error"},
             ErrorInfo{ErrorCode::no_variable_defined, 57770001, "no_variable_defined"},
+            ErrorInfo{ErrorCode::type_not_found, 57770002, "type not found"},
+
+
 
             ErrorInfo{ ErrorCode::last_keeper, 99999999, "end" },
         };
@@ -295,29 +299,5 @@ namespace smart {
         static const int SYNTAX_ERROR_RETURN = -1;
     };
 
-    using LogicalErrorInfo = struct _logicalErrorInfo {
-        bool hasError{false};
-
-        ErrorCode errorCode;
-        char reason[MAX_REASON_LENGTH + 1];
-        int reasonLength = 0;
-
-        st_uint charPosition;
-        st_uint charPosition2;
-
-        st_uint linePos1;
-        st_uint charPos1;
-        st_uint linePos2;
-        st_uint charPos2;
-
-        int errorId;
-        int charEndPosition;
-
-        // 0: "between start and  end"
-        // 1: "from start to end of line,"
-        int errorDisplayType = 0;
-
-        static const int SYNTAX_ERROR_RETURN = -1;
-    };
 
 }

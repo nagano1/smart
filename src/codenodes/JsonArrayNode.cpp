@@ -54,15 +54,15 @@ namespace smart {
     }
 
     static int applyFuncToDescendants(JsonArrayItemStruct *node, void *targetVTable,
-                               int (*func)(NodeBase *, void *, void *, void *, int )
-                               , void *arg, int argLen) {
+                               int (*func)(NodeBase *, void *, void *, void *, void *)
+                               , void *arg, void *arg2) {
 
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
         }
 
         if (node->valueNode) {
-            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, arg2);
         }
         return 0;
     }
@@ -135,11 +135,11 @@ namespace smart {
     }
 
     static int JsonArrayStruct_applyFuncToDescendants(JsonArrayStruct *node, void *targetVTable,
-                                      int (*func)(NodeBase *, void *, void *, void *, int )
-            , void *arg, int argLen) {
+                                      int (*func)(NodeBase *, void *, void *, void *, void *)
+            , void *arg, void *arg2) {
 
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
         }
 
         return 0;

@@ -318,21 +318,6 @@ namespace smart {
         //return nullptr;
     }
 
-
-    static void validateTypes(ScriptEnv *env, DocumentStruct *document)
-    {
-        // int a = func(214 + 24)
-        // env->typeFromNode()
-        auto *child = document->firstRootNode;
-        while (child) { // NOLINT(altera-unroll-loops,altera-id-dependent-backward-branch)
-            if (child->vtable == VTables::AssignStatementVTable) {
-
-            }
-            child = child->nextNode;
-        }
-    }
-
-
     static int selectTypeFromNumberNode(ScriptEnv *env, NumberNodeStruct *numberNode)
     {
         return BuiltInTypeIndex::int32;
@@ -453,23 +438,12 @@ namespace smart {
     //
     //------------------------------------------------------------------------------------------
 
-    static ValueBase *newValue(ScriptEngineContext *context, bool heap)
-    {
-        auto *valueBase = (ValueBase*)context->memBufferForValueBase.newMem<ValueBase>(1);
-        valueBase->ptr = nullptr;
-        valueBase->size = 0;
-        valueBase->isHeap = heap;
-        return valueBase;
-    }
-
     ValueBase *ScriptEngineContext::newValueForHeap()
     {
-        return newValue(this, true);
-    }
-
-    ValueBase *ScriptEngineContext::newValueForStack()
-    {
-        return newValue(this, false);
+        auto *valueBase = (ValueBase *) memBufferForValueBase.newMem<ValueBase>(1);
+        valueBase->ptr = nullptr;
+        valueBase->size = 0;
+        return valueBase;
     }
 
 
@@ -487,14 +461,110 @@ namespace smart {
 
     void ScriptEngineContext::init()
     {
-        this->logicalErrorInfo.hasError = false;
-        this->logicalErrorInfo.errorCode = ErrorCode::no_logical_error;
-        this->logicalErrorInfo.errorId = 57770000;
-        this->logicalErrorInfo.charPosition = -1;
-        this->logicalErrorInfo.charPosition2 = -1;
+        this->logicErrorInfo.hasError = false;
+        this->logicErrorInfo.firstErrorItem = nullptr;
+        this->logicErrorInfo.lastErrorItem = nullptr;
+
+
+        this->memBuffer.init();
+        this->memBufferForMalloc2.init();
+        this->memBufferForError.init();
+        this->memBufferForValueBase.init();
+        this->stackMemory.init();
+
+        this->variableMap2 = this->memBuffer.newMem<VoidHashMap>(1);
+        this->variableMap2->init(&this->memBuffer);
+
+        this->typeNameMap = this->memBuffer.newMem<VoidHashMap>(1);
+        this->typeNameMap->init(&this->memBuffer);
+
+        /*
+        this->logicErrorInfo.errorCode = ErrorCode::no_logical_error;
+        this->logicErrorInfo.errorId = 57770000;
+        this->logicErrorInfo.charPosition = -1;
+        this->logicErrorInfo.charPosition2 = -1;
+         */
     }
 
 
+    //------------------------------------------------------------------------------------------
+    //
+    //                                       Validate Script
+    //
+    //------------------------------------------------------------------------------------------
+
+    static int findVariableAndSearchAssignment(NodeBase *node, void *targetVTable, void *func, void* arg, void *arg2)
+    {
+        auto *vari = Cast::downcast<VariableNodeStruct *>(node);
+
+        auto *variableTop = Cast::downcast<NodeBase*>(arg);
+        auto *body = Cast::downcast<BodyNodeStruct*>(variableTop->parentNode);
+        //auto *funcNode = Cast::downcast<FuncNodeStruct*>(body->parentNode);
+
+        auto *bodyChild = body->firstChildNode;
+        bool found = false;
+
+        while (bodyChild) {
+            if (bodyChild == variableTop) {
+                break;
+            }
+
+            if (bodyChild->vtable == VTables::AssignStatementVTable) {
+                auto *assignState = Cast::downcast<AssignStatementNodeStruct *>(bodyChild);
+
+                if (ParseUtil::equal(vari->name, vari->nameLength,
+                                     assignState->nameNode.name, assignState->nameNode.nameLength)) {
+                    vari->stackOffset2 = assignState->stackOffset;
+                }
+            }
+
+            bodyChild = bodyChild->nextNode;
+        }
+
+        /*
+
+        */
+        return 0;
+    }
+
+
+    static int validateFunc(FuncNodeStruct *func)
+    {
+        auto *child = func->bodyNode.firstChildNode;
+        while (child) {
+            child->vtable->applyFuncToDescendants(child,
+                                                  (void *) VTables::VariableVTable,
+                                                  findVariableAndSearchAssignment,
+                                                  (void *) child,
+                                                  0);
+            child = child->nextNode;
+        }
+
+        return 0;
+    }
+
+
+    int ScriptEnv::validateScript() const
+    {
+        assert(this->document->context->syntaxErrorInfo.hasError == false);
+        int errorCode = 0;
+
+        // search all funcs
+        auto *rootNode = document->firstRootNode;
+        while (rootNode != nullptr) {
+            if (rootNode->vtable == VTables::FnVTable) {
+                // fn
+                auto *fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
+                int thisErrorCode = validateFunc(fnNode);
+                if (thisErrorCode > 0) {
+                    errorCode = thisErrorCode;
+                }
+            }
+            rootNode = rootNode->nextNode;
+        }
+
+        return errorCode;
+    }
 
     //------------------------------------------------------------------------------------------
     //
@@ -507,17 +577,6 @@ namespace smart {
         auto *scriptEnv = (ScriptEnv*)malloc(sizeof(ScriptEnv));
         if (scriptEnv) {
             auto *context = simpleMalloc2<ScriptEngineContext>();
-            context->memBuffer.init();
-            context->memBufferForMalloc.init();
-            context->memBufferForValueBase.init();
-            context->stackMemory.init();
-
-            context->variableMap2 = context->memBuffer.newMem<VoidHashMap>(1);
-            context->variableMap2->init(&context->memBuffer);
-
-            context->typeNameMap = context->memBuffer.newMem<VoidHashMap>(1);
-            context->typeNameMap->init(&context->memBuffer);
-
 
             scriptEnv->context = context;
             context->init();
@@ -542,7 +601,7 @@ namespace smart {
     static FuncNodeStruct* findMainFunc(DocumentStruct *document)
     {
         auto *rootNode = document->firstRootNode;
-        while (rootNode != nullptr) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
+        while (rootNode != nullptr) {
             if (rootNode->vtable == VTables::FnVTable) {
                 // fn
                 auto *fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
@@ -564,7 +623,7 @@ namespace smart {
     }
 
 
-    int setStackOffsetToVariable(NodeBase *node, void *targetVTable, void *func, void* arg, int argLen) {
+    int setStackOffsetToVariable(NodeBase *node, void *targetVTable, void *func, void* arg, void *arg2) {
         auto *vari = Cast::downcast<VariableNodeStruct *>(node);
         auto *assignment = Cast::downcast<AssignStatementNodeStruct*>(arg);
 
@@ -587,20 +646,20 @@ namespace smart {
                                                           (void *) VTables::VariableVTable,
                                                           setStackOffsetToVariable,
                                                           (void *) assignment,
-                                                          0);
+                                                          nullptr);
 
             statementNode = statementNode->nextNode;
         }
     }
 
 
-    static int calcStackSizeInFunc(ScriptEnv* env, FuncNodeStruct* func)
+    static int calcStackSizeInFunc(ScriptEnv* env, FuncNodeStruct* func) // NOLINT(readability-function-cognitive-complexity)
     {
         auto* statementNode = func->bodyNode.firstChildNode;
         int stackSize = 0;
         int currentStackOffset = 0;
 
-        while (statementNode) {
+        while (statementNode) { // NOLINT(altera-id-dependent-backward-branch,altera-unroll-loops)
             if (statementNode->vtable == VTables::AssignStatementVTable) {
                 auto *assignment = Cast::downcast<AssignStatementNodeStruct *>(statementNode);
                 if (assignment->hasTypeDecl) {
@@ -633,7 +692,6 @@ namespace smart {
                                 typeName.name, typeName.nameLength);
                     }
 
-
                     if (typeEntry) {
                         //printf("<test %d>", typeEntry->stackSize);
                         assignment->stackOffset = currentStackOffset;
@@ -644,6 +702,8 @@ namespace smart {
                     }
                     else {
                         // type resolve error
+                        env->context->addErrorWithNode(ErrorCode::type_not_found,
+                                                       Cast::upcast(assignment));
                     }
                 }
             }
@@ -730,17 +790,12 @@ namespace smart {
         return env;
     }
 
-    int ScriptEnv::validateScript() {
-        assert(this->document->context->syntaxErrorInfo.hasError == false);
 
-        validateTypes(this, this->document);
-        return 0;
-    }
 
     int ScriptEnv::runScriptEnv()
     {
         assert(this->document->context->syntaxErrorInfo.hasError == false);
-        assert(this->context->logicalErrorInfo.hasError == false);
+        assert(this->context->logicErrorInfo.hasError == false);
 
         int ret = 0;
         auto *mainFunc = findMainFunc(this->document);
@@ -781,8 +836,8 @@ namespace smart {
         }
 
         env->validateScript();
-        if (env->context->logicalErrorInfo.hasError) {
-            return env->context->logicalErrorInfo.errorId;
+        if (env->context->logicErrorInfo.hasError) {
+            return env->context->logicErrorInfo.firstErrorItem->errorId;
         }
 
         return env->runScriptEnv();

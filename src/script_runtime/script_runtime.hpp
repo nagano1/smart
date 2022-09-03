@@ -94,7 +94,6 @@ namespace smart
         int typeIndex;
         void* ptr;
         unsigned int size; // byte size
-        bool isHeap;
     };
 
 
@@ -110,31 +109,59 @@ namespace smart
     };
 
 
+    using ErrorNodeItem = struct _ErrorNodeItem {
+        _NodeBase *node;
+        _ErrorNodeItem *next;
+
+        ErrorCode errorCode;
+        char reason[MAX_REASON_LENGTH + 1];
+        int reasonLength = 0;
+
+        st_uint charPosition;
+        st_uint charPosition2;
+
+        st_uint linePos1;
+        st_uint charPos1;
+        st_uint linePos2;
+        st_uint charPos2;
+
+        int errorId;
+        int charEndPosition;
+
+        // 0: "between start and  end"
+        // 1: "from start to end of line,"
+        int errorDisplayType = 0;
+        static const int SYNTAX_ERROR_RETURN = -1;
+    };
 
 
-
+    using LogicalErrorInfo = struct _logicalErrorInfo {
+        bool hasError{false};
+        ErrorNodeItem *firstErrorItem;
+        ErrorNodeItem *lastErrorItem;
+        static const int SYNTAX_ERROR_RETURN = -1;
+    };
 
     using ScriptEngineContext = struct _scriptEngineContext {
-        LogicalErrorInfo logicalErrorInfo;
+        LogicalErrorInfo logicErrorInfo;
 
         MemBuffer memBuffer; // for TypeEntry, variable->value map
 
         MemBuffer memBufferForValueBase; // for value base
-        MemBuffer memBufferForMalloc; // for value
+        MemBuffer memBufferForMalloc2; // for value
+        MemBuffer memBufferForError; // for value
 
         VoidHashMap *variableMap2;
         VoidHashMap *typeNameMap;
         StackMemory stackMemory;
 
         ValueBase *newValueForHeap();
-        ValueBase *newValueForStack();
         ValueBase *genValueBase(int type, int size, void *ptr);
 
         void init();
 
-
         void* mallocItem(int bytes) {
-            auto *mallocItem = this->memBufferForMalloc.newMem<MallocItem>(1);
+            auto *mallocItem = this->memBufferForMalloc2.newMem<MallocItem>(1);
             mallocItem->freed = false;
             mallocItem->ptr = malloc(bytes + sizeof(MallocItem*));
 
@@ -151,12 +178,12 @@ namespace smart
                 free(item->ptr);
                 item->freed = true;
             }
-            this->memBufferForMalloc.tryDelete<MallocItem>(item);
+            this->memBufferForMalloc2.tryDelete<MallocItem>(item);
         }
 
-        void freeAll() {
-
-            auto *block = this->memBufferForMalloc.firstBufferBlock;
+        void freeAll()
+        {
+            auto *block = this->memBufferForMalloc2.firstBufferBlock;
             while (block) {
                 if (block->itemCount > 0) {
                     int offset = 0;
@@ -178,10 +205,68 @@ namespace smart
                 }
                 block = block->next;
             }
-            this->memBufferForMalloc.freeAll();
+            this->memBufferForMalloc2.freeAll();
             this->memBufferForValueBase.freeAll();
+            this->memBufferForError.freeAll();
             this->memBuffer.freeAll();
             this->stackMemory.freeAll();
+        }
+
+
+        void addErrorWithNode(ErrorCode errorCode, NodeBase* node) {
+            auto &errorInfo = this->logicErrorInfo;
+            errorInfo.hasError = true;
+            auto *mem = this->memBufferForError.newMem<ErrorNodeItem>(1);
+            mem->node = node;
+            mem->errorCode = errorCode;
+            if (errorInfo.firstErrorItem == nullptr) {
+                errorInfo.firstErrorItem = mem;
+            }
+
+            if (errorInfo.lastErrorItem == nullptr) {
+                errorInfo.lastErrorItem = mem;
+            }
+            else {
+                errorInfo.lastErrorItem->next = mem;
+                errorInfo.lastErrorItem = mem;
+            }
+
+            mem->errorId = getErrorId(errorCode);
+            const char* reason = getErrorMessage(errorCode);
+            if (reason == nullptr) {
+                reason = "";
+            }
+            int len = (int)strlen(reason);
+            mem->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
+            memcpy(mem->reason, reason, mem->reasonLength);
+            mem->reason[mem->reasonLength] = '\0';
+        }
+
+        static bool getLineAndPos(int pos, const utf8byte *text, int textLength, int *line, int *charactor) {
+            int currentLine = 0;
+            int currentCharactor = 0;
+            int lineFirstPos = 0;
+
+            for (int32_t i = 0; i < textLength; i++) {
+
+                if (i == pos) {
+                    *line = currentLine;
+                    *charactor = ParseUtil::utf16_length(text + lineFirstPos, currentCharactor);
+                    return true;
+                }
+
+                currentCharactor++;
+
+                utf8byte ch = text[i];
+                //if (ParseUtil::isBreakLine(ch)) {
+                if ('\n' == ch) {
+                    currentCharactor = 0;
+                    currentLine++;
+                    lineFirstPos = i;
+                }
+            }
+
+            return false;
         }
     };
 
@@ -247,7 +332,7 @@ namespace smart
         static int startScript(char* script, int byteLength);
 
         static _ScriptEnv* loadScript(char* script, int byteLength);
-        int validateScript();
+        int validateScript() const;
         int runScriptEnv();
 
         void registerTypeEntry(TypeEntry* typeEntry);

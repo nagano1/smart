@@ -57,16 +57,16 @@ namespace smart {
 
     static int FuncArgumentItemStruct_applyFuncToDescendants(
             FuncArgumentItemStruct *node, void *targetVTable,
-            int (*func)(NodeBase *, void *, void *, void *, int )
-            , void *arg, int argLen)
+            int (*func)(NodeBase *, void *, void *, void *, void *)
+            , void *arg, void *arg2)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
         }
         if (node->exprNode) {
             node->exprNode->vtable->applyFuncToDescendants(
                 Cast::upcast(node->exprNode),
-                targetVTable, func, arg, argLen);
+                targetVTable, func, arg, arg2);
         }
         return 0;
     }
@@ -245,17 +245,17 @@ namespace smart {
 
     static int callfunc_applyFuncToDescendants(
             CallFuncNodeStruct *node, void *targetVTable,
-            int (*func)(NodeBase *, void *, void *, void *, int )
-            , void *arg, int argLen)
+            int (*func)(NodeBase *, void *, void *, void *, void *)
+            , void *arg, void *arg2)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
         }
 
         if (node->exprNode) {
             node->exprNode->vtable->applyFuncToDescendants(
                     Cast::upcast(node->exprNode),
-                    targetVTable, func, arg, argLen);
+                    targetVTable, func, arg, arg2);
         }
         return 0;
     }
@@ -343,18 +343,18 @@ namespace smart {
 
     static int BodyNodeStruct_applyFuncToDescendants(
             BodyNodeStruct *node, void *targetVTable,
-            int (*func)(NodeBase *, void *, void *, void *, int )
-            , void *arg, int argLen)
+            int (*func)(NodeBase *, void *, void *, void *, void *)
+            , void *arg, void *arg2)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
         }
 
         auto *child = node->firstChildNode;
         while (child) {
             child->vtable->applyFuncToDescendants(
                     Cast::upcast(child),
-                    targetVTable, func, arg, argLen);
+                    targetVTable, func, arg, arg2);
             child = child->nextNode;
         }
 
@@ -568,11 +568,11 @@ namespace smart {
 
     static int FuncParameterItemStruct_applyFuncToDescendants(
             FuncParameterItemStruct *node, void *targetVTable,
-            int (*func)(NodeBase *, void *, void *, void *, int )
-            , void *arg, int argLen)
+            int (*func)(NodeBase *, void *, void *, void *, void *)
+            , void *arg, void *arg2)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
         }
         return 0;
     }
@@ -660,16 +660,16 @@ namespace smart {
 
     static int FuncNodeStruct_applyFuncToDescendants(
             FuncNodeStruct *node, void *targetVTable,
-            int (*func)(NodeBase *, void *, void *, void *, int )
-            , void *arg, int argLen)
+            int (*func)(NodeBase *, void *, void *, void *, void *)
+            , void *arg, void *arg2)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
         }
         //if (node->bodyNode) {
             node->bodyNode.vtable->applyFuncToDescendants(
                     reinterpret_cast<NodeBase *>(&node->bodyNode),
-                    targetVTable, func, arg, argLen);
+                    targetVTable, func, arg, arg2);
         //}
         return 0;
     }

@@ -683,7 +683,7 @@ namespace smart {
         int (*selfTextLength)(T *self); \
         const utf8byte *(*selfText)(T *self); \
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
-        int (*applyFuncToDescendants)(T *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, int argLen), void *arg, int argLen); \
+        int (*applyFuncToDescendants)(T *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, void *arg2), void *arg, void *arg2); \
         const char *typeChars; \
         int typeCharsLength; \
         int (*typeSelector)(void *env, NodeBase *self);     \

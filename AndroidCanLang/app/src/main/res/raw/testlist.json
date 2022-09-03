@@ -235,7 +235,7 @@
 		"testname": "MallocItem_test1",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, MallocItem_test1)\r\n    {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        int* mem;\r\n        for (int i = 0; i < 1024; i++) {\r\n            mem = (int*)env->context->mallocItem(sizeof(int));\r\n            *mem = 53;\r\n\r\n            if (i % 3 == 2) {\r\n                env->context->freeItem(mem);\r\n            }\r\n        }\r\n\r\n        console_log(\"test\");\r\n\r\n        EXPECT_EQ(*mem, 53);\r\n        EXPECT_NE(env->context->memBufferForMalloc.firstBufferBlock, env->context->memBufferForMalloc.currentBufferBlock);\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n\r\n\r\n    }\r\n\r\n    "
+		"body": "TEST(ScriptEngine, MallocItem_test1)\r\n    {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        int* mem;\r\n        for (int i = 0; i < 1024; i++) {\r\n            mem = (int*)env->context->mallocItem(sizeof(int));\r\n            *mem = 53;\r\n\r\n            if (i % 3 == 2) {\r\n                env->context->freeItem(mem);\r\n            }\r\n        }\r\n\r\n        console_log(\"test\");\r\n\r\n        EXPECT_EQ(*mem, 53);\r\n        EXPECT_NE(env->context->memBufferForMalloc2.firstBufferBlock, env->context->memBufferForMalloc2.currentBufferBlock);\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n\r\n\r\n    }\r\n\r\n    "
 	},
 	{
 		"testcasename": "ScriptEngine",

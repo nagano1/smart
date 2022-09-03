@@ -37,7 +37,7 @@ namespace smart {
         return currentCodeLine;
     }
 
-    static int applyFuncToDescendants(DocumentStruct *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, int argLen), void *arg, int argLen) {
+    static int applyFuncToDescendants(DocumentStruct *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, void *arg2), void *arg, void *arg2) {
 
 
         return 0;

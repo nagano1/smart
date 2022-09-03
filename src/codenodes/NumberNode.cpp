@@ -82,11 +82,11 @@ namespace smart {
 
     static int BoolNodeStruct_applyFuncToDescendants(
             BoolNodeStruct *node, void *targetVTable,
-            int (*func)(NodeBase *, void *, void *, void *, int )
-            , void *arg, int argLen)
+            int (*func)(NodeBase *, void *, void *, void *, void *)
+            , void *arg, void *arg2)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
         }
 
         return 0;
@@ -181,11 +181,11 @@ namespace smart {
 
     static int NumberNodeStruct_applyFuncToDescendants(
             NumberNodeStruct *node, void *targetVTable,
-            int (*func)(NodeBase *, void *, void *, void *, int )
-            , void *arg, int argLen)
+            int (*func)(NodeBase *, void *, void *, void *, void *arg2)
+            , void *arg, void *arg2)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
         }
 
         return 0;
@@ -342,10 +342,10 @@ namespace smart {
         return -1;
     }
 
-    static int parentheses_applyFuncToDescendants(ParenthesesNodeStruct *node, void *targetVTable, int (*func)(NodeBase *, void *, void *, void *, int ), void *arg, int argLen) {
+    static int parentheses_applyFuncToDescendants(ParenthesesNodeStruct *node, void *targetVTable, int (*func)(NodeBase *, void *, void *, void *, void *), void *arg, void *arg2) {
 
         if (node->valueNode) {
-            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, argLen);
+            node->valueNode->vtable->applyFuncToDescendants(node->valueNode, targetVTable, func, arg, arg2);
         }
         return 0;
     }
@@ -429,21 +429,21 @@ namespace smart {
 
     static int BinaryOperationNodeStruct_applyFuncToDescendants(
             BinaryOperationNodeStruct *node, void *targetVTable,
-            int (*func)(NodeBase *, void *, void *, void *, int )
-            , void *arg, int argLen)
+            int (*func)(NodeBase *, void *, void *, void *, void *)
+            , void *arg, void *arg2)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, argLen);
+            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
         }
 
         if (node->leftExprNode) {
             node->leftExprNode->vtable->applyFuncToDescendants(node->leftExprNode,
-                                                           targetVTable, func, arg, argLen);
+                                                           targetVTable, func, arg, arg2);
         }
 
         if (node->rightExprNode) {
             node->rightExprNode->vtable->applyFuncToDescendants(node->rightExprNode,
-                                                            targetVTable, func, arg, argLen);
+                                                            targetVTable, func, arg, arg2);
         }
         return 0;
     }
