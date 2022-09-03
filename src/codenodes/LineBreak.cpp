@@ -55,12 +55,10 @@ namespace smart {
         return currentCodeLine;
     }
 
-    static int applyFuncToDescendants(LineBreakNodeStruct *node, void *targetVTable,
-                               int (*func)(NodeBase *, void *, void *, void *, void *)
-            , void *arg, void *arg2) {
+    static int applyFuncToDescendants(LineBreakNodeStruct *node, ApplyFunc_params) {
 
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
+            func(Cast::upcast(node), ApplyFunc_pass);
         }
 
         return 0;

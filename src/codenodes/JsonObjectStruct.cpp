@@ -61,9 +61,7 @@ namespace smart {
         return 0;
     }
 
-    static int applyFuncToDescendants(JsonKeyValueItemStruct *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, void *arg2), void *arg, void *arg2) {
-
-
+    static int applyFuncToDescendants(JsonKeyValueItemStruct *Node, ApplyFunc_params) {
         return 0;
     }
 
@@ -115,12 +113,10 @@ namespace smart {
         return self->textLength;
     }
 
-    static int JsonObjectKeyNodeStruct_applyFuncToDescendants(JsonObjectKeyNodeStruct *node, void *targetVTable,
-                               int (*func)(NodeBase *, void *, void *, void *, void *)
-            , void *arg, void *arg2) {
-
+    static int JsonObjectKeyNodeStruct_applyFuncToDescendants(JsonObjectKeyNodeStruct *node, ApplyFunc_params)
+    {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
+            func(Cast::upcast(node), ApplyFunc_pass);
         }
 
         return 0;
@@ -232,18 +228,15 @@ namespace smart {
         return currentCodeLine;
     }
 
-    static int JsonObjectStruct_applyFuncToDescendants(
-            JsonObjectStruct *node, void *targetVTable,
-            int (*func)(NodeBase *, void *, void *, void *, void *)
-            , void *arg, void *arg2)
+    static int JsonObjectStruct_applyFuncToDescendants(JsonObjectStruct *node, ApplyFunc_params)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), targetVTable, (void *)func, arg, arg2);
+            func(Cast::upcast(node), ApplyFunc_pass);
         }
 
         JsonKeyValueItemStruct *item = node->firstKeyValueItem;
         while (item != nullptr) {
-            item->vtable->applyFuncToDescendants(Cast::upcast(item), targetVTable, func, arg, arg2);
+            item->vtable->applyFuncToDescendants(Cast::upcast(item), ApplyFunc_pass2);
 
             if (item->nextNode == nullptr) { break; }
             item = Cast::downcast<JsonKeyValueItemStruct *>(item->nextNode);

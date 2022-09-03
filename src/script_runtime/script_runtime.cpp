@@ -493,13 +493,14 @@ namespace smart {
     //
     //------------------------------------------------------------------------------------------
 
-    static int findVariableAndSearchAssignment(NodeBase *node, void *targetVTable, void *func, void* arg, void *arg2)
+    static int variableFound_SearchCorrespondAssignment(NodeBase *node, void *context, void *targetVTable, void *func, void* arg, void *arg2)
     {
         auto *vari = Cast::downcast<VariableNodeStruct *>(node);
+        vari->stackOffset2 = -1;
 
         auto *variableTop = Cast::downcast<NodeBase*>(arg);
         auto *body = Cast::downcast<BodyNodeStruct*>(variableTop->parentNode);
-        //auto *funcNode = Cast::downcast<FuncNodeStruct*>(body->parentNode);
+        // auto *funcNode = Cast::downcast<FuncNodeStruct*>(body->parentNode);
 
         auto *bodyChild = body->firstChildNode;
         bool found = false;
@@ -515,26 +516,26 @@ namespace smart {
                 if (ParseUtil::equal(vari->name, vari->nameLength,
                                      assignState->nameNode.name, assignState->nameNode.nameLength)) {
                     vari->stackOffset2 = assignState->stackOffset;
+                    found = true;
                 }
             }
 
             bodyChild = bodyChild->nextNode;
         }
 
-        /*
-
-        */
-        return 0;
+        return found ? 1 : 0;
     }
 
 
-    static int validateFunc(FuncNodeStruct *func)
+    static int validateFunc(ScriptEngineContext *context, FuncNodeStruct *func)
     {
         auto *child = func->bodyNode.firstChildNode;
         while (child) {
-            child->vtable->applyFuncToDescendants(child,
-                                                  (void *) VTables::VariableVTable,
-                                                  findVariableAndSearchAssignment,
+            child->vtable->applyFuncToDescendants(
+                    child,
+                    (void*)context,
+                    (void *) VTables::VariableVTable,
+                                                  variableFound_SearchCorrespondAssignment,
                                                   (void *) child,
                                                   0);
             child = child->nextNode;
@@ -555,7 +556,7 @@ namespace smart {
             if (rootNode->vtable == VTables::FnVTable) {
                 // fn
                 auto *fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
-                int thisErrorCode = validateFunc(fnNode);
+                int thisErrorCode = validateFunc(this->context, fnNode);
                 if (thisErrorCode > 0) {
                     errorCode = thisErrorCode;
                 }
@@ -623,7 +624,7 @@ namespace smart {
     }
 
 
-    int setStackOffsetToVariable(NodeBase *node, void *targetVTable, void *func, void* arg, void *arg2) {
+    int setStackOffsetToVariable(NodeBase *node, void *context, void *targetVTable, void *func, void* arg, void *arg2) {
         auto *vari = Cast::downcast<VariableNodeStruct *>(node);
         auto *assignment = Cast::downcast<AssignStatementNodeStruct*>(arg);
 
@@ -636,6 +637,7 @@ namespace smart {
 
 
     static void setStackOffsetToVariables(
+                                ScriptEngineContext *context,
                                 FuncNodeStruct *func,
                                 const AssignStatementNodeStruct *assignment,
                                 _NodeBase *currentStatement)
@@ -643,6 +645,7 @@ namespace smart {
         auto* statementNode = currentStatement->nextNode;
         while (statementNode) {
             statementNode->vtable->applyFuncToDescendants(Cast::upcast(statementNode),
+                                                          (void*)context,
                                                           (void *) VTables::VariableVTable,
                                                           setStackOffsetToVariable,
                                                           (void *) assignment,
@@ -698,7 +701,7 @@ namespace smart {
                         stackSize += typeEntry->stackSize;
                         currentStackOffset += typeEntry->stackSize;
 
-                        setStackOffsetToVariables(func, assignment, statementNode);
+                        setStackOffsetToVariables(env->context, func, assignment, statementNode);
                     }
                     else {
                         // type resolve error

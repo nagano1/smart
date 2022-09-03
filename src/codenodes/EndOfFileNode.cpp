@@ -38,9 +38,7 @@ namespace smart {
     static const char endOfFileTypeText[] = "<EndOfFile>";
 
 
-    static int applyFuncToDescendants(EndOfFileNodeStruct *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, void *arg2), void *arg, void *arg2) {
-
-
+    static int applyFuncToDescendants(EndOfFileNodeStruct *Node, ApplyFunc_params) {
         return 0;
     }
 

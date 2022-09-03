@@ -80,9 +80,7 @@ namespace smart {
 
     static constexpr const char classTypeText[] = "<Class>";
 
-    static int applyFuncToDescendants(ClassNodeStruct *Node, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *targetVTable, void *func, void *arg, void *arg2), void *arg, void *arg2) {
-
-
+    static int applyFuncToDescendants(ClassNodeStruct *Node, ApplyFunc_params) {
         return 0;
     }
 
