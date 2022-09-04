@@ -63,7 +63,7 @@ static void testJsonSyntaxError(const char* codeText, int textlen, ErrorCode err
 
     auto* context = document->context;
     EXPECT_EQ(context->syntaxErrorInfo.hasError, true);
-    EXPECT_EQ(context->syntaxErrorInfo.errorCode, errorCode);
+    EXPECT_EQ(context->syntaxErrorInfo.errorItem.errorCode, errorCode);
 
     Alloc::deleteDocument(document);
 }
@@ -80,7 +80,7 @@ static void testSyntaxError(const char* codeText, int textlen, ErrorCode errorCo
 
     auto* context = document->context;
     EXPECT_EQ(context->syntaxErrorInfo.hasError, true);
-    EXPECT_EQ(context->syntaxErrorInfo.errorCode, errorCode);
+    EXPECT_EQ(context->syntaxErrorInfo.errorItem.errorCode, errorCode);
 
     Alloc::deleteDocument(document);
 }

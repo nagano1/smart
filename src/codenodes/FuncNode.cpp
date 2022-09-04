@@ -35,11 +35,11 @@ namespace smart {
         currentCodeLine->appendNode(self);
 
         if (self->exprNode) {
-            currentCodeLine = VTableCall::appendToLine(self->exprNode, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(self->exprNode, currentCodeLine);
         }
 
         if (self->hasComma) {
-            currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(&self->follwingComma, currentCodeLine);
         }
 
         return currentCodeLine;
@@ -104,27 +104,27 @@ namespace smart {
         // currentCodeLine = currentCodeLine->addPrevLineBreakNode(self->exprNode);
 
         if (self->exprNode) {
-            currentCodeLine = VTableCall::appendToLine(self->exprNode, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(self->exprNode, currentCodeLine);
         }
 
         //int formerParentDepth = self->context->parentDepth;
         //self->context->parentDepth += 1;
         //self->context->parentDepth = formerParentDepth;
 
-        currentCodeLine = VTableCall::appendToLine(&self->openNode, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&self->openNode, currentCodeLine);
 
         self->context->parentDepth += 1;
 
         auto *item = self->firstArgumentItem;
         while (item != nullptr) { // NOLINT(altera-unroll-loops,altera-id-dependent-backward-branch)
-            currentCodeLine = VTableCall::appendToLine(item, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(item, currentCodeLine);
             item = Cast::downcast<FuncArgumentItemStruct *>(item->nextNode);
         }
 
         self->context->parentDepth -= 1;
 
 
-        currentCodeLine = VTableCall::appendToLine(&self->closeNode2, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&self->closeNode2, currentCodeLine);
 
         return currentCodeLine;
     }
@@ -311,14 +311,14 @@ namespace smart {
         {
             auto *child = classNode->firstChildNode;
             while (child) {
-                currentCodeLine = VTableCall::appendToLine(child, currentCodeLine);
+                currentCodeLine = VTableCall::callAppendToLine(child, currentCodeLine);
                 child = child->nextNode;
             }
         }
 
 
         auto *prevCodeLine = currentCodeLine;
-        currentCodeLine = VTableCall::appendToLine(&classNode->endBodyNode, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&classNode->endBodyNode, currentCodeLine);
 
         if (prevCodeLine != currentCodeLine) {
             currentCodeLine->depth = formerParentDepth + 1;
@@ -476,13 +476,13 @@ namespace smart {
         currentCodeLine->appendNode(self);
 
         if (self->assignStatementNodeStruct) {
-            currentCodeLine = VTableCall::appendToLine(self->assignStatementNodeStruct, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(self->assignStatementNodeStruct, currentCodeLine);
         }
-        //currentCodeLine = VTableCall::appendToLine(&self->typeNode, currentCodeLine);
-        //currentCodeLine = VTableCall::appendToLine(&self->nameNode, currentCodeLine);
+        //currentCodeLine = VTableCall::callAppendToLine(&self->typeNode, currentCodeLine);
+        //currentCodeLine = VTableCall::callAppendToLine(&self->nameNode, currentCodeLine);
 
         if (self->hasComma) {
-            currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(&self->follwingComma, currentCodeLine);
         }
 
         return currentCodeLine;
@@ -620,27 +620,27 @@ namespace smart {
 
         auto formerParentDepth = self->context->parentDepth;
         self->context->parentDepth += 1;
-        currentCodeLine = VTableCall::appendToLine(&classNode->nameNode, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&classNode->nameNode, currentCodeLine);
         self->context->parentDepth = formerParentDepth;
 
 
 
 
-        currentCodeLine = VTableCall::appendToLine(&classNode->parameterStartNode, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&classNode->parameterStartNode, currentCodeLine);
 
         self->context->parentDepth += 1;
 
         auto *item = self->firstChildParameterNode;
         while (item != nullptr) {
-            currentCodeLine = VTableCall::appendToLine(item, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(item, currentCodeLine);
             item = Cast::downcast<FuncParameterItemStruct *>(item->nextNode);
         }
 
         self->context->parentDepth -= 1;
 
-        currentCodeLine = VTableCall::appendToLine(&classNode->parameterEndNode, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&classNode->parameterEndNode, currentCodeLine);
 
-        currentCodeLine = VTableCall::appendToLine(&classNode->bodyNode, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&classNode->bodyNode, currentCodeLine);
 
         return currentCodeLine;
     }

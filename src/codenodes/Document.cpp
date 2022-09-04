@@ -18,22 +18,22 @@ namespace smart {
 
     // --------------------- Defines Document VTable ----------------------
 
-    static int selfTextLength(DocumentStruct * self) {
+    static int selfTextLength(DocumentStruct *self) {
 
         return 5;
     }
 
-    static const char *selfText(DocumentStruct * self) {
+    static const char *selfText(DocumentStruct *self) {
         return "";
     }
 
     static CodeLine *appendToLine(DocumentStruct *self, CodeLine *currentCodeLine) {
         auto *child = self->firstRootNode;
         while (child) {
-            currentCodeLine = VTableCall::appendToLine(child, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(child, currentCodeLine);
             child = child->nextNode;
         }
-        currentCodeLine = VTableCall::appendToLine(&self->endOfFile, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&self->endOfFile, currentCodeLine);
         return currentCodeLine;
     }
 
@@ -45,7 +45,8 @@ namespace smart {
     static constexpr const char DocumentTypeText[] = "<Document>";
 
     static node_vtable DocumentVTable_ = CREATE_VTABLE(DocumentStruct, selfTextLength, selfText,
-                                                       appendToLine, applyFuncToDescendants, DocumentTypeText, NodeTypeId::Document);
+                                                       appendToLine, applyFuncToDescendants,
+                                                       DocumentTypeText, NodeTypeId::Document);
 
     const node_vtable *VTables::DocumentVTable = &DocumentVTable_;
 
@@ -80,7 +81,8 @@ namespace smart {
         doc->firstCodeLine = nullptr;
         doc->nodeCount = 0;
 
-        context->memBuffer.init();
+        context->init();
+
         /*
         context->spaceBufferList.init();
         context->lineBreakBufferList.init();
@@ -115,14 +117,13 @@ namespace smart {
         }
 */
 
-        doc->context->memBuffer.freeAll();
+        doc->context->dispose();
         free(doc->context);
         free(doc);
     }
 
 
-    utf8byte *DocumentUtils::getTextFromNode(NodeBase *node)
-    {
+    utf8byte *DocumentUtils::getTextFromNode(NodeBase *node) {
         int len = VTableCall::selfTextLength(node);
 
         int prev_char = node->prev_chars; // = '\0' ? 1 : 0;
@@ -141,8 +142,7 @@ namespace smart {
         return text;
     }
 
-    utf8byte *DocumentUtils::getTextFromLine(CodeLine *line)
-    {
+    utf8byte *DocumentUtils::getTextFromLine(CodeLine *line) {
         return nullptr;
         /*
         int totalCount = 0;
@@ -213,7 +213,7 @@ namespace smart {
 
                     {
                         auto *chs = VTableCall::selfText(node);
-                        if (node->prev_chars >0 ) {
+                        if (node->prev_chars > 0) {
                             for (int i = 0; i < node->prev_chars; i++) {
                                 text[currentOffset] = ' ';
                                 currentOffset++;
@@ -238,7 +238,6 @@ namespace smart {
 
         return text;
     }
-
 
 
     JsonObjectStruct *DocumentUtils::generateHashTables(DocumentStruct *doc) {
@@ -273,14 +272,14 @@ namespace smart {
     }
 
 
-
-    static int getTokenTypeId(NodeBase *node, int i) { // NOLINT(readability-function-cognitive-complexity)
+    static int
+    getTokenTypeId(NodeBase *node, int i) { // NOLINT(readability-function-cognitive-complexity)
 
         auto *targetNode = node;
         if (targetNode->vtable == VTables::SimpleTextVTable) {
             targetNode = targetNode->parentNode;
         }
-        
+
         if (targetNode->vtable == VTables::VariableVTable) {
             if (targetNode->parentNode->vtable == VTables::CallFuncVTable) {
                 targetNode = targetNode->parentNode;
@@ -289,64 +288,50 @@ namespace smart {
 
         if (targetNode->vtable == VTables::BlockCommentFragmentVTable
             || targetNode->vtable == VTables::LineCommentVTable) {
-            return (int)TokenTypeIds::commentId;
-        }
-        else if (targetNode->vtable == VTables::BoolVTable) {
+            return (int) TokenTypeIds::commentId;
+        } else if (targetNode->vtable == VTables::BoolVTable) {
             return -1;
-        }
-        else if (targetNode->vtable == VTables::NullVTable) {
+        } else if (targetNode->vtable == VTables::NullVTable) {
             return -1;
-        }
-        else if (targetNode->vtable == VTables::NumberVTable) {
-            return (int)TokenTypeIds::numberId;
-        }
-        else if (targetNode->vtable == VTables::StringLiteralVTable) {
-            return (int)TokenTypeIds::stringId;
-        }
-        else if (targetNode->vtable == VTables::CallFuncVTable) {
-            return (int)TokenTypeIds::functionId;
-        }
-        else if (targetNode->vtable == VTables::VariableVTable) {
-            return (int)TokenTypeIds::variableId;
-        }
-        else if (targetNode->vtable == VTables::SimpleTextVTable) {
+        } else if (targetNode->vtable == VTables::NumberVTable) {
+            return (int) TokenTypeIds::numberId;
+        } else if (targetNode->vtable == VTables::StringLiteralVTable) {
+            return (int) TokenTypeIds::stringId;
+        } else if (targetNode->vtable == VTables::CallFuncVTable) {
+            return (int) TokenTypeIds::functionId;
+        } else if (targetNode->vtable == VTables::VariableVTable) {
+            return (int) TokenTypeIds::variableId;
+        } else if (targetNode->vtable == VTables::SimpleTextVTable) {
             return -1;//(int)TokenTypeIds::keywordId;
-        }
-        else if (targetNode->vtable == VTables::ClassVTable) {
+        } else if (targetNode->vtable == VTables::ClassVTable) {
             return -1;//(int)TokenTypeIds::myclass;
 
-        }
-        else if (targetNode->vtable == VTables::FnVTable) {
+        } else if (targetNode->vtable == VTables::FnVTable) {
             return -1;
-        }
-        else if (targetNode->vtable == VTables::SymbolVTable) {
-            return (int)TokenTypeIds::keywordId;
-        }
-        else if (targetNode->vtable == VTables::AssignStatementVTable) {
-            auto *assign = Cast::downcast<AssignStatementNodeStruct*>(targetNode);
+        } else if (targetNode->vtable == VTables::SymbolVTable) {
+            return (int) TokenTypeIds::keywordId;
+        } else if (targetNode->vtable == VTables::AssignStatementVTable) {
+            auto *assign = Cast::downcast<AssignStatementNodeStruct *>(targetNode);
             if (assign->typeOrLet.hasMutMark || assign->typeOrLet.hasNullableMark) {
                 if (i == 0) {
                     return (int) TokenTypeIds::numberId;
                 }
             }
             return -1;//(int) TokenTypeIds::keywordId;
-        }
-        else if (targetNode->vtable == VTables::NameVTable) {
+        } else if (targetNode->vtable == VTables::NameVTable) {
             if (targetNode->parentNode->vtable == VTables::FnVTable) {
-                return (int)TokenTypeIds::functionId;
-            }
-            else if (targetNode->parentNode->vtable == VTables::ClassVTable) {
-                return (int)TokenTypeIds::classId;
-            }
-            else {
-                return (int)TokenTypeIds::variableId;
+                return (int) TokenTypeIds::functionId;
+            } else if (targetNode->parentNode->vtable == VTables::ClassVTable) {
+                return (int) TokenTypeIds::classId;
+            } else {
+                return (int) TokenTypeIds::variableId;
             }
         }
         return -1;
     }
 
-    static void splitCharsIfYouWant(NodeBase *node, int *len0, int *utf16Len0, int *len1, int *utf16Len1)
-    {
+    static void
+    splitCharsIfYouWant(NodeBase *node, int *len0, int *utf16Len0, int *len1, int *utf16Len1) {
         auto *chs = VTableCall::selfText(node);
         int len = VTableCall::selfTextLength(node);
         *utf16Len0 = ParseUtil::utf16_length(chs, len);
@@ -357,12 +342,12 @@ namespace smart {
         }
 
         if (targetNode->vtable == VTables::AssignStatementVTable) {
-            auto *assign = Cast::downcast<AssignStatementNodeStruct*>(targetNode);
+            auto *assign = Cast::downcast<AssignStatementNodeStruct *>(targetNode);
             if (assign->typeOrLet.hasMutMark || assign->typeOrLet.hasNullableMark) {
                 *utf16Len1 = *utf16Len0 - 1;
                 *len0 = 1;
                 *utf16Len0 = 1;
-                *len1 = len -1;
+                *len1 = len - 1;
                 return;
             }
         }
@@ -374,8 +359,7 @@ namespace smart {
     }
 
     static inline int addSemanticTokens(NodeBase *node, char *text, int currentLineNo, bool *first,
-                                        int *prevSetLine, int *prevSetStart, int *charPos)
-    {
+                                        int *prevSetLine, int *prevSetStart, int *charPos) {
         int len0 = 0, len1 = 0, utf16Len0 = 0, utf16Len1 = 0;
         splitCharsIfYouWant(node, &len0, &utf16Len0, &len1, &utf16Len1);
 
@@ -417,7 +401,7 @@ namespace smart {
 
 
 // { line: 2, startChar:  5, length: 3, tokenType: 0, tokenModifiers: 3 },
-    static int getSemanticTokensLength(DocumentStruct *doc, char* text, int line0, int line1) {
+    static int getSemanticTokensLength(DocumentStruct *doc, char *text, int line0, int line1) {
         int totalByteCount = 0;
         {
             static char buff[255];
@@ -444,8 +428,9 @@ namespace smart {
                         charPos += node->prev_chars;
 
                         char *dst = text != nullptr ? text + totalByteCount : buff;
-                        int writeBytes = addSemanticTokens(node, dst, currentLineNo, &first, &prevLine,
-                                          &prevStart, &charPos);
+                        int writeBytes = addSemanticTokens(node, dst, currentLineNo, &first,
+                                                           &prevLine,
+                                                           &prevStart, &charPos);
                         totalByteCount += writeBytes;
 
                         node = node->nextNodeInLine;
@@ -460,8 +445,8 @@ namespace smart {
     }
 
 
-    utf8byte *DocumentUtils::getSemanticTokensTextFromTree(DocumentStruct *doc, int *len, int line0, int line1)
-    {
+    utf8byte *DocumentUtils::getSemanticTokensTextFromTree(DocumentStruct *doc, int *len, int line0,
+                                                           int line1) {
         int totalCount = getSemanticTokensLength(doc, nullptr, line0, line1);
 
         *len = totalCount;
@@ -502,7 +487,7 @@ namespace smart {
                 while (node) {
                     auto *chs = VTableCall::selfText(node);
                     if (node->prev_chars > 0) {
-                        for (int i = 0; i < node->prev_chars; i++ ) {
+                        for (int i = 0; i < node->prev_chars; i++) {
                             text[currentOffset] = ' ';//node->prev_char;
                             currentOffset++;
                         }
@@ -523,8 +508,7 @@ namespace smart {
     }
 
 
-    static void appendRootNode(DocumentStruct *doc, NodeBase *node)
-    {
+    static void appendRootNode(DocumentStruct *doc, NodeBase *node) {
         if (doc->firstRootNode == nullptr) {
             doc->firstRootNode = node;
         }
@@ -536,17 +520,15 @@ namespace smart {
     }
 
 
-    static int tryTokenize(TokenizerParams_parent_ch_start_context)
-    {
+    static int tryTokenize(TokenizerParams_parent_ch_start_context) {
         int result;
 
         if (-1 < (result = Tokenizers::classTokenizer(parent, ch, start, context))) {
             auto *doc = Cast::downcast<DocumentStruct *>(parent);
             appendRootNode(doc, context->virtualCodeNode);
             return result;
-        }
-        else if (-1 < (result = Tokenizers::fnTokenizer(parent, ch, start, context))) {
-            auto* doc = Cast::downcast<DocumentStruct*>(parent);
+        } else if (-1 < (result = Tokenizers::fnTokenizer(parent, ch, start, context))) {
+            auto *doc = Cast::downcast<DocumentStruct *>(parent);
             appendRootNode(doc, context->virtualCodeNode);
             return result;
         }
@@ -563,8 +545,7 @@ namespace smart {
     }
 
 
-    static int tryTokenizeJson(TokenizerParams_parent_ch_start_context)
-    {
+    static int tryTokenizeJson(TokenizerParams_parent_ch_start_context) {
         int result;
         if (-1 < (result = Tokenizers::jsonObjectTokenizer(parent, ch, start, context))) {
             auto *doc = Cast::downcast<DocumentStruct *>(parent);
@@ -579,8 +560,7 @@ namespace smart {
         return -1;
     }
 
-    static void callAllLineEvent(DocumentStruct *docStruct, CodeLine *line, ParseContext *context)
-    {
+    static void callAllLineEvent(DocumentStruct *docStruct, CodeLine *line, ParseContext *context) {
         CodeLine *prev = nullptr;
         int lineCount = 0;
         while (line) {
@@ -595,6 +575,16 @@ namespace smart {
         context->actionCreator(docStruct, nullptr, EventType::FirstLineChanged);
     }
 
+    void DocumentUtils::regenerateCodeLines(DocumentStruct *docStruct)
+    {
+        auto *context = docStruct->context;
+        context->memBufferForCodeLines.freeAll();
+        context->memBufferForCodeLines.init();
+        docStruct->firstCodeLine = context->newCodeLine();
+        docStruct->firstCodeLine->init(context);
+
+        VTableCall::callAppendToLine(docStruct, docStruct->firstCodeLine);
+    }
 
     void DocumentUtils::parseText(DocumentStruct *docStruct, const utf8byte *text, int length)
     {
@@ -602,10 +592,10 @@ namespace smart {
 
         auto *context = docStruct->context;
         context->syntaxErrorInfo.hasError = false;
-        context->syntaxErrorInfo.errorCode = ErrorCode::no_syntax_error;
-        context->syntaxErrorInfo.errorId = 10000;
-        context->syntaxErrorInfo.charPosition = -1;
-        context->syntaxErrorInfo.charPosition2 = -1;
+        context->syntaxErrorInfo.errorItem.errorCode = ErrorCode::no_syntax_error;
+        context->syntaxErrorInfo.errorItem.errorId = 10000;
+        context->syntaxErrorInfo.errorItem.charPosition = -1;
+        context->syntaxErrorInfo.errorItem.charPosition2 = -1;
         context->chars = const_cast<utf8byte *>(text);
         context->start = 0;
         context->scanEnd = false;
@@ -622,6 +612,7 @@ namespace smart {
         context->parentDepth = -1;
         context->arithmeticBaseDepth = -1;
         context->afterLineBreak = false;
+        context->errorDetectRevision = 0;
 
         context->unusedAssignment = nullptr;
         context->unusedClassNode = nullptr;
@@ -647,10 +638,8 @@ namespace smart {
             docStruct->lastRootNode->prevLineBreakNode = context->remainedLineBreakNode;
             docStruct->lastRootNode->prevCommentNode = context->remainedCommentNode;
 
-            docStruct->firstCodeLine = context->newCodeLine();// simpleMalloc<CodeLine>();
-            docStruct->firstCodeLine->init(context);
-
-            VTableCall::appendToLine(docStruct, docStruct->firstCodeLine);
+            context->errorDetectRevision += 1;
+            DocumentUtils::regenerateCodeLines(docStruct);
 
             DocumentUtils::assignIndents(docStruct);
             DocumentUtils::checkIndentSyntaxErrors(docStruct);

@@ -42,6 +42,7 @@ namespace smart {
         _NodeBase *nextNodeInLine; \
         CodeLine *line; \
         int indentType; \
+        int useErrorInfoRevisionIndex; \
         void *prevCommentNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
         ParseContext *context; \
@@ -56,6 +57,7 @@ namespace smart {
         (node)->parentNode = (NodeBase*)(parent); \
         (node)->line = nullptr; \
         (node)->found = -1; \
+        (node)->useErrorInfoRevisionIndex = 0; \
         (node)->nextNode = nullptr; \
         (node)->nextNodeInLine = nullptr; \
         (node)->prevLineBreakNode = nullptr; \
@@ -452,6 +454,7 @@ namespace smart {
         NodeBase *virtualCodeNode;
         int baseIndent;
         utf8byte *chars;
+        int errorDetectRevision;
         SyntaxErrorInfo syntaxErrorInfo;
         bool has_cancel_request{false};
         bool has_depth_error{false};
@@ -470,10 +473,21 @@ namespace smart {
         int remaindPrevChars{0};
 
         MemBuffer memBuffer;
+        MemBuffer memBufferForCodeLines;
 
         void setCodeNode(void* node) {
             this->leftNode = static_cast<NodeBase *>(node);
             this->virtualCodeNode = static_cast<NodeBase *>(node);
+        }
+
+        void init() {
+            memBuffer.init();
+            memBufferForCodeLines.init();
+        }
+
+        void dispose() {
+            memBuffer.freeAll();
+            memBufferForCodeLines.freeAll();
         }
 
         template<typename T>
@@ -497,7 +511,7 @@ namespace smart {
         }
 
         CodeLine *newCodeLine() {
-            return memBuffer.newMem<CodeLine>(1);
+            return memBufferForCodeLines.newMem<CodeLine>(1);
         }
 
         template<typename T>
@@ -522,7 +536,7 @@ namespace smart {
                           reinterpret_cast<int *>(&a),
                           reinterpret_cast<int *>(&b));
 
-            errorInfo.charPosition = startPos;
+            errorInfo.errorItem.charPosition = startPos;
 
 
             this->setError3(errorCode, a, b, -1, -1);
@@ -551,8 +565,8 @@ namespace smart {
                           reinterpret_cast<int *>(&d));
 
 
-            errorInfo.charPosition = startPos;
-            errorInfo.charPosition2 = startPos2;
+            errorInfo.errorItem.charPosition = startPos;
+            errorInfo.errorItem.charPosition2 = startPos2;
 
             this->setError3(errorCode, a, b, c, d);
         }
@@ -572,24 +586,24 @@ namespace smart {
                 return;
             }
 
-            errorInfo.linePos1 = line1;
-            errorInfo.linePos2 = line2;
-            errorInfo.charPos1 = charPos1;
-            errorInfo.charPos2 = charPos2;
+            errorInfo.errorItem.linePos1 = line1;
+            errorInfo.errorItem.linePos2 = line2;
+            errorInfo.errorItem.charPos1 = charPos1;
+            errorInfo.errorItem.charPos2 = charPos2;
 
 
             errorInfo.hasError = true;
-            errorInfo.errorCode = errorCode;
+            errorInfo.errorItem.errorCode = errorCode;
 
-            errorInfo.errorId = getErrorId(errorCode);
+            errorInfo.errorItem.errorId = getErrorId(errorCode);
             const char* reason = getErrorMessage(errorCode);
             if (reason == nullptr) {
                 reason = "";
             }
             int len = (int)strlen(reason);
-            errorInfo.reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
-            memcpy(errorInfo.reason, reason, errorInfo.reasonLength);
-            errorInfo.reason[errorInfo.reasonLength] = '\0';
+            errorInfo.errorItem.reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
+            memcpy(errorInfo.errorItem.reason, reason, errorInfo.errorItem.reasonLength);
+            errorInfo.errorItem.reason[errorInfo.errorItem.reasonLength] = '\0';
         }
 
         static bool getLineAndPos(int pos, const utf8byte *text, int textLength, int *line, int *charactor) {
@@ -836,7 +850,7 @@ namespace smart {
         }
 
 
-        static CodeLine *appendToLine(void *node, CodeLine *currentCodeLine);
+        static CodeLine *callAppendToLine(void *node, CodeLine *currentCodeLine);
 
     };
 
@@ -847,9 +861,13 @@ namespace smart {
         NodeBase *firstNode;
         NodeBase *lastNode;
         // int indent;
+        ParseContext *context;
+
         int depth;
 
-        void init(ParseContext *context) {
+        void init(ParseContext *argContext) {
+            this->context = argContext;
+
             this->firstNode = nullptr;
             this->lastNode = nullptr;
             this->nextLine = nullptr;
@@ -899,12 +917,12 @@ namespace smart {
 
         CodeLine *addPrevLineBreakNode(void *node) {
             CodeLine *currentCodeLine = this;
-            currentCodeLine = VTableCall::appendToLine(((NodeBase *) node)->prevLineBreakNode,
-                                                       currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(((NodeBase *) node)->prevLineBreakNode,
+                                                           currentCodeLine);
 
 
-            currentCodeLine = VTableCall::appendToLine(((NodeBase *) node)->prevCommentNode,
-                                                       currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(((NodeBase *) node)->prevCommentNode,
+                                                           currentCodeLine);
 
 
             return currentCodeLine;
@@ -956,6 +974,7 @@ namespace smart {
         static void parseText(DocumentStruct *docStruct, const utf8byte *text, int length);
         static JsonObjectStruct *generateHashTables(DocumentStruct *doc);
 
+        static void regenerateCodeLines(DocumentStruct *docStruct);
         static void checkIndentSyntaxErrors(DocumentStruct *doc);
         static void assignIndents(DocumentStruct *doc);
         static void calcStackSize(DocumentStruct *doc);

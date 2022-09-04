@@ -21,7 +21,7 @@ class ClassMine
         true
         null
         false
-
+        sometype variable
         "jfiowjaoie"
         false
         null

@@ -43,11 +43,15 @@ namespace smart {
         return Scanner::scan_for_root(parentNode, tokenizer, start, context, false, true);
     }
 
-    CodeLine *VTableCall::appendToLine(void *node, CodeLine *currentCodeLine) {
+    CodeLine *VTableCall::callAppendToLine(void *node, CodeLine *currentCodeLine) {
         if (node == nullptr) {
             return currentCodeLine;
         }
         auto *nodeBase = Cast::upcast(node);
+        if (currentCodeLine->context->errorDetectRevision == nodeBase->useErrorInfoRevisionIndex) {
+
+        }
+        //if (nodeBase->prevLineBreakNode)
         return nodeBase->vtable->appendToLine(nodeBase, currentCodeLine);
     }
 

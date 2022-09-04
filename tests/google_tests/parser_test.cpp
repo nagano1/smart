@@ -39,8 +39,8 @@ TEST(ParserTest_, JsonParseTest) {
 
 
         EXPECT_EQ(document->context->syntaxErrorInfo.hasError, true);
-        EXPECT_EQ(static_cast<int>(document->context->syntaxErrorInfo.errorCode), static_cast<int>(ErrorCode::missing_closing_quote));
-        EXPECT_EQ(std::string{ document->context->syntaxErrorInfo.reason }, std::string{ "missing closing quote" });
+        EXPECT_EQ(static_cast<int>(document->context->syntaxErrorInfo.errorItem.errorCode), static_cast<int>(ErrorCode::missing_closing_quote));
+        EXPECT_EQ(std::string{ document->context->syntaxErrorInfo.errorItem.reason }, std::string{ "missing closing quote" });
     }
 
 
@@ -983,9 +983,9 @@ void testCodeEquality(const char* codeText, int length) {
     DocumentUtils::parseText(document, codeText, length);
 
 
-    EXPECT_EQ(document->context->syntaxErrorInfo.errorId, 10000);
+    EXPECT_EQ(document->context->syntaxErrorInfo.errorItem.errorId, 10000);
     EXPECT_EQ(document->context->syntaxErrorInfo.hasError, false);
-    EXPECT_EQ(document->context->syntaxErrorInfo.errorCode, ErrorCode::no_syntax_error);
+    EXPECT_EQ(document->context->syntaxErrorInfo.errorItem.errorCode, ErrorCode::no_syntax_error);
 
     char* treeText = DocumentUtils::getTextFromTree(document);
 

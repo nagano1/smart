@@ -32,13 +32,13 @@ namespace smart {
     }
 
     static CodeLine *appendToLine(ReturnStatementNodeStruct*self, CodeLine *currentCodeLine) {
-        currentCodeLine = VTableCall::appendToLine(&self->returnText, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&self->returnText, currentCodeLine);
 
         auto *prevCodeLine = currentCodeLine;
         auto formerParentDepth = self->context->parentDepth;
 
         if (self->valueNode) {
-            currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(self->valueNode, currentCodeLine);
 
             if (prevCodeLine != currentCodeLine) {
                 currentCodeLine->depth = formerParentDepth + 1;

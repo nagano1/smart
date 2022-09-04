@@ -268,15 +268,10 @@ namespace smart {
         return mes;
     }
 
-
-
     #define MAX_REASON_LENGTH 1024
-    /**
-     * Syntax error is allowed only once
-     */
-    using SyntaxErrorInfo = struct _errorInfo {
-        bool hasError{false};
 
+
+    using CodeErrorItem = struct _CodeErrorItem {
         ErrorCode errorCode;
         char reason[MAX_REASON_LENGTH + 1];
         int reasonLength = 0;
@@ -295,7 +290,15 @@ namespace smart {
         // 0: "between start and  end"
         // 1: "from start to end of line,"
         int errorDisplayType = 0;
+    };
 
+
+    /**
+     * Syntax error is allowed only once
+     */
+    using SyntaxErrorInfo = struct _errorInfo {
+        bool hasError{false};
+        CodeErrorItem  errorItem;
         static const int SYNTAX_ERROR_RETURN = -1;
     };
 

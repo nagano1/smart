@@ -170,7 +170,7 @@ fn main()
     int b = 0
     print("test日本語", 3 + 56)
     
-    return (4 + 5)
+    return (4 + c)
 }
 )";
         int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);

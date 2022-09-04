@@ -446,6 +446,25 @@ namespace smart {
         return valueBase;
     }
 
+    void ScriptEngineContext::setErrorPositions()
+    {
+        auto* docStruct = this->scriptEnv->document;
+        docStruct->context->errorDetectRevision += 1;
+
+        auto *errorItem = this->logicErrorInfo.firstErrorItem;
+        while (errorItem) {
+            auto *node = errorItem->node;
+            node->useErrorInfoRevisionIndex = docStruct->context->errorDetectRevision;
+            //auto *errorInfo = errorItem->codeErrorItem;
+            errorItem = errorItem->next;
+        }
+
+        DocumentUtils::regenerateCodeLines(docStruct);
+
+
+        // *charactor = ParseUtil::utf16_length(text + lineFirstPos, currentCharactor);
+
+    }
 
     ValueBase *ScriptEngineContext::genValueBase(int type, int size, void *ptr)
     {
@@ -459,8 +478,9 @@ namespace smart {
         return value;
     }
 
-    void ScriptEngineContext::init()
+    void ScriptEngineContext::init(ScriptEnv *scriptEnvArg)
     {
+        this->scriptEnv = scriptEnvArg;
         this->logicErrorInfo.hasError = false;
         this->logicErrorInfo.firstErrorItem = nullptr;
         this->logicErrorInfo.lastErrorItem = nullptr;
@@ -493,8 +513,9 @@ namespace smart {
     //
     //------------------------------------------------------------------------------------------
 
-    static int variableFound_SearchCorrespondAssignment(NodeBase *node, void *context, void *targetVTable, void *func, void* arg, void *arg2)
+    static int variableFound_SearchCorrespondAssignment(NodeBase *node, void *scriptcontext, void *targetVTable, void *func, void* arg, void *arg2)
     {
+        auto *context2 = (ScriptEngineContext *)scriptcontext;
         auto *vari = Cast::downcast<VariableNodeStruct *>(node);
         vari->stackOffset2 = -1;
 
@@ -503,7 +524,7 @@ namespace smart {
         // auto *funcNode = Cast::downcast<FuncNodeStruct*>(body->parentNode);
 
         auto *bodyChild = body->firstChildNode;
-        bool found = false;
+        bool varDefFound = false;
 
         while (bodyChild) {
             if (bodyChild == variableTop) {
@@ -516,14 +537,18 @@ namespace smart {
                 if (ParseUtil::equal(vari->name, vari->nameLength,
                                      assignState->nameNode.name, assignState->nameNode.nameLength)) {
                     vari->stackOffset2 = assignState->stackOffset;
-                    found = true;
+                    varDefFound = true;
                 }
             }
 
             bodyChild = bodyChild->nextNode;
         }
 
-        return found ? 1 : 0;
+        if (!varDefFound) {
+            context2->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(vari));
+        }
+
+        return varDefFound ? 1 : 0;
     }
 
 
@@ -580,7 +605,7 @@ namespace smart {
             auto *context = simpleMalloc2<ScriptEngineContext>();
 
             scriptEnv->context = context;
-            context->init();
+            context->init(scriptEnv);
 
             scriptEnv->typeEntryList = nullptr;
             scriptEnv->typeEntryListNextIndex = 1;
@@ -835,12 +860,12 @@ namespace smart {
     {
         ScriptEnv *env = ScriptEnv::loadScript(script, scriptLength);
         if (env->document->context->syntaxErrorInfo.hasError) {
-            return env->document->context->syntaxErrorInfo.errorId;
+            return env->document->context->syntaxErrorInfo.errorItem.errorId;
         }
 
         env->validateScript();
         if (env->context->logicErrorInfo.hasError) {
-            return env->context->logicErrorInfo.firstErrorItem->errorId;
+            return env->context->logicErrorInfo.firstErrorItem->codeErrorItem.errorId;
         }
 
         return env->runScriptEnv();

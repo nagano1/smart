@@ -34,11 +34,11 @@ namespace smart {
         currentCodeLine->appendNode(self);
 
         if (self->valueNode) {
-            currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(self->valueNode, currentCodeLine);
         }
 
         if (self->hasComma) {
-            currentCodeLine = VTableCall::appendToLine(&self->follwingComma, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(&self->follwingComma, currentCodeLine);
         }
 
         return currentCodeLine;
@@ -123,13 +123,13 @@ namespace smart {
 
         JsonArrayItemStruct *item = self->firstItem;
         while (item != nullptr) {
-            currentCodeLine = VTableCall::appendToLine(item, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(item, currentCodeLine);
             item = Cast::downcast<JsonArrayItemStruct*>(item->nextNode);
         }
 
         self->context->parentDepth -= 1;
 
-        return VTableCall::appendToLine(&self->endBodyNode, currentCodeLine);
+        return VTableCall::callAppendToLine(&self->endBodyNode, currentCodeLine);
     }
 
     static int JsonArrayStruct_applyFuncToDescendants(JsonArrayStruct *node, ApplyFunc_params) {

@@ -28,6 +28,7 @@
 #include "./LSPLocalServer.hpp"
 
 #include "code_nodes.hpp"
+#include "script_runtime/script_runtime.hpp"
 
 #include "common.hpp"
 
@@ -185,43 +186,65 @@ static void publishSemanticTokens(char *idText, int idTextLen, const char* const
     sendMessageToClientExtra((char*)tail, tailLength);
 }
 
+static int makeErrorDiagnostics(char error2[512], CodeErrorItem &errorItem, bool b) {
+
+    unsigned long line = errorItem.linePos1;
+    unsigned long charactor = errorItem.charPos1;
+    unsigned long line2, charactor2;
+    if (errorItem.linePos2 > -1) {
+        line2 = errorItem.linePos2;
+        charactor2 = errorItem.charPos2;
+    } else {
+        line2 = line + 1;
+        charactor2 = 0;
+    }
+
+    int len2 = sprintf(error2, R"(
+        %s{
+            "severity": 1
+            ,"range": {
+                "start": { "character": %lu, "line": %lu }
+                , "end": { "character": %lu, "line": %lu }
+            }
+            ,"message": "%s"
+            ,"source": "ex"
+        }
+)", b ? ",": "", charactor, line, charactor2, line2, errorItem.reason);
+
+    error2[len2] = '\0';
+    return len2;
+}
+
 static void publishDiagnostics(const char *text, int textLength, const char * const filePath, int filePathLength) {
 
-    auto isCode= ParseUtil::endsWith2(filePath, filePathLength, ".smt"); // pls
+    //auto isCode= ParseUtil::endsWith2(filePath, filePathLength, ".smt"); // pls
     //auto isJson = ParseUtil::endsWith2(filePath, filePathLength, ".txt");
 
-    auto *document = Alloc::newDocument(isCode ? DocumentType::CodeDocument : DocumentType::JsonDocument, nullptr);
-    DocumentUtils::parseText(document, text, textLength);
 
+
+    ScriptEnv* env = ScriptEnv::loadScript((char*)text, textLength);
+    if (!env->document->context->syntaxErrorInfo.hasError) {
+        env->validateScript();
+        //return env->document->context->syntaxErrorInfo.errorId;
+    }
+
+    if (env->context->logicErrorInfo.hasError) {
+        //return env->context->logicErrorInfo.firstErrorItem->errorId;
+        env->context->setErrorPositions();
+    }
+
+    //auto *document = Alloc::newDocument(isCode ? DocumentType::CodeDocument : DocumentType::JsonDocument, nullptr);
+    //DocumentUtils::parseText(document, text, textLength);
+
+    auto* document = env->document;
 
     if (document->context->syntaxErrorInfo.hasError) {
-        int line = document->context->syntaxErrorInfo.linePos1;
-        int charactor = document->context->syntaxErrorInfo.charPos1;
-
-        char error2[1024];
+        char error2[512];
         error2[0] = '\0';
 
-        int pos2 = document->context->syntaxErrorInfo.linePos2;
-        if (pos2 > -1) {
-            int line2 = document->context->syntaxErrorInfo.linePos2;
-            int charactor2 = document->context->syntaxErrorInfo.charPos2;
+        makeErrorDiagnostics(error2, document->context->syntaxErrorInfo.errorItem, false);
 
-            sprintf(error2, R"(
-            ,{
-                "severity": 1
-                ,"range": { 
-                    "start": { "character": %d, "line": %d }
-                    , "end": { "character": %d, "line": %d }
-                }
-                ,"message": "%s"
-                ,"source": "ex"
-            }
-)", charactor2, line2, 0, line2 + 1, document->context->syntaxErrorInfo.reason);
-
-            //error2[len2] = '\0';
-        }
-
-
+/*
 
         int char1 = charactor;
         int char2 = 0;
@@ -232,7 +255,7 @@ static void publishDiagnostics(const char *text, int textLength, const char * co
             char2 = char1;
             char1 = 0;
         }
-
+*/
         char moji[1024];
         int len = sprintf(moji, R"(
 {
@@ -241,18 +264,10 @@ static void publishDiagnostics(const char *text, int textLength, const char * co
     ,"params": {
         "uri":"%s"
         ,"diagnostics": [
-            {
-                "severity": 1
-                ,"range": { 
-                    "start": { "character": %d, "line": %d }
-                    , "end": { "character": %d, "line": %d }
-                }
-                ,"message": "%s"
-                ,"source": "ex"
-            }%s
+            %s
         ]
     }
-})", filePath ,char1, line1, char2, line2, document->context->syntaxErrorInfo.reason, error2);
+})", filePath ,error2);
 
         sendMessageToClient((char*)moji, len);
     }

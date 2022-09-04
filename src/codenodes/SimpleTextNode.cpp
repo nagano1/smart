@@ -121,7 +121,7 @@ namespace smart {
 
         auto *commentFragment = self->firstCommentFragment;
         while (commentFragment) {
-            currentCodeLine = VTableCall::appendToLine(commentFragment, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(commentFragment, currentCodeLine);
 
             commentFragment = Cast::downcast<BlockCommentFragmentStruct*>(commentFragment->nextNode);
         }

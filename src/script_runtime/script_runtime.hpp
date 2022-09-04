@@ -23,6 +23,8 @@
 namespace smart
 {
 
+    struct _ScriptEnv;
+
     /*
      *
     // 11111111 11111111 11111111 11111111
@@ -109,40 +111,24 @@ namespace smart
     };
 
 
-    using ErrorNodeItem = struct _ErrorNodeItem {
+    // logic error is with NodeBase
+    using LogicErrorItem = struct _ErrorNodeItem {
         _NodeBase *node;
         _ErrorNodeItem *next;
 
-        ErrorCode errorCode;
-        char reason[MAX_REASON_LENGTH + 1];
-        int reasonLength = 0;
-
-        st_uint charPosition;
-        st_uint charPosition2;
-
-        st_uint linePos1;
-        st_uint charPos1;
-        st_uint linePos2;
-        st_uint charPos2;
-
-        int errorId;
-        int charEndPosition;
-
-        // 0: "between start and  end"
-        // 1: "from start to end of line,"
-        int errorDisplayType = 0;
-        static const int SYNTAX_ERROR_RETURN = -1;
+        CodeErrorItem codeErrorItem;
     };
 
-
+    struct _typeEntry;
     using LogicalErrorInfo = struct _logicalErrorInfo {
         bool hasError{false};
-        ErrorNodeItem *firstErrorItem;
-        ErrorNodeItem *lastErrorItem;
+        LogicErrorItem *firstErrorItem;
+        LogicErrorItem *lastErrorItem;
         static const int SYNTAX_ERROR_RETURN = -1;
     };
 
     using ScriptEngineContext = struct _scriptEngineContext {
+        _ScriptEnv* scriptEnv;
         LogicalErrorInfo logicErrorInfo;
 
         MemBuffer memBuffer; // for TypeEntry, variable->value map
@@ -158,7 +144,7 @@ namespace smart
         ValueBase *newValueForHeap();
         ValueBase *genValueBase(int type, int size, void *ptr);
 
-        void init();
+        void init(_ScriptEnv *scriptEnv);
 
         void* mallocItem(int bytes) {
             auto *mallocItem = this->memBufferForMalloc2.newMem<MallocItem>(1);
@@ -212,13 +198,14 @@ namespace smart
             this->stackMemory.freeAll();
         }
 
+        void setErrorPositions();
 
         void addErrorWithNode(ErrorCode errorCode, NodeBase* node) {
             auto &errorInfo = this->logicErrorInfo;
             errorInfo.hasError = true;
-            auto *mem = this->memBufferForError.newMem<ErrorNodeItem>(1);
+            auto *mem = this->memBufferForError.newMem<LogicErrorItem>(1);
             mem->node = node;
-            mem->errorCode = errorCode;
+            mem->codeErrorItem.errorCode = errorCode;
             if (errorInfo.firstErrorItem == nullptr) {
                 errorInfo.firstErrorItem = mem;
             }
@@ -231,15 +218,15 @@ namespace smart
                 errorInfo.lastErrorItem = mem;
             }
 
-            mem->errorId = getErrorId(errorCode);
+            mem->codeErrorItem.errorId = getErrorId(errorCode);
             const char* reason = getErrorMessage(errorCode);
             if (reason == nullptr) {
                 reason = "";
             }
             int len = (int)strlen(reason);
-            mem->reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
-            memcpy(mem->reason, reason, mem->reasonLength);
-            mem->reason[mem->reasonLength] = '\0';
+            mem->codeErrorItem.reasonLength = len < MAX_REASON_LENGTH ? len : MAX_REASON_LENGTH;
+            memcpy(mem->codeErrorItem.reason, reason, mem->codeErrorItem.reasonLength);
+            mem->codeErrorItem.reason[mem->codeErrorItem.reasonLength] = '\0';
         }
 
         static bool getLineAndPos(int pos, const utf8byte *text, int textLength, int *line, int *charactor) {
@@ -319,16 +306,7 @@ namespace smart
         static void deleteScriptEnv(_ScriptEnv *doc);
         static _ScriptEnv *newScriptEnv();
         TypeEntry *newTypeEntry() const;
-/*
-        template<typename T>
-        T *newMem() {
-            return (T *) context->memBufferForMalloc.newMem<T>(1);
-        }
 
-        void deleteMem(void *ptr) {
-            return context->memBufferForMalloc.tryDelete(ptr);
-        }
-*/
         static int startScript(char* script, int byteLength);
 
         static _ScriptEnv* loadScript(char* script, int byteLength);

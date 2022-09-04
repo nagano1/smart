@@ -237,7 +237,7 @@ namespace smart {
 
             int diff = currentCodeLine->depth == self->context->parentDepth ? 0 : 1;
             self->context->parentDepth += diff;
-            currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(self->valueNode, currentCodeLine);
 
             self->context->arithmeticBaseDepth = formerArithmeticDepth;
             self->context->parentDepth = formerParentDepth;
@@ -245,7 +245,7 @@ namespace smart {
 
 
         // )
-        currentCodeLine = VTableCall::appendToLine(&self->closeNode, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&self->closeNode, currentCodeLine);
 
         if (currentCodeLine != openCodeLine) {
             bool hasNonBracketEntity = false;
@@ -385,7 +385,7 @@ namespace smart {
 
         if (self->leftExprNode) {
             // leftExpr
-            currentCodeLine = VTableCall::appendToLine(self->leftExprNode, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(self->leftExprNode, currentCodeLine);
         }
 
         int formerArithmeticDepth = self->context->arithmeticBaseDepth;
@@ -399,12 +399,12 @@ namespace smart {
         self->context->parentDepth = newDepth;
 
         // operator +
-        currentCodeLine = VTableCall::appendToLine(&self->opNode, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&self->opNode, currentCodeLine);
 
 
         if (self->rightExprNode) {
             // rightExpr
-            currentCodeLine = VTableCall::appendToLine(self->rightExprNode, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(self->rightExprNode, currentCodeLine);
         }
 
         self->context->parentDepth = formerParentDepth;

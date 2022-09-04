@@ -35,20 +35,20 @@ namespace smart {
     static CodeLine *appendToLine(AssignStatementNodeStruct *self, CodeLine *currentCodeLine) {
 
         if (!self->onlyAssign) {
-            currentCodeLine = VTableCall::appendToLine(&self->typeOrLet, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(&self->typeOrLet, currentCodeLine);
         }
 
         if (self->pointerAsterisk.found > -1) {
-            currentCodeLine = VTableCall::appendToLine(&self->pointerAsterisk, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(&self->pointerAsterisk, currentCodeLine);
         }
 
-        currentCodeLine = VTableCall::appendToLine(&self->nameNode, currentCodeLine);
+        currentCodeLine = VTableCall::callAppendToLine(&self->nameNode, currentCodeLine);
 
         if (self->equalSymbol.found > -1) {
-            currentCodeLine = VTableCall::appendToLine(&self->equalSymbol, currentCodeLine);
+            currentCodeLine = VTableCall::callAppendToLine(&self->equalSymbol, currentCodeLine);
 
             if (self->valueNode) {
-                currentCodeLine = VTableCall::appendToLine(self->valueNode, currentCodeLine);
+                currentCodeLine = VTableCall::callAppendToLine(self->valueNode, currentCodeLine);
             }
         }
 
