@@ -4,6 +4,7 @@ set(BINARY ${CMAKE_PROJECT_NAME}_lsp)
 file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false
     ../src/codenodes/*.cpp
     ../src/utils.cpp
+    ../src/script_runtime/script_runtime.cpp
     ../src/LSP_server/*.cpp
     *.cpp
 )
