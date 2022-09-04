@@ -124,7 +124,7 @@ extern "C"
 
         DocumentUtils::parseText(doc, text2, strlen(text2));
         if (doc->context->syntaxErrorInfo.hasError == true) {
-            print(doc->context->syntaxErrorInfo.reason);
+            print(doc->context->syntaxErrorInfo.errorItem.reason);
         }
 
         char *treeText = DocumentUtils::getTextFromTree(doc);
