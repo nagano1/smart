@@ -49,9 +49,6 @@ namespace smart
             return currentCodeLine;
         }
         auto *nodeBase = Cast::upcast(node);
-        if (currentCodeLine->context->errorDetectRevision == nodeBase->useErrorInfoRevisionIndex) {
-
-        }
         //if (nodeBase->prevLineBreakNode)
         return nodeBase->vtable->appendToLine(nodeBase, currentCodeLine);
     }
