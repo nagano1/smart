@@ -161,7 +161,7 @@ namespace smart {
 		DocumentStruct* doc, NodeBase* startNode, NodeBase* endNode, bool keepRuleMode
 	) {
 		assert(startNode != nullptr);
-		auto* line = startNode->line;
+		auto* line = startNode->line2;
 		while (line) {
 			indentFormatLine(line, keepRuleMode);
 
@@ -169,7 +169,7 @@ namespace smart {
 				break;
 			}
 
-			if (line == endNode->line) {
+			if (line == endNode->line2) {
 				break;
 			}
 			line = line->nextLine;

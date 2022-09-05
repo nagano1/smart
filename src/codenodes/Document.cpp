@@ -612,7 +612,7 @@ namespace smart {
         context->parentDepth = -1;
         context->arithmeticBaseDepth = -1;
         context->afterLineBreak = false;
-        context->errorDetectRevision = 0;
+
 
         context->unusedAssignment = nullptr;
         context->unusedClassNode = nullptr;
@@ -638,7 +638,6 @@ namespace smart {
             docStruct->lastRootNode->prevLineBreakNode = context->remainedLineBreakNode;
             docStruct->lastRootNode->prevCommentNode = context->remainedCommentNode;
 
-            context->errorDetectRevision += 1;
             DocumentUtils::regenerateCodeLines(docStruct);
 
             DocumentUtils::assignIndents(docStruct);

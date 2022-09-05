@@ -446,24 +446,52 @@ namespace smart {
         return valueBase;
     }
 
+
+    static void reassignLineNumbers(DocumentStruct *docStruct) {
+        int lineNumber = 1;
+        auto *line = docStruct->firstCodeLine;
+        while (line) {
+            line->lineNumber = lineNumber++;
+            line = line->nextLine;
+        }
+    }
+
     void ScriptEngineContext::setErrorPositions()
     {
-        auto* docStruct = this->scriptEnv->document;
-        docStruct->context->errorDetectRevision += 1;
+        reassignLineNumbers(this->scriptEnv->document);
+
+        this->errorDetectRevision += 1;
+
+        //auto *lineCode = this->scriptEnv->document->context->newCodeLine();
 
         auto *errorItem = this->logicErrorInfo.firstErrorItem;
         while (errorItem) {
             auto *node = errorItem->node;
-            node->useErrorInfoRevisionIndex = docStruct->context->errorDetectRevision;
+            node->useErrorInfoRevisionIndex = this->errorDetectRevision;
+
+
+            //VTableCall::callAppendToLine(node, lineCode);
             //auto *errorInfo = errorItem->codeErrorItem;
             errorItem = errorItem->next;
         }
 
-        DocumentUtils::regenerateCodeLines(docStruct);
+        // DocumentUtils::regenerateCodeLines(docStruct);
+
+
+        /*
+         *
+         *         if (currentCodeLine->context->errorDetectRevision == nodeBase->useErrorInfoRevisionIndex) {
+
+            //nodeBase->line2;
+        }
+        //if (nodeBase->prevLineBreakNode)
+        //static_assert(false, "oifejwoa");
+         *
+         */
 
 
         // *charactor = ParseUtil::utf16_length(text + lineFirstPos, currentCharactor);
-
+        //static_assert(false, "not implemented");
     }
 
     ValueBase *ScriptEngineContext::genValueBase(int type, int size, void *ptr)
@@ -484,6 +512,8 @@ namespace smart {
         this->logicErrorInfo.hasError = false;
         this->logicErrorInfo.firstErrorItem = nullptr;
         this->logicErrorInfo.lastErrorItem = nullptr;
+
+        this->errorDetectRevision = 0;
 
 
         this->memBuffer.init();

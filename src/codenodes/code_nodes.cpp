@@ -19,7 +19,8 @@
 
 #include "code_nodes.hpp"
 
-namespace smart {
+namespace smart
+{
     ErrorInfo ErrorInfo::ErrorInfoList[errorListSize];
     bool ErrorInfo::errorInfoInitialized{false};
     //static int _ab = initErrorInfoList();

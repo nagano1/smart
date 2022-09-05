@@ -40,7 +40,7 @@ namespace smart {
         _NodeBase *parentNode; \
         _NodeBase *nextNode; \
         _NodeBase *nextNodeInLine; \
-        CodeLine *line; \
+        CodeLine *line2; \
         int indentType; \
         int useErrorInfoRevisionIndex; \
         void *prevCommentNode; \
@@ -55,7 +55,7 @@ namespace smart {
         (node)->prev_chars = 0; \
         (node)->context = (context); \
         (node)->parentNode = (NodeBase*)(parent); \
-        (node)->line = nullptr; \
+        (node)->line2 = nullptr; \
         (node)->found = -1; \
         (node)->useErrorInfoRevisionIndex = 0; \
         (node)->nextNode = nullptr; \
@@ -440,10 +440,15 @@ namespace smart {
     };
     static const char* tokenModifiers[] = {"declaration", "documentation", nullptr};
 
+    enum class AppendLineMode {
+        Normal,
+        DetectErrorSpanNodes
+    };
     struct ParseContext {
         st_uint start;
         int length;
         bool scanEnd;
+        AppendLineMode appendLineMode; // 0:
         int prevFoundPos;
 
 
@@ -454,7 +459,6 @@ namespace smart {
         NodeBase *virtualCodeNode;
         int baseIndent;
         utf8byte *chars;
-        int errorDetectRevision;
         SyntaxErrorInfo syntaxErrorInfo;
         bool has_cancel_request{false};
         bool has_depth_error{false};
@@ -483,6 +487,7 @@ namespace smart {
         void init() {
             memBuffer.init();
             memBufferForCodeLines.init();
+            appendLineMode = AppendLineMode::Normal;
         }
 
         void dispose() {
@@ -857,6 +862,7 @@ namespace smart {
 
     struct CodeLine {
         CodeLine *nextLine;
+        int lineNumber;
         //CodeLine *prev;
         NodeBase *firstNode;
         NodeBase *lastNode;
@@ -867,6 +873,7 @@ namespace smart {
 
         void init(ParseContext *argContext) {
             this->context = argContext;
+            this->lineNumber = 0;
 
             this->firstNode = nullptr;
             this->lastNode = nullptr;
@@ -895,7 +902,7 @@ namespace smart {
                 }
             }
 
-            ((NodeBase *) node)->line = this;
+            ((NodeBase *) node)->line2 = this;
 
             return this;
         }
@@ -910,7 +917,7 @@ namespace smart {
             }
 
             lastNode = (NodeBase *) node;
-            ((NodeBase *) node)->line = this;
+            ((NodeBase *) node)->line2 = this;
 
             return this;
         }

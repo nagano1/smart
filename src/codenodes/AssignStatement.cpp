@@ -32,8 +32,8 @@ namespace smart {
     }
 
 
-    static CodeLine *appendToLine(AssignStatementNodeStruct *self, CodeLine *currentCodeLine) {
-
+    static CodeLine *appendToLine(AssignStatementNodeStruct *self, CodeLine *currentCodeLine)
+    {
         if (!self->onlyAssign) {
             currentCodeLine = VTableCall::callAppendToLine(&self->typeOrLet, currentCodeLine);
         }

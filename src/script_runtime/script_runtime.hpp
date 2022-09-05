@@ -130,6 +130,7 @@ namespace smart
     using ScriptEngineContext = struct _scriptEngineContext {
         _ScriptEnv* scriptEnv;
         LogicalErrorInfo logicErrorInfo;
+        int errorDetectRevision;
 
         MemBuffer memBuffer; // for TypeEntry, variable->value map
 

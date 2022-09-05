@@ -694,6 +694,7 @@ TEST(concept, add_consume_test_win32) {
 
     HANDLE hThread;
     DWORD dwThreadId;
+    int64_t aval = 24;
 
     // run thread
     hThread = CreateThread(
@@ -705,42 +706,42 @@ TEST(concept, add_consume_test_win32) {
         &dwThreadId);// thread id
 
 
-    // We are not gonna use this
-    //int *a = NULL;
-    //int *newValue = new int{ 3 };
-    //InterlockedExchangePointerNoFence((PVOID *)&a, newValue);
+    if (hThread > 0) {
+        // We are not gonna use this
+        //int *a = NULL;
+        //int *newValue = new int{ 3 };
+        //InterlockedExchangePointerNoFence((PVOID *)&a, newValue);
 
 
-    // CAS
-    int64_t a = 24;
-    int64_t newValue = 51234;
-    auto metValue = InterlockedCompareExchange64(&a, newValue, 24);
-    EXPECT_EQ(metValue, 24);
-    if (metValue == 24) {
-        // succeed
-        EXPECT_EQ(a, newValue);
+        // CAS
+        int64_t newValue = 51234;
+        auto metValue = InterlockedCompareExchange64(&aval, newValue, 24);
+        EXPECT_EQ(metValue, 24);
+        if (metValue == 24) {
+            // succeed
+            EXPECT_EQ(aval, newValue);
+        }
+        else {
+            // failed, but a could be already equivalent to newValue thanks to other thread.
+        }
+
+
+
+        SuspendThread(hThread);
+        Sleep(2);
+        ResumeThread(hThread);
+
+        EnterCriticalSection(&CritSection);
+        SleepConditionVariableCS(&ConditionVar, &CritSection, INFINITE/*100*/);
+        LeaveCriticalSection(&CritSection);
+
+
+
+
+        WaitForSingleObject(hThread, 10000);
+
+        CloseHandle(hThread);
     }
-    else {
-        // failed, but a could be already equivalent to newValue thanks to other thread.
-    }
-
-
-
-    SuspendThread(hThread);
-    Sleep(2);
-    ResumeThread(hThread);
-
-    EnterCriticalSection(&CritSection);
-    SleepConditionVariableCS(&ConditionVar, &CritSection, INFINITE/*100*/);
-    LeaveCriticalSection(&CritSection);
-
-
-
-
-    WaitForSingleObject(hThread, 10000);
-
-    CloseHandle(hThread);
-
     //FAIL();
 #endif
 }
