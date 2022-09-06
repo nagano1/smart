@@ -448,12 +448,75 @@ namespace smart {
 
 
     static void reassignLineNumbers(DocumentStruct *docStruct) {
-        int lineNumber = 1;
+        int lineNumber = 0;
         auto *line = docStruct->firstCodeLine;
         while (line) {
             line->lineNumber = lineNumber++;
             line = line->nextLine;
         }
+    }
+
+
+    static NodeBase* findFirstNodeInLine(CodeLine *firstLine, CodeLine *lastLine)
+    {
+        CodeLine *currentLine = firstLine;
+        while (currentLine) {
+            NodeBase *node = currentLine->firstNode;
+            if (node) {
+                return node;
+            }
+
+            currentLine = currentLine->nextLine;
+        }
+
+        return nullptr;
+    }
+
+    static NodeBase* findLastNodeInLine(CodeLine *firstLine, CodeLine *lastLine)
+    {
+        NodeBase *returnNode = nullptr;
+        CodeLine *currentLine = firstLine;
+        while (currentLine) {
+            returnNode = currentLine->lastNode;
+            currentLine = currentLine->nextLine;
+        }
+
+        return returnNode;
+    }
+
+
+    // return: utf16
+    static int getPosInLine(NodeBase *node, bool beginningPos)
+    {
+        auto *codeLine = node->codeLine;
+
+        int utf16Pos = 0;
+        assert(codeLine);
+
+        NodeBase *currenNode = codeLine->firstNode;
+        while (currenNode) {
+
+            utf16Pos += currenNode->prev_chars;
+
+            if (currenNode == node) {
+                if (beginningPos) {
+                    break;
+                }
+            }
+
+            int textLength = VTableCall::selfTextLength(currenNode);
+            char *text = (char*)VTableCall::selfText(currenNode);
+
+            utf16Pos += ParseUtil::utf16_length(text, textLength);
+
+            if (currenNode == node) {
+                break;
+            }
+
+            currenNode = currenNode->nextNodeInLine;
+        }
+
+        return utf16Pos;
     }
 
     void ScriptEngineContext::setErrorPositions()
@@ -462,7 +525,8 @@ namespace smart {
 
         this->errorDetectRevision += 1;
 
-        //auto *lineCode = this->scriptEnv->document->context->newCodeLine();
+
+        this->scriptEnv->document->context->appendLineMode = AppendLineMode::DetectErrorSpanNodes;
 
         auto *errorItem = this->logicErrorInfo.firstErrorItem;
         while (errorItem) {
@@ -470,7 +534,24 @@ namespace smart {
             node->useErrorInfoRevisionIndex = this->errorDetectRevision;
 
 
-            //VTableCall::callAppendToLine(node, lineCode);
+            auto* firstCodeLine = this->scriptEnv->document->context->newCodeLine();
+            firstCodeLine->init(this->scriptEnv->document->context);
+            auto *lastCodeLine = VTableCall::callAppendToLine(node, firstCodeLine);
+
+            auto *firstNode = findFirstNodeInLine(firstCodeLine, lastCodeLine);
+            auto *lastNode = findLastNodeInLine(firstCodeLine, lastCodeLine);
+
+
+            int a = getPosInLine(firstNode, true);
+            int b = getPosInLine(lastNode, false);
+
+            errorItem->codeErrorItem.charPos1 = a;
+            errorItem->codeErrorItem.charPos2 = b;
+            errorItem->codeErrorItem.charPosition = a;
+            errorItem->codeErrorItem.charPosition2 = b;
+            errorItem->codeErrorItem.linePos1 = firstNode->codeLine->lineNumber;
+            errorItem->codeErrorItem.linePos2 = lastNode->codeLine->lineNumber;
+
             //auto *errorInfo = errorItem->codeErrorItem;
             errorItem = errorItem->next;
         }
@@ -490,7 +571,6 @@ namespace smart {
          */
 
 
-        // *charactor = ParseUtil::utf16_length(text + lineFirstPos, currentCharactor);
         //static_assert(false, "not implemented");
     }
 
@@ -863,7 +943,6 @@ namespace smart {
             ret = executeMain(this, mainFunc);
         }
 
-
         auto* rootNode = this->document->firstRootNode;
         while (rootNode != nullptr) {
 
@@ -895,6 +974,7 @@ namespace smart {
 
         env->validateScript();
         if (env->context->logicErrorInfo.hasError) {
+            env->context->setErrorPositions();
             return env->context->logicErrorInfo.firstErrorItem->codeErrorItem.errorId;
         }
 

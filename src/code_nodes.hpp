@@ -40,7 +40,7 @@ namespace smart {
         _NodeBase *parentNode; \
         _NodeBase *nextNode; \
         _NodeBase *nextNodeInLine; \
-        CodeLine *line2; \
+        CodeLine *codeLine; \
         int indentType; \
         int useErrorInfoRevisionIndex; \
         void *prevCommentNode; \
@@ -55,7 +55,7 @@ namespace smart {
         (node)->prev_chars = 0; \
         (node)->context = (context); \
         (node)->parentNode = (NodeBase*)(parent); \
-        (node)->line2 = nullptr; \
+        (node)->codeLine = nullptr; \
         (node)->found = -1; \
         (node)->useErrorInfoRevisionIndex = 0; \
         (node)->nextNode = nullptr; \
@@ -544,7 +544,7 @@ namespace smart {
             errorInfo.errorItem.charPosition = startPos;
 
 
-            this->setError3(errorCode, a, b, -1, -1);
+            this->setError3(errorCode, a, b, a+1, 0);
         }
 
         void setError2(ErrorCode errorCode, st_int startPos, st_int startPos2) {
@@ -582,7 +582,7 @@ namespace smart {
             if (errorInfo.hasError) {
                 return;
             }
-            this->setError3(errorCode, line1, charPos1, -1, -1);
+            this->setError3(errorCode, line1, 0, line1, charPos1);
         }
 
         void setError3(ErrorCode errorCode, st_int line1, st_int charPos1, st_int line2, st_int charPos2) {
@@ -902,7 +902,7 @@ namespace smart {
                 }
             }
 
-            ((NodeBase *) node)->line2 = this;
+            ((NodeBase *) node)->codeLine = this;
 
             return this;
         }
@@ -913,20 +913,29 @@ namespace smart {
             }
 
             if (lastNode != nullptr) {
-                lastNode->nextNodeInLine = (NodeBase *) node;
+                if (this->context->appendLineMode == AppendLineMode::Normal) {
+                    lastNode->nextNodeInLine = (NodeBase *) node;
+                }
             }
 
             lastNode = (NodeBase *) node;
-            ((NodeBase *) node)->line2 = this;
+
+            if (this->context->appendLineMode == AppendLineMode::Normal) {
+                ((NodeBase *) node)->codeLine = this;
+            }
 
             return this;
         }
 
         CodeLine *addPrevLineBreakNode(void *node) {
-            CodeLine *currentCodeLine = this;
-            currentCodeLine = VTableCall::callAppendToLine(((NodeBase *) node)->prevLineBreakNode,
-                                                           currentCodeLine);
 
+            CodeLine *currentCodeLine = this;
+
+            if (this->context->appendLineMode == AppendLineMode::Normal) {
+                currentCodeLine = VTableCall::callAppendToLine(
+                        ((NodeBase *) node)->prevLineBreakNode,
+                        currentCodeLine);
+            }
 
             currentCodeLine = VTableCall::callAppendToLine(((NodeBase *) node)->prevCommentNode,
                                                            currentCodeLine);

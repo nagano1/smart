@@ -1,3 +1,14 @@
+fn main()
+{
+    int a = 0
+    int b = 0
+    alt あ = b
+
+    a("test日本語", 3 + 56)
+    "日本語🎄jiofawe" + あ
+    return (4 + a + 32 + 32 + (3421))   
+}
+
 class ClassMine
 {
     fn funcB()

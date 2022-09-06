@@ -578,6 +578,7 @@ namespace smart {
     void DocumentUtils::regenerateCodeLines(DocumentStruct *docStruct)
     {
         auto *context = docStruct->context;
+        context->appendLineMode = AppendLineMode::Normal;
         context->memBufferForCodeLines.freeAll();
         context->memBufferForCodeLines.init();
         docStruct->firstCodeLine = context->newCodeLine();

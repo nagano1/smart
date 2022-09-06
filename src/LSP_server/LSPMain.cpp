@@ -39,7 +39,7 @@ Content-Length: 200
 {"jsonrpc":"2.0","method":"initialized","params":{}}
  */
 
-static const bool debugLog = false;
+static const bool debugLog = true;
 
 
 
@@ -186,20 +186,15 @@ static void publishSemanticTokens(char *idText, int idTextLen, const char* const
     sendMessageToClientExtra((char*)tail, tailLength);
 }
 
-static int makeErrorDiagnostics(char error2[512], CodeErrorItem &errorItem, bool b) {
+static int makeErrorDiagnostics(char *error2, int offset, CodeErrorItem &errorItem, bool b) {
 
     unsigned long line = errorItem.linePos1;
     unsigned long charactor = errorItem.charPos1;
     unsigned long line2, charactor2;
-    if (errorItem.linePos2 > -1) {
-        line2 = errorItem.linePos2;
-        charactor2 = errorItem.charPos2;
-    } else {
-        line2 = line + 1;
-        charactor2 = 0;
-    }
+    line2 = errorItem.linePos2;
+    charactor2 = errorItem.charPos2;
 
-    int len2 = sprintf(error2, R"(
+    int len2 = sprintf(error2 + offset, R"(
         %s{
             "severity": 1
             ,"range": {
@@ -210,40 +205,69 @@ static int makeErrorDiagnostics(char error2[512], CodeErrorItem &errorItem, bool
             ,"source": "ex"
         }
 )", b ? ",": "", charactor, line, charactor2, line2, errorItem.reason);
+    error2[offset + len2] = '\0';
 
-    error2[len2] = '\0';
+    fprintf(stderr, "[%s]", error2 + offset);
+    fflush(stderr);
+
     return len2;
 }
 
-static void publishDiagnostics(const char *text, int textLength, const char * const filePath, int filePathLength) {
+static void publishDiagnostics(const char *text, int textLength, const char * const filePath, int filePathLength)
+{
+    char diagnosticsText[1024 * 100]; //100KB
+    diagnosticsText[0] = '\0';
+    int diagnosticsTextLength = 0;
+
+
 
     //auto isCode= ParseUtil::endsWith2(filePath, filePathLength, ".smt"); // pls
     //auto isJson = ParseUtil::endsWith2(filePath, filePathLength, ".txt");
 
-
-
     ScriptEnv* env = ScriptEnv::loadScript((char*)text, textLength);
     if (!env->document->context->syntaxErrorInfo.hasError) {
         env->validateScript();
-        //return env->document->context->syntaxErrorInfo.errorId;
     }
 
     if (env->context->logicErrorInfo.hasError) {
-        //return env->context->logicErrorInfo.firstErrorItem->errorId;
+
+        fprintf(stderr, "[logicErrorInfo.hasError]");
+        fflush(stderr);
         env->context->setErrorPositions();
+
+        auto* errorItem = env->context->logicErrorInfo.firstErrorItem;
+        while (errorItem) {
+            if (errorItem->codeErrorItem.linePos1 == -1) {
+                break;
+            }
+            fprintf(stderr, "[logicErrorInfo.hasError.item]");
+            fflush(stderr);
+            int thislen = makeErrorDiagnostics((char*)diagnosticsText, diagnosticsTextLength, errorItem->codeErrorItem, diagnosticsTextLength > 0);
+            diagnosticsTextLength += thislen;
+
+            errorItem = errorItem->next;
+        }
+
     }
 
     //auto *document = Alloc::newDocument(isCode ? DocumentType::CodeDocument : DocumentType::JsonDocument, nullptr);
     //DocumentUtils::parseText(document, text, textLength);
 
     auto* document = env->document;
-
     if (document->context->syntaxErrorInfo.hasError) {
-        char error2[512];
-        error2[0] = '\0';
+        auto errorItem = document->context->syntaxErrorInfo.errorItem;
+        if (errorItem.linePos2 > -1) {
+        } else {
+            errorItem.linePos2 = errorItem.linePos1 + 1;
+            errorItem.charPos2 = 0;
+        }
 
-        makeErrorDiagnostics(error2, document->context->syntaxErrorInfo.errorItem, false);
+        int thislen = makeErrorDiagnostics(diagnosticsText, diagnosticsTextLength, document->context->syntaxErrorInfo.errorItem, diagnosticsTextLength > 0);
+        diagnosticsTextLength += thislen;
+    }
 
+    if (diagnosticsTextLength > 0) {
+        
 /*
 
         int char1 = charactor;
@@ -256,7 +280,7 @@ static void publishDiagnostics(const char *text, int textLength, const char * co
             char1 = 0;
         }
 */
-        char moji[1024];
+        char moji[1024 * 100];
         int len = sprintf(moji, R"(
 {
     "jsonrpc": "2.0"
@@ -267,7 +291,7 @@ static void publishDiagnostics(const char *text, int textLength, const char * co
             %s
         ]
     }
-})", filePath ,error2);
+})", filePath , diagnosticsText);
 
         sendMessageToClient((char*)moji, len);
     }
