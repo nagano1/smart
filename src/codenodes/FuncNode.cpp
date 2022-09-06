@@ -250,6 +250,13 @@ namespace smart {
             node->exprNode->vtable->applyFuncToDescendants(
                     Cast::upcast(node->exprNode), ApplyFunc_pass2);
         }
+
+        auto *item = node->firstArgumentItem;
+        while (item != nullptr) {
+            item->vtable->applyFuncToDescendants(
+                    Cast::upcast(item), ApplyFunc_pass2);
+            item = Cast::downcast<FuncArgumentItemStruct *>(item->nextNode);
+        }
         return 0;
     }
 
