@@ -42,7 +42,6 @@ namespace smart {
         _NodeBase *nextNodeInLine; \
         CodeLine *codeLine; \
         int indentType; \
-        int useErrorInfoRevisionIndex; \
         void *prevCommentNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
         ParseContext *context; \
@@ -57,7 +56,6 @@ namespace smart {
         (node)->parentNode = (NodeBase*)(parent); \
         (node)->codeLine = nullptr; \
         (node)->found = -1; \
-        (node)->useErrorInfoRevisionIndex = 0; \
         (node)->nextNode = nullptr; \
         (node)->nextNodeInLine = nullptr; \
         (node)->prevLineBreakNode = nullptr; \
@@ -108,7 +106,8 @@ namespace smart {
     using NameNodeStruct = struct {
         NODE_HEADER;
 
-        int stackOffset2;
+        int stackOffset;
+        int typeIndex;
 
         char *name;
         int_fast32_t nameLength;
@@ -183,6 +182,7 @@ namespace smart {
         NameNodeStruct nameNode; // varName
         SymbolStruct equalSymbol; // =
         NodeBase *valueNode; // 32
+        int typeIndex;
     };
 
     using KeywordAndValueStruct = struct {

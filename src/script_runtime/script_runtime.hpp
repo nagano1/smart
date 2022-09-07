@@ -87,8 +87,12 @@ namespace smart
         void call();
         void ret();
 
-        void moveTo(int offsetFromBase, uint64_t val) const;
-        uint64_t moveFrom(int offsetFromBase) const;
+
+
+        void moveTo(int offsetFromBase, int byteCount, char* ptr) const;
+
+        void moveFrom(int offsetFromBase, int byteCount, char* ptr) const;
+
     };
 
 
@@ -130,7 +134,6 @@ namespace smart
     using ScriptEngineContext = struct _scriptEngineContext {
         _ScriptEnv* scriptEnv;
         LogicalErrorInfo logicErrorInfo;
-        int errorDetectRevision;
 
         MemBuffer memBuffer; // for TypeEntry, variable->value map
 

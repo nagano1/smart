@@ -1,12 +1,11 @@
 fn main()
 {
-    int a = 0
-    int b = 0
-    alt あ = b
+    $int a = 34120   //joawiejfoiaj
+    $int *b = 250
 
-    a("test日本語", 3 + 56)
-    "日本語🎄jiofawe" + あ
-    return (4 + a + 32 + 32 + (3421))   
+    funcA("test日本語", acjkoo日本語🎎 + 3 + 56 + aw + "日本語")
+    "日本語🎄jiofawe" + b
+    return 4 + a + 32 + 32 + 3421
 }
 
 class ClassMine

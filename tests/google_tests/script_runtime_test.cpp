@@ -166,15 +166,14 @@ namespace smart {
         constexpr char source[] = R"(
 fn main()
 {
-    int a = 0
-    int b = 0
-    print("test日本語", 3 + 56)
+    int b = 5
+    int ab = 3
     
-    return (4 + c)
+    return b + ab
 }
 )";
         int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);
-        EXPECT_EQ(ret, 9);
+        EXPECT_EQ(ret, 8);
 
         ENDTEST
     }

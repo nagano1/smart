@@ -859,7 +859,7 @@ int ThreadPool::init() {
 };
 
 int ThreadPool::start() {
-    for (int i = 0; i < this->threads.size(); i++) {
+    for (unsigned int i = 0; i < this->threads.size(); i++) {
         /*
         if (i < consuming_threads_size) {
             this->threads[i]->startConsuming();

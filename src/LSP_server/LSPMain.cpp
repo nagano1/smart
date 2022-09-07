@@ -343,6 +343,7 @@ static void publishDiagnostics(const char *text, int textLength, const char * co
         Alloc::deleteDocument(latestDocument);
     }
     latestDocument = document;
+    ScriptEnv::deleteScriptEnv(env);
 
     /*
     char *treeText = DocumentUtils::getTextFromTree(document);
