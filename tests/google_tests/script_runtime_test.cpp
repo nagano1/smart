@@ -14,6 +14,46 @@
 
 namespace smart {
 
+#if defined(_X86_) and defined(_WIN32)
+    TEST(ScriptEngine, register_test)
+    {
+        uint32_t num = UINT32_MAX;
+        unsigned short x = 0;
+        unsigned short y = 0;
+
+        __asm
+        {
+            mov eax, num;
+            mov ax, x;
+            mov num, eax;
+        }
+        // mov esp, eax;
+        //EXPECT_EQ(x, 65535);
+        EXPECT_EQ(num, 0xFFFF0000);
+        ENDTEST
+    }
+#endif
+
+
+    TEST(ScriptEngine, CPURegister_test1)
+    {
+        CPURegister reg;
+
+        RAX(&reg) = 0xFFFFFFFFFFFFFFFF;
+        EAX(&reg) = 0x0;
+
+        EXPECT_EQ(RAX(&reg), 0xFFFFFFFF00000000);
+
+
+
+        EAX(&reg) = UINT32_MAX;
+        AX(&reg) = 0;
+        
+        EXPECT_EQ(EAX(&reg), 0xFFFF0000);
+
+        ENDTEST
+    }
+
     TEST(ScriptEngine, MallocItem_test1)
     {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
@@ -68,8 +108,11 @@ namespace smart {
         stackMemory.call();
         stackMemory.localVariables(8 * 4);
         stackMemory.localVariables(8 * 4);
-        stackMemory.moveTo(-stackMemory.baseBytes, 100);
-        EXPECT_EQ(100, stackMemory.moveFrom(-stackMemory.baseBytes));
+        uint32_t a = 100;
+        uint32_t b;
+        stackMemory.moveTo(-4, 4, (char*)&a);
+        stackMemory.moveFrom(-4, 4, (char*)&b);
+        EXPECT_EQ(100, b);
         stackMemory.ret();
 
         EXPECT_EQ((uint64_t)basePointer0, (uint64_t)stackMemory.stackBasePointer);

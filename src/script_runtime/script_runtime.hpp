@@ -59,6 +59,47 @@ namespace smart
     }
      *
      */
+
+
+    /*
+    64bit 	RAX, RBX, RCX, RDX, RSI, RDI, RSP, RBP, R8~R15
+    32bit 	EAX, EBX, ECX, EDX, ESI, EDI, ESP, EBP, R8D~R15D
+    16bit 	AX, BX, CX, DX, SI, DI, SP, BP, R8W~R15W
+    upper 8bit 	AH, BH, CH, DH,
+    lower 8bit 	AL, BL, CL, DL, SIL, DIL, SPL, BPL, R8L~R15L
+    */
+    #define RAX(reg) (reg)->rax.rax
+    #define EAX(reg) (reg)->rax.eax.eax.eax
+    #define AX(reg) (reg)->rax.eax.eax.ax.ax
+    using CPURegister = struct _CPURegister {
+        union {
+            uint64_t rax;
+            struct {
+                union {
+                    uint32_t eax;
+                    struct { uint16_t ax; uint16_t nop; } ax;
+                } eax;
+                uint32_t nop;
+            } eax;
+        } rax;
+        /*
+        uint64_t rax; // RAX, 64bit Accumulator Register
+        uint32_t eax; // EAX, 32bit Accumulator Register
+        // uint16_t ax; // AX, 16bit Accumulator Register
+        uint8_t ah; // AH, 8bit
+        uint8_t al; // AX, 8bit
+        */
+
+        // methods
+        // void init();
+        void temp() {
+            auto *reg = this;
+
+            RAX(reg) = 32;
+            EAX(reg) = 32; // this->rax.eax.eax = 32;
+        }
+    };
+
     using StackMemory = struct _StackMemory {
 
         int alignBytes; // 8, 16

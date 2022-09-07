@@ -232,6 +232,20 @@
 	},
 	{
 		"testcasename": "ScriptEngine",
+		"testname": "register_test",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, register_test)\r\n    {\r\n        uint32_t num = UINT32_MAX;\r\n        unsigned short x = 0;\r\n        unsigned short y = 0;\r\n\r\n        __asm\r\n        {\r\n            mov eax, num;\r\n            mov ax, x;\r\n            mov num, eax;\r\n        }\r\n        // mov esp, eax;\r\n        //EXPECT_EQ(x, 65535);\r\n        EXPECT_EQ(num, 0xFFFF0000);\r\n        "
+	},
+	{
+		"testcasename": "ScriptEngine",
+		"testname": "CPURegister_test1",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, CPURegister_test1)\r\n    {\r\n        CPURegister reg;\r\n\r\n        RAX(&reg) = 0xFFFFFFFFFFFFFFFF;\r\n        EAX(&reg) = 0x0;\r\n\r\n        EXPECT_EQ(RAX(&reg), 0xFFFFFFFF00000000);\r\n\r\n\r\n\r\n        EAX(&reg) = UINT32_MAX;\r\n        AX(&reg) = 0;\r\n        \r\n        EXPECT_EQ(EAX(&reg), 0xFFFF0000);\r\n\r\n        "
+	},
+	{
+		"testcasename": "ScriptEngine",
 		"testname": "MallocItem_test1",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
@@ -249,7 +263,7 @@
 		"testname": "StackMemoryTest_Call_Ret",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, StackMemoryTest_Call_Ret) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n        auto *basePointer0 = stackMemory.stackBasePointer;\r\n        auto *stackPointer0 = stackMemory.stackPointer;\r\n\r\n        stackMemory.call();\r\n        stackMemory.localVariables(8 * 4);\r\n        stackMemory.localVariables(8 * 4);\r\n        stackMemory.moveTo(-stackMemory.baseBytes, 100);\r\n        EXPECT_EQ(100, stackMemory.moveFrom(-stackMemory.baseBytes));\r\n        stackMemory.ret();\r\n\r\n        EXPECT_EQ((uint64_t)basePointer0, (uint64_t)stackMemory.stackBasePointer);\r\n        EXPECT_EQ((uint64_t)stackPointer0, (uint64_t)stackMemory.stackPointer);\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n\r\n        "
+		"body": "TEST(ScriptEngine, StackMemoryTest_Call_Ret) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n        auto *basePointer0 = stackMemory.stackBasePointer;\r\n        auto *stackPointer0 = stackMemory.stackPointer;\r\n\r\n        stackMemory.call();\r\n        stackMemory.localVariables(8 * 4);\r\n        stackMemory.localVariables(8 * 4);\r\n        uint32_t a = 100;\r\n        uint32_t b;\r\n        stackMemory.moveTo(-4, 4, (char*)&a);\r\n        stackMemory.moveFrom(-4, 4, (char*)&b);\r\n        EXPECT_EQ(100, b);\r\n        stackMemory.ret();\r\n\r\n        EXPECT_EQ((uint64_t)basePointer0, (uint64_t)stackMemory.stackBasePointer);\r\n        EXPECT_EQ((uint64_t)stackPointer0, (uint64_t)stackMemory.stackPointer);\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n\r\n        "
 	},
 	{
 		"testcasename": "ScriptEngine",
@@ -284,7 +298,7 @@
 		"testname": "ScriptEngineTestSomeScript0",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, ScriptEngineTestSomeScript0) {\r\n\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    int a = 0\r\n    int b = 0\r\n    print(\"test日本語\", 3 + 56)\r\n    \r\n    return (4 + c)\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);\r\n        EXPECT_EQ(ret, 9);\r\n\r\n        "
+		"body": "TEST(ScriptEngine, ScriptEngineTestSomeScript0) {\r\n\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    int b = 5\r\n    int ab = 3\r\n    \r\n    return b + ab\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);\r\n        EXPECT_EQ(ret, 8);\r\n\r\n        "
 	},
 	{
 		"testcasename": "SpeedTest",
