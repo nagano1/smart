@@ -58,15 +58,24 @@ namespace smart {
 
     static constexpr const char assignTypeText[] = "<AssignStatement>";
 
-    static int applyFuncToDescendants(AssignStatementNodeStruct *node, ApplyFunc_params)
+    static int applyFuncToDescendants(AssignStatementNodeStruct *node, ApplyFunc_params3)
     {
-        if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), ApplyFunc_pass);
+        if (parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
 
         if (node->valueNode) {
             node->valueNode->vtable->applyFuncToDescendants(node->valueNode, ApplyFunc_pass2);
         }
+
+        if (!parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
+        }
+
         return 0;
     }
 

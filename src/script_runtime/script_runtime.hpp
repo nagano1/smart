@@ -22,7 +22,6 @@
 
 namespace smart
 {
-
     struct _ScriptEnv;
 
     /*

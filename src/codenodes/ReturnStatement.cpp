@@ -52,13 +52,21 @@ namespace smart {
 
 
     static int ReturnStatementNodeStruct_applyFuncToDescendants(
-            ReturnStatementNodeStruct *node, ApplyFunc_params)
+            ReturnStatementNodeStruct *node, ApplyFunc_params3)
     {
-        if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), ApplyFunc_pass);
+        if (parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
         if (node->valueNode) {
             node->valueNode->vtable->applyFuncToDescendants(node->valueNode, ApplyFunc_pass2);
+        }
+
+        if (!parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
         return 0;
     }

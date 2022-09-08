@@ -53,14 +53,21 @@ namespace smart {
         return 0;
     }
 
-    static int applyFuncToDescendants(JsonArrayItemStruct *node, ApplyFunc_params) {
-
-        if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), ApplyFunc_pass);
+    static int applyFuncToDescendants(JsonArrayItemStruct *node, ApplyFunc_params3)
+    {
+        if (parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
-
         if (node->valueNode) {
             node->valueNode->vtable->applyFuncToDescendants(node->valueNode, ApplyFunc_pass2);
+        }
+
+        if (!parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
         return 0;
     }
@@ -132,7 +139,7 @@ namespace smart {
         return VTableCall::callAppendToLine(&self->endBodyNode, currentCodeLine);
     }
 
-    static int JsonArrayStruct_applyFuncToDescendants(JsonArrayStruct *node, ApplyFunc_params) {
+    static int JsonArrayStruct_applyFuncToDescendants(JsonArrayStruct *node, ApplyFunc_params3) {
 
         if (targetVTable == nullptr || node->vtable == targetVTable) {
             func(Cast::upcast(node), ApplyFunc_pass);

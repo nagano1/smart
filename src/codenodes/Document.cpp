@@ -37,7 +37,7 @@ namespace smart {
         return currentCodeLine;
     }
 
-    static int applyFuncToDescendants(DocumentStruct *Node, ApplyFunc_params) {
+    static int applyFuncToDescendants(DocumentStruct *Node, ApplyFunc_params3) {
         return 0;
     }
 

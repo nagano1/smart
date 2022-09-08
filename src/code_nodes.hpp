@@ -706,25 +706,37 @@ namespace smart {
 
 
 
-    #define ApplyFunc_params \
+    #define ApplyFunc_params3 \
         void *scriptEngineContext, \
         void *targetVTable, \
-        int (*func)(NodeBase *, void *scriptEngineContext, void *targetVTable,void *func, void *arg, void *arg2), void *arg, void *arg2
+        int (*func)(NodeBase *, void *scriptEngineContext, void *targetVTable,void *func, bool parentIsFirst, void *arg, void *arg2), \
+        bool parentIsFirst,           \
+        void *arg,           \
+        void *arg2
+
+    #define ApplyFunc_params2 \
+        void *scriptEngineContext, \
+        void *targetVTable, \
+        void *func, \
+        bool parentIsFirst,           \
+        void *arg,           \
+        void *arg2
+
 
     #define ApplyFunc_pass \
                 scriptEngineContext, \
-                targetVTable, (void *)func, arg, arg2
+                targetVTable, (void *)func, parentIsFirst, arg, arg2
 
     #define ApplyFunc_pass2 \
                 scriptEngineContext, \
-                targetVTable, func, arg, arg2
+                targetVTable, func, parentIsFirst, arg, arg2
 
 
     #define VTABLE_DEF(T) \
         int (*selfTextLength)(T *self); \
         const utf8byte *(*selfText)(T *self); \
         CodeLine *(*appendToLine)(T *self, CodeLine *line); \
-        int (*applyFuncToDescendants)(T *Node, void *context, void *targetVTable, int (*applyFuncToDescendants)(NodeBase *Node, void *scriptEngineContext, void *targetVTable, void *func, void *arg, void *arg2), void *arg, void *arg2); \
+        int (*applyFuncToDescendants)(T *Node, ApplyFunc_params3); \
         const char *typeChars; \
         int typeCharsLength; \
         int (*typeSelector)(void *env, NodeBase *self);     \

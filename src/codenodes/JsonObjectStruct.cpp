@@ -61,7 +61,7 @@ namespace smart {
         return 0;
     }
 
-    static int applyFuncToDescendants(JsonKeyValueItemStruct *Node, ApplyFunc_params) {
+    static int applyFuncToDescendants(JsonKeyValueItemStruct *Node, ApplyFunc_params3) {
         return 0;
     }
 
@@ -113,7 +113,7 @@ namespace smart {
         return self->textLength;
     }
 
-    static int JsonObjectKeyNodeStruct_applyFuncToDescendants(JsonObjectKeyNodeStruct *node, ApplyFunc_params)
+    static int JsonObjectKeyNodeStruct_applyFuncToDescendants(JsonObjectKeyNodeStruct *node, ApplyFunc_params3)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
             func(Cast::upcast(node), ApplyFunc_pass);
@@ -228,10 +228,12 @@ namespace smart {
         return currentCodeLine;
     }
 
-    static int JsonObjectStruct_applyFuncToDescendants(JsonObjectStruct *node, ApplyFunc_params)
+    static int JsonObjectStruct_applyFuncToDescendants(JsonObjectStruct *node, ApplyFunc_params3)
     {
-        if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), ApplyFunc_pass);
+        if (parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
 
         JsonKeyValueItemStruct *item = node->firstKeyValueItem;
@@ -240,6 +242,12 @@ namespace smart {
 
             if (item->nextNode == nullptr) { break; }
             item = Cast::downcast<JsonKeyValueItemStruct *>(item->nextNode);
+        }
+
+        if (!parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
 
         return 0;

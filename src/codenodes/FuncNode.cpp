@@ -56,13 +56,21 @@ namespace smart {
 
 
     static int FuncArgumentItemStruct_applyFuncToDescendants(
-            FuncArgumentItemStruct *node, ApplyFunc_params)
+            FuncArgumentItemStruct *node, ApplyFunc_params3)
     {
-        if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), ApplyFunc_pass);
+
+        if (parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
         if (node->exprNode) {
             node->exprNode->vtable->applyFuncToDescendants(Cast::upcast(node->exprNode), ApplyFunc_pass2);
+        }
+        if (!parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
         return 0;
     }
@@ -240,10 +248,12 @@ namespace smart {
 
 
     static int callfunc_applyFuncToDescendants(
-            CallFuncNodeStruct *node, ApplyFunc_params)
+            CallFuncNodeStruct *node, ApplyFunc_params3)
     {
-        if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), ApplyFunc_pass);
+        if (parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
 
         if (node->exprNode) {
@@ -256,6 +266,12 @@ namespace smart {
             item->vtable->applyFuncToDescendants(
                     Cast::upcast(item), ApplyFunc_pass2);
             item = Cast::downcast<FuncArgumentItemStruct *>(item->nextNode);
+        }
+
+        if (!parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
         return 0;
     }
@@ -342,10 +358,12 @@ namespace smart {
 
 
     static int BodyNodeStruct_applyFuncToDescendants(
-            BodyNodeStruct *node, ApplyFunc_params)
+            BodyNodeStruct *node, ApplyFunc_params3)
     {
-        if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), ApplyFunc_pass);
+        if (parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
 
         auto *child = node->firstChildNode;
@@ -355,6 +373,11 @@ namespace smart {
             child = child->nextNode;
         }
 
+        if (!parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
+        }
         return 0;
     }
 
@@ -564,7 +587,7 @@ namespace smart {
     }
 
     static int FuncParameterItemStruct_applyFuncToDescendants(
-            FuncParameterItemStruct *node, ApplyFunc_params)
+            FuncParameterItemStruct *node, ApplyFunc_params3)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
             func(Cast::upcast(node), ApplyFunc_pass);
@@ -652,16 +675,24 @@ namespace smart {
 
 
     static int FuncNodeStruct_applyFuncToDescendants(
-            FuncNodeStruct *node, ApplyFunc_params)
+            FuncNodeStruct *node, ApplyFunc_params3)
     {
-        if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), ApplyFunc_pass);
+        if (parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
         //if (node->bodyNode) {
             node->bodyNode.vtable->applyFuncToDescendants(
                     reinterpret_cast<NodeBase *>(&node->bodyNode),
                     ApplyFunc_pass2);
         //}
+
+        if (!parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
+        }
         return 0;
     }
 

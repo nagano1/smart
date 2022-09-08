@@ -81,7 +81,7 @@ namespace smart {
     }
 
     static int BoolNodeStruct_applyFuncToDescendants(
-            BoolNodeStruct *node, ApplyFunc_params)
+            BoolNodeStruct *node, ApplyFunc_params3)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
             func(Cast::upcast(node), ApplyFunc_pass);
@@ -178,7 +178,7 @@ namespace smart {
 
 
     static int NumberNodeStruct_applyFuncToDescendants(
-            NumberNodeStruct *node, ApplyFunc_params)
+            NumberNodeStruct *node, ApplyFunc_params3)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
             func(Cast::upcast(node), ApplyFunc_pass);
@@ -338,7 +338,7 @@ namespace smart {
         return -1;
     }
 
-    static int parentheses_applyFuncToDescendants(ParenthesesNodeStruct *node, ApplyFunc_params) {
+    static int parentheses_applyFuncToDescendants(ParenthesesNodeStruct *node, ApplyFunc_params3) {
 
         if (node->valueNode) {
             node->valueNode->vtable->applyFuncToDescendants(node->valueNode, ApplyFunc_pass2);
@@ -380,7 +380,6 @@ namespace smart {
 
     static CodeLine *binaryop_appendToLine(BinaryOperationNodeStruct *self, CodeLine *currentCodeLine)
     {
-
         int formerParentDepth = self->context->parentDepth;
 
         if (self->leftExprNode) {
@@ -423,11 +422,12 @@ namespace smart {
         return 0;
     }
 
-    static int BinaryOperationNodeStruct_applyFuncToDescendants(
-            BinaryOperationNodeStruct *node, ApplyFunc_params)
+    static int BinaryOperationNodeStruct_applyFuncToDescendants(BinaryOperationNodeStruct *node, ApplyFunc_params3)
     {
-        if (targetVTable == nullptr || node->vtable == targetVTable) {
-            func(Cast::upcast(node), ApplyFunc_pass);
+        if (parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
 
         if (node->leftExprNode) {
@@ -438,6 +438,12 @@ namespace smart {
         if (node->rightExprNode) {
             node->rightExprNode->vtable->applyFuncToDescendants(node->rightExprNode,
                                                             ApplyFunc_pass2);
+        }
+
+        if (!parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
         }
         return 0;
     }

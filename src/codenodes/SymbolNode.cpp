@@ -31,7 +31,7 @@ namespace smart {
         return 1;
     }
 
-    static int applyFuncToDescendants(SymbolStruct *node, ApplyFunc_params) {
+    static int applyFuncToDescendants(SymbolStruct *node, ApplyFunc_params3) {
 
         if (targetVTable == nullptr || node->vtable == targetVTable) {
             func(Cast::upcast(node), ApplyFunc_pass);

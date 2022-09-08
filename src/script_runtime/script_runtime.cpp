@@ -617,19 +617,22 @@ namespace smart {
     //------------------------------------------------------------------------------------------
 
 
-    int setStackOffsetToVariable(NodeBase *node, void *context, void *targetVTable, void *func, void* arg, void *arg2) {
-        auto *vari = Cast::downcast<VariableNodeStruct *>(node);
-        auto *assignment = Cast::downcast<AssignStatementNodeStruct*>(arg);
+    int applyFunc_assignCalcOpRegister(NodeBase *node, ApplyFunc_params2) {
+        //auto *vari = Cast::downcast<VariableNodeStruct *>(node);
+        //auto *assignment = Cast::downcast<AssignStatementNodeStruct*>(arg);
 
-        if (ParseUtil::equal(vari->name, vari->nameLength,
-                             assignment->nameNode.name, assignment->nameNode.nameLength)) {
-            vari->stackOffset = assignment->stackOffset;
+        if(node->vtable == VTables::BinaryOperationVTable) {
+            node->calcReg = PrimitiveCalcRegister::eax;
+        }
+
+        if (node->vtable == VTables::NumberVTable) {
+            node->calcReg = PrimitiveCalcRegister::ebx;
         }
         return 0;
     }
 
 
-    static void setStackOffsetToVariables(
+    static void assignCalcOpRegister2(
             ScriptEngineContext *context,
             FuncNodeStruct *func,
             const AssignStatementNodeStruct *assignment,
@@ -639,8 +642,9 @@ namespace smart {
         while (statementNode) {
             statementNode->vtable->applyFuncToDescendants(Cast::upcast(statementNode),
                                                           (void*)context,
-                                                          (void *) VTables::VariableVTable,
-                                                          setStackOffsetToVariable,
+                                                          nullptr,
+                                                          applyFunc_assignCalcOpRegister,
+                                                          false,
                                                           (void *) assignment,
                                                           nullptr);
 
@@ -697,7 +701,7 @@ namespace smart {
                         assignment->stackOffset = currentStackOffset;
                         stackSize += typeEntry->stackSize;
 
-                        setStackOffsetToVariables(env->context, func, assignment, statementNode);
+                        assignCalcOpRegister2(env->context, func, assignment, statementNode);
                     }
                     else {
                         // type resolve error
@@ -719,10 +723,9 @@ namespace smart {
 
 
 
-
-    static int variableFound_SearchCorrespondAssignment(NodeBase *node, void *scriptcontext, void *targetVTable, void *func, void* arg, void *arg2)
+    static int variableFound_SearchCorrespondAssignment(NodeBase *node, ApplyFunc_params2)
     {
-        auto *context2 = (ScriptEngineContext *)scriptcontext;
+        auto *context2 = (ScriptEngineContext *)scriptEngineContext;
         auto *vari = Cast::downcast<VariableNodeStruct *>(node);
         vari->stackOffset = -1;
 
@@ -770,6 +773,7 @@ namespace smart {
                     (void*)context,
                     (void *) VTables::VariableVTable,
                                                   variableFound_SearchCorrespondAssignment,
+                                                  true,
                                                   (void *) child,
                                                   0);
             child = child->nextNode;
@@ -797,8 +801,6 @@ namespace smart {
                 if (thisErrorCode > 0) {
                     errorCode = thisErrorCode;
                 }
-
-
             }
             rootNode = rootNode->nextNode;
         }

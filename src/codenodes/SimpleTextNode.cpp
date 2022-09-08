@@ -34,7 +34,7 @@ namespace smart {
     }
 
     static int SimpleTextNodeStruct_applyFuncToDescendants(
-            SimpleTextNodeStruct *node, ApplyFunc_params)
+            SimpleTextNodeStruct *node, ApplyFunc_params3)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
             func(Cast::upcast(node), ApplyFunc_pass);
@@ -130,7 +130,7 @@ namespace smart {
 
 
     static int BlockCommentNodeStruct_applyFuncToDescendants(
-            BlockCommentNodeStruct *node, ApplyFunc_params)
+            BlockCommentNodeStruct *node, ApplyFunc_params3)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
             func(Cast::upcast(node), ApplyFunc_pass);

@@ -86,7 +86,7 @@ namespace smart {
         return Tokenizers::nameTokenizer(reinterpret_cast<NodeBase *>(variableNode), ch, start, context);
     }
 
-    static int NameNodeStruct_applyFuncToDescendants(NameNodeStruct *node, ApplyFunc_params)
+    static int NameNodeStruct_applyFuncToDescendants(NameNodeStruct *node, ApplyFunc_params3)
     {
         if (targetVTable == nullptr || node->vtable == targetVTable) {
             func(Cast::upcast(node), ApplyFunc_pass);
