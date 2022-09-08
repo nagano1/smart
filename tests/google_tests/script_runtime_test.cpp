@@ -15,6 +15,20 @@
 namespace smart {
 
 #if defined(_X86_) and defined(_WIN32)
+    TEST(ScriptEngine, register_test2)
+    {
+        uint32_t num = 0;
+        __asm
+        {
+            mov ecx, 10; ecx = 10
+            mov eax, ecx; eax = ecx
+            add eax, ecx; eax = eax + ecx
+            mov num, eax;
+        }
+        EXPECT_EQ(num, 20);
+        ENDTEST
+    }
+
     TEST(ScriptEngine, register_test)
     {
         uint32_t num = UINT32_MAX;
@@ -23,12 +37,11 @@ namespace smart {
 
         __asm
         {
-            mov eax, num;
-            mov ax, x;
+            mov eax, 0xFFFFFFFF;
+            mov ax, 0;
             mov num, eax;
         }
         // mov esp, eax;
-        //EXPECT_EQ(x, 65535);
         EXPECT_EQ(num, 0xFFFF0000);
         ENDTEST
     }
@@ -37,19 +50,29 @@ namespace smart {
 
     TEST(ScriptEngine, CPURegister_test1)
     {
-        CPURegister reg;
+        CPURegister reg{};
+        EXPECT_EQ(EAX(&reg), 0);
+        EXPECT_EQ(sizeof(reg.rax), 8);
+        EXPECT_EQ(sizeof(bool), 1);
+
+        RAX(&reg) = 0xFFFFFFFFFFFFFFFF;
+        AX(&reg) = 0;
+        EXPECT_EQ(RAX(&reg), 0xFFFFFFFFFFFF0000);
+
 
         RAX(&reg) = 0xFFFFFFFFFFFFFFFF;
         EAX(&reg) = 0x0;
-
         EXPECT_EQ(RAX(&reg), 0xFFFFFFFF00000000);
 
 
-
-        EAX(&reg) = UINT32_MAX;
+        EAX(&reg) = 0xFFFFFFFF;
         AX(&reg) = 0;
-        
         EXPECT_EQ(EAX(&reg), 0xFFFF0000);
+
+
+        AX(&reg) = 0xFFFF;
+        AL(&reg) = 0x00;
+        EXPECT_EQ(AX(&reg), 0xFF00);
 
         ENDTEST
     }

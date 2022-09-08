@@ -332,16 +332,14 @@ namespace smart
         // "jfiowj".length
 
 
-        // call func expression
-        // func()
+        // call func expression: func()
         int extraPos;
         if (-1 < (extraPos = Tokenizers::funcCallTokenizer(parent, context->chars[result],
                                                            result, context))) {
             result = extraPos;
         }
 
-        //  binary operator expression
-        // calc() + 421431
+        //  binary operator expression: calc() + 421431
         if (-1 < (extraPos = Tokenizers::binaryOperationTokenizer(parent, context->chars[result],
                                                                   result, context))) {
             result = extraPos;
