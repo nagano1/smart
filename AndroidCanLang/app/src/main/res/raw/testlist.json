@@ -232,17 +232,24 @@
 	},
 	{
 		"testcasename": "ScriptEngine",
+		"testname": "register_test2",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, register_test2)\r\n    {\r\n        uint32_t num = 0;\r\n        __asm\r\n        {\r\n            mov ecx, 10; ecx = 10\r\n            mov eax, ecx; eax = ecx\r\n            add eax, ecx; eax = eax + ecx\r\n            mov num, eax;\r\n        }\r\n        EXPECT_EQ(num, 20);\r\n        "
+	},
+	{
+		"testcasename": "ScriptEngine",
 		"testname": "register_test",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, register_test)\r\n    {\r\n        uint32_t num = UINT32_MAX;\r\n        unsigned short x = 0;\r\n        unsigned short y = 0;\r\n\r\n        __asm\r\n        {\r\n            mov eax, num;\r\n            mov ax, x;\r\n            mov num, eax;\r\n        }\r\n        // mov esp, eax;\r\n        //EXPECT_EQ(x, 65535);\r\n        EXPECT_EQ(num, 0xFFFF0000);\r\n        "
+		"body": "TEST(ScriptEngine, register_test)\r\n    {\r\n        uint32_t num = UINT32_MAX;\r\n        unsigned short x = 0;\r\n        unsigned short y = 0;\r\n\r\n        __asm\r\n        {\r\n            mov eax, 0xFFFFFFFF;\r\n            mov ax, 0;\r\n            mov num, eax;\r\n        }\r\n        // mov esp, eax;\r\n        EXPECT_EQ(num, 0xFFFF0000);\r\n        "
 	},
 	{
 		"testcasename": "ScriptEngine",
 		"testname": "CPURegister_test1",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, CPURegister_test1)\r\n    {\r\n        CPURegister reg;\r\n\r\n        RAX(&reg) = 0xFFFFFFFFFFFFFFFF;\r\n        EAX(&reg) = 0x0;\r\n\r\n        EXPECT_EQ(RAX(&reg), 0xFFFFFFFF00000000);\r\n\r\n\r\n\r\n        EAX(&reg) = UINT32_MAX;\r\n        AX(&reg) = 0;\r\n        \r\n        EXPECT_EQ(EAX(&reg), 0xFFFF0000);\r\n\r\n        "
+		"body": "TEST(ScriptEngine, CPURegister_test1)\r\n    {\r\n        CPURegister reg{};\r\n        EXPECT_EQ(EAX(&reg), 0);\r\n        EXPECT_EQ(sizeof(reg.rax), 8);\r\n        EXPECT_EQ(sizeof(bool), 1);\r\n\r\n        RAX(&reg) = 0xFFFFFFFFFFFFFFFF;\r\n        AX(&reg) = 0;\r\n        EXPECT_EQ(RAX(&reg), 0xFFFFFFFFFFFF0000);\r\n\r\n\r\n        RAX(&reg) = 0xFFFFFFFFFFFFFFFF;\r\n        EAX(&reg) = 0x0;\r\n        EXPECT_EQ(RAX(&reg), 0xFFFFFFFF00000000);\r\n\r\n\r\n        EAX(&reg) = 0xFFFFFFFF;\r\n        AX(&reg) = 0;\r\n        EXPECT_EQ(EAX(&reg), 0xFFFF0000);\r\n\r\n\r\n        AX(&reg) = 0xFFFF;\r\n        AL(&reg) = 0x00;\r\n        EXPECT_EQ(AX(&reg), 0xFF00);\r\n\r\n        "
 	},
 	{
 		"testcasename": "ScriptEngine",

@@ -35,6 +35,10 @@ namespace smart {
     struct ParseContext;
     struct CodeLine;
 
+    enum class PrimitiveCalcRegister {
+        eax, ebx, ecx, edx
+    };
+
     #define NODE_HEADER \
         const struct node_vtable *vtable; \
         _NodeBase *parentNode; \
@@ -45,6 +49,7 @@ namespace smart {
         void *prevCommentNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
         ParseContext *context; \
+        PrimitiveCalcRegister calcReg; \
         int found; \
         int prev_chars
 
@@ -59,6 +64,7 @@ namespace smart {
         (node)->nextNode = nullptr; \
         (node)->nextNodeInLine = nullptr; \
         (node)->prevLineBreakNode = nullptr; \
+        (node)->calcReg = PrimitiveCalcRegister::eax; \
         (node)->prevCommentNode = nullptr; \
         (0)
 
