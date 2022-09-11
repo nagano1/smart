@@ -133,8 +133,8 @@ namespace smart {
         stackMemory.localVariables(8 * 4);
         uint32_t a = 100;
         uint32_t b;
-        stackMemory.moveTo(-4, 4, (char*)&a);
-        stackMemory.moveFrom(-4, 4, (char*)&b);
+        stackMemory.moveTo(-4, 4, (st_byte*)&a);
+        stackMemory.moveFrom(-4, 4, (st_byte*)&b);
         EXPECT_EQ(100, b);
         stackMemory.ret();
 
@@ -232,14 +232,14 @@ namespace smart {
         constexpr char source[] = R"(
 fn main()
 {
-    int b = 5
-    int ab = 3
+    int b = 9
+    int a = 5
     
-    return b + ab
+    return (b + a)
 }
 )";
         int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);
-        EXPECT_EQ(ret, 8);
+        EXPECT_EQ(ret, 14);
 
         ENDTEST
     }

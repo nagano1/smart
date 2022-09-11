@@ -35,10 +35,88 @@ namespace smart {
     struct ParseContext;
     struct CodeLine;
 
-    enum class PrimitiveCalcRegister {
+    enum class PrimitiveCalcRegisterEnum {
         eax, ebx, ecx, edx
     };
 
+
+    #define __RX(reg) (reg)->rax
+    #define __EX(reg) (reg)->eax.eax
+    #define __X(reg) (reg)->eax.ax.ax
+    #define __H(reg) (reg)->eax.ax.ahal.ah
+    #define __L(reg) (reg)->eax.ax.ahal.al
+
+    #define __RAX(reg) (reg).rax
+    #define __EAX(reg) (reg).eax.eax
+    #define __AX(reg) (reg).eax.ax.ax
+    #define __AH(reg) (reg).eax.ax.ahal.ah
+    #define __AL(reg) (reg).eax.ax.ahal.al
+
+    #define RAX(reg) __RAX((reg)->rax)
+    #define EAX(reg) __EAX((reg)->rax)
+    #define AX(reg) __AX((reg)->rax)
+    #define AH(reg) __AH((reg)->rax)
+    #define AL(reg) __AL((reg)->rax)
+
+    #define RBX(reg) __RAX((reg)->rbx)
+    #define EBX(reg) __EAX((reg)->rbx)
+    #define BX(reg) __AX((reg)->rbx)
+    #define BH(reg) __AH((reg)->rbx)
+    #define BL(reg) __AL((reg)->rbx)
+
+    #define RCX(reg) __RAX((reg)->rcx)
+    #define ECX(reg) __EAX((reg)->rcx)
+    #define CX(reg) __AX((reg)->rcx)
+    #define CH(reg) __AH((reg)->rcx)
+    #define CL(reg) __AL((reg)->rcx)
+
+    #define RDX(reg) __RAX((reg)->rdx)
+    #define EDX(reg) __EAX((reg)->rdx)
+    #define DX(reg) __AX((reg)->rdx)
+    #define DH(reg) __AH((reg)->rdx)
+    #define DL(reg) __AL((reg)->rdx)
+
+
+    union CalcRegister {
+        uint64_t rax;
+        union {
+            uint32_t eax;
+            union {
+                uint16_t ax;
+                struct {
+                    uint8_t al;
+                    uint8_t ah;
+                } ahal;
+            } ax;
+        } eax;
+    };
+
+    /*
+          64bit RAX, RBX, RCX, RDX, RSI, RDI, RSP, RBP, R8~R15
+          32bit EAX, EBX, ECX, EDX, ESI, EDI, ESP, EBP, R8D~R15D
+          16bit AX, BX, CX, DX, SI, DI, SP, BP, R8W~R15W
+    upper 8bit 	AH, BH, CH, DH,
+    lower 8bit 	AL, BL, CL, DL, SIL, DIL, SPL, BPL, R8L~R15L
+    */
+
+
+    using CPURegister = struct _CPURegister {
+        CalcRegister rax;
+        CalcRegister rbx;
+        CalcRegister rcx;
+        CalcRegister rdx;
+
+        void add(int num) {
+            auto *reg = this;
+            RAX(reg) = RAX(reg) + num;
+        }
+    };
+
+    /*
+    static void setActualCaclRegister() {
+
+    }
+*/
     #define NODE_HEADER \
         const struct node_vtable *vtable; \
         _NodeBase *parentNode; \
@@ -49,7 +127,9 @@ namespace smart {
         void *prevCommentNode; \
         struct _LineBreakNodeStruct *prevLineBreakNode; \
         ParseContext *context; \
-        PrimitiveCalcRegister calcReg; \
+        PrimitiveCalcRegisterEnum calcRegEnum; \
+        st_byte *calcReg;                 \
+        int typeIndex2;                \
         int found; \
         int prev_chars
 
@@ -61,10 +141,11 @@ namespace smart {
         (node)->parentNode = (NodeBase*)(parent); \
         (node)->codeLine = nullptr; \
         (node)->found = -1; \
+        (node)->typeIndex2 = -1; \
         (node)->nextNode = nullptr; \
         (node)->nextNodeInLine = nullptr; \
         (node)->prevLineBreakNode = nullptr; \
-        (node)->calcReg = PrimitiveCalcRegister::eax; \
+        (node)->calcRegEnum = PrimitiveCalcRegisterEnum::eax; \
         (node)->prevCommentNode = nullptr; \
         (0)
 
@@ -113,7 +194,7 @@ namespace smart {
         NODE_HEADER;
 
         int stackOffset;
-        int typeIndex;
+//        int typeIndex;
 
         char *name;
         int_fast32_t nameLength;
@@ -188,7 +269,7 @@ namespace smart {
         NameNodeStruct nameNode; // varName
         SymbolStruct equalSymbol; // =
         NodeBase *valueNode; // 32
-        int typeIndex;
+        //int typeIndex;
     };
 
     using KeywordAndValueStruct = struct {

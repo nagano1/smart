@@ -61,71 +61,7 @@ namespace smart
 
 
 
-    #define __RAX(reg) (reg).rax
-    #define __EAX(reg) (reg).eax.eax
-    #define __AX(reg) (reg).eax.ax.ax
-    #define __AH(reg) (reg).eax.ax.ahal.ah
-    #define __AL(reg) (reg).eax.ax.ahal.al
 
-    #define RAX(reg) __RAX((reg)->rax)
-    #define EAX(reg) __EAX((reg)->rax)
-    #define AX(reg) __AX((reg)->rax)
-    #define AH(reg) __AH((reg)->rax)
-    #define AL(reg) __AL((reg)->rax)
-
-    #define RBX(reg) __RAX((reg)->rbx)
-    #define EBX(reg) __EAX((reg)->rbx)
-    #define BX(reg) __AX((reg)->rbx)
-    #define BH(reg) __AH((reg)->rbx)
-    #define BL(reg) __AL((reg)->rbx)
-
-    #define RCX(reg) __RAX((reg)->rcx)
-    #define ECX(reg) __EAX((reg)->rcx)
-    #define CX(reg) __AX((reg)->rcx)
-    #define CH(reg) __AH((reg)->rcx)
-    #define CL(reg) __AL((reg)->rcx)
-
-    #define RDX(reg) __RAX((reg)->rdx)
-    #define EDX(reg) __EAX((reg)->rdx)
-    #define DX(reg) __AX((reg)->rdx)
-    #define DH(reg) __AH((reg)->rdx)
-    #define DL(reg) __AL((reg)->rdx)
-
-
-    union CalcRegister {
-        uint64_t rax;
-        union {
-            uint32_t eax;
-            union {
-                uint16_t ax;
-                struct {
-                    uint8_t al;
-                    uint8_t ah;
-                } ahal;
-            } ax;
-        } eax;
-    };
-
-    /*
-          64bit RAX, RBX, RCX, RDX, RSI, RDI, RSP, RBP, R8~R15
-          32bit EAX, EBX, ECX, EDX, ESI, EDI, ESP, EBP, R8D~R15D
-          16bit AX, BX, CX, DX, SI, DI, SP, BP, R8W~R15W
-    upper 8bit 	AH, BH, CH, DH,
-    lower 8bit 	AL, BL, CL, DL, SIL, DIL, SPL, BPL, R8L~R15L
-    */
-
-
-    using CPURegister = struct _CPURegister {
-        CalcRegister rax;
-        CalcRegister rbx;
-        CalcRegister rcx;
-        CalcRegister rdx;
-
-        void add(int num) {
-            auto *reg = this;
-            RAX(reg) = RAX(reg) + num;
-        }
-    };
 
     using StackMemory = struct _StackMemory {
 
@@ -156,11 +92,8 @@ namespace smart
         void ret();
 
 
-
-        void moveTo(int offsetFromBase, int byteCount, char* ptr) const;
-
-        void moveFrom(int offsetFromBase, int byteCount, char* ptr) const;
-
+        void moveTo(int offsetFromBase, int byteCount, st_byte* ptr) const;
+        void moveFrom(int offsetFromBase, int byteCount, st_byte* ptr) const;
     };
 
 
@@ -194,6 +127,8 @@ namespace smart
     struct _typeEntry;
     using LogicalErrorInfo = struct _logicalErrorInfo {
         bool hasError{false};
+        int count;
+
         LogicErrorItem *firstErrorItem;
         LogicErrorItem *lastErrorItem;
         static const int SYNTAX_ERROR_RETURN = -1;
@@ -201,6 +136,8 @@ namespace smart
 
     using ScriptEngineContext = struct _scriptEngineContext {
         _ScriptEnv* scriptEnv;
+        CPURegister cpuRegister;
+
         LogicalErrorInfo logicErrorInfo;
 
         MemBuffer memBuffer; // for TypeEntry, variable->value map
@@ -274,6 +211,7 @@ namespace smart
 
         void addErrorWithNode(ErrorCode errorCode, NodeBase* node) {
             auto &errorInfo = this->logicErrorInfo;
+            errorInfo.count++;
             errorInfo.hasError = true;
             auto *mem = this->memBufferForError.newMem<LogicErrorItem>(1);
             mem->node = node;
@@ -340,7 +278,7 @@ namespace smart
 
     using TypeEntry = struct _typeEntry {
         int typeIndex;
-        int stackSize;
+        int dataSize;
         char *(*toString)(ScriptEngineContext *context, ValueBase* value);
         ValueBase* (*operate_add)(ScriptEngineContext *context, ValueBase* leftValue, ValueBase* rightValue);
         char *typeChars;
@@ -350,14 +288,14 @@ namespace smart
 
         template<std::size_t SIZE>
         void initAsBuiltInType(decltype(toString) f1, decltype(operate_add) f2,
-                               const char(&f3)[SIZE], decltype(typeId) f4, decltype(stackSize) f5
+                               const char(&f3)[SIZE], decltype(typeId) f4, decltype(dataSize) f5
         ) {
             this->toString = f1;
             this->operate_add = f2;
             this->typeChars = (char*)f3;
             this->typeCharsLength = SIZE;
             this->typeId = f4;
-            this->stackSize = f5;
+            this->dataSize = f5;
             this->isBuiltIn = true;
         }
     };
@@ -372,8 +310,7 @@ namespace smart
 
         ScriptEngineContext *context;
 
-        ValueBase *evaluateExprNode(NodeBase* expressionNode);
-        ValueBase *evaluateExprNodeOrTest(NodeBase *expressionNode, ValueBase *testPointer);
+        void evaluateExprNode(NodeBase* expressionNode);
 
         int typeFromNode(NodeBase *expressionNode);
 
@@ -384,7 +321,7 @@ namespace smart
         static int startScript(char* script, int byteLength);
 
         static _ScriptEnv* loadScript(char* script, int byteLength);
-        int validateScript() const;
+        void validateScript() const;
         int runScriptEnv();
 
         void registerTypeEntry(TypeEntry* typeEntry);

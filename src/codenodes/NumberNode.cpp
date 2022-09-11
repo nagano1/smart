@@ -338,11 +338,23 @@ namespace smart {
         return -1;
     }
 
-    static int parentheses_applyFuncToDescendants(ParenthesesNodeStruct *node, ApplyFunc_params3) {
-
+    static int parentheses_applyFuncToDescendants(ParenthesesNodeStruct *node, ApplyFunc_params3)
+    {
+        if (parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
+        }
         if (node->valueNode) {
             node->valueNode->vtable->applyFuncToDescendants(node->valueNode, ApplyFunc_pass2);
         }
+
+        if (!parentIsFirst) {
+            if (targetVTable == nullptr || node->vtable == targetVTable) {
+                func(Cast::upcast(node), ApplyFunc_pass);
+            }
+        }
+
         return 0;
     }
 
