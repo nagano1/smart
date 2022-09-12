@@ -315,6 +315,13 @@
 		"body": "TEST(ScriptEngine, ScriptEngineTest_sub) {\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    let b = 9\r\n    int a = 5\r\n    \r\n    return b - a\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_EQ(ret, 4);\r\n\r\n        "
 	},
 	{
+		"testcasename": "ScriptEngine",
+		"testname": "ScriptEngineTest_i64",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, ScriptEngineTest_i64) {\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    let b = 5\r\n    i64 a = 9\r\n    \r\n    return b + a\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_EQ(ret, 14);\r\n\r\n        "
+	},
+	{
 		"testcasename": "SpeedTest",
 		"testname": "memory_order_relaxed_is_fast",
 		"filepath": "tests/google_tests/speed_test.cpp",

@@ -267,4 +267,21 @@ fn main()
 
         ENDTEST
     }
+
+
+    TEST(ScriptEngine, ScriptEngineTest_i64) {
+        constexpr char source[] = R"(
+fn main()
+{
+    let b = 5
+    i64 a = 9
+    
+    return b + a
+}
+)";
+        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);
+        EXPECT_EQ(ret, 14);
+
+        ENDTEST
+    }
 }

@@ -274,7 +274,8 @@ namespace smart
 
     enum class BuildinTypeId {
         Int32 = 1,
-        HeapString = 2
+        Int64 = 2,
+        HeapString = 23
     };
 
     using TypeEntry = struct _typeEntry {

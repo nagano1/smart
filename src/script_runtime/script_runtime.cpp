@@ -222,6 +222,14 @@ namespace smart {
         return chars;
     }
 
+    char* int64_toString(ScriptEngineContext *context, ValueBase *value)
+    {
+        auto * chars = (char*)malloc(sizeof(char) * 128);
+        sprintf(chars, "%llu", *(int64_t*)value->ptr);
+        return chars;
+    }
+
+
     /*
     static int32_t int32_value(ValueBase *value)
     {
@@ -239,30 +247,64 @@ namespace smart {
         // return -1;
     }
 
+    int int64_operate_add_type(ScriptEngineContext *context,
+                               _typeEntry *binaryNode,
+                               _typeEntry *leftValue,
+                               _typeEntry *rightValue)
+    {
+        return BuiltInTypeIndex::int64;
+        // return -1;
+    }
+
+
 
     void int32_operate_add(ScriptEngineContext *context,
                            BinaryOperationNodeStruct *binaryNode)
     {
-        assert(binaryNode->leftExprNode->typeIndex == BuiltInTypeIndex::int32);
-
+        int32_t left32 = *(int32_t*)binaryNode->leftExprNode->calcReg;
+        int32_t right32 = 0;
         if (binaryNode->rightExprNode->typeIndex == BuiltInTypeIndex::int32) {
-            switch (binaryNode->opNode.symbol[0]) {
-                case '+': {
-                    auto result = *(uint32_t*)binaryNode->leftExprNode->calcReg
-                                  + *(uint32_t*)binaryNode->rightExprNode->calcReg;
-                    *(uint32_t*)binaryNode->calcReg = result;
-                    break;
-                }
-
-                case '-': {
-                    auto result = *(uint32_t*)binaryNode->leftExprNode->calcReg
-                                  - *(uint32_t*)binaryNode->rightExprNode->calcReg;
-                    *(uint32_t*)binaryNode->calcReg = result;
-                    break;
-                }
+            right32 = *(int32_t*)binaryNode->rightExprNode->calcReg;
+        }
+        else if (binaryNode->rightExprNode->typeIndex == BuiltInTypeIndex::int64) {
+            right32 = (int32_t)(*(int64_t*)binaryNode->rightExprNode->calcReg);
+        }
+        switch (binaryNode->opNode.symbol[0]) {
+            case '+': {
+                *(int32_t*)binaryNode->calcReg = left32 + right32;
+                break;
+            }
+            case '-': {
+                *(int32_t*)binaryNode->calcReg = left32 - right32;
+                break;
             }
         }
     }
+
+    void int64_operate_add(ScriptEngineContext *context,
+                           BinaryOperationNodeStruct *binaryNode)
+    {
+        int64_t left64 = *(int64_t*)binaryNode->leftExprNode->calcReg;
+        int64_t right64 = 0;
+        if (binaryNode->rightExprNode->typeIndex == BuiltInTypeIndex::int32) {
+            right64 = *(int32_t *) binaryNode->rightExprNode->calcReg;
+        }
+        else if (binaryNode->rightExprNode->typeIndex == BuiltInTypeIndex::int64) {
+            right64 = *(int64_t *) binaryNode->rightExprNode->calcReg;
+        }
+
+        switch (binaryNode->opNode.symbol[0]) {
+            case '+': {
+                *(int64_t*)binaryNode->calcReg = left64 + right64;
+                break;
+            }
+            case '-': {
+                *(int64_t*)binaryNode->calcReg = left64 - right64;
+                break;
+            }
+        }
+    }
+
 
     char* heapString_toString(ScriptEngineContext *context, ValueBase* value)
     {
@@ -297,15 +339,28 @@ namespace smart {
 
     static void _registerBuiltInTypes(ScriptEnv* scriptEnv)
     {
-        // int32
-        TypeEntry *int32Type = scriptEnv->newTypeEntry();
-        int32Type->initAsBuiltInType(int32_toString, int32_operate_add, int32_operate_add_type,
-                                     "int", BuildinTypeId::Int32, 4); // 4byte
-        scriptEnv->registerTypeEntry(int32Type);
-        BuiltInTypeIndex::int32 = int32Type->typeIndex;
-        scriptEnv->addTypeAlias(int32Type, "int");
-        scriptEnv->addTypeAlias(int32Type, "int32");
+        // int
+        {
+            TypeEntry *int32Type = scriptEnv->newTypeEntry();
+            int32Type->initAsBuiltInType(int32_toString, int32_operate_add, int32_operate_add_type,
+                                         "int", BuildinTypeId::Int32, 4); // 4byte
+            scriptEnv->registerTypeEntry(int32Type);
+            BuiltInTypeIndex::int32 = int32Type->typeIndex;
+            scriptEnv->addTypeAlias(int32Type, "int");
+            scriptEnv->addTypeAlias(int32Type, "i32");
+        }
 
+        {
+            // i64
+            TypeEntry *int64Type = scriptEnv->newTypeEntry();
+            int64Type->initAsBuiltInType(int64_toString, int64_operate_add, int64_operate_add_type,
+                                         "i64", BuildinTypeId::Int64, 8); // 4byte
+            scriptEnv->registerTypeEntry(int64Type);
+            BuiltInTypeIndex::int64 = int64Type->typeIndex;
+            scriptEnv->addTypeAlias(int64Type, "i64");
+        }
+
+        // int8
 
         // heap string
         TypeEntry* heapStringType = scriptEnv->newTypeEntry();
@@ -391,19 +446,6 @@ namespace smart {
         return BuiltInTypeIndex::heapString;
     }
 
-//    static int selectTypeFromVariable(ScriptEnv *env, VariableNodeStruct *nodeBase)
-//    {
-//        return nodeBase->typeIndex;
-//    }
-//
-//    static int selectTypeFromParentheses(ScriptEnv *env, ParenthesesNodeStruct *parenthesis)
-//    {
-//        if (parenthesis->valueNode) {
-//            return env->typeFromNode(parenthesis->valueNode);
-//        }
-//        return -1;
-//    }
-
     template<typename T>
     static void setTypeSelector(const node_vtable* vtable, int (*argToType)(ScriptEnv *, T *)) {
         ((node_vtable*)vtable)->typeSelector = reinterpret_cast<int (*)(void *, NodeBase *)>(argToType);
@@ -413,10 +455,9 @@ namespace smart {
     {
         setTypeSelector(VTables::NumberVTable, selectTypeFromNumberNode);
         setTypeSelector(VTables::StringLiteralVTable, selectTypeFromStringNode);
-        //setTypeSelector(VTables::ParenthesesVTable, selectTypeFromParentheses);
-        //setTypeSelector(VTables::VariableVTable, selectTypeFromVariable);
 
         if (VTables::NumberVTable->typeSelector(env, nullptr) != -1) {
+
         }
     }
 
@@ -460,13 +501,13 @@ namespace smart {
 
         if (expressionNode->vtable == VTables::VariableVTable) {
             auto* variableNode = Cast::downcast<VariableNodeStruct *>(expressionNode);
-            if (variableNode->typeIndex == BuiltInTypeIndex::int32) {
+            //if (variableNode->typeIndex == BuiltInTypeIndex::int32) {
                 auto dataSize = this->scriptEnv->typeEntryList[variableNode->typeIndex]->dataSize;
 
 //              EAX(&(this->context->cpuRegister)) = variableNode->num;
                 //*(uint32_t*)variableNode->calcReg = val;//variableNode->num;
                 this->stackMemory.moveFrom(variableNode->stackOffset, dataSize, variableNode->calcReg);
-            }
+            //}
             return;
         }
 
@@ -757,20 +798,34 @@ namespace smart {
     }
 
     inline void setCalcRegToNode(NodeBase *node, const ScriptEngineContext *context) {
-        if (node->calcRegEnum == PrimitiveCalcRegisterEnum::eax) {
-            node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rax);
+        int typeIndex = node->typeIndex;
+        if (typeIndex == -1) {
+            typeIndex = BuiltInTypeIndex::int64;
         }
-        else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ebx) {
-            node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rbx);
-        }
-        else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ecx) {
-            node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rcx);
-        }
-        else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::edx) {
-            node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rdx);
+        
+        auto *typeEntry = context->scriptEnv->typeEntryList[typeIndex];
+        if (typeEntry->dataSize == 4) {
+            if (node->calcRegEnum == PrimitiveCalcRegisterEnum::eax) {
+                node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rax);
+            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ebx) {
+                node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rbx);
+            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ecx) {
+                node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rcx);
+            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::edx) {
+                node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rdx);
+            }
+        } else if (typeEntry->dataSize == 8) {
+            if (node->calcRegEnum == PrimitiveCalcRegisterEnum::eax) {
+                node->calcReg = (st_byte *) &__RX(&context->cpuRegister.rax);
+            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ebx) {
+                node->calcReg = (st_byte *) &__RX(&context->cpuRegister.rbx);
+            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ecx) {
+                node->calcReg = (st_byte *) &__RX(&context->cpuRegister.rcx);
+            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::edx) {
+                node->calcReg = (st_byte *) &__RX(&context->cpuRegister.rdx);
+            }
         }
     }
-
 
     int applyFunc_assignCalcOpRegister(NodeBase *node, ApplyFunc_params2)
     {
@@ -840,49 +895,7 @@ namespace smart {
                                                          nullptr,
                                                          nullptr);
     }
-/*
-    static int variableFound_SearchCorrespondAssignment(NodeBase *node, ApplyFunc_params2)
-    {
-        auto *context2 = (ScriptEngineContext *)scriptEngineContext;
-        auto *vari = Cast::downcast<VariableNodeStruct *>(arg);
-        vari->stackOffset = -1;
-
-        auto *variableTop = Cast::downcast<NodeBase*>(arg);
-        auto *body = Cast::downcast<BodyNodeStruct*>(variableTop->parentNode);
-        // auto *funcNode = Cast::downcast<FuncNodeStruct*>(body->parentNode);
-
-        auto *bodyChild = body->firstChildNode;
-        bool varDefFound = false;
-
-        while (bodyChild) {
-            if (bodyChild == variableTop) {
-                break;
-            }
-
-            if (bodyChild->vtable == VTables::AssignStatementVTable) {
-                auto *assignState = Cast::downcast<AssignStatementNodeStruct *>(bodyChild);
-
-                if (ParseUtil::equal(vari->name, vari->nameLength,
-                                     assignState->nameNode.name, assignState->nameNode.nameLength)) {
-                    vari->stackOffset = assignState->stackOffset;
-                    vari->typeIndex2 = assignState->typeIndex2;
-
-                    varDefFound = true;
-                }
-            }
-
-            bodyChild = bodyChild->nextNode;
-        }
-
-        if (!varDefFound) {
-            context2->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(vari));
-        }
-
-        return varDefFound ? 1 : 0;
-    }
-*/
-
-
+    
     static inline int determineChildTypeIndex(ScriptEnv *env, NodeBase *node) {
         int typeIndex = node->typeIndex;
         if (typeIndex == -1) {
@@ -892,7 +905,7 @@ namespace smart {
         return node->typeIndex;
     }
 
-    // child comes first
+    // children come first
     static int callTypeSelectorOnExpressions(NodeBase *node, ApplyFunc_params2)
     {
         auto *context = (ScriptEngineContext *)scriptEngineContext;
@@ -928,9 +941,7 @@ namespace smart {
             if (assign->hasTypeDecl) {
                 auto *typeName= &assign->typeOrLet.nameNode;
                 if (assign->typeOrLet.isLet) {
-
                     assign->typeIndex = determineChildTypeIndex(context->scriptEnv, assign->valueNode);
-
                 } else {
                     auto *typeEntry = (TypeEntry *) context->typeNameMap->get(
                             typeName->name, typeName->nameLength);
@@ -1004,15 +1015,13 @@ namespace smart {
             if (rootNode->vtable == VTables::FnVTable) {
                 // fn
                 auto *fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
-
                 int errorCount = this->context->logicErrorInfo.count;
+
                 // set typeIndex to all expressions and assignments
                 callTypeSelectorsOnExpressions2(context, fnNode);
+
                 if (errorCount == this->context->logicErrorInfo.count) {
-//                    calcStackSizeInFunc((ScriptEnv*)this, fnNode);
-                    if (errorCount == this->context->logicErrorInfo.count) {
-                        assignCalcOpRegister2(context, fnNode);
-                    }
+                    assignCalcOpRegister2(context, fnNode);
                 }
             }
             rootNode = rootNode->nextNode;
@@ -1121,7 +1130,6 @@ namespace smart {
                 env->context->evaluateExprNode(returnNode->valueNode);
                 return *(int32_t*)returnNode->valueNode->calcReg;
             }
-
 
             statementNode = statementNode->nextNode;
         }
