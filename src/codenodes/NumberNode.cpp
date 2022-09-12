@@ -1,9 +1,11 @@
-﻿#include <cstdio>
+﻿#define _CRT_SECURE_NO_WARNINGS
+
+#include <cstdio>
 #include <iostream>
 #include <string>
 #include <array>
 #include <algorithm>
-
+#include <cinttypes>
 
 #include <cstdlib>
 #include <cassert>
@@ -145,6 +147,18 @@ namespace smart {
         return self->textLength;
     }
 
+    int64_t S64(const char *s) {
+        int64_t i;
+        char c ;
+        int scanned = sscanf(s, "%" SCNd64 "%c", &i, &c);
+        if (scanned == 1) return i;
+        if (scanned > 1) {
+            // TBD about extra data found
+            return i;
+        }
+        // TBD failed to scan;
+        return 0;
+    }
 
     static constexpr const char numberNodeTypeText[] = "<number>";
     int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context)
@@ -159,16 +173,28 @@ namespace smart {
         }
 
         if (found_count > 0) {
+
             auto *numberNode = Alloc::newNumberNode(context, parent);
 
             context->setCodeNode(numberNode);
-            numberNode->text = context->memBuffer.newMem<char>(found_count + 1);
+            numberNode->text = context->memBuffer.newMem<char>(found_count + 1 + 1/*L*/);
             numberNode->textLength = found_count;
 
             TEXT_MEMCPY(numberNode->text, context->chars + start, found_count);
             numberNode->text[found_count] = '\0';
 
-            numberNode->num = atoi(numberNode->text);
+            numberNode->num = S64(numberNode->text);
+
+            if ('L' == context->chars[start + found_count]) {
+                numberNode->textLength++;
+                numberNode->unit = 64;
+                numberNode->text[found_count] = 'L';
+                found_count++;
+                numberNode->text[found_count] = '\0';
+            } else {
+                numberNode->num = (int32_t)numberNode->num;
+
+            }
 
             return start + found_count;
         }

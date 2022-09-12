@@ -491,8 +491,12 @@ namespace smart {
         if (expressionNode->vtable == VTables::NumberVTable) {
             auto* numberNode = Cast::downcast<NumberNodeStruct *>(expressionNode);
             //EAX(&(this->cpuRegister)) = numberNode->num;
-            *(uint32_t*)numberNode->calcReg = numberNode->num;
-
+            if (numberNode->unit == 64) {
+                *(int64_t*)numberNode->calcReg = numberNode->num;
+            }
+            else {
+                *(int32_t*)numberNode->calcReg = (int32_t)numberNode->num;
+            }
             //int32_t *int32ptr;
             //auto *value = this->context->genValueBase(BuiltInTypeIndex::int32, sizeof(int32_t), &int32ptr);
             //*int32ptr = numberNode->num;
@@ -802,26 +806,33 @@ namespace smart {
         if (typeIndex == -1) {
             typeIndex = BuiltInTypeIndex::int64;
         }
-        
+
         auto *typeEntry = context->scriptEnv->typeEntryList[typeIndex];
         if (typeEntry->dataSize == 4) {
             if (node->calcRegEnum == PrimitiveCalcRegisterEnum::eax) {
                 node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rax);
-            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ebx) {
+            }
+            else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ebx) {
                 node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rbx);
-            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ecx) {
+            }
+            else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ecx) {
                 node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rcx);
-            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::edx) {
+            }
+            else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::edx) {
                 node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rdx);
             }
-        } else if (typeEntry->dataSize == 8) {
+        }
+        else if (typeEntry->dataSize == 8) {
             if (node->calcRegEnum == PrimitiveCalcRegisterEnum::eax) {
                 node->calcReg = (st_byte *) &__RX(&context->cpuRegister.rax);
-            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ebx) {
+            }
+            else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ebx) {
                 node->calcReg = (st_byte *) &__RX(&context->cpuRegister.rbx);
-            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ecx) {
+            }
+            else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::ecx) {
                 node->calcReg = (st_byte *) &__RX(&context->cpuRegister.rcx);
-            } else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::edx) {
+            }
+            else if (node->calcRegEnum == PrimitiveCalcRegisterEnum::edx) {
                 node->calcReg = (st_byte *) &__RX(&context->cpuRegister.rdx);
             }
         }
@@ -922,10 +933,10 @@ namespace smart {
                 //auto *leftTypeEntry = context->scriptEnv->typeEntryList[leftTypeIndex];
                 //auto *rightTypeEntry = context->scriptEnv->typeEntryList[rightTypeIndex];
 
-                if (leftTypeIndex == rightTypeIndex) {
+//                if (leftTypeIndex == rightTypeIndex) {
                     // currently supports only int32 + int32
                     binary->typeIndex = leftTypeIndex;
-                }
+                //}
             }
         }
 
@@ -933,6 +944,14 @@ namespace smart {
             auto *parentheses = Cast::downcast<ParenthesesNodeStruct *>(node);
             if (parentheses->valueNode) {
                 parentheses->typeIndex = determineChildTypeIndex(context->scriptEnv, parentheses->valueNode);
+            }
+        }
+
+
+        if (node->vtable == VTables::ReturnStatementVTable) {
+            auto* returnState = Cast::downcast<ReturnStatementNodeStruct*>(node);
+            if (returnState->valueNode) {
+                returnState->typeIndex = determineChildTypeIndex(context->scriptEnv, returnState->valueNode);
             }
         }
 
@@ -1128,7 +1147,15 @@ namespace smart {
             if (statementNode->vtable == VTables::ReturnStatementVTable) {
                 auto* returnNode = Cast::downcast<ReturnStatementNodeStruct*>(statementNode);
                 env->context->evaluateExprNode(returnNode->valueNode);
-                return *(int32_t*)returnNode->valueNode->calcReg;
+                auto* typeEntry = env->typeEntryList[returnNode->valueNode->typeIndex];
+
+                if (typeEntry->dataSize == 8) {
+                    int64_t v = *(int64_t*)returnNode->valueNode->calcReg;
+                    return (int32_t)v;
+                }
+                else {
+                    return *(int32_t*)returnNode->valueNode->calcReg;
+                }
             }
 
             statementNode = statementNode->nextNode;

@@ -227,7 +227,7 @@ namespace smart {
 
         char *text;
         int textLength;
-        int num;
+        int64_t num;
         int unit;
     };
 
