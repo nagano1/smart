@@ -106,6 +106,7 @@ namespace smart
 
     struct BuiltInTypeIndex {
         static int int32;
+        static int int64;
         static int int_;
         static int heapString;
     };

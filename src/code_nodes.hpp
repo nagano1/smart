@@ -260,7 +260,6 @@ namespace smart {
         // $int a = 5
         // ?let *ptr = "jfwio"
 
-        bool onlyAssign; // has not declare
         TypeNodeStruct typeOrLet; // $let, int, ?string, etc..
         bool hasTypeDecl; // $let, int, ?string, etc..
         SymbolStruct pointerAsterisk; // *

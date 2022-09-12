@@ -34,7 +34,7 @@ namespace smart {
 
     static CodeLine *appendToLine(AssignStatementNodeStruct *self, CodeLine *currentCodeLine)
     {
-        if (!self->onlyAssign) {
+        if (self->hasTypeDecl) {
             currentCodeLine = VTableCall::callAppendToLine(&self->typeOrLet, currentCodeLine);
         }
 
@@ -105,7 +105,6 @@ namespace smart {
     void Init::initAssignStatement(ParseContext *context, NodeBase *parentNode, AssignStatementNodeStruct *assignStatement) {
         INIT_NODE(assignStatement, context, parentNode, &_assignVTable);
 
-        assignStatement->onlyAssign = false;
         assignStatement->hasTypeDecl = false;
         assignStatement->valueNode = nullptr;
         assignStatement->stackOffset = 0;
@@ -206,7 +205,7 @@ namespace smart {
         int resultPos;
         if (-1 < (resultPos = Scanner::scanMulti(assignment, inner_assignStatementTokenizerMulti,
                                                  start, context))) {
-            assignment->onlyAssign = true;
+            assignment->hasTypeDecl = false;
             assignment->typeOrLet.isLet = false;
 
             context->leftNode = Cast::upcast(&assignment->nameNode);
@@ -237,7 +236,6 @@ namespace smart {
 
         int resul = Tokenizers::typeTokenizer(Cast::upcast(&assignStatement->typeOrLet), ch, start, context);
         if (resul > -1) {
-            assignStatement->onlyAssign = false;
             assignStatement->hasTypeDecl = true;
 
             context->afterLineBreak = false;

@@ -246,10 +246,21 @@ namespace smart {
         assert(binaryNode->leftExprNode->typeIndex == BuiltInTypeIndex::int32);
 
         if (binaryNode->rightExprNode->typeIndex == BuiltInTypeIndex::int32) {
-            auto result = *(uint32_t*)binaryNode->leftExprNode->calcReg
-                          + *(uint32_t*)binaryNode->rightExprNode->calcReg;
+            switch (binaryNode->opNode.symbol[0]) {
+                case '+': {
+                    auto result = *(uint32_t*)binaryNode->leftExprNode->calcReg
+                                  + *(uint32_t*)binaryNode->rightExprNode->calcReg;
+                    *(uint32_t*)binaryNode->calcReg = result;
+                    break;
+                }
 
-            *(uint32_t*)binaryNode->calcReg = result;
+                case '-': {
+                    auto result = *(uint32_t*)binaryNode->leftExprNode->calcReg
+                                  - *(uint32_t*)binaryNode->rightExprNode->calcReg;
+                    *(uint32_t*)binaryNode->calcReg = result;
+                    break;
+                }
+            }
         }
     }
 
@@ -292,7 +303,6 @@ namespace smart {
                                      "int", BuildinTypeId::Int32, 4); // 4byte
         scriptEnv->registerTypeEntry(int32Type);
         BuiltInTypeIndex::int32 = int32Type->typeIndex;
-        BuiltInTypeIndex::int_ = int32Type->typeIndex;
         scriptEnv->addTypeAlias(int32Type, "int");
         scriptEnv->addTypeAlias(int32Type, "int32");
 
@@ -308,7 +318,7 @@ namespace smart {
     }
 
     int BuiltInTypeIndex::int32 = 0;
-    int BuiltInTypeIndex::int_ = 0;
+    int BuiltInTypeIndex::int64 = 0;
     int BuiltInTypeIndex::heapString = 0;
 
 
@@ -412,7 +422,7 @@ namespace smart {
 
     //------------------------------------------------------------------------------------------
     //
-    //                                      Node to Value
+    //                                      evaluateExprNode
     //
     //------------------------------------------------------------------------------------------
 
@@ -467,15 +477,7 @@ namespace smart {
             this->evaluateExprNode(binaryNode->rightExprNode);
 
             auto *leftTypeEntry = this->scriptEnv->typeEntryList[binaryNode->leftExprNode->typeIndex];
-            switch (binaryNode->opNode.symbol[0]) {
-                case '+':
-                    leftTypeEntry->operate_add(this, binaryNode);
-                    break;
-                case '-':
-                    //leftTypeEntry->operate_add(this, binaryNode);
-                    break;
-            }
-
+            leftTypeEntry->operate_add(this, binaryNode);
             return;
         }
 
@@ -754,7 +756,7 @@ namespace smart {
         return PrimitiveCalcRegisterEnum::edx;
     }
 
-    void setCalcRegToNode(NodeBase *node, const ScriptEngineContext *context) {
+    inline void setCalcRegToNode(NodeBase *node, const ScriptEngineContext *context) {
         if (node->calcRegEnum == PrimitiveCalcRegisterEnum::eax) {
             node->calcReg = (st_byte *) &__EX(&context->cpuRegister.rax);
         }
@@ -923,7 +925,20 @@ namespace smart {
 
         if (node->vtable == VTables::AssignStatementVTable) {
             auto *assign = Cast::downcast<AssignStatementNodeStruct *>(node);
-            assign->typeIndex = determineChildTypeIndex(context->scriptEnv, assign->valueNode);
+            if (assign->hasTypeDecl) {
+                auto *typeName= &assign->typeOrLet.nameNode;
+                if (assign->typeOrLet.isLet) {
+
+                    assign->typeIndex = determineChildTypeIndex(context->scriptEnv, assign->valueNode);
+
+                } else {
+                    auto *typeEntry = (TypeEntry *) context->typeNameMap->get(
+                            typeName->name, typeName->nameLength);
+                    if (typeEntry) {
+                        assign->typeIndex = typeEntry->typeIndex;
+                    }
+                }
+            }
         }
 
         if (node->vtable == VTables::VariableVTable) {
@@ -936,11 +951,12 @@ namespace smart {
                 }
                 if (child->vtable == VTables::AssignStatementVTable) {
                     auto *assign = Cast::downcast<AssignStatementNodeStruct *>(child);
-
-                    if (ParseUtil::equal(vari->name, vari->nameLength,
-                                            assign->nameNode.name, assign->nameNode.nameLength)) {
-                        vari->stackOffset = assign->stackOffset;
-                        vari->typeIndex = assign->typeIndex;
+                    if (assign->hasTypeDecl) {
+                        if (ParseUtil::equal(vari->name, vari->nameLength,
+                                             assign->nameNode.name, assign->nameNode.nameLength)) {
+                            vari->stackOffset = assign->stackOffset;
+                            vari->typeIndex = assign->typeIndex;
+                        }
                     }
                 }
                 child = child->nextNode;

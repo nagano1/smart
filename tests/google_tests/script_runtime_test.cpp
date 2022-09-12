@@ -243,4 +243,21 @@ fn main()
 
         ENDTEST
     }
+
+
+    TEST(ScriptEngine, ScriptEngineTest_sub) {
+        constexpr char source[] = R"(
+fn main()
+{
+    int b = 9
+    int a = 5
+    
+    return b - a
+}
+)";
+        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);
+        EXPECT_EQ(ret, 4);
+
+        ENDTEST
+    }
 }
