@@ -256,14 +256,14 @@
 		"testname": "MallocItem_test1",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, MallocItem_test1)\r\n    {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        int* mem;\r\n        for (int i = 0; i < 1024; i++) {\r\n            mem = (int*)env->context->mallocItem(sizeof(int));\r\n            *mem = 53;\r\n\r\n            if (i % 3 == 2) {\r\n                env->context->freeItem(mem);\r\n            }\r\n        }\r\n\r\n        console_log(\"test\");\r\n\r\n        EXPECT_EQ(*mem, 53);\r\n        EXPECT_NE(env->context->memBufferForMalloc2.firstBufferBlock, env->context->memBufferForMalloc2.currentBufferBlock);\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n\r\n\r\n    }\r\n\r\n    "
+		"body": "TEST(ScriptEngine, MallocItem_test1)\r\n    {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        int* mem;\r\n        for (int i = 0; i < 1024; i++) {\r\n            mem = (int*)env->context->mallocItem(sizeof(int));\r\n            *mem = 53;\r\n\r\n            if (i % 3 == 2) {\r\n                env->context->freeItem(mem);\r\n            }\r\n        }\r\n\r\n        console_log(\"test\");\r\n\r\n        EXPECT_EQ(*mem, 53);\r\n        EXPECT_NE(env->context->memBufferForMalloc2.firstBufferBlock, env->context->memBufferForMalloc2.currentBufferBlock);\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n        "
 	},
 	{
 		"testcasename": "ScriptEngine",
 		"testname": "StackMemory_PushPop",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, StackMemory_PushPop) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n        auto* stackPointer1 = stackMemory.stackPointer;\r\n\r\n        stackMemory.push(5);\r\n        stackMemory.push(6);\r\n        \r\n        EXPECT_NE((uint64_t)stackPointer1, (uint64_t)stackMemory.stackPointer);\r\n\r\n        EXPECT_EQ(6, stackMemory.pop());\r\n        EXPECT_EQ(5, stackMemory.pop());\r\n\r\n        EXPECT_EQ((uint64_t)stackPointer1, (uint64_t)stackMemory.stackPointer);\r\n\r\n        "
+		"body": "TEST(ScriptEngine, StackMemory_PushPop) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n        auto* stackPointer1 = stackMemory.stackPointer;\r\n\r\n        stackMemory.push(5);\r\n        stackMemory.push(6);\r\n        \r\n        EXPECT_NE((uint64_t)stackPointer1, (uint64_t)stackMemory.stackPointer);\r\n\r\n        EXPECT_EQ(6, stackMemory.pop());\r\n        EXPECT_EQ(5, stackMemory.pop());\r\n\r\n        EXPECT_EQ((uint64_t)stackPointer1, (uint64_t)stackMemory.stackPointer);\r\n\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n\r\n        "
 	},
 	{
 		"testcasename": "ScriptEngine",
@@ -284,21 +284,21 @@
 		"testname": "StackMemoryTest_Overflow_Push",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, StackMemoryTest_Overflow_Push) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n\r\n        for (int i = 0; i < stackMemory.stackSize/stackMemory.baseBytes - 1; i++) {\r\n            stackMemory.push(5);\r\n        }\r\n        EXPECT_EQ(stackMemory.isOverflowed, false);\r\n        stackMemory.push(5);\r\n\r\n        EXPECT_EQ(stackMemory.isOverflowed, true);\r\n\r\n        "
+		"body": "TEST(ScriptEngine, StackMemoryTest_Overflow_Push) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n\r\n        for (int i = 0; i < stackMemory.stackSize/stackMemory.baseBytes - 1; i++) {\r\n            stackMemory.push(5);\r\n        }\r\n        EXPECT_EQ(stackMemory.isOverflowed, false);\r\n        stackMemory.push(5);\r\n\r\n        EXPECT_EQ(stackMemory.isOverflowed, true);\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n\r\n        "
 	},
 	{
 		"testcasename": "ScriptEngine",
 		"testname": "SktackMemoryTest_overflow_call",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, SktackMemoryTest_overflow_call) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n\r\n        for (int i = 0; i < stackMemory.stackSize / stackMemory.baseBytes - 1; i++) {\r\n            stackMemory.call();\r\n        }\r\n        EXPECT_EQ(stackMemory.isOverflowed, false);\r\n        stackMemory.call();\r\n\r\n        EXPECT_EQ(stackMemory.isOverflowed, true);\r\n\r\n        "
+		"body": "TEST(ScriptEngine, SktackMemoryTest_overflow_call) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n\r\n        auto& stackMemory = env->context->stackMemory;\r\n\r\n        for (int i = 0; i < stackMemory.stackSize / stackMemory.baseBytes - 1; i++) {\r\n            stackMemory.call();\r\n        }\r\n        EXPECT_EQ(stackMemory.isOverflowed, false);\r\n        stackMemory.call();\r\n\r\n        EXPECT_EQ(stackMemory.isOverflowed, true);\r\n\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n\r\n        "
 	},
 	{
 		"testcasename": "ScriptEngine",
 		"testname": "StackMemoryTest_overflow_localVariables",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, StackMemoryTest_overflow_localVariables) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n        auto& stackMemory = env->context->stackMemory;\r\n        \r\n        stackMemory.localVariables(stackMemory.stackSize);\r\n        EXPECT_EQ(stackMemory.isOverflowed, true);\r\n\r\n        "
+		"body": "TEST(ScriptEngine, StackMemoryTest_overflow_localVariables) {\r\n        ScriptEnv* env = ScriptEnv::newScriptEnv();\r\n        auto& stackMemory = env->context->stackMemory;\r\n        \r\n        stackMemory.localVariables(stackMemory.stackSize);\r\n        EXPECT_EQ(stackMemory.isOverflowed, true);\r\n\r\n        ScriptEnv::deleteScriptEnv(env);\r\n\r\n        "
 	},
 	{
 		"testcasename": "ScriptEngine",
@@ -312,7 +312,7 @@
 		"testname": "ScriptEngineTest_sub",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, ScriptEngineTest_sub) {\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    int b = 9\r\n    int a = 5\r\n    \r\n    return b - a\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_EQ(ret, 4);\r\n\r\n        "
+		"body": "TEST(ScriptEngine, ScriptEngineTest_sub) {\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    let b = 9\r\n    int a = 5\r\n    \r\n    return b - a\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_EQ(ret, 4);\r\n\r\n        "
 	},
 	{
 		"testcasename": "SpeedTest",

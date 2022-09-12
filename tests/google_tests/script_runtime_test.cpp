@@ -97,11 +97,8 @@ namespace smart {
         EXPECT_NE(env->context->memBufferForMalloc2.firstBufferBlock, env->context->memBufferForMalloc2.currentBufferBlock);
 
         ScriptEnv::deleteScriptEnv(env);
-
-
+        ENDTEST
     }
-
-    ENDTEST
 
     TEST(ScriptEngine, StackMemory_PushPop) {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
@@ -118,6 +115,9 @@ namespace smart {
         EXPECT_EQ(5, stackMemory.pop());
 
         EXPECT_EQ((uint64_t)stackPointer1, (uint64_t)stackMemory.stackPointer);
+
+
+        ScriptEnv::deleteScriptEnv(env);
 
         ENDTEST
     }
@@ -198,6 +198,8 @@ namespace smart {
 
         EXPECT_EQ(stackMemory.isOverflowed, true);
 
+        ScriptEnv::deleteScriptEnv(env);
+
         ENDTEST
     }
 
@@ -214,6 +216,9 @@ namespace smart {
 
         EXPECT_EQ(stackMemory.isOverflowed, true);
 
+
+        ScriptEnv::deleteScriptEnv(env);
+
         ENDTEST
     }
 
@@ -223,6 +228,8 @@ namespace smart {
         
         stackMemory.localVariables(stackMemory.stackSize);
         EXPECT_EQ(stackMemory.isOverflowed, true);
+
+        ScriptEnv::deleteScriptEnv(env);
 
         ENDTEST
     }
@@ -249,7 +256,7 @@ fn main()
         constexpr char source[] = R"(
 fn main()
 {
-    int b = 9
+    let b = 9
     int a = 5
     
     return b - a
