@@ -129,7 +129,7 @@ namespace smart {
         ParseContext *context; \
         PrimitiveCalcRegisterEnum calcRegEnum; \
         st_byte *calcReg;                 \
-        int typeIndex2;                \
+        int typeIndex;                \
         int found; \
         int prev_chars
 
@@ -141,7 +141,7 @@ namespace smart {
         (node)->parentNode = (NodeBase*)(parent); \
         (node)->codeLine = nullptr; \
         (node)->found = -1; \
-        (node)->typeIndex2 = -1; \
+        (node)->typeIndex = -1; \
         (node)->nextNode = nullptr; \
         (node)->nextNodeInLine = nullptr; \
         (node)->prevLineBreakNode = nullptr; \

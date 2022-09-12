@@ -230,19 +230,27 @@ namespace smart {
      */
 
 
-
-    ValueBase* int32_operate_add(ScriptEngineContext *context, ValueBase *leftValue, ValueBase *rightValue)
+    int int32_operate_add_type(ScriptEngineContext *context,
+                               _typeEntry *binaryNode,
+                               _typeEntry *leftValue,
+                               _typeEntry *rightValue)
     {
-        assert(leftValue->typeIndex == BuiltInTypeIndex::int32);
+        return BuiltInTypeIndex::int32;
+        // return -1;
+    }
 
-        if (rightValue->typeIndex == BuiltInTypeIndex::int32) {
-            unsigned int size = sizeof(int32_t);
-            int32_t *int32ptr;
-            auto *value = context->genValueBase(BuiltInTypeIndex::int32, (int)size, &int32ptr);
-            *int32ptr = *(int32_t*)leftValue->ptr + *(int32_t*)rightValue->ptr;
-            return value;
+
+    void int32_operate_add(ScriptEngineContext *context,
+                           BinaryOperationNodeStruct *binaryNode)
+    {
+        assert(binaryNode->leftExprNode->typeIndex == BuiltInTypeIndex::int32);
+
+        if (binaryNode->rightExprNode->typeIndex == BuiltInTypeIndex::int32) {
+            auto result = *(uint32_t*)binaryNode->leftExprNode->calcReg
+                          + *(uint32_t*)binaryNode->rightExprNode->calcReg;
+
+            *(uint32_t*)binaryNode->calcReg = result;
         }
-        return nullptr;
     }
 
     char* heapString_toString(ScriptEngineContext *context, ValueBase* value)
@@ -250,8 +258,19 @@ namespace smart {
         return (char*)value->ptr;
     }
 
-    ValueBase* heapString_operate_add(ScriptEngineContext *context, ValueBase *leftValue, ValueBase *rightValue)
+
+    int heapString_operate_add_type(
+            ScriptEngineContext *context,
+            _typeEntry *binaryNode,
+            _typeEntry *leftValue,
+            _typeEntry *rightValue) {
+
+        return BuiltInTypeIndex::heapString;
+    }
+
+    void heapString_operate_add(ScriptEngineContext *context, BinaryOperationNodeStruct *binaryNode)
     {
+/*
         assert(leftValue->typeIndex == BuiltInTypeIndex::heapString);
         if (rightValue->typeIndex == BuiltInTypeIndex::heapString) {
             unsigned int size = (1 + leftValue->size + rightValue->size) * sizeof(char);
@@ -260,11 +279,8 @@ namespace smart {
             memcpy(chars, leftValue->ptr, leftValue->size);
             memcpy(chars + leftValue->size, rightValue->ptr, rightValue->size);
             chars[size-1] = '\0';
-
-            return value;
         }
-
-        return nullptr;
+        */
     }
 
 
@@ -272,7 +288,7 @@ namespace smart {
     {
         // int32
         TypeEntry *int32Type = scriptEnv->newTypeEntry();
-        int32Type->initAsBuiltInType(int32_toString, int32_operate_add,
+        int32Type->initAsBuiltInType(int32_toString, int32_operate_add, int32_operate_add_type,
                                      "int", BuildinTypeId::Int32, 4); // 4byte
         scriptEnv->registerTypeEntry(int32Type);
         BuiltInTypeIndex::int32 = int32Type->typeIndex;
@@ -283,8 +299,9 @@ namespace smart {
 
         // heap string
         TypeEntry* heapStringType = scriptEnv->newTypeEntry();
-        heapStringType->initAsBuiltInType(heapString_toString, heapString_operate_add,
-                                          "heapString", BuildinTypeId::HeapString, 8); //
+        heapStringType->initAsBuiltInType(heapString_toString,
+                                          heapString_operate_add, heapString_operate_add_type,
+                "heapString", BuildinTypeId::HeapString, 8); //
         scriptEnv->registerTypeEntry(heapStringType);
         scriptEnv->addTypeAlias(heapStringType, "String");
         BuiltInTypeIndex::heapString = heapStringType->typeIndex;
@@ -400,32 +417,29 @@ namespace smart {
     //------------------------------------------------------------------------------------------
 
 
-    void ScriptEnv::evaluateExprNode(NodeBase *expressionNode)
+    void ScriptEngineContext::evaluateExprNode(NodeBase *expressionNode)
     {
         assert(expressionNode != nullptr);
         assert(expressionNode->vtable != nullptr);
 
         if (expressionNode->vtable == VTables::StringLiteralVTable) {
-
             //auto* strNode = Cast::downcast<StringLiteralNodeStruct *>(expressionNode);
             //int size = (1 + strNode->strLength) * (int)sizeof(char);
-//            char *chars;
-//            auto *value = this->context->genValueBase(BuiltInTypeIndex::heapString, size, &chars);
-//            memcpy(chars, strNode->str, strNode->strLength);
-//            chars[strNode->strLength] = '\0';
+//          memcpy(chars, strNode->str, strNode->strLength);
+//          chars[strNode->strLength] = '\0';
             return;
         }
 
         if (expressionNode->vtable == VTables::ParenthesesVTable) {
             auto* parentheses = Cast::downcast<ParenthesesNodeStruct *>(expressionNode);
             evaluateExprNode(parentheses->valueNode);
+            return;
         }
 
 
         if (expressionNode->vtable == VTables::NumberVTable) {
             auto* numberNode = Cast::downcast<NumberNodeStruct *>(expressionNode);
-            EAX(&(this->context->cpuRegister)) = numberNode->num;
-
+            //EAX(&(this->cpuRegister)) = numberNode->num;
             *(uint32_t*)numberNode->calcReg = numberNode->num;
 
             //int32_t *int32ptr;
@@ -434,24 +448,16 @@ namespace smart {
             return;
         }
 
-
         if (expressionNode->vtable == VTables::VariableVTable) {
             auto* variableNode = Cast::downcast<VariableNodeStruct *>(expressionNode);
-            if (variableNode->typeIndex2 == BuiltInTypeIndex::int32) {
-                auto dataSize = this->typeEntryList[variableNode->typeIndex2]->dataSize;
+            if (variableNode->typeIndex == BuiltInTypeIndex::int32) {
+                auto dataSize = this->scriptEnv->typeEntryList[variableNode->typeIndex]->dataSize;
 
 //              EAX(&(this->context->cpuRegister)) = variableNode->num;
-
                 //*(uint32_t*)variableNode->calcReg = val;//variableNode->num;
-
-                //int32_t *int32ptr;
-                //auto *value = this->context->genValueBase(BuiltInTypeIndex::int32, sizeof(int32_t), &int32ptr);
-                //*int32ptr = (int32_t)val;
-
-                this->context->stackMemory.moveFrom(variableNode->stackOffset, dataSize, variableNode->calcReg);
-                return;
+                this->stackMemory.moveFrom(variableNode->stackOffset, dataSize, variableNode->calcReg);
             }
-
+            return;
         }
 
         if (expressionNode->vtable == VTables::BinaryOperationVTable) {
@@ -459,18 +465,17 @@ namespace smart {
 
             this->evaluateExprNode(binaryNode->leftExprNode);
             this->evaluateExprNode(binaryNode->rightExprNode);
-            /*
-            if (binaryNode->opNode.symbol[0] == '+') {
-                auto *typeEntry = this->typeEntryList[leftValue->typeIndex];
-                auto *retValue = typeEntry->operate_add(this->context, leftValue, rightValue);
-                return retValue;
+
+            auto *leftTypeEntry = this->scriptEnv->typeEntryList[binaryNode->leftExprNode->typeIndex];
+            switch (binaryNode->opNode.symbol[0]) {
+                case '+':
+                    leftTypeEntry->operate_add(this, binaryNode);
+                    break;
+                case '-':
+                    //leftTypeEntry->operate_add(this, binaryNode);
+                    break;
             }
-            */
 
-
-            auto result = *(uint32_t*)binaryNode->leftExprNode->calcReg +
-                *(uint32_t*)binaryNode->rightExprNode->calcReg;
-            *(uint32_t*)binaryNode->calcReg = result;
             return;
         }
 
@@ -877,12 +882,12 @@ namespace smart {
 
 
     static inline int determineChildTypeIndex(ScriptEnv *env, NodeBase *node) {
-        int typeIndex = node->typeIndex2;
+        int typeIndex = node->typeIndex;
         if (typeIndex == -1) {
             typeIndex = env->typeFromNode(node);
-            node->typeIndex2 = typeIndex;
+            node->typeIndex = typeIndex;
         }
-        return node->typeIndex2;
+        return node->typeIndex;
     }
 
     // child comes first
@@ -899,9 +904,12 @@ namespace smart {
             int leftTypeIndex = determineChildTypeIndex(context->scriptEnv, binary->leftExprNode);
             int rightTypeIndex = determineChildTypeIndex(context->scriptEnv, binary->rightExprNode);
             if (leftTypeIndex > -1 && rightTypeIndex > -1) {
+                //auto *leftTypeEntry = context->scriptEnv->typeEntryList[leftTypeIndex];
+                //auto *rightTypeEntry = context->scriptEnv->typeEntryList[rightTypeIndex];
+
                 if (leftTypeIndex == rightTypeIndex) {
                     // currently supports only int32 + int32
-                    binary->typeIndex2 = leftTypeIndex;
+                    binary->typeIndex = leftTypeIndex;
                 }
             }
         }
@@ -909,13 +917,13 @@ namespace smart {
         if (node->vtable == VTables::ParenthesesVTable) {
             auto *parentheses = Cast::downcast<ParenthesesNodeStruct *>(node);
             if (parentheses->valueNode) {
-                parentheses->typeIndex2 = determineChildTypeIndex(context->scriptEnv, parentheses->valueNode);
+                parentheses->typeIndex = determineChildTypeIndex(context->scriptEnv, parentheses->valueNode);
             }
         }
 
         if (node->vtable == VTables::AssignStatementVTable) {
             auto *assign = Cast::downcast<AssignStatementNodeStruct *>(node);
-            assign->typeIndex2 = determineChildTypeIndex(context->scriptEnv, assign->valueNode);
+            assign->typeIndex = determineChildTypeIndex(context->scriptEnv, assign->valueNode);
         }
 
         if (node->vtable == VTables::VariableVTable) {
@@ -932,7 +940,7 @@ namespace smart {
                     if (ParseUtil::equal(vari->name, vari->nameLength,
                                             assign->nameNode.name, assign->nameNode.nameLength)) {
                         vari->stackOffset = assign->stackOffset;
-                        vari->typeIndex2 = assign->typeIndex2;
+                        vari->typeIndex = assign->typeIndex;
                     }
                 }
                 child = child->nextNode;
@@ -960,7 +968,7 @@ namespace smart {
 
             if (child->vtable == VTables::AssignStatementVTable) {
                 auto* assign = Cast::downcast<AssignStatementNodeStruct*>(child);
-                currentStackOffset -= context->scriptEnv->typeEntryList[assign->typeIndex2]->dataSize;
+                currentStackOffset -= context->scriptEnv->typeEntryList[assign->typeIndex]->dataSize;
                 assign->stackOffset = currentStackOffset;
             }
 
@@ -1064,7 +1072,7 @@ namespace smart {
                 if (arg != nullptr) {
                     while (true) {
                         printf("arg = <%s>\n", arg->exprNode->vtable->typeChars);
-                        env->evaluateExprNode(arg->exprNode);
+                        env->context->evaluateExprNode(arg->exprNode);
                         //auto *chars = env->typeEntryList[valueBase->typeIndex]->toString(env->context, valueBase);
                         //printf("chars = [%s]\n", chars);
 
@@ -1080,9 +1088,9 @@ namespace smart {
             if (statementNode->vtable == VTables::AssignStatementVTable) {
                 auto* assignStatement = Cast::downcast<AssignStatementNodeStruct *>(statementNode);
                 if (assignStatement->valueNode) {
-                    env->evaluateExprNode(assignStatement->valueNode);
+                    env->context->evaluateExprNode(assignStatement->valueNode);
                     // if (valueBase->typeIndex == BuiltInTypeIndex::int32) {}
-                    auto *typeEntry = env->typeEntryList[assignStatement->typeIndex2];
+                    auto *typeEntry = env->typeEntryList[assignStatement->typeIndex];
                     auto dataSize = typeEntry->dataSize; // env->typeEntryList[valueBase->typeIndex]->dataSize;
 
                     //env->context->stackMemory.moveTo(assignStatement->stackOffset, dataSize,  (char*)valueBase->ptr);
@@ -1094,8 +1102,8 @@ namespace smart {
             // return 3
             if (statementNode->vtable == VTables::ReturnStatementVTable) {
                 auto* returnNode = Cast::downcast<ReturnStatementNodeStruct*>(statementNode);
-                env->evaluateExprNode(returnNode->valueNode);
-                return *(uint32_t*)returnNode->valueNode->calcReg;
+                env->context->evaluateExprNode(returnNode->valueNode);
+                return *(int32_t*)returnNode->valueNode->calcReg;
             }
 
 

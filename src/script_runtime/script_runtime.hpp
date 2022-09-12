@@ -150,6 +150,7 @@ namespace smart
         VoidHashMap *typeNameMap;
         StackMemory stackMemory;
 
+        void evaluateExprNode(NodeBase* expressionNode);
         ValueBase *newValueForHeap();
         ValueBase *genValueBase(int type, int size, void *ptr);
 
@@ -270,7 +271,6 @@ namespace smart
     };
 
 
-
     enum class BuildinTypeId {
         Int32 = 1,
         HeapString = 2
@@ -280,18 +280,20 @@ namespace smart
         int typeIndex;
         int dataSize;
         char *(*toString)(ScriptEngineContext *context, ValueBase* value);
-        ValueBase* (*operate_add)(ScriptEngineContext *context, ValueBase* leftValue, ValueBase* rightValue);
+        void (*operate_add)(ScriptEngineContext *context, BinaryOperationNodeStruct *binaryNode);
+        int (*operate_add_type)(ScriptEngineContext *context, _typeEntry *binaryNode, _typeEntry *leftValue, _typeEntry *rightValue);
         char *typeChars;
         int typeCharsLength;
         BuildinTypeId typeId;
         bool isBuiltIn;
 
         template<std::size_t SIZE>
-        void initAsBuiltInType(decltype(toString) f1, decltype(operate_add) f2,
+        void initAsBuiltInType(decltype(toString) f1, decltype(operate_add) f2,decltype(operate_add_type) f6,
                                const char(&f3)[SIZE], decltype(typeId) f4, decltype(dataSize) f5
         ) {
             this->toString = f1;
             this->operate_add = f2;
+            this->operate_add_type = f6;
             this->typeChars = (char*)f3;
             this->typeCharsLength = SIZE;
             this->typeId = f4;
@@ -310,7 +312,6 @@ namespace smart
 
         ScriptEngineContext *context;
 
-        void evaluateExprNode(NodeBase* expressionNode);
 
         int typeFromNode(NodeBase *expressionNode);
 
