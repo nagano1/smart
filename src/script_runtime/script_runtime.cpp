@@ -1023,8 +1023,27 @@ namespace smart {
         func->stackSize = -currentStackOffset;
     }
 
+    static FuncNodeStruct* findMainFunc(DocumentStruct* document)
+    {
+        auto* rootNode = document->firstRootNode;
+        while (rootNode != nullptr) {
+            if (rootNode->vtable == VTables::FnVTable) {
+                // fn
+                auto* fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
+                auto* nameNode = &fnNode->nameNode;
+                if (ParseUtil::equal(nameNode->name, nameNode->nameLength, "main", 4))
+                {
+                    return fnNode;
+                }
+            }
+            rootNode = rootNode->nextNode;
+        }
+        return nullptr;
+    }
 
-    void ScriptEnv::validateScript() const
+
+
+    void ScriptEnv::validateScript()
     {
         assert(this->document->context->syntaxErrorInfo.hasError == false);
 
@@ -1045,6 +1064,9 @@ namespace smart {
             }
             rootNode = rootNode->nextNode;
         }
+
+        //findMainFunc
+        this->mainFunc = findMainFunc(this->document);
     }
 
     //------------------------------------------------------------------------------------------
@@ -1062,6 +1084,7 @@ namespace smart {
             scriptEnv->context = context;
             context->init(scriptEnv);
 
+            scriptEnv->mainFunc = nullptr;
             scriptEnv->typeEntryList = nullptr;
             scriptEnv->typeEntryListNextIndex = 1;
             scriptEnv->typeEntryListCapacity = 0;
@@ -1077,26 +1100,6 @@ namespace smart {
         free(scriptEnv->context);
         free(scriptEnv);
     }
-
-
-    static FuncNodeStruct* findMainFunc(DocumentStruct *document)
-    {
-        auto *rootNode = document->firstRootNode;
-        while (rootNode != nullptr) {
-            if (rootNode->vtable == VTables::FnVTable) {
-                // fn
-                auto *fnNode = Cast::downcast<FuncNodeStruct*>(rootNode);
-                auto *nameNode = &fnNode->nameNode;
-                if (ParseUtil::equal(nameNode->name, nameNode->nameLength, "main", 4))
-                {
-                    return fnNode;
-                }
-            }
-            rootNode = rootNode->nextNode;
-        }
-        return nullptr;
-    }
-
 
 
     static int executeMain(ScriptEnv* env, FuncNodeStruct* mainFunc)
@@ -1188,7 +1191,7 @@ namespace smart {
         assert(this->context->logicErrorInfo.hasError == false);
 
         int ret = 0;
-        auto *mainFunc = findMainFunc(this->document);
+        auto* mainFunc = this->mainFunc;// = findMainFunc(this->document);
         if (mainFunc) {
             printf("main Found");
             printf("<%s()>\n", mainFunc->nameNode.name);

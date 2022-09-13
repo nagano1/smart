@@ -308,6 +308,7 @@ namespace smart
     using ScriptEnv = struct _ScriptEnv {
 
         DocumentStruct* document;
+        FuncNodeStruct* mainFunc;
         TypeEntry **typeEntryList;
         int typeEntryListCapacity;
         int typeEntryListNextIndex;
@@ -324,7 +325,7 @@ namespace smart
         static int startScript(char* script, int byteLength);
 
         static _ScriptEnv* loadScript(char* script, int byteLength);
-        void validateScript() const;
+        void validateScript();
         int runScriptEnv();
 
         void registerTypeEntry(TypeEntry* typeEntry);
