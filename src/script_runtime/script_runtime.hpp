@@ -152,6 +152,8 @@ namespace smart
         StackMemory stackMemory;
 
         void evaluateExprNode(NodeBase* expressionNode);
+        void setCalcRegister(NodeBase* expressionNode);
+
         ValueBase *newValueForHeap();
         ValueBase *genValueBase(int type, int size, void *ptr);
 

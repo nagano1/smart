@@ -96,7 +96,8 @@ namespace smart {
             *(uint16_t*)(this->stackBasePointer + offsetFromBase) = *(uint16_t*)ptr;
         }
         else if (byteCount == 4) { // 32bit
-            *(uint32_t*)(this->stackBasePointer + offsetFromBase) = *(uint32_t*)ptr;
+            auto vl = *(uint32_t*)ptr;
+            *(uint32_t*)(this->stackBasePointer + offsetFromBase) = vl;//*(uint32_t*)ptr;
         }
         else if (byteCount == 8) { // 64bit
             *(uint64_t*)(this->stackBasePointer + offsetFromBase) = *(uint64_t*)ptr;
@@ -116,7 +117,8 @@ namespace smart {
             *(uint16_t*)(ptr) = *(uint16_t*)(this->stackBasePointer + offsetFromBase);
         }
         else if (byteCount == 4) { // 32bit
-            *(uint32_t*)(ptr) = *(uint32_t*)(this->stackBasePointer + offsetFromBase);
+            auto vl = *(uint32_t*)(this->stackBasePointer + offsetFromBase);
+            *(uint32_t*)(ptr) = vl;//*(uint32_t*)(this->stackBasePointer + offsetFromBase);
         }
         else if (byteCount == 8) { // 64bit
             *(uint64_t*)(ptr) = *(uint64_t*)(this->stackBasePointer + offsetFromBase);
@@ -467,6 +469,9 @@ namespace smart {
     //
     //------------------------------------------------------------------------------------------
 
+    void ScriptEngineContext::setCalcRegister(NodeBase* expressionNode) {
+
+    }
 
     void ScriptEngineContext::evaluateExprNode(NodeBase *expressionNode)
     {
@@ -515,11 +520,14 @@ namespace smart {
             return;
         }
 
+        // a + (b + c)
         if (expressionNode->vtable == VTables::BinaryOperationVTable) {
             auto* binaryNode = Cast::downcast<BinaryOperationNodeStruct *>(expressionNode);
 
-            this->evaluateExprNode(binaryNode->leftExprNode);
             this->evaluateExprNode(binaryNode->rightExprNode);
+            uint64_t saved = *(uint64_t*)binaryNode->rightExprNode->calcReg;
+            this->evaluateExprNode(binaryNode->leftExprNode);
+            *(uint64_t*)binaryNode->rightExprNode->calcReg = saved;
 
             auto *leftTypeEntry = this->scriptEnv->typeEntryList[binaryNode->leftExprNode->typeIndex];
             leftTypeEntry->operate_add(this, binaryNode);
@@ -862,9 +870,9 @@ namespace smart {
 
         if (node->vtable == VTables::AssignStatementVTable) {
             auto *assign = Cast::downcast<AssignStatementNodeStruct *>(node);
-
-            assert(assign->valueNode != nullptr);
-            setCalcRegToNode(assign->valueNode, context);
+            if (assign->valueNode != nullptr) {
+                setCalcRegToNode(assign->valueNode, context);
+            }
         }
 
         if (node->vtable == VTables::ReturnStatementVTable) {
@@ -930,6 +938,7 @@ namespace smart {
             int leftTypeIndex = determineChildTypeIndex(context->scriptEnv, binary->leftExprNode);
             int rightTypeIndex = determineChildTypeIndex(context->scriptEnv, binary->rightExprNode);
             if (leftTypeIndex > -1 && rightTypeIndex > -1) {
+            }
                 //auto *leftTypeEntry = context->scriptEnv->typeEntryList[leftTypeIndex];
                 //auto *rightTypeEntry = context->scriptEnv->typeEntryList[rightTypeIndex];
 
@@ -937,7 +946,6 @@ namespace smart {
                     // currently supports only int32 + int32
                     binary->typeIndex = leftTypeIndex;
                 //}
-            }
         }
 
         if (node->vtable == VTables::ParenthesesVTable) {

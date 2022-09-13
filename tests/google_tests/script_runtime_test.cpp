@@ -234,53 +234,103 @@ namespace smart {
 //        ENDTEST
 //    }
 //
-//    TEST(ScriptEngine, ScriptEngineTestSomeScript0) {
-//
-//        constexpr char source[] = R"(
-//fn main()
-//{
-//    int b = 9
-//    int a = 5
-//    
-//    return (b + a)
-//}
-//)";
-//        int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);
-//        EXPECT_EQ(ret, 14);
-//
-//        ENDTEST
-//    }
-//
-//
-//    TEST(ScriptEngine, ScriptEngineTest_sub) {
-//        constexpr char source[] = R"(
-//fn main()
-//{
-//    let b = 9
-//    int a = 5
-//    
-//    return b - a
-//}
-//)";
-//        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);
-//        EXPECT_EQ(ret, 4);
-//
-//        ENDTEST
-//    }
+    TEST(ScriptEngine, ScriptEngineTestSomeScript0) {
+
+        constexpr char source[] = R"(
+fn main()
+{
+    int b = 9
+    int a = 500
+    int c = 500
+    
+    return c - (b + a)
+}
+)";
+        int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);
+        EXPECT_EQ(ret, -9);
+
+        ENDTEST
+    }
+
+
+    TEST(ScriptEngine, ScriptEngineTest_sub) {
+        constexpr char source[] = R"(
+fn main()
+{
+    let b = 9
+    int a = 5
+    int c = 5
+    
+    return c + b - a
+}
+)";
+        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);
+        EXPECT_EQ(ret, 9);
+
+        ENDTEST
+    }
 
 
     TEST(ScriptEngine, ScriptEngineTest_i64) {
         constexpr char source[] = R"(
 fn main()
 {
-    let b = 5
-    i64 a = 9223372036854775800L
+    i64 b = 5L
+    i64 a = 900L
+    i64 c = 901L
     
-    return a + b
+    return c - (a + b)
 }
 )";
-        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);
-        EXPECT_EQ(ret, 9223372036854775805);
+        ScriptEnv* env = ScriptEnv::loadScript((char*)source, sizeof(source) - 1);
+        if (env->document->context->syntaxErrorInfo.hasError) {
+            FAIL();
+            return;// env->document->context->syntaxErrorInfo.errorItem.errorId;
+        }
+
+        env->validateScript();
+        if (env->context->logicErrorInfo.hasError) {
+            FAIL();
+            env->context->setErrorPositions();
+            return;// env->context->logicErrorInfo.firstErrorItem->codeErrorItem.errorId;
+        }
+        auto* node = env->mainFunc->bodyNode.firstChildNode;
+        while (node) {
+            if (node->vtable == VTables::ReturnStatementVTable) {
+                auto returnState = Cast::downcast<ReturnStatementNodeStruct*>(node);
+                EXPECT_EQ(returnState->valueNode->vtable, VTables::BinaryOperationVTable);
+                auto binary0 = Cast::downcast<BinaryOperationNodeStruct*>(returnState->valueNode);
+
+                auto *c = Cast::downcast<VariableNodeStruct*>(binary0->leftExprNode);
+
+                auto pare = Cast::downcast<ParenthesesNodeStruct*>(binary0->rightExprNode);
+                EXPECT_EQ(pare->valueNode->vtable, VTables::BinaryOperationVTable);
+                auto binary = Cast::downcast<BinaryOperationNodeStruct*>(pare->valueNode);
+                auto *a = Cast::downcast<VariableNodeStruct*>(binary->leftExprNode);
+                auto *b= Cast::downcast<VariableNodeStruct*>(binary->rightExprNode);
+
+                // return c - (a + b)
+                EXPECT_EQ(c->calcRegEnum, PrimitiveCalcRegisterEnum::ebx);
+
+                EXPECT_EQ(a->calcRegEnum, PrimitiveCalcRegisterEnum::eax);
+                EXPECT_EQ(b->calcRegEnum, PrimitiveCalcRegisterEnum::ebx);
+                
+                EXPECT_EQ(binary->calcRegEnum, PrimitiveCalcRegisterEnum::ecx);
+                EXPECT_EQ(binary0->rightExprNode->calcRegEnum, PrimitiveCalcRegisterEnum::ecx);
+
+                // stack 
+                EXPECT_EQ(c->stackOffset, -24);
+                EXPECT_EQ(a->stackOffset, -16);
+                EXPECT_EQ(b->stackOffset, -8);
+                EXPECT_EQ(env->mainFunc->stackSize, 24);
+            }
+            
+            node = node->nextNode;
+        }
+        int ret = env->runScriptEnv();
+        EXPECT_EQ(ret, -4);
+
+        //EXPECT_EQ(c - (a + b), 6);
 
         ENDTEST
     }
