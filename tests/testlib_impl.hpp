@@ -313,7 +313,7 @@ void GTEST_TEST_CLASS_NAME_(test_case_name, test_name)::TestBody()
     }
 
 #define FAIL() \
-smartlang::etrue_static(false, true, "FAIL()");
+smartlang::etrue_static(false, true, "FAIL()")
 
 #define EXPECT_EQ(val1, val2) \
 smartlang::ecompare_static(val1, val2, #val1, #val2)
