@@ -147,9 +147,11 @@ namespace smart {
     }
 
     int64_t S64(const char *s) {
+        return atoi(s);
+        /*
         int64_t i;
         char c ;
-        int scanned = scanf(s, "%lld%c", &i, &c);
+        int scanned = sscanf(s, "%lld%c", &i, &c); // NOLINT(cert-err34-c)
         if (scanned == 1) return i;
         if (scanned > 1) {
             // TBD about extra data found
@@ -157,6 +159,7 @@ namespace smart {
         }
         // TBD failed to scan;
         return 0;
+         */
     }
 
     static constexpr const char numberNodeTypeText[] = "<number>";
