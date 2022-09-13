@@ -495,27 +495,20 @@ namespace smart {
 
         if (expressionNode->vtable == VTables::NumberVTable) {
             auto* numberNode = Cast::downcast<NumberNodeStruct *>(expressionNode);
-            //EAX(&(this->cpuRegister)) = numberNode->num;
             if (numberNode->unit == 64) {
                 *(int64_t*)numberNode->calcReg = numberNode->num;
             }
             else {
                 *(int32_t*)numberNode->calcReg = (int32_t)numberNode->num;
             }
-            //int32_t *int32ptr;
-            //auto *value = this->context->genValueBase(BuiltInTypeIndex::int32, sizeof(int32_t), &int32ptr);
-            //*int32ptr = numberNode->num;
             return;
         }
 
         if (expressionNode->vtable == VTables::VariableVTable) {
             auto* variableNode = Cast::downcast<VariableNodeStruct *>(expressionNode);
+            auto dataSize = this->scriptEnv->typeEntryList[variableNode->typeIndex]->dataSize;
+            this->stackMemory.moveFrom(variableNode->stackOffset, dataSize, variableNode->calcReg);
             //if (variableNode->typeIndex == BuiltInTypeIndex::int32) {
-                auto dataSize = this->scriptEnv->typeEntryList[variableNode->typeIndex]->dataSize;
-
-//              EAX(&(this->context->cpuRegister)) = variableNode->num;
-                //*(uint32_t*)variableNode->calcReg = val;//variableNode->num;
-                this->stackMemory.moveFrom(variableNode->stackOffset, dataSize, variableNode->calcReg);
             //}
             return;
         }
@@ -672,6 +665,10 @@ namespace smart {
     /// memcpy(chars, strNode->str, strNode->strLength);
     /// chars[strNode->strLength] = '\0';
     ///
+    /// //int32_t *int32ptr;
+    //            //auto *value = this->context->genValueBase(BuiltInTypeIndex::int32, sizeof(int32_t), &int32ptr);
+    //            //*int32ptr = numberNode->num;
+    //            \param type
     ValueBase *ScriptEngineContext::genValueBase(int type, int size, void *ptr)
     {
         auto *value = this->newValueForHeap();

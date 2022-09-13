@@ -5,7 +5,6 @@
 #include <string>
 #include <array>
 #include <algorithm>
-#include <cinttypes>
 
 #include <cstdlib>
 #include <cassert>
@@ -150,7 +149,7 @@ namespace smart {
     int64_t S64(const char *s) {
         int64_t i;
         char c ;
-        int scanned = sscanf(s, "%" SCNd64 "%c", &i, &c);
+        int scanned = sscanf(s, "%lld%c", &i, &c);
         if (scanned == 1) return i;
         if (scanned > 1) {
             // TBD about extra data found
