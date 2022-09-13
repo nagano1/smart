@@ -147,7 +147,8 @@ namespace smart {
     }
 
     int64_t S64(const char *s) {
-        return atoi(s);
+        return strtoll(s, NULL, 10);
+        //return atoi(s);
         /*
         int64_t i;
         char c ;
