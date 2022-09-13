@@ -1,3 +1,4 @@
+//*
 fn main()
 {
     let b = 23
@@ -7,7 +8,7 @@ fn main()
     //"日本語🎄jiofawe" + b
     return 4 + a + 32 + 32 + 3421
 }
-
+// */
 class ClassMine
 {
     fn funcB()

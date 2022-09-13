@@ -146,8 +146,10 @@ namespace smart {
         return self->textLength;
     }
 
-    int64_t S64(const char *s) {
-        return atoll(s);
+    //*/
+    inline int64_t S64(const char *s, int length) {
+        // have to check over flow
+        return atoll(s); // can't use strtoll beacause of wasm conversion
         //return atoi(s);
         /*
         int64_t i;
@@ -162,7 +164,7 @@ namespace smart {
         return 0;
          */
     }
-
+    //*/
     static constexpr const char numberNodeTypeText[] = "<number>";
     int Tokenizers::numberTokenizer(TokenizerParams_parent_ch_start_context)
     {
@@ -186,7 +188,7 @@ namespace smart {
             TEXT_MEMCPY(numberNode->text, context->chars + start, found_count);
             numberNode->text[found_count] = '\0';
 
-            numberNode->num = S64(numberNode->text);
+            numberNode->num = S64(numberNode->text, found_count);
 
             if ('L' == context->chars[start + found_count]) {
                 numberNode->textLength++;

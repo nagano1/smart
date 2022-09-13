@@ -440,7 +440,13 @@ namespace smart {
 
     static int selectTypeFromNumberNode(ScriptEnv *env, NumberNodeStruct *numberNode)
     {
-        return BuiltInTypeIndex::int32;
+        if (numberNode->unit == 64) {
+            return BuiltInTypeIndex::int64;
+
+        }
+        else {
+            return BuiltInTypeIndex::int32;
+        }
     }
 
     static int selectTypeFromStringNode(ScriptEnv *env, StringLiteralNodeStruct *nodeBase)
@@ -457,10 +463,11 @@ namespace smart {
     {
         setTypeSelector(VTables::NumberVTable, selectTypeFromNumberNode);
         setTypeSelector(VTables::StringLiteralVTable, selectTypeFromStringNode);
-
+        /*
         if (VTables::NumberVTable->typeSelector(env, nullptr) != -1) {
 
         }
+        */
     }
 
     //------------------------------------------------------------------------------------------
@@ -962,16 +969,58 @@ namespace smart {
 
         if (node->vtable == VTables::AssignStatementVTable) {
             auto *assign = Cast::downcast<AssignStatementNodeStruct *>(node);
-            if (assign->hasTypeDecl) {
+            TypeEntry *typeEntry = nullptr;
+            if (assign->hasTypeDecl && !assign->typeOrLet.isLet) {
                 auto *typeName= &assign->typeOrLet.nameNode;
-                if (assign->typeOrLet.isLet) {
-                    assign->typeIndex = determineChildTypeIndex(context->scriptEnv, assign->valueNode);
-                } else {
-                    auto *typeEntry = (TypeEntry *) context->typeNameMap->get(
-                            typeName->name, typeName->nameLength);
-                    if (typeEntry) {
-                        assign->typeIndex = typeEntry->typeIndex;
+                typeEntry = (TypeEntry *) context->typeNameMap->get(typeName->name, typeName->nameLength);
+                if (typeEntry) {
+                    assign->typeIndex = typeEntry->typeIndex;
+                } else { // NotDefinedType a
+                    // error no type found
+                }
+            }
+
+            if (assign->hasTypeDecl) {
+                if (assign->valueNode) { // int b = 8
+                    int childTypeIndex = determineChildTypeIndex(context->scriptEnv, assign->valueNode);
+                    if (assign->typeOrLet.isLet) { // let b = 8
+                        assign->typeIndex = childTypeIndex;
                     }
+                    else { // int b = 8
+                        if (typeEntry) {
+                            if (typeEntry->typeIndex != childTypeIndex) { // int b = 3.4
+                                // error: wrong type
+                                context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
+                            }
+                        }
+                    }
+                }
+                else {
+                    if (assign->typeOrLet.isLet) { // let b
+                        context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
+                    }
+                    else {} // int b
+                }
+            }
+            else { // b = 4
+                auto *child = bodyNode->firstChildNode;
+                while (child) {
+                    if (child == currentStatement) {
+                        break;
+                    }
+                    if (child->vtable == VTables::AssignStatementVTable) {
+                        auto *assign2 = Cast::downcast<AssignStatementNodeStruct *>(child);
+                        if (assign2->hasTypeDecl) {
+                            if (ParseUtil::equal(assign->nameNode.name, assign->nameNode.nameLength,
+                                                 assign2->nameNode.name, assign2->nameNode.nameLength)) {
+                                if (assign->typeIndex != assign2->typeIndex) {
+                                    // error
+                                    context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
+                                }
+                            }
+                        }
+                    }
+                    child = child->nextNode;
                 }
             }
         }
@@ -997,9 +1046,7 @@ namespace smart {
                 child = child->nextNode;
             }
         }
-//        if (!varDefFound) {
-//            context2->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(vari));
-//        }
+
         return 0; // varDefFound ? 1 : 0;
     }
 

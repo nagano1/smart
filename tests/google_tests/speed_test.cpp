@@ -110,6 +110,7 @@ struct AData {
     int a = 3;
 };
 
+#ifndef DEBUG
 TEST(SpeedTest, stack_assign_is_fast) {
     {
         auto start = std::chrono::high_resolution_clock::now();
@@ -135,6 +136,7 @@ TEST(SpeedTest, stack_assign_is_fast) {
         EXPECT_EQ(current, loopCount - 1);
         //EXPECT_EQ(*current2, loopCount - 1);
     }
+#endif
 #ifdef  __MYWIN__
 
     //_mm_pause() takes more than 0.5us
