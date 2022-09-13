@@ -149,7 +149,7 @@ namespace smart {
     int64_t S64(const char *s) {
         int64_t i;
         char c ;
-        int scanned = sscanf(s, "%lld%c", &i, &c);
+        int scanned = scanf(s, "%lld%c", &i, &c);
         if (scanned == 1) return i;
         if (scanned > 1) {
             // TBD about extra data found
