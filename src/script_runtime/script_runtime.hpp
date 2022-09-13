@@ -244,33 +244,6 @@ namespace smart
             memcpy(mem->codeErrorItem.reason, reason, mem->codeErrorItem.reasonLength);
             mem->codeErrorItem.reason[mem->codeErrorItem.reasonLength] = '\0';
         }
-
-        static bool getLineAndPos(int pos, const utf8byte *text, int textLength, int *line, int *charactor) {
-            int currentLine = 0;
-            int currentCharactor = 0;
-            int lineFirstPos = 0;
-
-            for (int32_t i = 0; i < textLength; i++) {
-
-                if (i == pos) {
-                    *line = currentLine;
-                    *charactor = ParseUtil::utf16_length(text + lineFirstPos, currentCharactor);
-                    return true;
-                }
-
-                currentCharactor++;
-
-                utf8byte ch = text[i];
-                //if (ParseUtil::isBreakLine(ch)) {
-                if ('\n' == ch) {
-                    currentCharactor = 0;
-                    currentLine++;
-                    lineFirstPos = i;
-                }
-            }
-
-            return false;
-        }
     };
 
 

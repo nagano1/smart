@@ -246,13 +246,27 @@ fn main()
     return c - (b + a)
 }
 )";
-        int ret = ScriptEnv::startScript((char*)source, sizeof(source)-1);
+        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);
         EXPECT_EQ(ret, -9);
 
         ENDTEST
     }
 
+    TEST(ScriptEngine, ScriptEngineTest_assign) {
+        constexpr char source[] = R"(
+fn main()
+{
+    int b = 9
+    b = (10 + 1) - 2
+    return b
+}
+)";
+        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);
+        EXPECT_EQ(ret, 9);
+        ENDTEST
+    }
 
+    
     TEST(ScriptEngine, ScriptEngineTest_sub) {
         constexpr char source[] = R"(
 fn main()
@@ -323,7 +337,7 @@ fn main()
                 EXPECT_EQ(pare->valueNode->vtable, VTables::BinaryOperationVTable);
                 auto binary = Cast::downcast<BinaryOperationNodeStruct*>(pare->valueNode);
                 auto *a = Cast::downcast<VariableNodeStruct*>(binary->leftExprNode);
-                auto *b= Cast::downcast<VariableNodeStruct*>(binary->rightExprNode);
+                auto *b = Cast::downcast<VariableNodeStruct*>(binary->rightExprNode);
 
                 // return c - (a + b)
                 EXPECT_EQ(c->calcRegEnum, PrimitiveCalcRegisterEnum::ebx);

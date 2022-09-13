@@ -442,7 +442,6 @@ namespace smart {
     {
         if (numberNode->unit == 64) {
             return BuiltInTypeIndex::int64;
-
         }
         else {
             return BuiltInTypeIndex::int32;
@@ -648,7 +647,6 @@ namespace smart {
 
             auto *firstNode = findFirstNodeInLine(firstCodeLine, lastCodeLine);
             auto *lastNode = findLastNodeInLine(firstCodeLine, lastCodeLine);
-
 
             int a = getPosInLine(firstNode, true);
             int b = getPosInLine(lastNode, false);
@@ -928,13 +926,85 @@ namespace smart {
         return node->typeIndex;
     }
 
+    static void validateAssignmentNode(NodeBase *node, void *arg, ScriptEngineContext *context) {
+        auto *assign = Cast::downcast<AssignStatementNodeStruct *>(node);
+        TypeEntry *typeEntry = nullptr;
+        if (assign->hasTypeDecl && !assign->typeOrLet.isLet) {
+            auto *typeName= &assign->typeOrLet.nameNode;
+            typeEntry = (TypeEntry *) context->typeNameMap->get(typeName->name, typeName->nameLength);
+            if (typeEntry) {
+                assign->typeIndex = typeEntry->typeIndex;
+            } else { // NotDefinedType a
+                // error no type found
+                context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(&assign->typeOrLet));
+            }
+        }
+
+        if (assign->hasTypeDecl) {
+            if (assign->valueNode) { // int b = 8, let b = 8
+                int childTypeIndex = determineChildTypeIndex(context->scriptEnv, assign->valueNode);
+                if (assign->typeOrLet.isLet) { // let b = 8
+                    assign->typeIndex = childTypeIndex;
+                }
+                else { // int b = 8
+                    if (typeEntry) {
+                        if (typeEntry->typeIndex != childTypeIndex) { // int b = 3.4
+                            // error: wrong type
+                            context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
+                        }
+                    }
+                }
+            }
+            else {
+                if (assign->typeOrLet.isLet) { // let b
+                    context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
+                }
+                else {} // int b
+            }
+        }
+        else { // b = 4
+            auto *currentStatement = Cast::downcast<NodeBase*>(arg);
+            auto *bodyNode = Cast::downcast<BodyNodeStruct *>(currentStatement->parentNode);
+            assert(bodyNode->vtable == VTables::BodyVTable);
+            assert(assign->valueNode);
+
+            int childTypeIndex = determineChildTypeIndex(context->scriptEnv, assign->valueNode);
+            assign->typeIndex = childTypeIndex;
+
+            auto *child = bodyNode->firstChildNode;
+            bool hit = false;
+            while (child) {
+                if (child == currentStatement) {
+                    break;
+                }
+                if (child->vtable == VTables::AssignStatementVTable) {
+                    auto *assign2 = Cast::downcast<AssignStatementNodeStruct *>(child);
+                    if (assign2->hasTypeDecl) {
+                        if (ParseUtil::equal(assign->nameNode.name, assign->nameNode.nameLength,
+                                             assign2->nameNode.name, assign2->nameNode.nameLength)) {
+                            assign->stackOffset = assign2->stackOffset;
+                            hit = true;
+                            if (childTypeIndex != assign2->typeIndex) {
+                                // error
+                                context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
+                            }
+                        }
+                    }
+                }
+                child = child->nextNode;
+            }
+
+            if (!hit) {
+                // error: no decl found
+                context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
+            }
+        }
+    }
+
     // children come first
     static int callTypeSelectorOnExpressions(NodeBase *node, ApplyFunc_params2)
     {
         auto *context = (ScriptEngineContext *)scriptEngineContext;
-        auto *currentStatement = Cast::downcast<NodeBase*>(arg);
-        auto *bodyNode = Cast::downcast<BodyNodeStruct *>(currentStatement->parentNode);
-        assert(bodyNode->vtable == VTables::BodyVTable);
 
         if (node->vtable == VTables::BinaryOperationVTable) {
             auto *binary = Cast::downcast<BinaryOperationNodeStruct *>(node);
@@ -959,7 +1029,6 @@ namespace smart {
             }
         }
 
-
         if (node->vtable == VTables::ReturnStatementVTable) {
             auto* returnState = Cast::downcast<ReturnStatementNodeStruct*>(node);
             if (returnState->valueNode) {
@@ -968,64 +1037,15 @@ namespace smart {
         }
 
         if (node->vtable == VTables::AssignStatementVTable) {
-            auto *assign = Cast::downcast<AssignStatementNodeStruct *>(node);
-            TypeEntry *typeEntry = nullptr;
-            if (assign->hasTypeDecl && !assign->typeOrLet.isLet) {
-                auto *typeName= &assign->typeOrLet.nameNode;
-                typeEntry = (TypeEntry *) context->typeNameMap->get(typeName->name, typeName->nameLength);
-                if (typeEntry) {
-                    assign->typeIndex = typeEntry->typeIndex;
-                } else { // NotDefinedType a
-                    // error no type found
-                }
-            }
+            validateAssignmentNode(node, arg, context);
 
-            if (assign->hasTypeDecl) {
-                if (assign->valueNode) { // int b = 8
-                    int childTypeIndex = determineChildTypeIndex(context->scriptEnv, assign->valueNode);
-                    if (assign->typeOrLet.isLet) { // let b = 8
-                        assign->typeIndex = childTypeIndex;
-                    }
-                    else { // int b = 8
-                        if (typeEntry) {
-                            if (typeEntry->typeIndex != childTypeIndex) { // int b = 3.4
-                                // error: wrong type
-                                context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
-                            }
-                        }
-                    }
-                }
-                else {
-                    if (assign->typeOrLet.isLet) { // let b
-                        context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
-                    }
-                    else {} // int b
-                }
-            }
-            else { // b = 4
-                auto *child = bodyNode->firstChildNode;
-                while (child) {
-                    if (child == currentStatement) {
-                        break;
-                    }
-                    if (child->vtable == VTables::AssignStatementVTable) {
-                        auto *assign2 = Cast::downcast<AssignStatementNodeStruct *>(child);
-                        if (assign2->hasTypeDecl) {
-                            if (ParseUtil::equal(assign->nameNode.name, assign->nameNode.nameLength,
-                                                 assign2->nameNode.name, assign2->nameNode.nameLength)) {
-                                if (assign->typeIndex != assign2->typeIndex) {
-                                    // error
-                                    context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
-                                }
-                            }
-                        }
-                    }
-                    child = child->nextNode;
-                }
-            }
         }
 
         if (node->vtable == VTables::VariableVTable) {
+            auto *currentStatement = Cast::downcast<NodeBase*>(arg);
+            auto *bodyNode = Cast::downcast<BodyNodeStruct *>(currentStatement->parentNode);
+            assert(bodyNode->vtable == VTables::BodyVTable);
+
             auto *vari = Cast::downcast<VariableNodeStruct*>(node);
 
             auto *child = bodyNode->firstChildNode;
@@ -1066,8 +1086,10 @@ namespace smart {
 
             if (child->vtable == VTables::AssignStatementVTable) {
                 auto* assign = Cast::downcast<AssignStatementNodeStruct*>(child);
-                currentStackOffset -= context->scriptEnv->typeEntryList[assign->typeIndex]->dataSize;
-                assign->stackOffset = currentStackOffset;
+                if (assign->hasTypeDecl && assign->typeIndex > -1) {
+                    currentStackOffset -= context->scriptEnv->typeEntryList[assign->typeIndex]->dataSize;
+                    assign->stackOffset = currentStackOffset;
+                }
             }
 
             child = child->nextNode;
@@ -1243,11 +1265,11 @@ namespace smart {
         assert(this->context->logicErrorInfo.hasError == false);
 
         int ret = 0;
-        auto* mainFunc = this->mainFunc;// = findMainFunc(this->document);
-        if (mainFunc) {
+        auto* mainFunc2 = this->mainFunc;// = findMainFunc(this->document);
+        if (mainFunc2) {
             printf("main Found");
-            printf("<%s()>\n", mainFunc->nameNode.name);
-            ret = executeMain(this, mainFunc);
+            printf("<%s()>\n", mainFunc2->nameNode.name);
+            ret = executeMain(this, mainFunc2);
         }
 
         auto* rootNode = this->document->firstRootNode;

@@ -1,13 +1,15 @@
 //*
 fn main()
 {
-    let b = 23
-    let a = b   //joawiejfoiaj
+    let b = 2332421
+    let a = b //joawiejfoiaj
+    // funcA("test日本語", acjkoo日本語🎎 + 3 + 56 + aw + "日本語")
+    // "日本語🎄jiofawe" + b
 
-    //funcA("test日本語", acjkoo日本語🎎 + 3 + 56 + aw + "日本語")
-    //"日本語🎄jiofawe" + b
-    return 4 + a + 32 + 32 + 3421
+    ren let aab = 431
+    return 4 + a + 32
 }
+
 // */
 class ClassMine
 {
