@@ -256,6 +256,7 @@ fn main()
         constexpr char source[] = R"(
 fn main()
 {
+    $int *ptr;
     $int b = 9
     b = (10 + 1) - 2
     return b
