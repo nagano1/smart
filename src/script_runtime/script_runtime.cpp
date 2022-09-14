@@ -1191,7 +1191,6 @@ namespace smart {
             // call func: funcA(100)
             if (statementNode->vtable == VTables::CallFuncVTable) {
                 auto* funcCall = Cast::downcast<CallFuncNodeStruct*>(statementNode);
-
                 auto* arg = funcCall->firstArgumentItem;
                 if (arg != nullptr) {
                     while (true) {
@@ -1268,7 +1267,7 @@ namespace smart {
         assert(this->context->logicErrorInfo.hasError == false);
 
         int ret = 0;
-        auto* mainFunc2 = this->mainFunc;// = findMainFunc(this->document);
+        auto* mainFunc2 = this->mainFunc;
         if (mainFunc2) {
             printf("main Found");
             printf("<%s()>\n", mainFunc2->nameNode.name);
