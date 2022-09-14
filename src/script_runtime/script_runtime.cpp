@@ -905,8 +905,8 @@ namespace smart {
     }
 
 
-    static void assignCalcOpRegister2(ScriptEngineContext *context,
-                                      FuncNodeStruct *func)
+    static void assignCalcOpRegister(ScriptEngineContext *context,
+                                     FuncNodeStruct *func)
     {
         func->bodyNode.vtable->applyFuncToDescendants(Cast::upcast(&func->bodyNode),
                                                          (void*)context,
@@ -930,13 +930,15 @@ namespace smart {
         auto *assign = Cast::downcast<AssignStatementNodeStruct *>(node);
         TypeEntry *typeEntry = nullptr;
         if (assign->hasTypeDecl && !assign->typeOrLet.isLet) {
-            auto *typeName= &assign->typeOrLet.nameNode;
-            typeEntry = (TypeEntry *) context->typeNameMap->get(typeName->name, typeName->nameLength);
+            char *typeName = NodeUtils::getTypeName(&assign->typeOrLet);
+            int typeNameLength = NodeUtils::getTypeNameLength(&assign->typeOrLet);
+            typeEntry = (TypeEntry *) context->typeNameMap->get(typeName, typeNameLength);
             if (typeEntry) {
                 assign->typeIndex = typeEntry->typeIndex;
-            } else { // NotDefinedType a
+            }
+            else { // NotDefinedType a
                 // error no type found
-                context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(&assign->typeOrLet));
+                context->addErrorWithNode(ErrorCode::no_variable_defined, &assign->typeOrLet);
             }
         }
 
@@ -950,14 +952,13 @@ namespace smart {
                     if (typeEntry) {
                         if (typeEntry->typeIndex != childTypeIndex) { // int b = 3.4
                             // error: wrong type
-                            context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
+                            context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 if (assign->typeOrLet.isLet) { // let b
-                    context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
+                    context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
                 }
                 else {} // int b
             }
@@ -982,11 +983,14 @@ namespace smart {
                     if (assign2->hasTypeDecl) {
                         if (ParseUtil::equal(assign->nameNode.name, assign->nameNode.nameLength,
                                              assign2->nameNode.name, assign2->nameNode.nameLength)) {
+                            if (!assign2->typeOrLet.hasMutMark) {
+                                context->addErrorWithNode(ErrorCode::assign_to_immutable, assign);
+                            }
                             assign->stackOffset = assign2->stackOffset;
                             hit = true;
                             if (childTypeIndex != assign2->typeIndex) {
                                 // error
-                                context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
+                                context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
                             }
                         }
                     }
@@ -996,7 +1000,7 @@ namespace smart {
 
             if (!hit) {
                 // error: no decl found
-                context->addErrorWithNode(ErrorCode::no_variable_defined, Cast::upcast(assign));
+                context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
             }
         }
     }
@@ -1133,13 +1137,12 @@ namespace smart {
                 callTypeSelectorsOnExpressions2(context, fnNode);
 
                 if (errorCount == this->context->logicErrorInfo.count) {
-                    assignCalcOpRegister2(context, fnNode);
+                    assignCalcOpRegister(context, fnNode);
                 }
             }
             rootNode = rootNode->nextNode;
         }
 
-        //findMainFunc
         this->mainFunc = findMainFunc(this->document);
     }
 

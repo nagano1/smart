@@ -2,11 +2,12 @@
 fn main()
 {
     let b = 2332421
-    let a = b //joawiejfoiaj
+    $let a = b //joawiejfoiaj
     // funcA("test日本語", acjkoo日本語🎎 + 3 + 56 + aw + "日本語")
     // "日本語🎄jiofawe" + b
+    a = 3
 
-    ren let aab = 431
+    $let aab = 431
     return 4 + a + 32
 }
 

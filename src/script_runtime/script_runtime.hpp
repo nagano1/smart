@@ -213,7 +213,10 @@ namespace smart
 
         void setErrorPositions();
 
-        void addErrorWithNode(ErrorCode errorCode, NodeBase* node) {
+        void addErrorWithNode(ErrorCode errorCode, void* nodeArg) {
+            auto *node = Cast::upcast(nodeArg);
+            assert(node->vtable != nullptr);
+
             auto &errorInfo = this->logicErrorInfo;
             errorInfo.count++;
             errorInfo.hasError = true;

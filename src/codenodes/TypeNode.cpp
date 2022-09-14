@@ -27,11 +27,13 @@ namespace smart
         return currentCodeLine;
     }
 
-    static const char *self_text(TypeNodeStruct *self) {
+    static const char *self_text(TypeNodeStruct *self)
+    {
         return VTableCall::selfText(&self->nameNode);
     }
 
-    static int selfTextLength(TypeNodeStruct *self) {
+    static int selfTextLength(TypeNodeStruct *self)
+    {
         return VTableCall::selfTextLength(Cast::upcast(&self->nameNode));
     }
 
@@ -63,8 +65,8 @@ namespace smart
 
         if (result > -1) {
             typeNode->isLet = ParseUtil::equal(
-                                   typeNode->nameNode.name,
-                                   typeNode->nameNode.nameLength,let_chars, size_of_let
+                                   NodeUtils::getTypeName(typeNode),
+                                   NodeUtils::getTypeNameLength(typeNode), let_chars, size_of_let
                                );
 
             context->setCodeNode(typeNode);
@@ -72,6 +74,25 @@ namespace smart
         }
 
         return -1;
+    }
+
+
+    int NodeUtils::getTypeNameLength(TypeNodeStruct *typeNode)
+    {
+        if (typeNode->hasNullableMark || typeNode->hasMutMark) {
+            return typeNode->nameNode.nameLength - 1;
+        }
+
+        return typeNode->nameNode.nameLength;
+    }
+
+    char* NodeUtils::getTypeName(TypeNodeStruct *typeNode)
+    {
+        if (typeNode->hasNullableMark || typeNode->hasMutMark) {
+            return typeNode->nameNode.name + 1;
+        }
+
+        return typeNode->nameNode.name;
     }
 
     static int applyFuncToDescendants(TypeNodeStruct *node, ApplyFunc_params3)
@@ -87,7 +108,10 @@ namespace smart
 
     static node_vtable _typeVTable = CREATE_VTABLE(TypeNodeStruct, selfTextLength,
                                                          self_text,
-                                                         appendToLine,  applyFuncToDescendants, typeTypeText, NodeTypeId::Type);
+                                                         appendToLine,
+                                                         applyFuncToDescendants,
+                                                         typeTypeText,
+                                                         NodeTypeId::Type);
     const node_vtable *VTables::TypeVTable = &_typeVTable;
 
     TypeNodeStruct *Alloc::newTypeNode(ParseContext *context, NodeBase *parentNode) {
@@ -103,7 +127,6 @@ namespace smart
 
         node->hasMutMark = false;
         node->hasNullableMark = false;
-        node->stackSize = 0;
         node->isLet = false;
 
         Init::initNameNode(&node->nameNode, context, node);

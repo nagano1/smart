@@ -247,7 +247,6 @@ namespace smart {
 
         bool hasMutMark; // $
         bool hasNullableMark; // ?
-        int stackSize; // $
         bool isLet; // or has type
 
         NameNodeStruct nameNode;
@@ -1075,6 +1074,11 @@ namespace smart {
         put(JsonObjectStruct *json, utf8byte *key, int keyLength, NodeBase *node);
     };
 
+
+    struct NodeUtils {
+        static int getTypeNameLength(TypeNodeStruct *typeNode);
+        static char* getTypeName(TypeNodeStruct *typeNode);
+    };
 
     struct DocumentUtils {
 

@@ -326,7 +326,7 @@
 		"testname": "ScriptEngineTest_variable_to_variable",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, ScriptEngineTest_variable_to_variable) {\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    let b = 9\r\n    int c = b\r\n    \r\n    return c + b\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_EQ(ret, 18);\r\n\r\n        "
+		"body": "TEST(ScriptEngine, ScriptEngineTest_variable_to_variable) {\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    let b = 9\r\n    int c = b\r\n    \r\n    return c + b\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_EQ(ret, 18);\r\n        "
 	},
 	{
 		"testcasename": "ScriptEngine",
