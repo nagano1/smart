@@ -107,7 +107,7 @@ namespace smart
     struct BuiltInTypeIndex {
         static int int32;
         static int int64;
-        static int int_;
+        static int null;
         static int heapString;
     };
 
@@ -253,7 +253,8 @@ namespace smart
     enum class BuildinTypeId {
         Int32 = 1,
         Int64 = 2,
-        HeapString = 23
+        HeapString = 23,
+        Null = 24
     };
 
     using TypeEntry = struct _typeEntry {
@@ -261,23 +262,28 @@ namespace smart
         int dataSize;
         char *(*toString)(ScriptEngineContext *context, ValueBase* value);
         void (*operate_add)(ScriptEngineContext *context, BinaryOperationNodeStruct *binaryNode);
-        int (*operate_add_type)(ScriptEngineContext *context, _typeEntry *binaryNode, _typeEntry *leftValue, _typeEntry *rightValue);
+        int (*operate_add_type)(ScriptEngineContext *context, _typeEntry *binaryNode);
+        void (*evaluateNode)(ScriptEngineContext *context, NodeBase *node);
         char *typeChars;
         int typeCharsLength;
         BuildinTypeId typeId;
         bool isBuiltIn;
+        bool isHeapOnly;
 
-        template<std::size_t SIZE>
-        void initAsBuiltInType(decltype(toString) f1, decltype(operate_add) f2,decltype(operate_add_type) f6,
-                               const char(&f3)[SIZE], decltype(typeId) f4, decltype(dataSize) f5
+        template<typename T, std::size_t SIZE>
+        void initAsBuiltInType(decltype(toString) f1, decltype(operate_add) f2, decltype(operate_add_type) f6
+                               , void(*evaluateNode2)(ScriptEngineContext *context, T *node),
+                               const char(&f3)[SIZE], decltype(typeId) f4, decltype(dataSize) f5, decltype(isHeapOnly) f7
         ) {
             this->toString = f1;
             this->operate_add = f2;
             this->operate_add_type = f6;
+            this->evaluateNode = (void(*)(ScriptEngineContext *context, NodeBase *node))evaluateNode2;
             this->typeChars = (char*)f3;
             this->typeCharsLength = SIZE;
             this->typeId = f4;
             this->dataSize = f5;
+            this->isHeapOnly = f7;
             this->isBuiltIn = true;
         }
     };

@@ -248,6 +248,7 @@ fn main()
 )";
         int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);
         EXPECT_EQ(ret, -9);
+        EXPECT_EQ(1, sizeof(char));
 
         ENDTEST
     }
@@ -256,7 +257,7 @@ fn main()
         constexpr char source[] = R"(
 fn main()
 {
-    $int *ptr;
+    ?int *ptr = null
     $int b = 9
     b = (10 + 1) - 2
     return b
@@ -264,6 +265,19 @@ fn main()
 )";
         int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);
         EXPECT_EQ(ret, 9);
+        ENDTEST
+    }
+
+    TEST(ScriptEngine, ScriptEngineTest_null) {
+        constexpr char source[] = R"(
+fn main()
+{
+    ?int *ptr = null
+    return ptr
+}
+)";
+        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);
+        EXPECT_EQ(ret, 0);
         ENDTEST
     }
 

@@ -241,24 +241,57 @@ namespace smart {
 
 
     int int32_operate_add_type(ScriptEngineContext *context,
-                               _typeEntry *binaryNode,
-                               _typeEntry *leftValue,
-                               _typeEntry *rightValue)
+                               _typeEntry *binaryNode)
     {
         return BuiltInTypeIndex::int32;
         // return -1;
     }
 
-    int int64_operate_add_type(ScriptEngineContext *context,
-                               _typeEntry *binaryNode,
-                               _typeEntry *leftValue,
-                               _typeEntry *rightValue)
+    int int64_operate_add_type(ScriptEngineContext *context, _typeEntry *binaryNode)
     {
         return BuiltInTypeIndex::int64;
         // return -1;
     }
 
+    /*
+     *
+     *         if (expressionNode->vtable == VTables::StringLiteralVTable) {
+            //auto* strNode = Cast::downcast<StringLiteralNodeStruct *>(expressionNode);
+            //int size = (1 + strNode->strLength) * (int)sizeof(char);
+//          memcpy(chars, strNode->str, strNode->strLength);
+//          chars[strNode->strLength] = '\0';
+            return;
+        }
 
+        if (expressionNode->vtable == VTables::ParenthesesVTable) {
+            auto* parentheses = Cast::downcast<ParenthesesNodeStruct *>(expressionNode);
+            evaluateExprNode(parentheses->valueNode);
+            return;
+        }
+
+
+        if (expressionNode->vtable == VTables::NumberVTable) {
+            auto* numberNode = Cast::downcast<NumberNodeStruct *>(expressionNode);
+            if (numberNode->unit == 64) {
+                *(int64_t*)numberNode->calcReg = numberNode->num;
+            }
+            else {
+                *(int32_t*)numberNode->calcReg = (int32_t)numberNode->num;
+            }
+            return;
+        }
+
+     *
+     *
+     */
+
+    void int32_evaluateNode(ScriptEngineContext *context, NumberNodeStruct *numberNode) {
+        *(int32_t*)numberNode->calcReg = (int32_t)numberNode->num;
+    }
+
+    void int64_evaluateNode(ScriptEngineContext *context, NumberNodeStruct *numberNode) {
+        *(int64_t*)numberNode->calcReg = numberNode->num;
+    }
 
     void int32_operate_add(ScriptEngineContext *context,
                            BinaryOperationNodeStruct *binaryNode)
@@ -308,6 +341,16 @@ namespace smart {
     }
 
 
+    void heapString_evaluateNode(ScriptEngineContext *context, StringLiteralNodeStruct *node)
+    {
+        char *chars;
+        int size = (1 + node->strLength) * (int)sizeof(char);
+        auto *value = context->genValueBase(BuiltInTypeIndex::heapString, size, &chars);
+        memcpy(chars, node->str, node->strLength);
+        chars[node->strLength] = '\0';
+        *(ValueBase **)node->calcReg = value;
+    }
+
     char* heapString_toString(ScriptEngineContext *context, ValueBase* value)
     {
         return (char*)value->ptr;
@@ -315,10 +358,7 @@ namespace smart {
 
 
     int heapString_operate_add_type(
-            ScriptEngineContext *context,
-            _typeEntry *binaryNode,
-            _typeEntry *leftValue,
-            _typeEntry *rightValue) {
+            ScriptEngineContext *context, _typeEntry *binaryNode) {
 
         return BuiltInTypeIndex::heapString;
     }
@@ -338,6 +378,26 @@ namespace smart {
         */
     }
 
+    char* null_toString(ScriptEngineContext *context, ValueBase* value)
+    {
+        return (char*)"null";
+    }
+
+
+    int null_operate_add_type(
+            ScriptEngineContext *context,
+            _typeEntry *binaryNode) {
+
+        return BuiltInTypeIndex::null;
+    }
+
+    void null_operate_add(ScriptEngineContext *context, BinaryOperationNodeStruct *binaryNode)
+    {
+    }
+
+    void null_evaluateNode(ScriptEngineContext *context, NullNodeStruct *node) {
+        *(int64_t*)node->calcReg = 0;
+    }
 
     static void _registerBuiltInTypes(ScriptEnv* scriptEnv)
     {
@@ -345,7 +405,8 @@ namespace smart {
         {
             TypeEntry *int32Type = scriptEnv->newTypeEntry();
             int32Type->initAsBuiltInType(int32_toString, int32_operate_add, int32_operate_add_type,
-                                         "int", BuildinTypeId::Int32, 4); // 4byte
+                                         int32_evaluateNode,
+                                         "int", BuildinTypeId::Int32, 4, false); // 4byte
             scriptEnv->registerTypeEntry(int32Type);
             BuiltInTypeIndex::int32 = int32Type->typeIndex;
             scriptEnv->addTypeAlias(int32Type, "int");
@@ -356,27 +417,41 @@ namespace smart {
             // i64
             TypeEntry *int64Type = scriptEnv->newTypeEntry();
             int64Type->initAsBuiltInType(int64_toString, int64_operate_add, int64_operate_add_type,
-                                         "i64", BuildinTypeId::Int64, 8); // 4byte
+                                         int64_evaluateNode,
+                                         "i64", BuildinTypeId::Int64, 8, false); // 4byte
             scriptEnv->registerTypeEntry(int64Type);
             BuiltInTypeIndex::int64 = int64Type->typeIndex;
             scriptEnv->addTypeAlias(int64Type, "i64");
         }
 
-        // int8
+        {
+            // heap string
+            TypeEntry *heapStringType = scriptEnv->newTypeEntry();
+            heapStringType->initAsBuiltInType(heapString_toString,
+                                              heapString_operate_add, heapString_operate_add_type,
+                                              heapString_evaluateNode,
+                                              "heapString", BuildinTypeId::HeapString, 8, /*heap only*/true); //
+            scriptEnv->registerTypeEntry(heapStringType);
+            scriptEnv->addTypeAlias(heapStringType, "String");
+            BuiltInTypeIndex::heapString = heapStringType->typeIndex;
+        }
 
-        // heap string
-        TypeEntry* heapStringType = scriptEnv->newTypeEntry();
-        heapStringType->initAsBuiltInType(heapString_toString,
-                                          heapString_operate_add, heapString_operate_add_type,
-                "heapString", BuildinTypeId::HeapString, 8); //
-        scriptEnv->registerTypeEntry(heapStringType);
-        scriptEnv->addTypeAlias(heapStringType, "String");
-        BuiltInTypeIndex::heapString = heapStringType->typeIndex;
+        {
+            // null
+            TypeEntry *nullTypeEntry = scriptEnv->newTypeEntry();
+            nullTypeEntry->initAsBuiltInType(null_toString,
+                                              null_operate_add, null_operate_add_type, null_evaluateNode,
+                                              "null", BuildinTypeId::Null, 8, /*heap only*/true); //
+            scriptEnv->registerTypeEntry(nullTypeEntry);
+            scriptEnv->addTypeAlias(nullTypeEntry, "Null");
+            BuiltInTypeIndex::null = nullTypeEntry->typeIndex;
+        }
     }
 
     int BuiltInTypeIndex::int32 = 0;
     int BuiltInTypeIndex::int64 = 0;
     int BuiltInTypeIndex::heapString = 0;
+    int BuiltInTypeIndex::null = 0;
 
 
 
@@ -453,6 +528,11 @@ namespace smart {
         return BuiltInTypeIndex::heapString;
     }
 
+    static int selectTypeFromNullNode(ScriptEnv *env, NullNodeStruct *nodeBase)
+    {
+        return BuiltInTypeIndex::null;
+    }
+
     template<typename T>
     static void setTypeSelector(const node_vtable* vtable, int (*argToType)(ScriptEnv *, T *)) {
         ((node_vtable*)vtable)->typeSelector = reinterpret_cast<int (*)(void *, NodeBase *)>(argToType);
@@ -462,6 +542,7 @@ namespace smart {
     {
         setTypeSelector(VTables::NumberVTable, selectTypeFromNumberNode);
         setTypeSelector(VTables::StringLiteralVTable, selectTypeFromStringNode);
+        setTypeSelector(VTables::NullVTable, selectTypeFromNullNode);
         /*
         if (VTables::NumberVTable->typeSelector(env, nullptr) != -1) {
 
@@ -484,6 +565,16 @@ namespace smart {
         assert(expressionNode != nullptr);
         assert(expressionNode->vtable != nullptr);
 
+        TypeEntry *typeEntry = nullptr;
+        int typeIndex = expressionNode->typeIndex;
+        if (typeIndex > 0) {
+            typeEntry = this->scriptEnv->typeEntryList[typeIndex];
+        }
+
+        if (typeEntry) {
+            typeEntry->evaluateNode(this, expressionNode);
+        }
+/*
         if (expressionNode->vtable == VTables::StringLiteralVTable) {
             //auto* strNode = Cast::downcast<StringLiteralNodeStruct *>(expressionNode);
             //int size = (1 + strNode->strLength) * (int)sizeof(char);
@@ -491,14 +582,14 @@ namespace smart {
 //          chars[strNode->strLength] = '\0';
             return;
         }
-
+*/
         if (expressionNode->vtable == VTables::ParenthesesVTable) {
             auto* parentheses = Cast::downcast<ParenthesesNodeStruct *>(expressionNode);
             evaluateExprNode(parentheses->valueNode);
             return;
         }
 
-
+/*
         if (expressionNode->vtable == VTables::NumberVTable) {
             auto* numberNode = Cast::downcast<NumberNodeStruct *>(expressionNode);
             if (numberNode->unit == 64) {
@@ -509,6 +600,13 @@ namespace smart {
             }
             return;
         }
+
+        if (expressionNode->vtable == VTables::NullVTable) {
+            auto* nullNode = Cast::downcast<NullNodeStruct *>(expressionNode);
+            *(int64_t*)nullNode->calcReg = 0;
+            return;
+        }
+*/
 
         if (expressionNode->vtable == VTables::VariableVTable) {
             auto* variableNode = Cast::downcast<VariableNodeStruct *>(expressionNode);
@@ -665,12 +763,7 @@ namespace smart {
         static_assert(true, "not implemented");
     }
 
-    /// char *chars;
-    /// auto *value = this->context->genValueBase(BuiltInTypeIndex::heapString, size, &chars);
-    /// memcpy(chars, strNode->str, strNode->strLength);
-    /// chars[strNode->strLength] = '\0';
-    ///
-    /// //int32_t *int32ptr;
+    // //int32_t *int32ptr;
     //            //auto *value = this->context->genValueBase(BuiltInTypeIndex::int32, sizeof(int32_t), &int32ptr);
     //            //*int32ptr = numberNode->num;
     //            \param type
@@ -945,15 +1038,45 @@ namespace smart {
         if (assign->hasTypeDecl) {
             if (assign->valueNode) { // int b = 8, let b = 8
                 int childTypeIndex = determineChildTypeIndex(context->scriptEnv, assign->valueNode);
+
                 if (assign->typeOrLet.isLet) { // let b = 8
-                    assign->typeIndex = childTypeIndex;
+                    if (assign->pointerAsterisk.found > -1) {
+                        assign->typeIndex = childTypeIndex;
+                    }
+                    else {
+                        assign->typeIndex = childTypeIndex;
+                    }
                 }
                 else { // int b = 8
                     if (typeEntry) {
-                        if (typeEntry->typeIndex != childTypeIndex) { // int b = 3.4
+                        if (assign->pointerAsterisk.found > -1) { // int *b = null
+                            if (typeEntry->typeIndex != childTypeIndex) {
+                                if (childTypeIndex == BuiltInTypeIndex::null){
+                                    if (assign->typeOrLet.hasNullableMark) {
+
+                                    }
+                                    else {
+                                        context->addErrorWithNode(ErrorCode::assign_null_to_unnullable, assign);
+                                    }
+                                }
+                                else {
+                                    // check assignable
+                                    context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
+                                }
+                            }
+                            else {
+
+                            }
                             // error: wrong type
-                            context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
+                            //    context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
                         }
+                        else {
+                            if (typeEntry->typeIndex != childTypeIndex) { // int b = 3.4
+                                // error: wrong type
+                                context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
+                            }
+                        }
+
                     }
                 }
             } else {

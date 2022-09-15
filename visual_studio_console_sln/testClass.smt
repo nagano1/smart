@@ -1,6 +1,7 @@
 //*
 fn main()
 {
+    int *f = null
     let b = 2332421
     $let a = b //joawiejfoiaj
     // funcA("test日本語", acjkoo日本語🎎 + 3 + 56 + aw + "日本語")

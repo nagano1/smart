@@ -76,6 +76,7 @@ namespace smart {
         no_logical_error,
         no_variable_defined,
         type_not_found,
+        assign_null_to_unnullable,
         assign_to_immutable,
 
 
@@ -201,7 +202,8 @@ namespace smart {
             ErrorInfo{ErrorCode::no_logical_error, 57770000, "no_logical_error"},
             ErrorInfo{ErrorCode::no_variable_defined, 57770001, "no_variable_defined"},
             ErrorInfo{ErrorCode::type_not_found, 57770002, "type not found"},
-            ErrorInfo{ErrorCode::assign_to_immutable, 57770003, "assign_to_immutable"},
+            ErrorInfo{ErrorCode::assign_null_to_unnullable, 57770003, "assign_null_to_unnullable"},
+            ErrorInfo{ErrorCode::assign_to_immutable, 57770004, "assign_to_immutable"},
 
 
 
