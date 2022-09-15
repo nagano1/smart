@@ -281,6 +281,19 @@ fn main()
         ENDTEST
     }
 
+    TEST(ScriptEngine, ScriptEngineTest_heapString) {
+        constexpr char source[] = R"(
+fn main()
+{
+    String *ptr = "ijfowjio"
+    String *ptr2 = ptr
+    return ptr2
+}
+)";
+        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);
+        EXPECT_NE(ret, 0);
+        ENDTEST
+    }
     
     TEST(ScriptEngine, ScriptEngineTest_sub) {
         constexpr char source[] = R"(

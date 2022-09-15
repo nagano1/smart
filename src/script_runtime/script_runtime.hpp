@@ -261,8 +261,7 @@ namespace smart
         int typeIndex;
         int dataSize;
         char *(*toString)(ScriptEngineContext *context, ValueBase* value);
-        void (*operate_add)(ScriptEngineContext *context, BinaryOperationNodeStruct *binaryNode);
-        int (*operate_add_type)(ScriptEngineContext *context, _typeEntry *binaryNode);
+        int (*binary_operate)(ScriptEngineContext *context, BinaryOperationNodeStruct *binaryNode, bool typeCheck);
         void (*evaluateNode)(ScriptEngineContext *context, NodeBase *node);
         char *typeChars;
         int typeCharsLength;
@@ -271,13 +270,12 @@ namespace smart
         bool isHeapOnly;
 
         template<typename T, std::size_t SIZE>
-        void initAsBuiltInType(decltype(toString) f1, decltype(operate_add) f2, decltype(operate_add_type) f6
-                               , void(*evaluateNode2)(ScriptEngineContext *context, T *node),
+        void initAsBuiltInType(decltype(toString) f1, decltype(binary_operate) f2,
+                               void(*evaluateNode2)(ScriptEngineContext *context, T *node),
                                const char(&f3)[SIZE], decltype(typeId) f4, decltype(dataSize) f5, decltype(isHeapOnly) f7
         ) {
             this->toString = f1;
-            this->operate_add = f2;
-            this->operate_add_type = f6;
+            this->binary_operate = f2;
             this->evaluateNode = (void(*)(ScriptEngineContext *context, NodeBase *node))evaluateNode2;
             this->typeChars = (char*)f3;
             this->typeCharsLength = SIZE;

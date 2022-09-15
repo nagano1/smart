@@ -305,14 +305,28 @@
 		"testname": "ScriptEngineTestSomeScript0",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, ScriptEngineTestSomeScript0) {\r\n\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    int b = 9\r\n    int a = 500\r\n    int c = 500\r\n    \r\n    return c - (b + a)\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_EQ(ret, -9);\r\n\r\n        "
+		"body": "TEST(ScriptEngine, ScriptEngineTestSomeScript0) {\r\n\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    int b = 9\r\n    int a = 500\r\n    int c = 500\r\n    \r\n    return c - (b + a)\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_EQ(ret, -9);\r\n        EXPECT_EQ(1, sizeof(char));\r\n\r\n        "
 	},
 	{
 		"testcasename": "ScriptEngine",
 		"testname": "ScriptEngineTest_assign",
 		"filepath": "tests/google_tests/script_runtime_test.cpp",
 		"filename": "script_runtime_test.cpp",
-		"body": "TEST(ScriptEngine, ScriptEngineTest_assign) {\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    int b = 9\r\n    b = (10 + 1) - 2\r\n    return b\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_EQ(ret, 9);\r\n        "
+		"body": "TEST(ScriptEngine, ScriptEngineTest_assign) {\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    ?int *ptr = null\r\n    $int b = 9\r\n    b = (10 + 1) - 2\r\n    return b\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_EQ(ret, 9);\r\n        "
+	},
+	{
+		"testcasename": "ScriptEngine",
+		"testname": "ScriptEngineTest_null",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, ScriptEngineTest_null) {\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    ?int *ptr = null\r\n    return ptr\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_EQ(ret, 0);\r\n        "
+	},
+	{
+		"testcasename": "ScriptEngine",
+		"testname": "ScriptEngineTest_heapString",
+		"filepath": "tests/google_tests/script_runtime_test.cpp",
+		"filename": "script_runtime_test.cpp",
+		"body": "TEST(ScriptEngine, ScriptEngineTest_heapString) {\r\n        constexpr char source[] = R\"(\r\nfn main()\r\n{\r\n    String *ptr = \"ijfowjio\"\r\n    String *ptr2 = ptr\r\n    return ptr2\r\n}\r\n)\";\r\n        int ret = ScriptEnv::startScript((char*)source, sizeof(source) - 1);\r\n        EXPECT_NE(ret, 0);\r\n        "
 	},
 	{
 		"testcasename": "ScriptEngine",
