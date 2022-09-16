@@ -216,8 +216,8 @@ namespace doorlangtest {
             jobject /* this */,
             jlong addrGray
     ) {
-        jintArray result;
-        result = env->NewIntArray(25);
+        //jintArray result;
+        //result = env->NewIntArray(25);
 
         std::string hello = "Hello from C++ 4";
         unsigned int G_NumOfCores = std::thread::hardware_concurrency();
@@ -284,8 +284,8 @@ namespace doorlangtest {
             jobject /* this */,
             jstring str
     ) {
-        jintArray result;
-        result = env->NewIntArray(25);
+        //jintArray result;
+        //result = env->NewIntArray(25);
 
         //smartlang::CPPTestUtil::doAllTests();
 

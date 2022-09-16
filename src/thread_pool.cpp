@@ -148,7 +148,7 @@ int TestUtil::copyConstructTest() {
     {
         //printf("\n[");
         mytype __m1__ = mytype{};// stack //backing field   
-        mytype *m1 = &__m1__;// mytype{};// stack
+        //mytype *m1 = &__m1__;// mytype{};// stack
         mytype m2 = mytype{};// stack
 
         // mytype another = trans(m2);//.copy(	) }
@@ -162,7 +162,7 @@ int TestUtil::copyConstructTest() {
 
         
 
-        m1 = &m2;
+        //m1 = &m2;
         // m1.func
         m2.func();
         for (int m = 0; m < 100000; m++) {
@@ -334,7 +334,7 @@ void GreenThread::start() {
                 runNode = new RunNode();
             }
 
-            int repeatedError = 0;
+            //int repeatedError = 0;
 
             bool prev_idx_changed = false;
 
@@ -369,7 +369,7 @@ void GreenThread::start() {
                                 this->prev_idx = k;
                             }
 
-                            repeatedError = 0;
+//                            repeatedError = 0;
 
                             return true;
                         }

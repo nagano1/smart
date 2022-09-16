@@ -795,7 +795,7 @@ namespace smart {
         }
 
         auto *typeEntry = context->scriptEnv->typeEntryList[typeIndex];
-        auto dataSize = typeEntry->dataSize;
+        int dataSize = typeEntry->dataSize;
         if (node->typeAtHeap2) {
             dataSize = 8;
         }
@@ -830,6 +830,7 @@ namespace smart {
         }
     }
 
+    // parent is first
     int applyFunc_assignCalcOpRegister(NodeBase *node, ApplyFunc_params2)
     {
         auto context = (ScriptEngineContext*)scriptEngineContext;
@@ -898,7 +899,8 @@ namespace smart {
                                                          nullptr,
                                                          nullptr);
     }
-    
+
+
     static inline int determineChildTypeIndex(ScriptEnv *env, NodeBase *node) {
         int typeIndex = node->typeIndex2;
         if (typeIndex == -1) {
@@ -907,6 +909,7 @@ namespace smart {
         }
         return node->typeIndex2;
     }
+
 
     static void validateAssignmentNode(NodeBase *node, void *arg, ScriptEngineContext *context) {
         auto *assign = Cast::downcast<AssignStatementNodeStruct *>(node);
@@ -1220,6 +1223,9 @@ namespace smart {
         }
 
         this->mainFunc = findMainFunc(this->document);
+        if (this->mainFunc == nullptr) {
+            //error: entry func not found
+        }
     }
 
 
@@ -1244,7 +1250,7 @@ namespace smart {
             if (variableNode->typeAtHeap2) {
                 this->stackMemory.moveFrom(variableNode->stackOffset, 8, variableNode->calcReg);
             } else {
-                auto dataSize = this->scriptEnv->typeEntryList[variableNode->typeIndex2]->dataSize;
+                int dataSize = this->scriptEnv->typeEntryList[variableNode->typeIndex2]->dataSize;
                 this->stackMemory.moveFrom(variableNode->stackOffset, dataSize, variableNode->calcReg);
             }
             return;
@@ -1260,9 +1266,9 @@ namespace smart {
             auto* binaryNode = Cast::downcast<BinaryOperationNodeStruct *>(expressionNode);
 
             this->evaluateExprNode(binaryNode->rightExprNode);
-            uint64_t saved = *(uint64_t*)binaryNode->rightExprNode->calcReg;
+            uint64_t saved = *(uint64_t*)(binaryNode->rightExprNode->calcReg);
             this->evaluateExprNode(binaryNode->leftExprNode);
-            *(uint64_t*)binaryNode->rightExprNode->calcReg = saved;
+            *(uint64_t*)(binaryNode->rightExprNode->calcReg) = saved;
 
             auto *leftTypeEntry = this->scriptEnv->typeEntryList[binaryNode->leftExprNode->typeIndex2];
             leftTypeEntry->binary_operate(this, binaryNode, false);

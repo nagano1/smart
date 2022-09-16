@@ -598,6 +598,7 @@ TEST(concept, wakeup_test) {
 
     stopped2 = true;
 
+    if (current > 0) {}
 
     //std::chrono::system_clock::now();
     auto elapsed = std::chrono::high_resolution_clock::now() - start;

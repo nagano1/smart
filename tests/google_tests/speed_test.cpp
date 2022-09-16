@@ -58,6 +58,9 @@ TEST(SpeedTest, memory_order_relaxed_is_fast) {
     auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
     auto one_op_nanosec = nanoseconds / static_cast<double>(loopCount);
 
+    if (a) {
+
+    }
     if (speed_test) {
         EXPECT_LT(one_op_nanosec, ARM ? 40 : 1.1);
         printf("%f", one_op_nanosec);
