@@ -234,7 +234,7 @@ namespace smart {
     char* int64_toString(ScriptEngineContext *context, ValueBase *value)
     {
         auto * chars = (char*)malloc(sizeof(char) * 128);
-        sprintf(chars, "%llu", *(int64_t*)value->ptr);
+        sprintf(chars, "%lu", *(int64_t*)value->ptr);
         return chars;
     }
 
