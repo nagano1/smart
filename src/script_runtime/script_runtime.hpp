@@ -107,6 +107,7 @@ namespace smart
     struct BuiltInTypeIndex {
         static int int32;
         static int int64;
+        static int boolIdx;
         static int null;
         static int heapString;
     };
@@ -254,7 +255,8 @@ namespace smart
         Int32 = 1,
         Int64 = 2,
         HeapString = 23,
-        Null = 24
+        Null = 24,
+        Bool = 3,
     };
 
     using TypeEntry = struct _typeEntry {
@@ -262,6 +264,7 @@ namespace smart
         int dataSize;
         char *(*toString)(ScriptEngineContext *context, ValueBase* value);
         int (*binary_operate)(ScriptEngineContext *context, BinaryOperationNodeStruct *binaryNode, bool typeCheck);
+        int (*canAssignTypeImplicitly)(ScriptEngineContext *context, _typeEntry *typeEntry);
         void (*evaluateNode)(ScriptEngineContext *context, NodeBase *node);
         char *typeChars;
         int typeCharsLength;
@@ -270,12 +273,13 @@ namespace smart
         bool isHeapOnly;
 
         template<typename T, std::size_t SIZE>
-        void initAsBuiltInType(decltype(toString) f1, decltype(binary_operate) f2,
+        void initAsBuiltInType(decltype(toString) f1, decltype(binary_operate) f2, decltype(canAssignTypeImplicitly) f8,
                                void(*evaluateNode2)(ScriptEngineContext *context, T *node),
                                const char(&f3)[SIZE], decltype(typeId) f4, decltype(dataSize) f5, decltype(isHeapOnly) f7
         ) {
             this->toString = f1;
             this->binary_operate = f2;
+            this->canAssignTypeImplicitly = f8;
             this->evaluateNode = (void(*)(ScriptEngineContext *context, NodeBase *node))evaluateNode2;
             this->typeChars = (char*)f3;
             this->typeCharsLength = SIZE;

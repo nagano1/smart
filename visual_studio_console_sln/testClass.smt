@@ -1,11 +1,11 @@
 //*
 fn main()
 {
-    int *f = null
-    let b = 2332421
-    $let a = b //joawiejfoiaj
-    // funcA("test日本語", acjkoo日本語🎎 + 3 + 56 + aw + "日本語")
-    // "日本語🎄jiofawe" + b
+    $string *str
+    string *altStr = str
+    ?int *f = null
+    int b = 2332421
+    $let a = b // joawiejfoiaj
     a = 3
 
     $let aab = 431
@@ -15,7 +15,7 @@ fn main()
 // */
 class ClassMine
 {
-    fn funcB()
+    fn funcB(int a)
     {
         let a = 893214
         let *str = "0jfoiwjoie"

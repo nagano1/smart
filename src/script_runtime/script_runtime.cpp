@@ -217,12 +217,19 @@ namespace smart {
     }
 
 
+
     char* int32_toString(ScriptEngineContext *context, ValueBase *value)
     {
         auto * chars = (char*)malloc(sizeof(char) * 64);
         sprintf(chars, "%d", *(int32_t*)value->ptr);
         return chars;
     }
+
+    int canAssignType_i32(ScriptEngineContext *context, _typeEntry *otherType)
+    {
+        return 0;
+    }
+
 
     char* int64_toString(ScriptEngineContext *context, ValueBase *value)
     {
@@ -273,6 +280,15 @@ namespace smart {
 
     void int32_evaluateNode(ScriptEngineContext *context, NumberNodeStruct *numberNode) {
         *(int32_t*)numberNode->calcReg = (int32_t)numberNode->num;
+    }
+
+
+    int canAssignType_i64(ScriptEngineContext *context, _typeEntry *otherType)
+    {
+        if (otherType->typeIndex == BuiltInTypeIndex::int32) {
+            return 1;
+        }
+        return 0;
     }
 
     void int64_evaluateNode(ScriptEngineContext *context, NumberNodeStruct *numberNode) {
@@ -364,6 +380,11 @@ namespace smart {
     }
 
 
+    int canAssignType_String(ScriptEngineContext *context, _typeEntry *otherType)
+    {
+        return 0;
+    }
+
     int heapString_binary_operate(ScriptEngineContext *context, BinaryOperationNodeStruct *binaryNode, bool typeCheck)
     {
         if (!binaryNode->rightExprNode->typeAtHeap2 || !binaryNode->leftExprNode->typeAtHeap2) {
@@ -403,6 +424,12 @@ namespace smart {
 
         return 0;
     }
+    int canAssignType_null(ScriptEngineContext *context, _typeEntry *otherType)
+    {
+        return 0;
+    }
+
+
 
     void null_evaluateNode(ScriptEngineContext *context, NullNodeStruct *node) {
         *(int64_t*)node->calcReg = 0;
@@ -413,7 +440,7 @@ namespace smart {
         // int
         {
             TypeEntry *int32Type = scriptEnv->newTypeEntry();
-            int32Type->initAsBuiltInType(int32_toString, int32_binary_operate,
+            int32Type->initAsBuiltInType(int32_toString, int32_binary_operate, canAssignType_i32,
                                          int32_evaluateNode,
                                          "int", BuildinTypeId::Int32, 4, false); // 4byte
             scriptEnv->registerTypeEntry(int32Type);
@@ -425,7 +452,7 @@ namespace smart {
         {
             // i64
             TypeEntry *int64Type = scriptEnv->newTypeEntry();
-            int64Type->initAsBuiltInType(int64_toString, int64_binary_operate,
+            int64Type->initAsBuiltInType(int64_toString, int64_binary_operate, canAssignType_i64,
                                          int64_evaluateNode,
                                          "i64", BuildinTypeId::Int64, 8, false); // 4byte
             scriptEnv->registerTypeEntry(int64Type);
@@ -437,19 +464,20 @@ namespace smart {
             // heap string
             TypeEntry *heapStringType = scriptEnv->newTypeEntry();
             heapStringType->initAsBuiltInType(heapString_toString,
-                                              heapString_binary_operate,
+                                              heapString_binary_operate,  canAssignType_String,
                                               heapString_evaluateNode,
                                               "heapString", BuildinTypeId::HeapString, 8, /*heap only*/true); //
             scriptEnv->registerTypeEntry(heapStringType);
             scriptEnv->addTypeAlias(heapStringType, "String");
+            scriptEnv->addTypeAlias(heapStringType, "string");
             BuiltInTypeIndex::heapString = heapStringType->typeIndex;
         }
 
         {
             // null
             TypeEntry *nullTypeEntry = scriptEnv->newTypeEntry();
-            nullTypeEntry->initAsBuiltInType(null_toString,
-                                              null_binary_operate, null_evaluateNode,
+            nullTypeEntry->initAsBuiltInType(null_toString, null_binary_operate,  canAssignType_null,
+                                             null_evaluateNode,
                                               "null", BuildinTypeId::Null, 8, /*heap only*/true); //
             scriptEnv->registerTypeEntry(nullTypeEntry);
             scriptEnv->addTypeAlias(nullTypeEntry, "Null");
@@ -459,6 +487,7 @@ namespace smart {
 
     int BuiltInTypeIndex::int32 = 0;
     int BuiltInTypeIndex::int64 = 0;
+    int BuiltInTypeIndex::boolIdx = 0;
     int BuiltInTypeIndex::heapString = 0;
     int BuiltInTypeIndex::null = 0;
 
@@ -914,7 +943,6 @@ namespace smart {
                     else {
                         if (assign->valueNode->typeAtHeap2) {
                             // error: String str = "jfoiwjio"
-
                         }
                         else {
 
@@ -936,7 +964,13 @@ namespace smart {
                                 }
                                 else {
                                     // check assignable
-                                    context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
+
+                                    auto *targetTypeEntry = context->scriptEnv->typeEntryList[assign->valueNode->typeIndex2];
+                                    bool canAssign = typeEntry->canAssignTypeImplicitly(context, targetTypeEntry);
+
+                                    if (!canAssign) {
+                                        context->addErrorWithNode(ErrorCode::type_is_not_assigneable, assign);
+                                    }
                                 }
                             }
                             else {
@@ -947,14 +981,24 @@ namespace smart {
                         }
                         else {
                             if (typeEntry->typeIndex != childTypeIndex) { // int b = 3.4
-                                // error: wrong type
-                                context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
+                                auto *targetTypeEntry = context->scriptEnv->typeEntryList[assign->valueNode->typeIndex2];
+                                bool canAssign = typeEntry->canAssignTypeImplicitly(context, targetTypeEntry);
+
+                                if (!canAssign) {
+                                    // error: wrong type
+                                    context->addErrorWithNode(ErrorCode::type_is_not_assigneable, assign);
+                                }
                             }
                         }
 
                     }
                 }
-            } else {
+            } else { // no value
+                if (assign->typeOrLet.hasNullableMark || assign->typeOrLet.hasMutMark) {
+
+                } else {
+                    context->addErrorWithNode(ErrorCode::need_mutable_mark_for_no_value_assignment, &assign->typeOrLet);
+                }
                 if (assign->typeOrLet.isLet) { // let b
                     context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
                 }
@@ -985,15 +1029,23 @@ namespace smart {
                             if (!declAssign->typeOrLet.hasMutMark) {
                                 context->addErrorWithNode(ErrorCode::assign_to_immutable, assign);
                             }
+
                             assign->stackOffset = declAssign->stackOffset;
                             hit = true;
                             if (childTypeIndex != declAssign->typeIndex2) {
-                                // error
-                                context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
+                                if (childTypeIndex > 0) {
+                                    auto *targetTypeEntry = context->scriptEnv->typeEntryList[childTypeIndex];
+                                    bool canAssign = targetTypeEntry->canAssignTypeImplicitly(context, targetTypeEntry);
+                                    if (!canAssign) {
+                                        // error
+                                        context->addErrorWithNode(ErrorCode::type_is_not_assigneable, assign);
+                                    }
+                                }
                             }
+
                             if (assign->valueNode->typeAtHeap2 != declAssign->typeAtHeap2) {
                                 // error
-                                context->addErrorWithNode(ErrorCode::no_variable_defined, assign);
+                                context->addErrorWithNode(ErrorCode::type_is_not_assigneable, assign);
                             }
                         }
                     }
@@ -1018,16 +1070,28 @@ namespace smart {
 
             int leftTypeIndex = determineChildTypeIndex(context->scriptEnv, binary->leftExprNode);
             int rightTypeIndex = determineChildTypeIndex(context->scriptEnv, binary->rightExprNode);
-            if (leftTypeIndex > -1 && rightTypeIndex > -1) {
-            }
-                //auto *leftTypeEntry = context->scriptEnv->typeEntryList[leftTypeIndex];
-                //auto *rightTypeEntry = context->scriptEnv->typeEntryList[rightTypeIndex];
 
-//                if (leftTypeIndex == rightTypeIndex) {
-                    // currently supports only int32 + int32
-            binary->typeIndex2 = leftTypeIndex;
-            binary->typeAtHeap2 = binary->leftExprNode->typeAtHeap2;
-                //}
+            if (leftTypeIndex > -1 && rightTypeIndex > -1) {
+                auto *leftTypeEntry = context->scriptEnv->typeEntryList[leftTypeIndex];
+                int binaryType = leftTypeEntry->binary_operate(context, binary, true);
+                if (binaryType > 0) {
+                    binary->typeIndex2 = leftTypeIndex;
+                    binary->typeAtHeap2 = binary->leftExprNode->typeAtHeap2;
+                }
+                else {
+                    // error:
+                }
+            }
+            else {
+                // error:
+                if (leftTypeIndex < 0) {
+
+                }
+
+                if (rightTypeIndex < 0) {
+
+                }
+            }
         }
 
         if (node->vtable == VTables::ParenthesesVTable) {

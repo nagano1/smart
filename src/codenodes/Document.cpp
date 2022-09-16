@@ -272,9 +272,8 @@ namespace smart {
     }
 
 
-    static int
-    getTokenTypeId(NodeBase *node, int i) { // NOLINT(readability-function-cognitive-complexity)
-
+    static int getTokenTypeId(NodeBase *node, int i)
+    {
         auto *targetNode = node;
         if (targetNode->vtable == VTables::SimpleTextVTable) {
             targetNode = targetNode->parentNode;
@@ -327,6 +326,20 @@ namespace smart {
                 return (int) TokenTypeIds::variableId;
             }
         }
+        else if (targetNode->vtable == VTables::TypeVTable) {
+            auto* typeNode = Cast::downcast<TypeNodeStruct*>(targetNode);
+
+            if (typeNode->hasMutMark || typeNode->hasNullableMark) {
+                if (i == 0) {
+                    return (int)TokenTypeIds::numberId;
+                }
+            }
+
+            if (typeNode->parentNode->vtable == VTables::AssignStatementVTable) {
+                return (int)TokenTypeIds::keywordId;
+            }
+            return (int)TokenTypeIds::typeId;
+        }
         return -1;
     }
 
@@ -351,6 +364,17 @@ namespace smart {
                 return;
             }
         }
+        if (targetNode->vtable == VTables::TypeVTable) {
+            auto* typeNode = Cast::downcast<TypeNodeStruct*>(targetNode);
+            if (typeNode->hasMutMark || typeNode->hasNullableMark) {
+                *utf16Len1 = *utf16Len0 - 1;
+                *len0 = 1;
+                *utf16Len0 = 1;
+                *len1 = len - 1;
+                return;
+            }
+        }
+
 
 
         if (ParseUtil::hasCharBeforeLineBreak(chs, len, 0)) {

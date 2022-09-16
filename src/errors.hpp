@@ -78,6 +78,8 @@ namespace smart {
         type_not_found,
         assign_null_to_unnullable,
         assign_to_immutable,
+        need_mutable_mark_for_no_value_assignment,
+        type_is_not_assigneable,
 
 
         last_keeper
@@ -204,7 +206,8 @@ namespace smart {
             ErrorInfo{ErrorCode::type_not_found, 57770002, "type not found"},
             ErrorInfo{ErrorCode::assign_null_to_unnullable, 57770003, "assign_null_to_unnullable"},
             ErrorInfo{ErrorCode::assign_to_immutable, 57770004, "assign_to_immutable"},
-
+            ErrorInfo{ErrorCode::need_mutable_mark_for_no_value_assignment, 57770005, "need_mutable_mark_for_no_value_assignment"},
+            ErrorInfo{ErrorCode::type_is_not_assigneable, 57770006, "type_is_not_assigneable"},
 
 
             ErrorInfo{ ErrorCode::last_keeper, 99999999, "end" },
