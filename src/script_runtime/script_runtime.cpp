@@ -5,7 +5,7 @@
 #include <string>
 #include <array>
 #include <algorithm>
-
+#include <cinttypes>
 
 #include <cstdlib>
 #include <cassert>
@@ -221,7 +221,7 @@ namespace smart {
     char* int32_toString(ScriptEngineContext *context, ValueBase *value)
     {
         auto * chars = (char*)malloc(sizeof(char) * 64);
-        sprintf(chars, "%d", *(int32_t*)value->ptr);
+        sprintf(chars, "%" PRId32, *(int32_t*)value->ptr);
         return chars;
     }
 
@@ -234,7 +234,7 @@ namespace smart {
     char* int64_toString(ScriptEngineContext *context, ValueBase *value)
     {
         auto * chars = (char*)malloc(sizeof(char) * 128);
-        sprintf(chars, "%lu", *(int64_t*)value->ptr);
+        sprintf(chars, "%" PRId64, *(int64_t*)value->ptr); // PRIx64
         return chars;
     }
 
