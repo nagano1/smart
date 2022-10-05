@@ -253,6 +253,9 @@ fn main()
         ENDTEST
     }
 
+
+
+
     TEST(ScriptEngine, ScriptEngineTest_assign) {
         constexpr char source[] = R"(
 fn main()

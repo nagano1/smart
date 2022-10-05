@@ -963,6 +963,29 @@ TEST(ParserTest_, SameLength_Empty2) {
 ENDTEST
 
 
+TEST(ParserTest_, failed_onAndroid9_sometimes) {
+    constexpr char source[] = R"(
+fn funcA() {
+    int a = 243
+    i64 bigValue = 412431324L
+    return 214
+}
+
+fn main() {
+    string *ptr = "ijfowjio"
+    $string *ptr2 = ptr
+    int a = (243 + 432) - 3214
+    return a
+}
+)";
+    for (int i = 0; i < 1000; i++) {
+        testCodeEquality(source, sizeof(source) - 1);
+    }
+}
+
+ENDTEST
+
+
 TEST(ParserTest_, SameLength_blockComment) {
     const char text[] = " /* \r\n /**/ bck\r\n\n*/";
     testCodeEquality(text, sizeof(text) - 1);

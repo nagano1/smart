@@ -126,7 +126,7 @@ namespace smart {
     utf8byte *DocumentUtils::getTextFromNode(NodeBase *node) {
         int len = VTableCall::selfTextLength(node);
 
-        int prev_char = node->prev_chars; // = '\0' ? 1 : 0;
+        int prev_char = 0;//node->prev_chars; // = '\0' ? 1 : 0;
         auto *text = (char *) node->context->newMemArray<char>(len + 1 + prev_char);
         text[len + prev_char] = '\0';
 
@@ -241,7 +241,6 @@ namespace smart {
 
 
     JsonObjectStruct *DocumentUtils::generateHashTables(DocumentStruct *doc) {
-
         JsonObjectStruct *retJson = nullptr;
         auto *line = doc->firstCodeLine;
         while (line) {
@@ -304,8 +303,7 @@ namespace smart {
             return -1;//(int)TokenTypeIds::keywordId;
         } else if (targetNode->vtable == VTables::ClassVTable) {
             return -1;//(int)TokenTypeIds::myclass;
-
-        } else if (targetNode->vtable == VTables::FnVTable) {
+        }  else if (targetNode->vtable == VTables::FnVTable) {
             return -1;
         } else if (targetNode->vtable == VTables::SymbolVTable) {
             return (int) TokenTypeIds::keywordId;
@@ -316,6 +314,7 @@ namespace smart {
                     return (int) TokenTypeIds::numberId;
                 }
             }
+
             return -1;//(int) TokenTypeIds::keywordId;
         } else if (targetNode->vtable == VTables::NameVTable) {
             if (targetNode->parentNode->vtable == VTables::FnVTable) {
