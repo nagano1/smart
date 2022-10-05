@@ -66,6 +66,8 @@ dependencies {
 
     testImplementation "junit:junit:4.13.2"
 
+    // https://youtrack.jetbrains.com/issue/KT-33248
+    // noinspection DifferentStdlibGradleVersion
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.core:core-ktx:1.9.0'
