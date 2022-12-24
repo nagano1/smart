@@ -429,8 +429,8 @@ async function prepareCommands() {
     }
 
     preparePromise = new Promise(async (resolve, reject)=>{
-        const version1 = 12;
-        const version2 = 11;
+        const version1 = 10;
+        const version2 = 9;
         
 
         let compiler = await doExecAsync("which clang++-" + version1, true);
