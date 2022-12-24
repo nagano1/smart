@@ -39,7 +39,7 @@ jobs:
             }
 
           - {
-              os: macos-latest,
+              os: macOS-12,
               bin: "./src/main_run",
               runPuppeteer: '',
               testbin: "./tests/main_tst",
