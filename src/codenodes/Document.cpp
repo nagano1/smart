@@ -128,7 +128,6 @@ namespace smart {
 
         int prev_char = 0;//node->prev_chars; // = '\0' ? 1 : 0;
         auto *text = (char *) node->context->newMemArray<char>(len + 1 + prev_char);
-        text[len + prev_char] = '\0';
 
         for (int i = 0; i < prev_char; i++) {
             text[i] = ' ';
@@ -137,8 +136,14 @@ namespace smart {
         if (len > 0) {
             auto *chs = VTableCall::selfText(node);
             memcpy(text + prev_char, chs, len);
+
+            if (chs[len] == '\0') {
+            } else {
+                // int k = 32;
+            }
         }
 
+        text[len + prev_char] = '\0';
         return text;
     }
 
@@ -330,14 +335,17 @@ namespace smart {
 
             if (typeNode->hasMutMark || typeNode->hasNullableMark) {
                 if (i == 0) {
-                    return (int)TokenTypeIds::numberId;
+                    return (int)TokenTypeIds::commentId;
                 }
             }
 
             if (typeNode->parentNode->vtable == VTables::AssignStatementVTable) {
+                //return (int)TokenTypeIds::keywordId;
+            }
+            if (typeNode->isLet) {
                 return (int)TokenTypeIds::keywordId;
             }
-            return (int)TokenTypeIds::typeId;
+            return (int)TokenTypeIds::numberId;
         }
         return -1;
     }
@@ -517,7 +525,9 @@ namespace smart {
                     }
 
                     size_t len = VTableCall::selfTextLength(node);
-                    memcpy(text + currentOffset, chs, len);
+                    if (chs[len] == '\0') {
+                        memcpy(text + currentOffset, chs, len);
+                    }
 
                     currentOffset += len;
                     node = node->nextNodeInLine;

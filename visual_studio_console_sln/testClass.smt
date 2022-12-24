@@ -1,10 +1,10 @@
 //*
-fn main()
-{
+fn main() {
     $string *str
     string *altStr = str
-    ?int *f = null
     int b = 2332421
+
+    ?int *f = null
     $let a = b // joawiejfoiaj
     a = 3
 
@@ -17,14 +17,14 @@ class ClassMine
 {
     fn funcB(int a)
     {
-        let a = 893214
-        let *str = "0jfoiwjoie"
+        int a = 893214
+        var *str = "0jfoiwjoie"
         int 二音後ab = 123412
 
         $float floata = 4503
-        ?let *f = null
-        ?let g = true
-        alt a = foijwae
+        ?var *f = null
+        ?var g = true
+        int a = foijwae
         int a = "jfoiwjieo"
 
         /*
