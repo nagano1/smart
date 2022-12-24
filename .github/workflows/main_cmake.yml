@@ -94,7 +94,7 @@ jobs:
           cp ${{ matrix.config.longrunning_bin }} deb/${{ matrix.config.os }}
        
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: python-lucene_${{ github.sha }}_amd64
           path: build/deb

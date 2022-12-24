@@ -120,7 +120,7 @@ jobs:
           cd llvm_ir_test;
           ${{ matrix.config.cp }} hello.exe ../build/deb/${{ matrix.config.hello }}
       
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: llvm-_${{ github.sha }}_a
           path: build/deb
