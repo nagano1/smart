@@ -19,7 +19,7 @@ jobs:
               sudo: ' sudo ',
             }
           - {
-              os: macOS-12,
+              os: macos-latest,
               sudo: ' sudo ',
             }
           - {
@@ -56,7 +56,7 @@ jobs:
           export CLANG_DIR=`pwd`/clang+llvm-10.0.0-x86_64-apple-darwin/bin
           echo "$CLANG_DIR" >> $GITHUB_PATH
           echo "WASM_CC=$CLANG_DIR/clang" >> $GITHUB_ENV
-        if: matrix.config.os == 'macOS-12'
+        if: matrix.config.os == 'macos-latest'
 
       - name: npm i && gulp show
         shell: bash
