@@ -429,20 +429,24 @@ async function prepareCommands() {
     }
 
     preparePromise = new Promise(async (resolve, reject)=>{
-        let compiler = await doExecAsync("which clang++-10", true);
+        const version1 = 12;
+        const version2 = 11;
+        
+
+        let compiler = await doExecAsync("which clang++-" + version1, true);
         if (compiler) {
             clangCompiler = compiler;
-        } else if (compiler = await doExecAsync("which clang++-9", true)) {
+        } else if (compiler = await doExecAsync("which clang++-" + version2, true)) {
             clangCompiler = compiler;
         } else if (compiler = await doExecAsync("clang++ --help", true)) {
             clangCompiler = "clang++"; // this is for windows on github actions
         }
 
 
-        let linker = await doExecAsync("which wasm-ld-10", true);
+        let linker = await doExecAsync("which wasm-ld-" + version1, true);
         if (linker) {
             wasmLinker = linker;
-        } else if (linker = await doExecAsync("which wasm-ld-9", true)) {
+        } else if (linker = await doExecAsync("which wasm-ld-" + version2, true)) {
             wasmLinker = linker;
         } else if (linker = await doExecAsync("wasm-ld --help", true)) {
             wasmLinker = "wasm-ld";
