@@ -65,7 +65,6 @@ jobs:
           node --version
           npm --version
           which clang++
-          which wasm-ld
           #sudo npm i gulp -g
 
           cd wasm_project/
