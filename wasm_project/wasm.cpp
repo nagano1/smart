@@ -56,6 +56,7 @@ struct MemInfo
     char *v = nullptr;
 };
 
+
 extern "C"
 {
     char *get_memory_for_string(int length)
@@ -98,7 +99,7 @@ extern "C"
         char moji[128];
         // "id": % s, "error" : { "code": 4124321, "message" : "has syntax error"}
         //int len = sprintf(moji, "{\"isTestResult\":true, \"ok\": false, \"rkey\":%d}", p);
-        char *numberAsString = itoa(p); 
+        char *numberAsString = itoa(p, moji, 10); 
         print("{\"isTestResult\":true, \"ok\": false, \"rkey\":3}");
         print_num(p);
         print("}");
