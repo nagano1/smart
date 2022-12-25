@@ -16,12 +16,10 @@ jobs:
           - {
               os: ubuntu-latest,
               addpath: '',
-              sudo: ' sudo ',
               clang: '',
             }
           - {
               os: macos-latest,
-              sudo: ' sudo ',
               # https://github.com/WebAssembly/wasi-sdk/issues/172
               # You need to install llvm from Homebrew. Xcode's clang doesn't have support for WebAssembly.
               clang: '--clang $(brew --prefix llvm@14)/bin/clang++ --wasmld $(brew --prefix llvm@14)/bin/wasm-ld',
@@ -29,7 +27,6 @@ jobs:
           - {
               os: windows-latest,
               addpath: 'echo "C:\\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
-              sudo: ' ',
               clang: '',
             }  
 
