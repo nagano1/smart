@@ -75,6 +75,7 @@ jobs:
 
        
       - name: Run puppeteer
+        shell: bash
         run: |
           cd wasm_project_test
           npm install
