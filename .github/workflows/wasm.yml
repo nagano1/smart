@@ -64,7 +64,6 @@ jobs:
         run: |
           node --version
           npm --version
-          $(brew --prefix llvm@14)/bin/clang --version
           $(brew --prefix llvm@14)/bin/wasm-ld --version
           #sudo npm i gulp -g
 
