@@ -72,8 +72,10 @@ jobs:
           npm i
 
 
+          echo "rkey=$RANDOM" >> $GITHUB_ENV
 
-          node_modules/.bin/gulp c ${{ matrix.config.clang }}
+
+          node_modules/.bin/gulp c --rkey ${{ env.rkey }} ${{ matrix.config.clang }}
 
           ls -al
 
@@ -109,7 +111,7 @@ jobs:
         run: |
           cd wasm_project_test
           npm install
-          node puppeteer.js ${{ matrix.config.os }}
+          node puppeteer.js ${{ matrix.config.os }} ${{ env.rkey }}
 
 
 
