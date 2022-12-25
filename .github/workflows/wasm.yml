@@ -49,14 +49,14 @@ jobs:
       #       echo "WASM_AR=$(pwd)/llvm/bin/llvm-ar.exe" >> $GITHUB_ENV
       #   if: matrix.config.os == 'windows-latest'
 
-      # - name: Install clang (MacOS)
-      #   shell: bash
-      #   run: |
-      #     curl -sSfL https://github.com/llvm/llvm-project/releases/download/llvmorg-10.0.0/clang+llvm-10.0.0-x86_64-apple-darwin.tar.xz | tar xJf -
-      #     export CLANG_DIR=`pwd`/clang+llvm-10.0.0-x86_64-apple-darwin/bin
-      #     echo "$CLANG_DIR" >> $GITHUB_PATH
-      #     echo "WASM_CC=$CLANG_DIR/clang" >> $GITHUB_ENV
-      #   if: matrix.config.os == 'macos-latest'
+      - name: Install clang (MacOS)
+        shell: bash
+        run: |
+          curl -sSfL https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/clang+llvm-12.0.0-x86_64-apple-darwin.tar.xz | tar xJf -
+          export CLANG_DIR=`pwd`/clang+llvm-12.0.0-x86_64-apple-darwin/bin
+          echo "$CLANG_DIR" >> $GITHUB_PATH
+          echo "WASM_CC=$CLANG_DIR/clang" >> $GITHUB_ENV
+        if: matrix.config.os == 'macos-latest'
 
       - name: npm i && gulp show
         shell: bash
