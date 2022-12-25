@@ -24,7 +24,6 @@ jobs:
               cmakeBuildConfig: '--config Release ',
               runPuppeteer: '',
               prescript: 'chcp 65001',
-              sudo: '  ',
             }
           - {
               os: ubuntu-latest,
@@ -35,7 +34,6 @@ jobs:
               prescript: 'cat /proc/cpuinfo; export CXX=clang++',
               cmakeConfig: ' -D NODOOR32=1 ',
               cmakeBuildConfig: '',
-              sudo: ' sudo ',
             }
 
           - {
@@ -47,7 +45,6 @@ jobs:
               lspbin: './lsp_vscode_server/main_lsp',
               cmakeConfig: '',
               cmakeBuildConfig: '',
-              sudo: ' ',
               prescript: "",
             }
 
