@@ -64,12 +64,11 @@ jobs:
         run: |
           node --version
           npm --version
-          $(brew --prefix llvm@14)/bin/wasm-ld --version
           #sudo npm i gulp -g
 
           cd wasm_project/
           npm i
-          node_modules/.bin/gulp c # compile all
+          node_modules/.bin/gulp c --wasmld llvm@14)/bin/wasm-ld # compile all
 
           ls -al
 

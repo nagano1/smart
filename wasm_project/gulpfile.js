@@ -444,7 +444,9 @@ async function prepareCommands() {
 
 
         let linker = await doExecAsync("which wasm-ld-" + version1, true);
-        if (linker) {
+        if (argv.wasmld) {
+            wasmLinker = argv.wasmld
+        } else if (linker) {
             wasmLinker = linker;
         } else if (linker = await doExecAsync("which wasm-ld-" + version2, true)) {
             wasmLinker = linker;
