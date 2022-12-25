@@ -438,8 +438,8 @@ async function prepareCommands() {
     }
 
     preparePromise = new Promise(async (resolve, reject)=>{
-        const version1 = 10;
-        const version2 = 9;
+        const version1 = 14;
+        const version2 = 13;
         
         if (options.clang) {
             clangCompiler = options.clang
