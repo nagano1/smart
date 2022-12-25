@@ -13,20 +13,26 @@ jobs:
     strategy:
       matrix:
         config:
-          # - {
-          #     os: ubuntu-latest,
-          #     addpath: '',
-          #     sudo: ' sudo ',
-          #   }
+          - {
+              os: ubuntu-latest,
+              addpath: '',
+              sudo: ' sudo ',
+              clang: '',
+              wasmld: '',
+            }
           - {
               os: macos-latest,
               sudo: ' sudo ',
+              clang: '$(brew --prefix llvm@14)/bin/clang++',
+              wasmld: '$(brew --prefix llvm@14)/bin/wasm-ld',
             }
-          # - {
-          #     os: windows-latest,
-          #     addpath: 'echo "C:\\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
-          #     sudo: ' ',
-          #   }  
+          - {
+              os: windows-latest,
+              addpath: 'echo "C:\\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
+              sudo: ' ',
+              clang: '',
+              wasmld: '',
+            }  
 
     steps:
       - uses: actions/checkout@v3
@@ -68,7 +74,11 @@ jobs:
 
           cd wasm_project/
           npm i
-          node_modules/.bin/gulp c --clang $(brew --prefix llvm@14)/bin/clang++ --wasmld $(brew --prefix llvm@14)/bin/wasm-ld # compile all
+
+          # https://github.com/WebAssembly/wasi-sdk/issues/172
+          # You need to install llvm from Homebrew. Xcode's clang doesn't have support for WebAssembly.
+
+          node_modules/.bin/gulp c --clang ${{ matrix.config.clang }} --wasmld ${{ matrix.config.wasmld }} # compile all
 
           ls -al
 
