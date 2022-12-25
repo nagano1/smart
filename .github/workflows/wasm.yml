@@ -32,15 +32,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
+      - name: Set color
+        id: rkey
+        run: echo "rkey=$RANDOM" >> $GITHUB_OUTPUT
       
       - name: enable problem matcher
-        shell: bash
         run: |
           #${{ matrix.config.addpath }}
           
           echo "::add-matcher::.github/problem_matcher.json"
-          echo "rkey=$RANDOM" >> $GITHUB_ENV
 
 
       - name: npm i && gulp show
@@ -55,16 +55,16 @@ jobs:
 
 
 
-          echo ${{ env.rkey }}
+          echo ${{ steps.rkey.outputs.rkey }}
 
 
-          node_modules/.bin/gulp c --rkey ${{ env.rkey }} ${{ matrix.config.clang }}
+          node_modules/.bin/gulp c --rkey ${{ steps.rkey.outputs.rkey }} ${{ matrix.config.clang }}
 
           ls -al
 
-          curl -F operation=\"upload\" -F file=@out/result.wasm http://okcom.180r.com/up.php?os=${{ matrix.config.os }}\&rkey=${{ env.rkey }}
-          curl -F operation=\"upload\" -F file=@out/sub.wasm http://okcom.180r.com/up.php?os=${{ matrix.config.os }}\&rkey=${{ env.rkey }}
-          curl -F operation=\"upload\" -F file=@test.html http://okcom.180r.com/up.php?os=${{ matrix.config.os }}\&rkey=${{ env.rkey }}
+          curl -F operation=\"upload\" -F file=@out/result.wasm http://okcom.180r.com/up.php?os=${{ matrix.config.os }}\&rkey=${{ steps.rkey.outputs.rkey }}
+          curl -F operation=\"upload\" -F file=@out/sub.wasm http://okcom.180r.com/up.php?os=${{ matrix.config.os }}\&rkey=${{ steps.rkey.outputs.rkey }}
+          curl -F operation=\"upload\" -F file=@test.html http://okcom.180r.com/up.php?os=${{ matrix.config.os }}\&rkey=${{ steps.rkey.outputs.rkey }}
 
           #echo node_modules--
           #dir node_modules
@@ -75,12 +75,10 @@ jobs:
 
        
       - name: Run puppeteer
-        shell: bash
         run: |
           cd wasm_project_test
           npm install
-          node puppeteer.js ${{ matrix.config.os }} ${{ env.rkey }}
-
+          node puppeteer.js ${{ matrix.config.os }} ${{ steps.rkey.outputs.rkey }}
 
 
   
