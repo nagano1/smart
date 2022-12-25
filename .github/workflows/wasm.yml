@@ -39,15 +39,7 @@ jobs:
           
           echo "::add-matcher::.github/problem_matcher.json"
 
-      - name: Install clang (Windows)
-        shell: bash
-        run: |
-            llvm_ver="11.0.0"
-            curl -fsSLO https://github.com/llvm/llvm-project/releases/download/llvmorg-$llvm_ver/LLVM-$llvm_ver-win64.exe
-            7z x LLVM-$llvm_ver-win64.exe -y -o"llvm"
-            echo "$(pwd)/llvm/bin" >> $GITHUB_PATH
-            echo "WASM_AR=$(pwd)/llvm/bin/llvm-ar.exe" >> $GITHUB_ENV
-        if: matrix.config.os == 'windows-latest'
+
 
       - name: Install clang (MacOS)
         shell: bash
