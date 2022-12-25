@@ -13,7 +13,7 @@ function slp(milliseconds) {
 
     const os = process.argv[2];
     const rkey = process.argv[3];
-    const URL = `http://okcom.180r.com/files/${os}/${rkey}/test.html`;
+    const URL = `http://okcom.180r.com/files/${os}/test-${rkey}.html`;
     console.info(URL);
 
     
