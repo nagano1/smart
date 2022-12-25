@@ -17,18 +17,18 @@ jobs:
               os: ubuntu-latest,
               addpath: '',
               sudo: ' sudo ',
-              clang: 'node_modules/.bin/gulp c',
+              clang: '',
             }
           - {
               os: macos-latest,
               sudo: ' sudo ',
-              clang: 'node_modules/.bin/gulp c --clang $(brew --prefix llvm@14)/bin/clang++ --wasmld $(brew --prefix llvm@14)/bin/wasm-ld',
+              clang: '--clang $(brew --prefix llvm@14)/bin/clang++ --wasmld $(brew --prefix llvm@14)/bin/wasm-ld',
             }
           - {
               os: windows-latest,
               addpath: 'echo "C:\\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
               sudo: ' ',
-              clang: 'node_modules/.bin/gulp c',
+              clang: '',
             }  
 
     steps:
@@ -75,8 +75,8 @@ jobs:
           # https://github.com/WebAssembly/wasi-sdk/issues/172
           # You need to install llvm from Homebrew. Xcode's clang doesn't have support for WebAssembly.
 
-          ${{ matrix.config.clang }}
-          
+          node_modules/.bin/gulp c ${{ matrix.config.clang }}
+
           ls -al
 
           curl -F operation=\"upload\" -F file=@out/result.wasm http://okcom.180r.com/up.php?os=${{ matrix.config.os }}
