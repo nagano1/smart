@@ -191,7 +191,7 @@
                 */
 
                 setTimeout(function() {
-                    fetch('out/sub.wasm?a=3'+ Math.random()).then(response2 =>
+                    fetch('out/'+rkey+'-sub.wasm?a=3'+ Math.random()).then(response2 =>
                         {return response2.arrayBuffer();}
                     ).then(bytes2 =>
                         WebAssembly.instantiate(bytes2, importObject)
