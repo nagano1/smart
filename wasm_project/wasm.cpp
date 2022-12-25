@@ -95,7 +95,7 @@ extern "C"
 
     int calling(int p)
     {
-        print("{\"isTestResult\":true, \"ok\": true, \"rkey\": p}");
+        print("{\"isTestResult\":true, \"ok\": false, \"rkey\": p}");
         print("then, what got there?");
         void *a = malloc(3);
 
@@ -169,7 +169,7 @@ class kaw{
         //int_vec.push_back(2);
         // print_num((uintptr_t)&int_vec);
 
-        print("{\"isTestResult\":true, \"ok\": true, \"rkey\": p}");
+        //print("{\"isTestResult\":true, \"ok\": false, \"rkey\": p}");
 
         if (34 == 34)
         {
