@@ -13,20 +13,20 @@ jobs:
     strategy:
       matrix:
         config:
-          - {
-              os: ubuntu-latest,
-              addpath: '',
-              sudo: ' sudo ',
-            }
+          # - {
+          #     os: ubuntu-latest,
+          #     addpath: '',
+          #     sudo: ' sudo ',
+          #   }
           - {
               os: macos-latest,
               sudo: ' sudo ',
             }
-          - {
-              os: windows-latest,
-              addpath: 'echo "C:\\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
-              sudo: ' ',
-            }  
+          # - {
+          #     os: windows-latest,
+          #     addpath: 'echo "C:\\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
+          #     sudo: ' ',
+          #   }  
 
     steps:
       - uses: actions/checkout@v3
@@ -64,7 +64,7 @@ jobs:
         run: |
           node --version
           npm --version
-          which clang++
+          $(brew --prefix llvm@14)/bin/clang --version
           #sudo npm i gulp -g
 
           cd wasm_project/
