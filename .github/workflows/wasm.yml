@@ -39,6 +39,7 @@ jobs:
           #${{ matrix.config.addpath }}
           
           echo "::add-matcher::.github/problem_matcher.json"
+          echo "rkey=$RANDOM" >> $GITHUB_ENV
 
 
       - name: npm i && gulp show
@@ -52,7 +53,7 @@ jobs:
           npm i
 
 
-          echo "rkey=$RANDOM" >> $GITHUB_ENV
+
           echo ${{ env.rkey }}
 
 
