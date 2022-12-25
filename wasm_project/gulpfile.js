@@ -14,6 +14,15 @@ const exec = require('child_process').exec;
 
 const cpuCount = os.cpus().length;
 
+var minimist = require('minimist');
+
+var knownOptions = {
+  string: 'env',
+  default: { env: process.env.NODE_ENV || 'production' }
+};
+
+var options = minimist(process.argv.slice(2), knownOptions);
+
 //#-msse
 //#CFLAGS := $(CFLAGS) -g -DNDEBUG
 //"-MMD", "-MP", 
@@ -444,8 +453,8 @@ async function prepareCommands() {
 
 
         let linker = await doExecAsync("which wasm-ld-" + version1, true);
-        if (process.argv.wasmld) {
-            wasmLinker = process.argv.wasmld
+        if (options.wasmld) {
+            wasmLinker = options.wasmld
         } else if (linker) {
             wasmLinker = linker;
         } else if (linker = await doExecAsync("which wasm-ld-" + version2, true)) {
