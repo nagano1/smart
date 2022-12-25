@@ -68,7 +68,7 @@ jobs:
 
           cd wasm_project/
           npm i
-          node_modules/.bin/gulp c --wasmld llvm@14)/bin/wasm-ld # compile all
+          node_modules/.bin/gulp c --wasmld $(brew --prefix llvm@14)/bin/wasm-ld # compile all
 
           ls -al
 
