@@ -64,8 +64,8 @@ jobs:
         run: |
           node --version
           npm --version
-          which clang++-14
-          which wasm-ld-14
+          which clang++
+          which wasm-ld
           #sudo npm i gulp -g
 
           cd wasm_project/
