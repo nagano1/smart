@@ -100,7 +100,7 @@ extern "C"
         char nums[128];
         // "id": % s, "error" : { "code": 4124321, "message" : "has syntax error"}
         //int len = sprintf(moji, "{\"isTestResult\":true, \"ok\": false, \"rkey\":%d}", p);
-        print("{\"isTestResult\":true, \"ok\": false, \"rkey\":3}");
+        print("{\"isTestResult\":true, \"ok\": true, \"rkey\":3}");
         print_num(p);
         print("}");
 
