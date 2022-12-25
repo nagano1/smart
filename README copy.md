@@ -48,6 +48,7 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build . --config Release
 tests\\Release\\main_tst.exe
+cd -
 ```
 ## for Visual Studio 2019
 the sln file is configured for VS2017 currently. Required to install below components to build with VS2019. 
