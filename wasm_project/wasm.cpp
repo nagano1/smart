@@ -97,9 +97,9 @@ extern "C"
     {
         char moji[128];
         // "id": % s, "error" : { "code": 4124321, "message" : "has syntax error"}
-        int len = sprintf(moji, "{\"isTestResult\":true, \"ok\": false, \"rkey\":%d", p);
+        int len = sprintf(moji, "{\"isTestResult\":true, \"ok\": false, \"rkey\":%d}", p);
 
-        print(moji);//"{\"isTestResult\":true, \"ok\": false, \"rkey\":");
+        print((char*)moji); //"{\"isTestResult\":true, \"ok\": false, \"rkey\":");
         print_num(p);
         print("}");
 
