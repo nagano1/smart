@@ -153,8 +153,11 @@
             //.then(function (wasmObj) {
                 wasm = wasmObj;
 
+                const url = window.location.pathname;
+                const filename = url.substring(url.lastIndexOf('/')+1);
+
                 console.log(wasm.instance.exports.calling);
-                const ret = wasm.instance.exports.calling(200);
+                const ret = wasm.instance.exports.calling(filename.split('-')[0]);
                 console.info(wasm.instance)
                 console.info(importObject.env);
 
