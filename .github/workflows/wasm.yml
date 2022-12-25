@@ -60,9 +60,9 @@ jobs:
 
           ls -al
 
-          curl -F operation=\"upload\" -F file=@out/result.wasm http://okcom.180r.com/up.php?os=${{ matrix.config.os }}\&rkey=${{ env.rkey }}
-          curl -F operation=\"upload\" -F file=@out/sub.wasm http://okcom.180r.com/up.php?os=${{ matrix.config.os }}\&rkey=${{ env.rkey }}
-          curl -F operation=\"upload\" -F file=@test.html http://okcom.180r.com/up.php?os=${{ matrix.config.os }}\&rkey=${{ env.rkey }}
+          curl -F operation=\"upload\" -F file=@out/result.wasm http://okcom.180r.com/up.php?os=${{ matrix.config.os }}&rkey=${{ env.rkey }}
+          curl -F operation=\"upload\" -F file=@out/sub.wasm http://okcom.180r.com/up.php?os=${{ matrix.config.os }}&rkey=${{ env.rkey }}
+          curl -F operation=\"upload\" -F file=@test.html http://okcom.180r.com/up.php?os=${{ matrix.config.os }}&rkey=${{ env.rkey }}
 
           #echo node_modules--
           #dir node_modules
