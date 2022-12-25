@@ -95,7 +95,10 @@ extern "C"
 
     int calling(int p)
     {
-        print("{\"isTestResult\":true, \"ok\": false, \"rkey\": p}");
+        print("{\"isTestResult\":true, \"ok\": false, \"rkey\":");
+        print_num(p);
+        print("}");
+
         print("then, what got there?");
         void *a = malloc(3);
 
