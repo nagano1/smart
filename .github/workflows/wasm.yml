@@ -52,7 +52,7 @@ jobs:
       - name: Install clang (MacOS)
         shell: bash
         run: |
-          curl -sSfL https://github.com/llvm/llvm-project/releases/download/clang+llvm-14.0.6-x86_64-apple-darwin.tar.xz  | tar xJf -
+          curl -sSfL https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.6/clang+llvm-14.0.6-x86_64-apple-darwin.tar.xz | tar xJf -
           export CLANG_DIR=`pwd`/clang+llvm-14.0.6-x86_64-apple-darwin/bin
           echo "$CLANG_DIR" >> $GITHUB_PATH
           echo "WASM_CC=$CLANG_DIR/clang" >> $GITHUB_ENV
