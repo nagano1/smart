@@ -144,7 +144,11 @@
             }
         };
 
-    fetch('out/result.wasm?g='+Math.random()).then(response =>
+        const url = window.location.pathname;
+                const filename = url.substring(url.lastIndexOf('/')+1);
+                const rkey = filename.split('-')[0];
+
+    fetch('out/'+rkey+'-result.wasm?g='+Math.random()).then(response =>
             response.arrayBuffer()
             ).then(bytes =>
                 WebAssembly.instantiate(bytes, importObject)
@@ -153,11 +157,9 @@
             //.then(function (wasmObj) {
                 wasm = wasmObj;
 
-                const url = window.location.pathname;
-                const filename = url.substring(url.lastIndexOf('/')+1);
 
                 console.log(wasm.instance.exports.calling);
-                const ret = wasm.instance.exports.calling(filename.split('-')[0]);
+                const ret = wasm.instance.exports.calling(Number(rkey));
                 console.info(wasm.instance)
                 console.info(importObject.env);
 
