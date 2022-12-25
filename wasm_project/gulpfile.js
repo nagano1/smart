@@ -14,14 +14,14 @@ const exec = require('child_process').exec;
 
 const cpuCount = os.cpus().length;
 
-var minimist = require('minimist');
+const minimist = require('minimist');
 
 var knownOptions = {
   string: 'env',
   default: { env: process.env.NODE_ENV || 'production' }
 };
 
-var options = minimist(process.argv.slice(2), knownOptions);
+const options = minimist(process.argv.slice(2), knownOptions);
 
 //#-msse
 //#CFLAGS := $(CFLAGS) -g -DNDEBUG
@@ -441,26 +441,30 @@ async function prepareCommands() {
         const version1 = 12;
         const version2 = 11;
         
-
-        let compiler = await doExecAsync("which clang++-" + version1, true);
-        if (compiler) {
-            clangCompiler = compiler;
-        } else if (compiler = await doExecAsync("which clang++-" + version2, true)) {
-            clangCompiler = compiler;
-        } else if (compiler = await doExecAsync("clang++ --help", true)) {
-            clangCompiler = "clang++"; // this is for windows on github actions
+        if (options.clang) {
+            clangCompiler = options.clang
+        } else  {
+            let compiler = await doExecAsync("which clang++-" + version1, true);
+            if (compiler) {
+                clangCompiler = compiler;
+            } else if (compiler = await doExecAsync("which clang++-" + version2, true)) {
+                clangCompiler = compiler;
+            } else if (compiler = await doExecAsync("clang++ --help", true)) {
+                clangCompiler = "clang++"; // this is for windows on github actions
+            }
         }
 
-
-        let linker = await doExecAsync("which wasm-ld-" + version1, true);
         if (options.wasmld) {
             wasmLinker = options.wasmld
-        } else if (linker) {
-            wasmLinker = linker;
-        } else if (linker = await doExecAsync("which wasm-ld-" + version2, true)) {
-            wasmLinker = linker;
-        } else if (linker = await doExecAsync("wasm-ld --help", true)) {
-            wasmLinker = "wasm-ld";
+        } else {
+            let linker = await doExecAsync("which wasm-ld-" + version1, true);
+            if (linker) {
+                wasmLinker = linker;
+            } else if (linker = await doExecAsync("which wasm-ld-" + version2, true)) {
+                wasmLinker = linker;
+            } else if (linker = await doExecAsync("wasm-ld --help", true)) {
+                wasmLinker = "wasm-ld";
+            }
         }
 
         clangCompiler = clangCompiler.trim();
