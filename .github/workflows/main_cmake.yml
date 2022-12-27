@@ -20,7 +20,7 @@ jobs:
               testbin: 'tests/Release/main_tst.exe',
               lspbin: 'lsp_vscode_server/Release/main_lsp.exe',
               longrunning_bin: 'tests/long_running/Release/main_tst_long_running.exe',
-              cmakeConfig: '-A Win32 -T v142,host=x64',
+              cmakeConfig: '',
               cmakeBuildConfig: '--config Release ',
               runPuppeteer: '',
               prescript: 'chcp 65001',
@@ -63,7 +63,7 @@ jobs:
           # this doesn't affect at all
           #-DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32  -DCMAKE_C_FLAGS=-m32 -DCMAKE_MODULE_LINKER_FLAGS=-m32 -DCMAKE_STATIC_LINKER_FLAGS=-m32  -DCMAKE_SHARED_LINKER_FLAGS=-m32
 
-          cmake -D NO_SPEED_TEST=1   ${{ matrix.config.cmakeConfig }} .. 
+          cmake -D NO_SPEED_TEST=1 ${{ matrix.config.cmakeConfig }} .. 
           #make all
           cmake --build . ${{ matrix.config.cmakeBuildConfig }}
           #ls -R .
