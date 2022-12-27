@@ -20,7 +20,7 @@ jobs:
               testbin: 'tests/Release/main_tst.exe',
               lspbin: 'lsp_vscode_server/Release/main_lsp.exe',
               longrunning_bin: 'tests/long_running/Release/main_tst_long_running.exe',
-              cmakeConfig: '',
+              cmakeConfig: '-A Win32 -T v143,host=x64',
               cmakeBuildConfig: '--config Release ',
               runPuppeteer: '',
               prescript: 'chcp 65001',
