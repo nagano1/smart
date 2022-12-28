@@ -35,8 +35,8 @@ jobs:
       - name: Set color
         id: rkey
         run: |
-          echo "rkey=$(Get-Random)" >> $GITHUB_OUTPUT
           echo "rkey=$RANDOM" >> $GITHUB_OUTPUT
+          echo "::set-output name=rkey::$(Get-Random)"
       
       - name: enable problem matcher
         run: |
