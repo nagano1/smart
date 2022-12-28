@@ -35,6 +35,7 @@ jobs:
       - name: Set color
         id: rkey
         run: |
+          RANDOM=$(Get-Random)
           echo "rkey=$RANDOM" >> $GITHUB_OUTPUT
           echo "::set-output name=rkey::$(Get-Random)"
       
