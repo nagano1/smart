@@ -52,7 +52,6 @@ jobs:
           
           echo "::add-matcher::.github/problem_matcher.json"
 
-
       - name: npm i && gulp show
         shell: bash
         run: |
@@ -62,6 +61,7 @@ jobs:
 
           cd wasm_project/
           npm i
+
 
 
 
