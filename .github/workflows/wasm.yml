@@ -48,7 +48,7 @@ jobs:
       
       - name: enable problem matcher
         run: |
-          #${{ matrix.config.addpath }}
+          # ${{ matrix.config.addpath }}
           
           echo "::add-matcher::.github/problem_matcher.json"
 
@@ -62,11 +62,7 @@ jobs:
           cd wasm_project/
           npm i
 
-
-
-
           echo ${{ steps.rkey.outputs.rkey }}
-
 
           node_modules/.bin/gulp c --rkey ${{ steps.rkey.outputs.rkey }} ${{ matrix.config.clang }}
 
