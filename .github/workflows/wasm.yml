@@ -33,6 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set color
+        shell: bash
         id: rkey
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
@@ -42,6 +43,7 @@ jobs:
           else
             echo "$RUNNER_OS not supported"
           fi
+          
           echo "rkey=$RANDOM" >> $GITHUB_OUTPUT
       
       - name: enable problem matcher
