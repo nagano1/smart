@@ -35,7 +35,13 @@ jobs:
       - name: Set color
         id: rkey
         run: |
-          RANDOM="$(Get-Random)"
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            echo "$RUNNER_OS not supported"
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            RANDOM="$(Get-Random)"
+          else
+            echo "$RUNNER_OS not supported"
+          fi
           echo "rkey=$RANDOM" >> $GITHUB_OUTPUT
       
       - name: enable problem matcher
