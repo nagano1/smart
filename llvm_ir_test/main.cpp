@@ -11,7 +11,7 @@ int main(int argc, char **argv) {
 //#endif
 
     int i = 242;
-    //printf("Hello, world!%d \n", i);
+    printf("Hello, world!%d \n", i);
     func(4);
     return 0;
 }
