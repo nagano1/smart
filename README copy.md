@@ -187,3 +187,7 @@ class C {
 fn func(circ B* b) {
 
 }
+
+
+local.properties
+cmake.dir=C\:\\Users\\wikihow\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1
