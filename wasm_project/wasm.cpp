@@ -90,14 +90,14 @@ extern "C"
             }
             multiplier = multiplier * 10;
         }
-
+ 
         return result;
     }
 
     int calling(int p)
     {
         char moji[128];
-        //char nums[128];
+        // char nums[128];
         // "id": % s, "error" : { "code": 4124321, "message" : "has syntax error"}
         //int len = sprintf(moji, "{\"isTestResult\":true, \"ok\": false, \"rkey\":%d}", p);
         print("{\"isTestResult\":true, \"ok\": true, \"rkey\":3}");
