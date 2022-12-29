@@ -52,10 +52,11 @@ android {
     externalNativeBuild {
         cmake {
             path "src/main/cpp/CMakeLists.txt"
-            version "3.18.1"
+            version "3.22"
         }
     }
     ndkVersion '25.1.8937393'
+    namespace 'org.rokist.canlangtest'
 //     ndkVersion '23.2.8568313'     ndkVersion = ("25.1.8937393")
 
     //20.1.5948944, 21.0.6113669, 21.0.6113669     ndkVersion "22.0.7026061"
