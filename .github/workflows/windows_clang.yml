@@ -17,8 +17,8 @@ jobs:
               # 64bit
               name: 64bit,
               os: windows-latest,
-              addpath: 'C:\\msys64\mingw64\bin',
               hello: "hello.exe",
+              config: "",
               cp: 'copy',
               sudo: ' ',
             }
@@ -26,9 +26,9 @@ jobs:
               # 32bit
               name: 32bit,
               os: windows-latest,
-              addpath_old: 'echo "::add-path::C:\msys64\mingw32\bin"',
-              addpath: 'C:\\msys64\mingw32\bin',
+              
               hello: "hello32.exe",
+              config: "-m32",
               cp: 'copy',
               sudo: ' ',
             }
@@ -38,8 +38,6 @@ jobs:
 
       - name: enable problem matcher
         run: |
-          # echo "${{ matrix.config.addpath }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
-
           echo "::add-matcher::.github/problem_matcher.json"
 
       - name: do build
@@ -66,8 +64,8 @@ jobs:
           #dir $(pwd)/llvm/bin
           
           cd llvm_ir_test
-          clang++ -m32 -S main.cpp 
-          clang++ -m32 -S lib.cpp
+          clang++ ${{ matrix.config.config }} -S main.cpp 
+          clang++ ${{ matrix.config.config }} -S lib.cpp
           #llc main.ll
           #llc lib.ll
           
@@ -75,7 +73,7 @@ jobs:
           dir
 
           #clang++.exe -static -lstdc++ -lpthread main.s lib.s -o hello.exe;
-          clang++ -m32 -mwindows main.s lib.s -o hello.exe;
+          clang++ ${{ matrix.config.config }} -mwindows main.s lib.s -o hello.exe;
           ls -al;
           #./hello.exe;
 
@@ -143,3 +141,15 @@ jobs:
       #     rustup component add llvm-tools-preview
       #     echo "::set-env name=WASM_NM::$(rustc --print sysroot|sed 's|C:|/c|'|sed 's|\\|/|g')/lib/rustlib/x86_64-pc-windows-msvc/bin/llvm-nm.exe"
       #   if: matrix.config.os == 'windows-latest'
+
+
+
+
+
+
+
+
+        #       addpath: 'C:\\msys64\mingw64\bin',
+        # addpath_old: 'echo "::add-path::C:\msys64\mingw32\bin"',
+        #       addpath: 'C:\\msys64\mingw32\bin',
+        #   # echo "${{ matrix.config.addpath }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
