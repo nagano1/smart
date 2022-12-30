@@ -48,9 +48,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: enable problem matcher
-        run: |
-          echo "::add-matcher::.github/problem_matcher.json"
+      # - name: enable problem matcher
+      #   run: |
+      #     echo "::add-matcher::.github/problem_matcher.json"
 
       - name: cmake
         run: |
@@ -58,13 +58,8 @@ jobs:
 
           ${{ matrix.config.prescript }}
 
-          # this doesn't affect at all
-          #-DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32  -DCMAKE_C_FLAGS=-m32 -DCMAKE_MODULE_LINKER_FLAGS=-m32 -DCMAKE_STATIC_LINKER_FLAGS=-m32  -DCMAKE_SHARED_LINKER_FLAGS=-m32
-
           cmake -D NO_SPEED_TEST=1 ${{ matrix.config.cmakeConfig }} .. 
-          #make all
           cmake --build . ${{ matrix.config.cmakeBuildConfig }}
-          #ls -R .
       
       - name: run test
         run: |
@@ -95,6 +90,9 @@ jobs:
           path: build/deb
   
  
+
+
+# discarded code
  
 #make
 #    - name: runner
@@ -102,3 +100,14 @@ jobs:
 #        bin/doorlang
 
 #        cmake -DCMAKE_BUILD_TYPE=Release ..
+
+
+          # this doesn't affect at all
+          #-DCMAKE_CXX_FLAGS=-m32 -DCMAKE_EXE_LINKER_FLAGS=-m32  -DCMAKE_C_FLAGS=-m32 -DCMAKE_MODULE_LINKER_FLAGS=-m32 -DCMAKE_STATIC_LINKER_FLAGS=-m32  -DCMAKE_SHARED_LINKER_FLAGS=-m32
+
+
+          # cmake -D NO_SPEED_TEST=1 ${{ matrix.config.cmakeConfig }} .. 
+          ##make all
+          # cmake --build . ${{ matrix.config.cmakeBuildConfig }}
+          #ls -R .
+      
