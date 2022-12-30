@@ -48,9 +48,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      # - name: enable problem matcher
-      #   run: |
-      #     echo "::add-matcher::.github/problem_matcher.json"
+      - name: enable problem matcher
+        run: |
+          echo "::add-matcher::.github/problem_matcher.json"
 
       - name: cmake
         run: |
