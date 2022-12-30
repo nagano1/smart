@@ -25,7 +25,7 @@ jobs:
           - {
               # 32bit
               name: 32bit,
-              os: windows-2019,
+              os: windows-latest,
               addpath_old: 'echo "::add-path::C:\msys64\mingw32\bin"',
               addpath: 'C:\\msys64\mingw32\bin',
               hello: "hello32.exe",
@@ -38,7 +38,7 @@ jobs:
 
       - name: enable problem matcher
         run: |
-          echo "${{ matrix.config.addpath }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+          # echo "${{ matrix.config.addpath }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
 
           echo "::add-matcher::.github/problem_matcher.json"
 
@@ -75,7 +75,7 @@ jobs:
           dir
 
           #clang++.exe -static -lstdc++ -lpthread main.s lib.s -o hello.exe;
-          clang++ -mwindows main.s lib.s -o hello.exe;
+          clang++ -m32 -mwindows main.s lib.s -o hello.exe;
           ls -al;
           #./hello.exe;
 
