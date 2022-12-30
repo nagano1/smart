@@ -20,7 +20,6 @@ jobs:
               main: "main.exe",
               hello: "hello.exe",
               flag: "",
-              cp: 'copy',
               sudo: ' ',
             }
           - {
@@ -30,7 +29,6 @@ jobs:
               main: "main32.exe",
               hello: "hello32.exe",
               flag: "-m32",
-              cp: 'copy',
               sudo: ' ',
             }
           
@@ -82,10 +80,10 @@ jobs:
 
       - name: Copy artifact for windows
         run: |
-          ${{ matrix.config.cp }} wow.exe ./build/deb/${{ matrix.config.main }}
+          copy wow.exe ./build/deb/${{ matrix.config.main }}
 
           cd llvm_ir_test;
-          ${{ matrix.config.cp }} hello.exe ../build/deb/${{ matrix.config.hello }}
+          copy hello.exe ../build/deb/${{ matrix.config.hello }}
       
       - uses: actions/upload-artifact@v3
         with:
