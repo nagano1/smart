@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '15 0 1 * *' # 分 時 日 月 曜日
+    - cron: '15 0 1 * *' # minute hour day month monday
 
 jobs:
   mybuild:
@@ -37,14 +37,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: enable problem matcher
-        run: |
-          #${{ matrix.config.addpath }}
-          #echo "D:\\a\smart\smart\llvm\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+      # - name: enable problem matcher
+      #   run: |
+      #     #${{ matrix.config.addpath }}
+      #     #echo "D:\\a\smart\smart\llvm\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
 
-          echo "::add-matcher::.github/problem_matcher.json"
-
-
+      #     echo "::add-matcher::.github/problem_matcher.json"
 
       - name: do build
         shell: bash
