@@ -85,6 +85,8 @@ jobs:
 
       - name: Copy artifact for windows
         run: |
+          ${{ matrix.config.cp }} wow.exe ../build/deb/wow.exe
+
           cd llvm_ir_test;
           ${{ matrix.config.cp }} hello.exe ../build/deb/${{ matrix.config.hello }}
       
