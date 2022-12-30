@@ -38,7 +38,7 @@ jobs:
 
       - name: enable problem matcher
         run: |
-          echo "${{ matrix.config.addpath }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
+          echo "${{ matrix.config.addpath }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8,
 
           echo "::add-matcher::.github/problem_matcher.json"
 
