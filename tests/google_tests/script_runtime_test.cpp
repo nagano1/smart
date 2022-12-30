@@ -332,8 +332,6 @@ fn main()
 
 
     TEST(ScriptEngine, ScriptEngineTest_i64) {
-        EXPECT_EQ(true, false);
-
         constexpr char source[] = R"(
 fn main()
 {
