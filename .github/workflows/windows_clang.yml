@@ -45,7 +45,7 @@ jobs:
         run: |
           npm --version
           npm i
-          node_modules/.bin/gulp show --github_actions
+          node_modules/.bin/gulp show --github_actions ${{ matrix.config.config }}
           echo wow
           ./wow.exe
 

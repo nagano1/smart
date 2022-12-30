@@ -79,6 +79,7 @@ const testsDir = "../tests";
 module.exports = {
     dev: async function () {
         const github_actions = process.argv.find((v) => v == "--github_actions");
+        const m32 = process.argv.find((v) => v == "-m32") ? "-m32" : "";
 
         const clangPath = isWin && !github_actions ? "C:\\\\Program Files (x86)\\LLVM\\bin\\clang++.exe" : "clang++";
 
@@ -91,7 +92,7 @@ module.exports = {
         });
 
         //await timeoutAsync(3000);
-        const exeRequest = "\"" + clangPath + "\" -o wow.exe -I src " + cppFileList;
+        const exeRequest = "\"" + clangPath + "\" -o wow.exe -I src " + m32 + cppFileList;
         console.info(exeRequest);
         await doExecAsync(exeRequest);
     },
