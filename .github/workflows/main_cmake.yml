@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '15 0 1 * *' # minute hour day month monday
+    - cron: '15 1 1 11 *' # minute hour day month monday
 
 
 jobs:
