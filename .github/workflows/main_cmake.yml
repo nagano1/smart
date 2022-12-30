@@ -70,13 +70,13 @@ jobs:
         run: |
           cd build/
 
-          echo AAA
+          echo ${{ matrix.config.bin }}
           ${{ matrix.config.bin }}
-          echo BBB
+          
+          echo ${{ matrix.config.testbin }}
           ${{ matrix.config.testbin }}
-          echo CCC
-          #${{ matrix.config.lspbin }}
-          echo DDD
+          
+          # ${{ matrix.config.lspbin }}
 
       - name: Copy artifact
         shell: bash
