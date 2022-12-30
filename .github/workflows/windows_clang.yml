@@ -50,10 +50,6 @@ jobs:
           echo wow
           ./wow.exe
 
-          echo node_modules--
-          #dir node_modules
-          #node scripts/make_bins.js --github_actions
-          # scripts/make_bins.js --github_actions
       
 
       - name: Emulating output binary from doorlang - msys64/mingw clang++/llvm compile msys64/mingw on Windows
