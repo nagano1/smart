@@ -80,7 +80,7 @@ module.exports = {
     dev: async function () {
         const github_actions = process.argv.find((v) => v == "--github_actions");
 
-        const clangPath = "clang++";// isWin && !github_actions ? "C:\\\\Program Files (x86)\\LLVM\\bin\\clang++.exe" : "clang++";
+        const clangPath = isWin && !github_actions ? "C:\\\\Program Files (x86)\\LLVM\\bin\\clang++.exe" : "clang++";
 
         let cppFileList = "";
         glob.sync(srcDir + '**/*.cpp').forEach(function (filePath) {
