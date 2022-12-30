@@ -50,6 +50,7 @@ jobs:
           npm --version
           npm i
           node_modules/.bin/gulp show --github_actions
+          echo wow
           ./wow.exe
 
           echo node_modules--
