@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: enable problem matcher
         run: |
-          echo "::add-matcher::.github/problem_matcher2.json"
+          echo "::add-matcher::.github/problem_matcher.json"
 
       - name: cmake
         run: |
