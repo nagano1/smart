@@ -17,6 +17,7 @@ jobs:
               # 64bit
               name: 64bit,
               os: windows-latest,
+              main: "main.exe",
               hello: "hello.exe",
               config: "",
               cp: 'copy',
@@ -26,7 +27,7 @@ jobs:
               # 32bit
               name: 32bit,
               os: windows-latest,
-              
+              main: "main32.exe",
               hello: "hello32.exe",
               config: "-m32",
               cp: 'copy',
@@ -85,7 +86,7 @@ jobs:
 
       - name: Copy artifact for windows
         run: |
-          ${{ matrix.config.cp }} wow.exe ./build/deb/wow.exe
+          ${{ matrix.config.cp }} wow.exe ./build/deb/${{ matrix.config.main }}
 
           cd llvm_ir_test;
           ${{ matrix.config.cp }} hello.exe ../build/deb/${{ matrix.config.hello }}
