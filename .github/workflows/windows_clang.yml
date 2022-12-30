@@ -66,8 +66,8 @@ jobs:
           #dir $(pwd)/llvm/bin
           
           cd llvm_ir_test
-          clang++ -S main.cpp 
-          clang++ -S lib.cpp
+          clang++ -m32 -S main.cpp 
+          clang++ -m32 -S lib.cpp
           #llc main.ll
           #llc lib.ll
           
