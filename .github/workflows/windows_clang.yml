@@ -17,8 +17,7 @@ jobs:
               # 64bit
               name: 64bit,
               os: windows-latest,
-              addpath: 'echo "C:\\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
-              
+              addpath: "C:\\msys64\\mingw64\\bin"
               hello: "hello.exe",
               cp: 'copy',
               sudo: ' ',
@@ -27,8 +26,7 @@ jobs:
               # 32bit
               name: 32bit,
               os: windows-2019,
-              addpath_old: 'echo "::add-path::C:\msys64\mingw32\bin"',
-              addpath: 'echo "C:\\msys64\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
+              addpath: "C:\\msys64\\mingw32\\bin"
               hello: "hello32.exe",
               cp: 'copy',
               sudo: ' ',
@@ -39,8 +37,7 @@ jobs:
 
       - name: enable problem matcher
         run: |
-          ${{ matrix.config.addpath }}
-          #echo "D:\\a\smart\smart\llvm\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+          addpath: 'echo "${{ matrix.config.addpath }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8',
 
           echo "::add-matcher::.github/problem_matcher.json"
 
