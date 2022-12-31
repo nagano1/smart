@@ -68,7 +68,7 @@ jobs:
           dir
 
           # clang++ ${{ matrix.config.flag }} -static -lstdc++ -pthread main.s lib.s -o hello.exe;
-          clang++ ${{ matrix.config.flag }} -mwindows main.s lib.s -o hello.exe;
+          clang++ ${{ matrix.config.flag }} -mwindows -pthread main.s lib.s -o hello.exe;
           ls -al;
           #./hello.exe;
 
