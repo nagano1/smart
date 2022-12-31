@@ -50,10 +50,8 @@ jobs:
       - name: Emulating output binary from doorlang - msys64/mingw clang++/llvm compile msys64/mingw on Windows
         shell: bash
         run: |
-          dir C:\\msys64\\mingw32\\bin
-
-          #clang.exe --version
-          #dir $(pwd)/llvm/bin
+          clang++ --version
+          ls llvm/bin
           
           cd llvm_ir_test
           clang++ ${{ matrix.config.flag }} -S main.cpp 
@@ -61,8 +59,6 @@ jobs:
           #llc main.ll
           #llc lib.ll
           
-
-          dir
 
           clang++ ${{ matrix.config.flag }} -mwindows -pthread main.s lib.s -o hello.exe;
           ls -al;
