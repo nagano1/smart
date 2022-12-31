@@ -51,7 +51,6 @@ jobs:
         shell: bash
         run: |
           clang++ --version
-          ls llvm/bin
           
           cd llvm_ir_test
           clang++ ${{ matrix.config.flag }} -S main.cpp 
