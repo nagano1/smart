@@ -87,7 +87,7 @@ jobs:
       
       - uses: actions/upload-artifact@v3
         with:
-          name: win-llvm-_${{ github.sha }}_a
+          name: win-llvm-_${{ github.sha }}
           path: build/deb
 
 
