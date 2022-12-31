@@ -20,7 +20,6 @@ jobs:
               main: "main.exe",
               hello: "hello.exe",
               flag: "",
-              sudo: ' ',
             }
           - {
               # 32bit
@@ -29,7 +28,6 @@ jobs:
               main: "main32.exe",
               hello: "hello32.exe",
               flag: "-m32",
-              sudo: ' ',
             }
           
     steps:
@@ -47,7 +45,6 @@ jobs:
           node_modules/.bin/gulp show --github_actions ${{ matrix.config.flag }}
           echo wow
           ./wow.exe
-
       
 
       - name: Emulating output binary from doorlang - msys64/mingw clang++/llvm compile msys64/mingw on Windows
@@ -67,7 +64,6 @@ jobs:
 
           dir
 
-          # clang++ ${{ matrix.config.flag }} -static -lstdc++ -pthread main.s lib.s -o hello.exe;
           clang++ ${{ matrix.config.flag }} -mwindows -pthread main.s lib.s -o hello.exe;
           ls -al;
           #./hello.exe;
@@ -141,6 +137,7 @@ jobs:
 
 
 
+          # clang++ ${{ matrix.config.flag }} -static -lstdc++ -pthread main.s lib.s -o hello.exe;
 
 
 
