@@ -32,7 +32,7 @@ jobs:
           
     steps:
       - uses: actions/checkout@v3
-
+      
       - name: enable problem matcher
         run: |
           echo "::add-matcher::.github/problem_matcher.json"
@@ -66,7 +66,7 @@ jobs:
 
           clang++ ${{ matrix.config.flag }} -mwindows -pthread main.s lib.s -o hello.exe;
           ls -al;
-          #./hello.exe;
+          ./hello.exe;
 
          
       - name: Copy artifact
