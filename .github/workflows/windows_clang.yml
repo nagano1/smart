@@ -19,6 +19,7 @@ jobs:
               os: windows-latest,
               main: "main.exe",
               hello: "hello.exe",
+              suffix: ".exe",
               flag: "",
             }
           - {
@@ -27,9 +28,18 @@ jobs:
               os: windows-latest,
               main: "main32.exe",
               hello: "hello32.exe",
+              suffix: ".exe",
               flag: "-m32",
             }
-          
+          - {
+              # 64bit
+              name: ubuntu-latest-64,
+              os: ubuntu-latest,
+              main: "main",
+              suffix: "",
+              hello: "hello",
+              flag: "",
+            }
     steps:
       - uses: actions/checkout@v3
       
@@ -43,8 +53,8 @@ jobs:
           npm --version
           npm i
           node_modules/.bin/gulp show --github_actions ${{ matrix.config.flag }}
-          echo wow
-          ./wow.exe
+          # echo wow
+          # ./wow.exe
       
 
       - name: Emulating output binary from doorlang - msys64/mingw clang++/llvm compile msys64/mingw on Windows
@@ -59,22 +69,24 @@ jobs:
           #llc lib.ll
           
 
-          clang++ ${{ matrix.config.flag }} -mwindows -pthread main.s lib.s -o hello.exe;
+          clang++ ${{ matrix.config.flag }} -mwindows -pthread main.s lib.s -o hello${{ matrix.config.suffix }};
           ls -al;
-          ./hello.exe;
+          ./hello${{ matrix.config.suffix }};
 
          
       - name: Copy artifact
+        shell: bash
         run: |
           cd build;
           mkdir -p deb;
 
       - name: Copy artifact for windows
+        shell: bash
         run: |
-          copy wow.exe ./build/deb/${{ matrix.config.main }}
+          cp wow.exe ./build/deb/${{ matrix.config.main }}
 
           cd llvm_ir_test;
-          copy hello.exe ../build/deb/${{ matrix.config.hello }}
+          cp hello${{ matrix.config.suffix }} ../build/deb/${{ matrix.config.hello }}
       
       - uses: actions/upload-artifact@v3
         with:
