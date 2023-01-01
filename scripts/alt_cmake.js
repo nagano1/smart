@@ -92,7 +92,7 @@ module.exports = {
         });
 
         //await timeoutAsync(3000);
-        const exeRequest = "\"" + clangPath + "\" -o wow.exe -I src " + m32 + cppFileList;
+        const exeRequest = "\"" + clangPath + "\" -std=c++11 -o wow.exe -I src " + m32 + cppFileList;
         console.info(exeRequest);
         await doExecAsync(exeRequest);
     },
