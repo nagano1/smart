@@ -80,9 +80,7 @@ jobs:
           #llc lib.ll
           
 
-          clang++ ${{ matrix.config.flag }} -mwindows -pthread
-                  main.s lib.s 
-                  -o hello${{ matrix.config.suffix }};
+          clang++ ${{ matrix.config.flag }} -mwindows -pthread main.s lib.s -o hello${{ matrix.config.suffix }};
           ls -al;
           ./hello${{ matrix.config.suffix }};
 
