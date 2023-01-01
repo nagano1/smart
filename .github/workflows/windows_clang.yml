@@ -41,14 +41,15 @@ jobs:
               flag: "",
             }
           - {
-              # Ubuntu 64bit
-              name: ubuntu-latest-32,
-              os: ubuntu-18.04, # 18.04
-              main: "main32",
+              # Mac 64bit
+              name: mac-latest-64,
+              os: macos-latest,
+              main: "main_osx",
               suffix: "",
-              hello: "hello_ubuntu_32",
-              flag: "-m32",
+              hello: "hello_macos_64",
+              flag: "",
             }
+          
 
     steps:
       - uses: actions/checkout@v3
