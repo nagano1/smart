@@ -43,7 +43,7 @@ jobs:
           - {
               # Ubuntu 64bit
               name: ubuntu-latest-32,
-              os: ubuntu-20.04,
+              os: ubuntu-18.04, # 18.04
               main: "main32",
               suffix: "",
               hello: "hello_ubuntu_32",
