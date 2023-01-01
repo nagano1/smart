@@ -14,7 +14,7 @@ jobs:
       matrix:
         config:
           - {
-              # 64bit
+              # Windows 64bit
               name: 64bit,
               os: windows-latest,
               main: "main.exe",
@@ -23,7 +23,7 @@ jobs:
               flag: "",
             }
           - {
-              # 32bit
+              # Windows 32bit
               name: 32bit,
               os: windows-latest,
               main: "main32.exe",
@@ -32,14 +32,24 @@ jobs:
               flag: "-m32",
             }
           - {
-              # 64bit
+              # Ubuntu 64bit
               name: ubuntu-latest-64,
               os: ubuntu-latest,
               main: "main",
               suffix: "",
-              hello: "hello",
+              hello: "hello_ubuntu_64",
               flag: "",
             }
+          - {
+              # Ubuntu 64bit
+              name: ubuntu-latest-32,
+              os: ubuntu-latest,
+              main: "main32",
+              suffix: "",
+              hello: "hello_ubuntu_32",
+              flag: "-m32",
+            }
+
     steps:
       - uses: actions/checkout@v3
       
@@ -69,7 +79,9 @@ jobs:
           #llc lib.ll
           
 
-          clang++ ${{ matrix.config.flag }} -mwindows -pthread main.s lib.s -o hello${{ matrix.config.suffix }};
+          clang++ ${{ matrix.config.flag }} -mwindows -pthread
+                  main.s lib.s 
+                  -o hello${{ matrix.config.suffix }};
           ls -al;
           ./hello${{ matrix.config.suffix }};
 
