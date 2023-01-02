@@ -65,8 +65,7 @@ jobs:
           END)
 
           echo "value=${matrixJson}"
-          matrixJson="${matrixJson//$'\n'/}"
-          echo "value=${matrixJson}" >> $GITHUB_OUTPUT
+          echo "value=${matrixJson//$'\n'/}" >> $GITHUB_OUTPUT
 
 
 
