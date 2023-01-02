@@ -18,9 +18,8 @@ jobs:
         id: set-matrix
         shell: bash
         run: |
-          Win32=$(cat <<-END
+          WinConf=$(cat <<-END
               "os": "windows-latest",
-              "name": "windows-latest",
               "bin": "src/Release/main_run.exe",
               "testbin": "tests/Release/main_tst.exe",
               "lspbin": "lsp_vscode_server/Release/main_lsp.exe",
@@ -29,11 +28,11 @@ jobs:
               "prescript": "chcp 65001"
           END
           )
-          
+
           USAGE=$(cat <<-END
           [
-            {$Win32, "cmakeConfig": "-A Win32 -T v143,host=x64"},
-            {$Win32, "cmakeConfig": "-T v143,host=x64"},
+            {$WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"},
+            {$WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"},
             {
               "os": "ubuntu-latest",
               "name": "ubuntu-latest",
