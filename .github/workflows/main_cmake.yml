@@ -31,6 +31,7 @@ jobs:
           USAGE=$(cat <<-END
           [
             {$WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"},
+            {$WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143"},
             {$WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"},
             {
               "os": "ubuntu-latest",
@@ -56,8 +57,8 @@ jobs:
             }]
           END
           )
-          USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}"
+          USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
   mybuild:
     needs: set-matrix
