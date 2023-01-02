@@ -16,12 +16,10 @@ jobs:
       matrix:
         config:
           - {
-              # Windows 64bit
-              os: "a",
               main: "main.exe",
               hello: "hello.exe",
               suffix: ".exe",
-              flag: "",
+              flag: ""
           }
     steps:
       - name: make values
