@@ -103,6 +103,7 @@ jobs:
         shell: bash
         run: |
           cd build;
+          clang++ --version;
           mkdir -p deb/${{ matrix.config.name }};
           cp ${{ matrix.config.bin }} deb/${{ matrix.config.name }}
           cp ${{ matrix.config.testbin }} deb/${{ matrix.config.name }}
