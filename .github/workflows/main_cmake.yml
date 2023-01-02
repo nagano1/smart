@@ -29,8 +29,9 @@ jobs:
           matrixJson=$(cat <<-END
           [
             $WinConf, name: "win_x86", cmakeConfig: "-A Win32 -T v143,host=x64"},
-            $WinConf, name: "win64_toolsetV143", cmakeConfig: "-T v143,host=x64"},
-            $WinConf, name: "win64_toolsetV141", cmakeConfig: "-T v141,host=x64"},
+            $WinConf, name: "win64_toolsetV143_VS2022", cmakeConfig: "-T v143,host=x64"},
+            $WinConf, name: "win64_toolsetV141_VS2017", cmakeConfig: "-T v141,host=x64"},
+            $WinConf, name: "win64_toolsetV140_VS2015", cmakeConfig: "-T v140,host=x64"},
             $UnixConf, os: "ubuntu-latest", name: "ubuntu"},
             $UnixConf, os: "macos-latest", name: "mac"}
           ]
