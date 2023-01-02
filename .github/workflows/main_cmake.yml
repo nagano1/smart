@@ -67,15 +67,13 @@ jobs:
           echo "value=${matrixJson}"
           echo "value=${matrixJson//$'\n'/}" >> $GITHUB_OUTPUT
 
-
-
   mybuild:
     needs: set-matrix
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
-        config: ${{fromJson(needs.set-matrix.outputs.matrixJson)}}
+        config: ${{ fromJson(needs.set-matrix.outputs.matrixJson) }}
     steps:
       - uses: actions/checkout@v3
       - name: enable problem matcher
@@ -100,8 +98,6 @@ jobs:
           
           echo ${{ matrix.config.testbin }}
           ${{ matrix.config.testbin }}
-          
-          # ${{ matrix.config.lspbin }}
 
       - name: Copy artifact
         shell: bash
