@@ -691,8 +691,9 @@ class jips {
     auto nanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(elapsed).count();
     auto one_op_nanosec = nanoseconds / static_cast<double>(loopCount);
 
-    //EXPECT_LT(one_op_nanosec, 15000);
-    EXPECT_LT(one_op_nanosec, 35);
+    //EXPECT_LT(one_op_nanosec, 15000);  // PC
+    //EXPECT_LT(one_op_nanosec, 35000); // Medern smart phone
+    EXPECT_LT(one_op_nanosec, 40000); // Old smart phone
     std::cout << "one" << one_op_nanosec;
 }
 
