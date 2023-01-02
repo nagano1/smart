@@ -19,9 +19,9 @@ jobs:
         shell: bash
         run: |
           USAGE=$(cat <<-END
-              [{
-                "os": "windows-latest",
-                "name": "windows-latest",
+          [{
+          "os": "windows-latest",
+          "name": "windows-latest",
                 "bin": "src/Release/main_run.exe",
                 "testbin": "tests/Release/main_tst.exe",
                 "lspbin": "lsp_vscode_server/Release/main_lsp.exe",
