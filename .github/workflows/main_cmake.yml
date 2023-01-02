@@ -39,7 +39,13 @@ jobs:
               cmakeBuildConfig: ""
             },
             win: {
-              aa: 100
+              os: "windows-latest",
+              bin: "src/Release/main_run.exe",
+              testbin: "tests/Release/main_tst.exe",
+              lspbin: "lsp_vscode_server/Release/main_lsp.exe",
+              longrunning_bin: "tests/long_running/Release/main_tst_long_running.exe",
+              cmakeBuildConfig: "--config Release ",
+              prescript: "chcp 65001"
             }
           }
     steps:
@@ -48,25 +54,20 @@ jobs:
         shell: bash
         run: |
           WinConf=$(cat <<-END
-            os: "windows-latest",
-            bin: "src/Release/main_run.exe",
-            testbin: "tests/Release/main_tst.exe",
-            lspbin: "lsp_vscode_server/Release/main_lsp.exe",
-            longrunning_bin: "tests/long_running/Release/main_tst_long_running.exe",
-            cmakeBuildConfig: "--config Release ",
-            prescript: "chcp 65001"
+            ${{ toJSON(matrix.config.win) }}
           END
           )
+          WinConf="${WinConf//$'}'/}"
 
           # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
           # https://cmake.org/cmake/help/v3.16/variable/CMAKE_GENERATOR_TOOLSET.html#variable:CMAKE_GENERATOR_TOOLSET
           
           USAGE=$(cat <<-END
           [
-            {$WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"},
-            {$WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143,host=x86"},
-            {$WinConf, "name": "win64 host32", "cmakeConfig": "-T v143,host=x86"},
-            {$WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"},
+            $WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"},
+            $WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143,host=x86"},
+            $WinConf, "name": "win64 host32", "cmakeConfig": "-T v143,host=x86"},
+            $WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"},
             ${{ toJSON(matrix.config.mac) }},
             ${{ toJSON(matrix.config.ubuntu) }}
           ]
@@ -74,8 +75,8 @@ jobs:
           )
 
 
-          echo ${{ matrix.config.os }}
-          echo ${{ toJSON(matrix.config.os) }}
+          echo ${{ matrix.config.ubuntu }}
+          echo ${{ toJSON(matrix.config.ubuntu) }}
           echo "value=${USAGE}"
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
