@@ -12,17 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       something: ${{ steps.set-matrix.outputs.value }}
-    strategy:
-      matrix:
-        config:
-          - {
-              # Windows 64bit
-              os: ["a", "341223"],
-              main: "main.exe",
-              hello: "hello.exe",
-              suffix: ".exe",
-              flag: "",
-            }
+
     steps:
       - name: make values
         id: set-matrix
