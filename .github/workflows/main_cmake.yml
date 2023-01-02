@@ -17,15 +17,15 @@ jobs:
         config:
           - {
               mac: {
-                "os": "macos-latest",
-                "name": "macos-latest",
-                "bin": "./src/main_run",
-                "testbin": "./tests/main_tst",
-                "longrunning_bin": "./tests/long_running/main_tst_long_running",
-                "lspbin": "./lsp_vscode_server/main_lsp",
-                "cmakeConfig": "",
-                "cmakeBuildConfig": "",
-                "prescript": ""
+                os: "macos-latest",
+                name: "macos-latest",
+                bin: "./src/main_run",
+                testbin: "./tests/main_tst",
+                longrunning_bin: "./tests/long_running/main_tst_long_running",
+                lspbin: "./lsp_vscode_server/main_lsp",
+                cmakeConfig: "",
+                cmakeBuildConfig: "",
+                prescript: ""
               }
           }
     steps:
