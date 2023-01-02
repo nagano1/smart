@@ -43,7 +43,6 @@ namespace smart {
         }
         // mov esp, eax;
         EXPECT_EQ(num, 0xFFFF0000);
-        EXPECT_EQ(1, 3);
         ENDTEST
     }
 #endif
