@@ -25,8 +25,7 @@ jobs:
               "longrunning_bin": "tests/long_running/Release/main_tst_long_running.exe",
               "cmakeBuildConfig": "--config Release ",
               "prescript": "chcp 65001"
-          END
-          )
+          END)
 
           USAGE=$(cat <<-END
           [
@@ -55,8 +54,7 @@ jobs:
               "cmakeBuildConfig": "",
               "prescript": ""
             }]
-          END
-          )
+          END)
           echo "value=${USAGE}"
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
