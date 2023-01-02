@@ -55,6 +55,7 @@ jobs:
           END
           )
           echo $USAGE
+          USAGE="${USAGE//$'\n'/\\n}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
   mybuild:
     needs: set-matrix
