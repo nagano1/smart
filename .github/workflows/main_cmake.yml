@@ -68,15 +68,6 @@ jobs:
 
       - name: cmake
         run: |
-
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            echo "Linux"
-          elif [ "$RUNNER_OS" == "Windows" ]; then
-            echo "Windows"
-          else
-            echo "Mac OS"
-          fi
-
           cd build/
 
           ${{ matrix.config.prescript }}
