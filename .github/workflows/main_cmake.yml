@@ -10,6 +10,35 @@ on:
 jobs:
   set-matrix:
     runs-on: ubuntu-latest
+    steps:
+      - name: make values
+        id: set-matrix
+        shell: bash
+        run: |
+          WinConf=$(cat <<-END
+            ${{ toJSON(matrix.config.win) }}
+          END
+          )
+          WinConf="${WinConf%\}*}"
+
+          # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
+          # https://cmake.org/cmake/help/v3.16/variable/CMAKE_GENERATOR_TOOLSET.html#variable:CMAKE_GENERATOR_TOOLSET
+          
+          USAGE=$(cat <<-END
+          [
+            $WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"},
+            $WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143,host=x86"},
+            $WinConf, "name": "win64 host32", "cmakeConfig": "-T v143,host=x86"},
+            $WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"},
+            ${{ toJSON(matrix.config.mac) }},
+            ${{ toJSON(matrix.config.ubuntu) }}
+          ]
+          END
+          )
+
+          echo "value=${USAGE}"
+          USAGE="${USAGE//$'\n'/}"
+          echo "value=${USAGE}" >> $GITHUB_OUTPUT
     outputs:
       something: ${{ steps.set-matrix.outputs.value }}
     strategy:
@@ -48,37 +77,6 @@ jobs:
               prescript: "chcp 65001",
             }
           }
-    steps:
-      - name: make values
-        id: set-matrix
-        shell: bash
-        run: |
-          WinConf=$(cat <<-END
-            ${{ toJSON(matrix.config.win) }}
-          END
-          )
-          WinConf="${WinConf//$'\n'/}"
-          WinConf="${WinConf%\}*}"
-
-          # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
-          # https://cmake.org/cmake/help/v3.16/variable/CMAKE_GENERATOR_TOOLSET.html#variable:CMAKE_GENERATOR_TOOLSET
-          
-          USAGE=$(cat <<-END
-          [
-            $WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"},
-            $WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143,host=x86"},
-            $WinConf, "name": "win64 host32", "cmakeConfig": "-T v143,host=x86"},
-            $WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"},
-            ${{ toJSON(matrix.config.mac) }},
-            ${{ toJSON(matrix.config.ubuntu) }}
-          ]
-          END
-          )
-
-
-          echo "value=${USAGE}"
-          USAGE="${USAGE//$'\n'/}"
-          echo "value=${USAGE}" >> $GITHUB_OUTPUT
 
 
   mybuild:
