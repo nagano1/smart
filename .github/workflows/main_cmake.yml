@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       something: ${{ steps.set-matrix.outputs.value }}
+    outputs2:
+      something: ["a", "b"]
     steps:
       - name: make values
         id: set-matrix
@@ -60,7 +62,7 @@ jobs:
           ]
           END)
 
-          echo ${{ toJSON(steps.set-matrix) }}
+          echo ${{ toJSON(steps.set-matrix.outputs2) }}
           echo "value=${USAGE}"
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
