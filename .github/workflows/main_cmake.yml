@@ -41,7 +41,8 @@ jobs:
           WinConf=$(cat <<-END
             ${{ toJSON(matrix.config.win) }}
           END)
-          WinConf="${WinConf%\}*}, os:\"windows-latest\"";
+          Win2022="${WinConf%\}*}, os:\"windows-latest\"";
+          Win2019="${WinConf%\}*}, os:\"windows-2019\"";
 
           UnixConf=$(cat <<-END
             ${{ toJSON(matrix.config.unix) }}
@@ -52,10 +53,10 @@ jobs:
           
           matrixJson=$(cat <<-END
           [
-            $WinConf, name: "win_x86", cmakeConfig: "-A Win32 -T v143,host=x64"},
-            $WinConf, name: "win64_toolsetV143_VS2022", cmakeConfig: "-T v143,host=x64"},
-            $WinConf, name: "win64_toolsetV142_VS2019", cmakeConfig: "-T v142,host=x64"},
-            $WinConf, name: "win64_toolsetV141_VS2017", cmakeConfig: "-T v141,host=x64"},
+            $Win2022, name: "win_x86", cmakeConfig: "-A Win32 -T v143,host=x64"},
+            $Win2022, name: "win64_toolsetV143_VS2022", cmakeConfig: "-T v143,host=x64"},
+            $Win2022, name: "win64_toolsetV142_VS2019", cmakeConfig: "-T v142,host=x64"},
+            $Win2019, name: "win64_toolsetV141_VS2017", cmakeConfig: "-T v141,host=x64"},
             $UnixConf, os: "ubuntu-latest", name: "ubuntu_latest"},
             $UnixConf, os: "ubuntu-20.04", name: "ubuntu20_04"},
             $UnixConf, os: "macos-latest", name: "mac_latest"},
