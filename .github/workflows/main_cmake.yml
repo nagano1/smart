@@ -54,7 +54,7 @@ jobs:
               lspbin: "./lsp_vscode_server/main_lsp",
               cmakeConfig: "",
               cmakeBuildConfig: "",
-              prescript: ""
+              prescript: ''
             },
             ubuntu: {
               os: "ubuntu-latest",
