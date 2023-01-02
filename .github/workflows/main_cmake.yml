@@ -75,8 +75,6 @@ jobs:
           )
 
 
-          echo ${{ matrix.config.ubuntu }}
-          echo ${{ toJSON(matrix.config.ubuntu) }}
           echo "value=${USAGE}"
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
