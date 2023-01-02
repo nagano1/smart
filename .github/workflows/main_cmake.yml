@@ -19,54 +19,50 @@ jobs:
         shell: bash
         run: |
           USAGE=$(cat <<-END
-              This is line one.
-              This is line two.
-              This is line three.
+              [{
+                "os": "windows-latest",
+                "name": "windows-latest",
+                "bin": "src/Release/main_run.exe",
+                "testbin": "tests/Release/main_tst.exe",
+                "lspbin": "lsp_vscode_server/Release/main_lsp.exe",
+                "longrunning_bin": "tests/long_running/Release/main_tst_long_running.exe",
+                "cmakeConfig": "-A Win32 -T v143,host=x64",
+                "cmakeBuildConfig": "--config Release ",
+                "prescript": "chcp 65001"
+            },
+            {
+              "os": "ubuntu-latest",
+              "name": "ubuntu-latest",
+              "bin": ""./src/main_run",
+              "testbin": "./tests/main_tst",
+              "longrunning_bin": ""./tests/long_running/main_tst_long_running",
+              "lspbin": "./lsp_vscode_server/main_lsp",
+              "prescript": "cat /proc/cpuinfo; export CXX=clang++",
+              "cmakeConfig": " -D NODOOR32=1 ",
+              "cmakeBuildConfig": ""
+            },
+            {
+              "os": "macos-latest",
+              "name": "macos-latest",
+              "bin": "./src/main_run",
+              "testbin": "./tests/main_tst",
+              "longrunning_bin": "./tests/long_running/main_tst_long_running",
+              "lspbin": "./lsp_vscode_server/main_lsp",
+              "cmakeConfig": "",
+              "cmakeBuildConfig": "",
+              "prescript": ""
+            }]
           END
-
           )
+          echo $USAGE
+          echo "value=${USAGE}" >> $GITHUB_OUTPUT
   mybuild:
+    needs: set-matrix
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
-        config:
-          - {
-              os: windows-latest, # windows-2019, windows-latest
-              name: windows-latest, # windows-2019, windows-latest
-              bin: 'src/Release/main_run.exe',
-              testbin: 'tests/Release/main_tst.exe',
-              lspbin: 'lsp_vscode_server/Release/main_lsp.exe',
-              longrunning_bin: 'tests/long_running/Release/main_tst_long_running.exe',
-              cmakeConfig: '-A Win32 -T v143,host=x64',
-              cmakeBuildConfig: '--config Release ',
-              prescript: 'chcp 65001',
-            }
-
-          - {
-              os: ubuntu-latest,
-              name: ubuntu-latest,
-              bin: './src/main_run',
-              testbin: './tests/main_tst',
-              longrunning_bin: './tests/long_running/main_tst_long_running',
-              lspbin: './lsp_vscode_server/main_lsp',
-              prescript: 'cat /proc/cpuinfo; export CXX=clang++',
-              cmakeConfig: ' -D NODOOR32=1 ',
-              cmakeBuildConfig: '',
-            }
-
-          - {
-              os: macos-latest,
-              name: macos-latest,
-              bin: "./src/main_run",
-              testbin: "./tests/main_tst",
-              longrunning_bin: './tests/long_running/main_tst_long_running',
-              lspbin: './lsp_vscode_server/main_lsp',
-              cmakeConfig: '',
-              cmakeBuildConfig: '',
-              prescript: "",
-            }
-
+        config: ${{fromJson(needs.set-matrix.outputs.something)}}
     steps:
       - uses: actions/checkout@v3
       - name: enable problem matcher
