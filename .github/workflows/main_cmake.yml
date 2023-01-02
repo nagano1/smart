@@ -31,7 +31,7 @@ jobs:
           USAGE=$(cat <<-END
           [
             {$WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"},
-            {$WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143"},
+            {$WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143,host=x86"},
             {$WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"},
             {
               "os": "ubuntu-latest",
