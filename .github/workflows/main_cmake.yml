@@ -53,7 +53,7 @@ jobs:
               lspbin: "./lsp_vscode_server/main_lsp",
               cmakeConfig: "",
               cmakeBuildConfig: "",
-              prescript: '',
+              prescript: 'export CXX=clang++',
               etst: "{"
             },
             ubuntu: {
@@ -63,7 +63,7 @@ jobs:
               testbin: "./tests/main_tst",
               longrunning_bin: "./tests/long_running/main_tst_long_running",
               lspbin: "./lsp_vscode_server/main_lsp",
-              prescript: "",
+              prescript: "cat /proc/cpuinfo; export CXX=clang++",
               cmakeConfig: " -D NODOOR32=1 ",
               cmakeBuildConfig: ""
             },
