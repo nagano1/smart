@@ -13,6 +13,7 @@ jobs:
     runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
+        arch: ["jifw", "fea"]
         config:
           - {
               os: windows-latest, # windows-2019, windows-latest
