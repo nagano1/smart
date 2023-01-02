@@ -16,28 +16,31 @@ jobs:
       matrix:
         config:
           - {
-              mac: {
-                os: "macos-latest",
-                name: "macos-latest",
-                bin: "./src/main_run",
-                testbin: "./tests/main_tst",
-                longrunning_bin: "./tests/long_running/main_tst_long_running",
-                lspbin: "./lsp_vscode_server/main_lsp",
-                cmakeConfig: "",
-                cmakeBuildConfig: "",
-                prescript: ""
-              },
-              ubuntu: {
-                "os": "ubuntu-latest",
-                "name": "ubuntu-latest",
-                "bin": "./src/main_run",
-                "testbin": "./tests/main_tst",
-                "longrunning_bin": "./tests/long_running/main_tst_long_running",
-                "lspbin": "./lsp_vscode_server/main_lsp",
-                "prescript": "cat /proc/cpuinfo; export CXX=clang++",
-                "cmakeConfig": " -D NODOOR32=1 ",
-                "cmakeBuildConfig": ""
-              }
+            mac: {
+              os: "macos-latest",
+              name: "macos-latest",
+              bin: "./src/main_run",
+              testbin: "./tests/main_tst",
+              longrunning_bin: "./tests/long_running/main_tst_long_running",
+              lspbin: "./lsp_vscode_server/main_lsp",
+              cmakeConfig: "",
+              cmakeBuildConfig: "",
+              prescript: ""
+            },
+            ubuntu: {
+              os: "ubuntu-latest",
+              name: "ubuntu-latest",
+              bin: "./src/main_run",
+              testbin: "./tests/main_tst",
+              longrunning_bin: "./tests/long_running/main_tst_long_running",
+              lspbin: "./lsp_vscode_server/main_lsp",
+              prescript: "cat /proc/cpuinfo; export CXX=clang++",
+              cmakeConfig: " -D NODOOR32=1 ",
+              cmakeBuildConfig: ""
+            },
+            win: {
+              aa: 100
+            }
           }
     steps:
       - name: make values
@@ -57,11 +60,9 @@ jobs:
 
           # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
           # https://cmake.org/cmake/help/v3.16/variable/CMAKE_GENERATOR_TOOLSET.html#variable:CMAKE_GENERATOR_TOOLSET
+
           USAGE=$(cat <<-END
           [
-            {$WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"},
-            {$WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143,host=x86"},
-            {$WinConf, "name": "win64 host32", "cmakeConfig": "-T v143,host=x86"},
             {$WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"},
             ${{ toJSON(matrix.config.mac) }},
             ${{ toJSON(matrix.config.ubuntu) }}
