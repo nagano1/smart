@@ -8,17 +8,6 @@ on:
 
 
 jobs:
-  set-matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      something: ${{ steps.set-matrix.outputs.value }}
-    steps:
-      - name: make values
-        id: set-matrix
-        shell: bash
-        run: |
-          echo fjaiowe
-
   mybuild:
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
