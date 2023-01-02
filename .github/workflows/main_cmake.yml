@@ -17,41 +17,12 @@ jobs:
         config:
           - {
               # Windows 64bit
-              name: 64bit,
-              os: windows-latest,
+              os: ["64bit","joiwa"],
               main: "main.exe",
               hello: "hello.exe",
               suffix: ".exe",
               flag: "",
             }
-          - {
-              # Windows 32bit
-              name: 32bit,
-              os: windows-latest,
-              main: "main32.exe",
-              hello: "hello32.exe",
-              suffix: ".exe",
-              flag: "-m32",
-            }
-          - {
-              # Ubuntu 64bit
-              name: ubuntu-latest-64,
-              os: ubuntu-latest,
-              main: "main",
-              suffix: "",
-              hello: "hello_ubuntu_64",
-              flag: "",
-            }
-          - {
-              # Mac 64bit
-              name: mac-latest-64,
-              os: macos-latest,
-              main: "main_osx",
-              suffix: "",
-              hello: "hello_macos_64",
-              flag: "",
-            }
-          
     steps:
       - name: make values
         id: set-matrix
@@ -65,7 +36,7 @@ jobs:
             "longrunning_bin": "tests/long_running/Release/main_tst_long_running.exe",
             "cmakeBuildConfig": "--config Release ",
             "prescript": "chcp 65001"
-          END)
+          END )
 
           # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
           # https://cmake.org/cmake/help/v3.16/variable/CMAKE_GENERATOR_TOOLSET.html#variable:CMAKE_GENERATOR_TOOLSET
@@ -98,11 +69,11 @@ jobs:
               "prescript": ""
             }
           ]
-          END)
+          END )
 
 
-          echo ${{ steps.set-matrix.strategy }}
-          echo ${{ toJSON(steps.set-matrix.strategy) }}
+          echo ${{ matrix.config.os }}
+          echo ${{ toJSON(matrix.config.os) }}
           echo "value=${USAGE}"
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
