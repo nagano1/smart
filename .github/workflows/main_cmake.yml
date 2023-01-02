@@ -55,7 +55,7 @@ jobs:
           END
           )
           echo $USAGE
-          USAGE="${USAGE//$'\n'/\\n}"
+          USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
   mybuild:
