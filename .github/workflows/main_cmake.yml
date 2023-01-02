@@ -25,7 +25,6 @@ jobs:
               cmakeBuildConfig: ""
             },
             win: {
-              os: "windows-latest",
               bin: "src/Release/main_run.exe",
               testbin: "tests/Release/main_tst.exe",
               lspbin: "lsp_vscode_server/Release/main_lsp.exe",
@@ -42,7 +41,7 @@ jobs:
           WinConf=$(cat <<-END
             ${{ toJSON(matrix.config.win) }}
           END)
-          WinConf="${WinConf%\}*}";
+          WinConf="${WinConf%\}*}, os:\"windows-latest\"";
 
           UnixConf=$(cat <<-END
             ${{ toJSON(matrix.config.unix) }}
