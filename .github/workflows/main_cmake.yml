@@ -16,23 +16,26 @@ jobs:
       matrix:
         config:
           - {
-            win: {
-              os: "windows-latest",
-              bin: "src/Release/main_run.exe",
-              testbin: "tests/Release/main_tst.exe",
-              lspbin: "lsp_vscode_server/Release/main_lsp.exe",
-              longrunning_bin: "tests/long_running/Release/main_tst_long_running.exe",
-              cmakeBuildConfig: "--config Release ",
-              prescript: "chcp 65001"
+              # Windows 64bit
+              os: "64bit,joiwa",
+              main: "main.exe",
+              hello: "hello.exe",
+              suffix: ".exe",
+              flag: "",
             }
-          }
     steps:
       - name: make values
         id: set-matrix
         shell: bash
         run: |
           WinConf=$(cat <<-END
-            ${{ toJSON(matrix.config.win) }}
+            "os": "windows-latest",
+            "bin": "src/Release/main_run.exe",
+            "testbin": "tests/Release/main_tst.exe",
+            "lspbin": "lsp_vscode_server/Release/main_lsp.exe",
+            "longrunning_bin": "tests/long_running/Release/main_tst_long_running.exe",
+            "cmakeBuildConfig": "--config Release ",
+            "prescript": "chcp 65001"
           END
           )
 
@@ -71,6 +74,8 @@ jobs:
           )
 
 
+          echo ${{ matrix.config.os }}
+          echo ${{ toJSON(matrix.config.os) }}
           echo "value=${USAGE}"
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
