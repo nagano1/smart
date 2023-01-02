@@ -6,7 +6,6 @@ on:
   schedule:
     - cron: '15 1 1 11 *' # minute hour day month monday
 
-
 jobs:
   set-matrix:
     runs-on: ubuntu-latest
@@ -24,15 +23,14 @@ jobs:
           WinConf="${WinConf%\}*}"
 
           # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
-          # https://cmake.org/cmake/help/v3.16/variable/CMAKE_GENERATOR_TOOLSET.html#variable:CMAKE_GENERATOR_TOOLSET
           
           matrixJson=$(cat <<-END
           [
-            {$WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"},
-            {$WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143,host=x86"},
-            {$WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"},
-            ${{ toJSON(matrix.config.mac) }},
-            ${{ toJSON(matrix.config.ubuntu) }}
+            {$WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"}
+            ,{$WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143,host=x86"}
+            ,{$WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"}
+            ,${{ toJSON(matrix.config.mac) }}
+            ,${{ toJSON(matrix.config.ubuntu) }}
           ]
           END
           )
