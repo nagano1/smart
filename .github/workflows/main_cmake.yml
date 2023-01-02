@@ -23,7 +23,6 @@ jobs:
           WinConf="${WinConf#*\{}"
           WinConf="${WinConf%\}*}"
 
-
           # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
           # https://cmake.org/cmake/help/v3.16/variable/CMAKE_GENERATOR_TOOLSET.html#variable:CMAKE_GENERATOR_TOOLSET
           
@@ -57,7 +56,8 @@ jobs:
               lspbin: "./lsp_vscode_server/main_lsp",
               cmakeConfig: "",
               cmakeBuildConfig: "",
-              prescript: ''
+              prescript: '',
+              etst: "{"
             },
             ubuntu: {
               os: "ubuntu-latest",
