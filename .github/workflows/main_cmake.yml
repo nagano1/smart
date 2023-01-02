@@ -13,6 +13,7 @@ jobs:
     runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
+        arc: ["-A Win32", ""]
         config:
           - {
               os: windows-latest, # windows-2019, windows-latest
@@ -68,6 +69,15 @@ jobs:
 
       - name: cmake
         run: |
+
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            echo "Linux"
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            echo "Windows"
+          else
+            echo "Mac OS"
+          fi
+
           cd build/
 
           ${{ matrix.config.prescript }}
@@ -76,6 +86,7 @@ jobs:
           cmake --build . ${{ matrix.config.cmakeBuildConfig }}
       
       - name: run test
+      shell: bash
         run: |
           cd build/
 
