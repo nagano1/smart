@@ -101,8 +101,8 @@ jobs:
           END)
 
 
-          echo ${{ steps.set-matrix.outputs.matrix.config.os }}
-          echo ${{ toJSON(steps.set-matrix.outputs.matrix.config.os) }}
+          echo ${{ steps.set-matrix.outputs.strategy }}
+          echo ${{ toJSON(steps.set-matrix.outputs.strategy) }}
           echo "value=${USAGE}"
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
