@@ -86,7 +86,7 @@ module.exports = {
         const clangPath = isWin && !github_actions ? "C:\\\\Program Files (x86)\\LLVM\\bin\\clang++.exe" : "clang++";
 
         let cppFileList = "";
-        foreach (let g in globs) {
+        for (const g in globs) {
             glob.sync(srcDir + globs[g]).forEach(function (filePath) {
                 cppFileList += " \"" + filePath + "\"";
             });
