@@ -12,8 +12,46 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       something: ${{ steps.set-matrix.outputs.value }}
-    outputs2:
-      something: ["a", "b"]
+    strategy:
+      matrix:
+        config:
+          - {
+              # Windows 64bit
+              name: 64bit,
+              os: windows-latest,
+              main: "main.exe",
+              hello: "hello.exe",
+              suffix: ".exe",
+              flag: "",
+            }
+          - {
+              # Windows 32bit
+              name: 32bit,
+              os: windows-latest,
+              main: "main32.exe",
+              hello: "hello32.exe",
+              suffix: ".exe",
+              flag: "-m32",
+            }
+          - {
+              # Ubuntu 64bit
+              name: ubuntu-latest-64,
+              os: ubuntu-latest,
+              main: "main",
+              suffix: "",
+              hello: "hello_ubuntu_64",
+              flag: "",
+            }
+          - {
+              # Mac 64bit
+              name: mac-latest-64,
+              os: macos-latest,
+              main: "main_osx",
+              suffix: "",
+              hello: "hello_macos_64",
+              flag: "",
+            }
+          
     steps:
       - name: make values
         id: set-matrix
@@ -62,8 +100,9 @@ jobs:
           ]
           END)
 
-          echo ${{ steps.set-matrix.outputs2.something }}
-          echo ${{ toJSON(steps.set-matrix.outputs2.something) }}
+
+          echo ${{ matrix.config.os }}
+          echo ${{ toJSON(matrix.config.os) }}
           echo "value=${USAGE}"
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
