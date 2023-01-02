@@ -18,11 +18,13 @@ jobs:
         id: set-matrix
         shell: bash
         run: |
-          read -r -d '' VAR << EOM
-          This is line 1.
-          This is line 2.
-          Line 3.
-          EOM
+          USAGE=$(cat <<-END
+              This is line one.
+              This is line two.
+              This is line three.
+          END
+
+          )
   mybuild:
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
