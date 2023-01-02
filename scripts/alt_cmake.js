@@ -86,19 +86,12 @@ module.exports = {
         const clangPath = isWin && !github_actions ? "C:\\\\Program Files (x86)\\LLVM\\bin\\clang++.exe" : "clang++";
 
         let cppFileList = "";
-        foreach (let g of globs) {
+        foreach (g of globs) {
             glob.sync(srcDir + g).forEach(function (filePath) {
                 cppFileList += " \"" + filePath + "\"";
             });
         }
-        /*
-        glob.sync(srcDir + '*.cpp').forEach(function (filePath) {
-            cppFileList += " \"" + filePath + "\"";
-        });
-        glob.sync(srcDir + 'codeNodes/*.cpp').forEach(function (filePath) {
-            cppFileList += " \"" + filePath + "\"";
-        });
-*/
+
         //await timeoutAsync(3000);
         const exeRequest = "\"" + clangPath + "\" -std=c++14 -o wow.exe -I src " + m32 + cppFileList;
         console.info(exeRequest);
