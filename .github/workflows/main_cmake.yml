@@ -9,6 +9,31 @@ on:
 jobs:
   set-matrix:
     runs-on: ubuntu-latest
+    outputs:
+      matrixJson: ${{ steps.set-matrix.outputs.value }}
+    strategy:
+      matrix:
+        config:
+          - {
+            unix: {
+              bin: "./src/main_run",
+              testbin: "./tests/main_tst",
+              longrunning_bin: "./tests/long_running/main_tst_long_running",
+              lspbin: "./lsp_vscode_server/main_lsp",
+              prescript: "export CXX=clang++",
+              cmakeConfig: " -D NODOOR32=1 ",
+              cmakeBuildConfig: ""
+            },
+            win: {
+              os: "windows-latest",
+              bin: "src/Release/main_run.exe",
+              testbin: "tests/Release/main_tst.exe",
+              lspbin: "lsp_vscode_server/Release/main_lsp.exe",
+              longrunning_bin: "tests/long_running/Release/main_tst_long_running.exe",
+              cmakeBuildConfig: "--config Release ",
+              prescript: "chcp 65001",
+            }
+          }
     steps:
       - name: make values
         id: set-matrix
@@ -42,31 +67,7 @@ jobs:
           echo "value=${matrixJson}"
           matrixJson="${matrixJson//$'\n'/}"
           echo "value=${matrixJson}" >> $GITHUB_OUTPUT
-    outputs:
-      matrixJson: ${{ steps.set-matrix.outputs.value }}
-    strategy:
-      matrix:
-        config:
-          - {
-            unix: {
-              bin: "./src/main_run",
-              testbin: "./tests/main_tst",
-              longrunning_bin: "./tests/long_running/main_tst_long_running",
-              lspbin: "./lsp_vscode_server/main_lsp",
-              prescript: "export CXX=clang++",
-              cmakeConfig: " -D NODOOR32=1 ",
-              cmakeBuildConfig: ""
-            },
-            win: {
-              os: "windows-latest",
-              bin: "src/Release/main_run.exe",
-              testbin: "tests/Release/main_tst.exe",
-              lspbin: "lsp_vscode_server/Release/main_lsp.exe",
-              longrunning_bin: "tests/long_running/Release/main_tst_long_running.exe",
-              cmakeBuildConfig: "--config Release ",
-              prescript: "chcp 65001",
-            }
-          }
+
 
 
   mybuild:
