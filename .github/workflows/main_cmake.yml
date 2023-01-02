@@ -63,7 +63,7 @@ jobs:
               testbin: "./tests/main_tst",
               longrunning_bin: "./tests/long_running/main_tst_long_running",
               lspbin: "./lsp_vscode_server/main_lsp",
-              prescript: "cat /proc/cpuinfo; export CXX=clang++",
+              prescript: "",
               cmakeConfig: " -D NODOOR32=1 ",
               cmakeBuildConfig: ""
             },
