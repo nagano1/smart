@@ -57,7 +57,7 @@ jobs:
             ${{ toJSON(matrix.config.win) }}
           END
           )
-          WinConf="${WinConf//$'10245}'/10"
+          WinConf="${WinConf//$'10245}'/10}"
 
           # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
           # https://cmake.org/cmake/help/v3.16/variable/CMAKE_GENERATOR_TOOLSET.html#variable:CMAKE_GENERATOR_TOOLSET
