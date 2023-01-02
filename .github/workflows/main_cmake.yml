@@ -16,13 +16,15 @@ jobs:
       matrix:
         config:
           - {
-            "os": "windows-latest",
-            "bin": "src/Release/main_run.exe",
-            "testbin": "tests/Release/main_tst.exe",
-            "lspbin": "lsp_vscode_server/Release/main_lsp.exe",
-            "longrunning_bin": "tests/long_running/Release/main_tst_long_running.exe",
-            "cmakeBuildConfig": "--config Release ",
-            "prescript": "chcp 65001"
+            win: {
+              os: "windows-latest",
+              bin: "src/Release/main_run.exe",
+              testbin: "tests/Release/main_tst.exe",
+              lspbin: "lsp_vscode_server/Release/main_lsp.exe",
+              longrunning_bin: "tests/long_running/Release/main_tst_long_running.exe",
+              cmakeBuildConfig: "--config Release ",
+              prescript: "chcp 65001"
+            }
           }
     steps:
       - name: make values
@@ -30,7 +32,7 @@ jobs:
         shell: bash
         run: |
           WinConf=$(cat <<-END
-            ${{ toJSON(matrix.config) }}
+            ${{ toJSON(matrix.config.win) }}
           END
           )
 
