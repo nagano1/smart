@@ -17,10 +17,7 @@ jobs:
         config:
           - {
               # Windows 64bit
-              os:
-                - {
-                  a: "341223"
-                }
+              os: ["a", "341223"],
               main: "main.exe",
               hello: "hello.exe",
               suffix: ".exe",
