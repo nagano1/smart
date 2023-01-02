@@ -9,7 +9,6 @@ on:
 
 jobs:
   set-matrix:
-    name: test
     runs-on: ubuntu-latest
     outputs:
       something: ${{ steps.set-matrix.outputs.value }}
@@ -57,7 +56,6 @@ jobs:
             }]
           END
           )
-          echo $USAGE
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
