@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
-        arc: ["-A Win32", ""]
+        arc: [Win32, a]
         config:
           - {
               os: windows-latest, # windows-2019, windows-latest
