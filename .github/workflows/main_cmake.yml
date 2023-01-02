@@ -30,7 +30,6 @@ jobs:
           [
             {$WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"},
             {$WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143,host=x86"},
-            {$WinConf, "name": "win64 host32", "cmakeConfig": "-T v143,host=x86"},
             {$WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"},
             ${{ toJSON(matrix.config.mac) }},
             ${{ toJSON(matrix.config.ubuntu) }}
