@@ -16,17 +16,6 @@ jobs:
       matrix:
         config:
           - {
-              main: "main.exe",
-              hello: "hello.exe",
-              suffix: ".exe",
-              flag: ""
-          }
-    steps:
-      - name: make values
-        id: set-matrix
-        shell: bash
-        run: |
-          WinConf=$(cat <<-END
             "os": "windows-latest",
             "bin": "src/Release/main_run.exe",
             "testbin": "tests/Release/main_tst.exe",
@@ -34,6 +23,14 @@ jobs:
             "longrunning_bin": "tests/long_running/Release/main_tst_long_running.exe",
             "cmakeBuildConfig": "--config Release ",
             "prescript": "chcp 65001"
+          }
+    steps:
+      - name: make values
+        id: set-matrix
+        shell: bash
+        run: |
+          WinConf=$(cat <<-END
+            ${{ toJSON(matrix.config) }}
           END
           )
 
@@ -72,8 +69,6 @@ jobs:
           )
 
 
-          echo ${{ matrix.config }}
-          echo ${{ toJSON(matrix.config) }}
           echo "value=${USAGE}"
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
