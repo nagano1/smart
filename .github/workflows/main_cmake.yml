@@ -12,22 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       something: ${{ steps.set-matrix.outputs.value }}
-    strategy:
-      matrix:
-        config:
-          - {
-              mac: {
-                os: "macos-latest",
-                name: "macos-latest",
-                bin: "./src/main_run",
-                testbin: "./tests/main_tst",
-                longrunning_bin: "./tests/long_running/main_tst_long_running",
-                lspbin: "./lsp_vscode_server/main_lsp",
-                cmakeConfig: "",
-                cmakeBuildConfig: "",
-                prescript: ""
-              }
-          }
+     env:
+      mac: 
+        - {
+          os: "macos-latest",
+          name: "macos-latest",
+          bin: "./src/main_run",
+          testbin: "./tests/main_tst",
+          longrunning_bin: "./tests/long_running/main_tst_long_running",
+          lspbin: "./lsp_vscode_server/main_lsp",
+          cmakeConfig: "",
+          cmakeBuildConfig: "",
+          prescript: ""
+        }
     steps:
       - name: make values
         id: set-matrix
@@ -52,7 +49,7 @@ jobs:
             {$WinConf, "name": "win32 host32", "cmakeConfig": "-A Win32 -T v143,host=x86"},
             {$WinConf, "name": "win64 host32", "cmakeConfig": "-T v143,host=x86"},
             {$WinConf, "name": "win64", "cmakeConfig": "-T v143,host=x64"},
-            ${{ toJSON(matrix.config.mac) }},
+            ${{ toJSON($mac) }},
             {
               "os": "ubuntu-latest",
               "name": "ubuntu-latest",
