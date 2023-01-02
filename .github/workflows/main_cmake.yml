@@ -17,12 +17,12 @@ jobs:
           WinConf=$(cat <<-END
             ${{ toJSON(matrix.config.win) }}
           END)
-          WinConf="${WinConf%\}*}"; # WinConf="${WinConf#*\{}";
+          WinConf="${WinConf%\}*}";
 
           UnixConf=$(cat <<-END
             ${{ toJSON(matrix.config.unix) }}
           END)
-          UnixConf="${UnixConf#*\{}";
+          UnixConf="${UnixConf%\}*}";
 
 
           # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
