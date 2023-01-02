@@ -27,6 +27,7 @@ jobs:
             "prescript": "chcp 65001"
           END)
 
+          # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
           # https://cmake.org/cmake/help/v3.16/variable/CMAKE_GENERATOR_TOOLSET.html#variable:CMAKE_GENERATOR_TOOLSET
           USAGE=$(cat <<-END
           [
@@ -59,6 +60,7 @@ jobs:
           ]
           END)
 
+          echo ${{ steps.set-matrix }}
           echo "value=${USAGE}"
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
