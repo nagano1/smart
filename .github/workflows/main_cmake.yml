@@ -8,12 +8,32 @@ on:
 
 
 jobs:
+  set-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      something: ${{ steps.set-matrix.outputs.value }}
+    steps:
+      - name: make values
+        id: set-matrix
+        run: |
+          read -r -d '' VAR <<- EOM
+              This is line 1.
+              This is line 2.
+              Line 3.
+          EOM
+
+          echo $VAR
+          echo -- VAR --
+
+          echo '["hoge","fuga"]' | jq -c
+          list=$(echo '["hoge","fuga"]' | jq -c)
+          echo "value=${list}" >> $GITHUB_OUTPUT
   mybuild:
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
-        arch: ["jifw", "fea"]
+        arch: ["64bit", "32bit"]
         config:
           - {
               os: windows-latest, # windows-2019, windows-latest
@@ -52,6 +72,7 @@ jobs:
             }
 
     steps:
+      - if: 
       - uses: actions/checkout@v3
       - name: enable problem matcher
         run: |
