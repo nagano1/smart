@@ -53,7 +53,7 @@ jobs:
             testbin: "tests/Release/main_tst.exe",
             lspbin: "lsp_vscode_server/Release/main_lsp.exe",
             longrunning_bin: "tests/long_running/Release/main_tst_long_running.exe",
-            makeBuildConfig: "--config Release ",
+            cmakeBuildConfig: "--config Release ",
             prescript: "chcp 65001"
           END
           )
