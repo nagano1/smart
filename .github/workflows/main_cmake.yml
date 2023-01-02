@@ -27,6 +27,7 @@ jobs:
               "prescript": "chcp 65001"
           END)
 
+          # https://cmake.org/cmake/help/v3.16/variable/CMAKE_GENERATOR_TOOLSET.html#variable:CMAKE_GENERATOR_TOOLSET
           USAGE=$(cat <<-END
           [
             {$WinConf, "name": "win32", "cmakeConfig": "-A Win32 -T v143,host=x64"},
@@ -59,7 +60,7 @@ jobs:
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
 
-          
+
   mybuild:
     needs: set-matrix
     name: ${{ matrix.config.name }}
