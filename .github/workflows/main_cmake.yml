@@ -46,7 +46,7 @@ jobs:
               longrunning_bin: "tests/long_running/Release/main_tst_long_running.exe",
               cmakeBuildConfig: "--config Release ",
               prescript: "chcp 65001",
-              dummy: 10245}
+            }
           }
     steps:
       - name: make values
@@ -57,6 +57,7 @@ jobs:
             ${{ toJSON(matrix.config.win) }}
           END
           )
+          WinConf="${WinConf//$'\n'/}"
           WinConf="${WinConf%\}*}"
 
           # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
