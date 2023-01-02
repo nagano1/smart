@@ -60,7 +60,7 @@ jobs:
           ]
           END)
 
-          echo ${{ steps.set-matrix }}
+          echo ${{ toJSON(steps.set-matrix) }}
           echo "value=${USAGE}"
           USAGE="${USAGE//$'\n'/}"
           echo "value=${USAGE}" >> $GITHUB_OUTPUT
