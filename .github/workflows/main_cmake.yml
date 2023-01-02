@@ -34,7 +34,7 @@ jobs:
             $UnixConf, os: "ubuntu-latest", name: "ubuntu_latest"},
             $UnixConf, os: "ubuntu-20.04", name: "ubuntu20_04"},
             $UnixConf, os: "ubuntu-18.04", name: "ubuntu18_04"},
-            $UnixConf, os: "macos-latest", name: "mac_latest"}
+            $UnixConf, os: "macos-latest", name: "mac_latest"},
             $UnixConf, os: "macos-11", name: "macos_11"}
           ]
           END)
