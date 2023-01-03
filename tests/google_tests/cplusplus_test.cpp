@@ -194,6 +194,9 @@ TEST(cplusplus_test, test1) {
     {
         char a = -122;
         unsigned char b = a;
+        
+        EXPECT_EQ(1, sizeof(char));
+
 #if defined(__aarch64__) && defined(__ANDROID__)
        EXPECT_TRUE((int)a == (int)b);
 #else
