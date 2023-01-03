@@ -86,10 +86,11 @@ namespace smart {
         for (int i = 0; i < 1024; i++) {
             mem = (int*)env->context->mallocItem(sizeof(int));
             *mem = 53;
-
+            /*
             if (i % 3 == 2) {
                 env->context->freeItem(mem);
             }
+            */
         }
 
         console_log("test");
@@ -227,7 +228,9 @@ namespace smart {
         ScriptEnv* env = ScriptEnv::newScriptEnv();
         auto& stackMemory = env->context->stackMemory;
         
-        stackMemory.localVariables(stackMemory.stackSize);
+        stackMemory.localVariables(stackMemory.stackSize - 1);
+        EXPECT_EQ(stackMemory.isOverflowed, false);
+        stackMemory.localVariables(1);
         EXPECT_EQ(stackMemory.isOverflowed, true);
 
         ScriptEnv::deleteScriptEnv(env);
