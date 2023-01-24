@@ -124,9 +124,11 @@ namespace smart {
 
 
     utf8byte *DocumentUtils::getTextFromNode(NodeBase *node) {
+        //printf("tset; %s", node->vtable->typeChars);
+        //fflush(stdout);
         int len = VTableCall::selfTextLength(node);
 
-        int prev_char = 0;//node->prev_chars; // = '\0' ? 1 : 0;
+        int prev_char = node->prev_chars; // = '\0' ? 1 : 0;
         auto *text = (char *) node->context->newMemArray<char>(len + 1 + prev_char);
 
         for (int i = 0; i < prev_char; i++) {
