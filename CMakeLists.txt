@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
+project(main)
 
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 11) # 11, 14, C++14...
@@ -27,7 +28,6 @@ endif()
 
 
 
-project(main)
 
 include_directories(src)
 
