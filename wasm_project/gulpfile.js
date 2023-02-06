@@ -441,22 +441,22 @@ async function prepareCommands() {
         const version1 = 14;
         const version2 = 13;
         
-        //if (options.clang) {
-        //    clangCompiler = options.clang
-        //} else  {
-            let compiler = await doExecAsync("which clang++-" + version1, true);
-            if (compiler) {
+        if (options.clang) {
+            clangCompiler = options.clang
+        } else  {
+            t compiler = await doExecAsync("which clang++-" + version1, true);
+          if (compiler) {
                 clangCompiler = compiler;
             } else if (compiler = await doExecAsync("which clang++-" + version2, true)) {
                 clangCompiler = compiler;
             } else if (compiler = await doExecAsync("clang++ --help", true)) {
                 clangCompiler = "clang++"; // this is for windows on github actions
             }
-        //}
+        }
 
-        //if (options.wasmld) {
-            //wasmLinker = options.wasmld
-        //} else {
+        if (options.wasmld) {
+            wasmLinker = options.wasmld
+        } else {
             let linker = await doExecAsync("which wasm-ld-" + version1, true);
             if (linker) {
                 wasmLinker = linker;
@@ -465,7 +465,7 @@ async function prepareCommands() {
             } else if (linker = await doExecAsync("wasm-ld --help", true)) {
                 wasmLinker = "wasm-ld";
             }
-        //}
+        }
 
         clangCompiler = clangCompiler.trim();
         wasmLinker = wasmLinker.trim();
