@@ -1,0 +1,54 @@
+name: Android CI
+# https://github.com/amirisback/automated-build-android-app-with-github-action
+
+env:
+  # The name of the main module repository
+  main_project_module: AndroidCanLang/app
+
+on:
+  # Triggers the workflow on push or pull request events but only for default and protected branches
+  push:
+    branches: [ main, work ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    #runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          architecture: x64
+
+      # Set Current Date As Env Variable
+      - name: Set current date as env variable
+        run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      # Set Repository Name As Env Variable
+      - name: Set repository name as env variable
+        run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      # Run Tests Build
+      # https://docs.gradle.org/current/userguide/logging.html
+      #if (( RANDOM % 2 )); then ./gradlew test; else echo 3; fi
+      - name: Run gradle tests
+        run: ./gradlew test --warning-mode all
+
+      # Run Build Project
+      - name: Build gradle project
+        run: ./gradlew build --warning-mode all
