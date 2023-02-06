@@ -8,6 +8,8 @@ on:
     branches: [ main, work ]
   pull_request:
     branches: [ main ]
+  schedule:
+    - cron: '15 1 1 * *' # minute hour day month monday
 
   workflow_dispatch:
 
