@@ -1,4 +1,4 @@
-name: Android CI
+name: 📱 Android CI
 # https://github.com/amirisback/automated-build-android-app-with-github-action
 
 env:
