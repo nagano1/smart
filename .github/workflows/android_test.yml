@@ -42,13 +42,13 @@ jobs:
 
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
-
+@
       # Run Tests Build
       # https://docs.gradle.org/current/userguide/logging.html
       #if (( RANDOM % 2 )); then ./gradlew test; else echo 3; fi
       - name: Run gradle tests
-        run: ./gradlew test --warning-mode all
+        run: cd AndroidCanLang; ./gradlew test --warning-mode all
 
       # Run Build Project
       - name: Build gradle project
-        run: ./gradlew build --warning-mode all
+        run: cd AndroidCanLang; ./gradlew build --warning-mode all
