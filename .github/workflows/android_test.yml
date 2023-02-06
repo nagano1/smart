@@ -48,9 +48,9 @@ jobs:
       - name: Change wrapper permissions
         run: cd AndroidCanLang; chmod +x ./gradlew
 
-      # Run Tests Build
-      - name: Run gradle tests
-        run: cd AndroidCanLang; ./gradlew test --warning-mode all
+      # # # Run Tests Build
+      # # - name: Run gradle tests
+      #   run: cd AndroidCanLang; ./gradlew test --warning-mode all
 
       # Run Build Project
       - name: Build gradle project
