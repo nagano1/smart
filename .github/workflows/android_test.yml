@@ -3,7 +3,7 @@ name: Android CI
 
 env:
   # The name of the main module repository
-  main_project_module: AndroidCanLang/app
+  main_project_module: app
 
 on:
   # Triggers the workflow on push or pull request events but only for default and protected branches
