@@ -444,8 +444,8 @@ async function prepareCommands() {
         if (options.clang) {
             clangCompiler = options.clang
         } else  {
-            let compiler = await doExecAsync("which clang++-" + version1, true);
-            if (compiler) {
+          let compiler = await doExecAsync("which clang++-" + version1, true);
+          if (compiler) {
                 clangCompiler = compiler;
             } else if (compiler = await doExecAsync("which clang++-" + version2, true)) {
                 clangCompiler = compiler;

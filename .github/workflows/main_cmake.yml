@@ -4,7 +4,7 @@ on:
   push:
   pull_request:
   schedule:
-    - cron: '15 1 1 11 *' # minute hour day month monday
+    - cron: '15 1 1 * *' # minute hour day month monday
 
 jobs:
   set-matrix:
@@ -50,12 +50,13 @@ jobs:
           UnixConf="${UnixConf%\}*}";
 
           # https://cmake.org/cmake/help/v3.16/generator/Visual%20Studio%2016%202019.html#platform-selection
+
+          #  $Win2019, name: "win64_toolsetV142_VS2019", cmakeConfig: "-T v142,host=x64"},
           
           matrixJson=$(cat <<-END
           [
             $Win2022, name: "win_x86", cmakeConfig: "-A Win32 -T v143,host=x64"},
             $Win2022, name: "win64_toolsetV143_VS2022", cmakeConfig: "-T v143,host=x64"},
-            $Win2019, name: "win64_toolsetV142_VS2019", cmakeConfig: "-T v142,host=x64"},
             $Win2019, name: "win64_toolsetV141_VS2019", cmakeConfig: "-T v141,host=x64"},
             $UnixConf, os: "ubuntu-latest", name: "ubuntu_latest"},
             $UnixConf, os: "ubuntu-20.04", name: "ubuntu20_04"},
