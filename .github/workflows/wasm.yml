@@ -2,7 +2,6 @@ name: 👺 Wasm test, build file, upload it and test it
 
 on:
   push:
-  pull_request:
   schedule:
     - cron: '15 2 1 * *' # minute hour day month monday
 

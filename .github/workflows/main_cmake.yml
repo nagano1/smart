@@ -2,7 +2,6 @@ name: 🌕 CMake Build Matrix
 
 on:
   push:
-  pull_request:
   schedule:
     - cron: '15 1 1 * *' # minute hour day month monday
 
