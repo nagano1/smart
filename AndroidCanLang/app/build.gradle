@@ -31,7 +31,6 @@ android {
         }
 
         signingConfig = signingConfigs.getByName("release_sign")
-
     }
     dataBinding {
         enabled = true
