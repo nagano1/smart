@@ -11,12 +11,12 @@ android {
             keyPassword 'doorlang'
         }
     }
-    compileSdk 33
+    compileSdk 34
     //buildToolsVersion '34.0.1'
     defaultConfig {
         applicationId "org.rokist.canlangtest"
         minSdk 23
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
@@ -31,7 +31,6 @@ android {
         }
 
         signingConfig = signingConfigs.getByName("release_sign")
-
     }
     dataBinding {
         enabled = true
@@ -54,7 +53,7 @@ android {
             version "3.22.1"
         }
     }
-    ndkVersion '25.2.9519653'
+    ndkVersion '26.1.10909125'
     namespace 'org.rokist.canlangtest'
 //     ndkVersion '23.2.8568313'     ndkVersion = ("25.1.8937393")
 
@@ -67,15 +66,15 @@ dependencies {
     testImplementation "junit:junit:4.13.2"
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation 'androidx.recyclerview:recyclerview:1.3.1'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
 
 
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.5'
 
     implementation 'com.caverock:androidsvg-aar:1.4'
 }

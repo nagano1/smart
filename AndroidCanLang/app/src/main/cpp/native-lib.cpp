@@ -272,12 +272,13 @@ namespace doorlangtest {
     }
 
 
+    /*
 // convert wstring to UTF-8 string
     std::string wstring_to_utf8(const std::wstring &str) {
         std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
         return myconv.to_bytes(str);
     }
-
+*/
     extern "C" JNIEXPORT jlong JNICALL
     Java_org_rokist_canlangtest_MainActivity_doWithText(
             JNIEnv *env,
