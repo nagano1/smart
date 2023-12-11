@@ -20,8 +20,8 @@
 
 # Install on Ubuntu 
 ```bash
-sudo apt-get install llvm-10-dev cmake clang-10 lld-10
-export CXX=clang++-10
+sudo apt-get install llvm-13-dev cmake clang-13 lld-13
+export CXX=clang++-13
 
 cd build
 cmake --config Release ..
