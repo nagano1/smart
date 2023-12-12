@@ -18,7 +18,9 @@
 
 #include <cstdint>
 #include <ctime>
+#if defined(__i386__) || defined(__x86_64__)
 #include <emmintrin.h>
+#endif
 
 #ifdef __x86_64__    
 	// do x64 stuff   

@@ -9,6 +9,7 @@
   },
   "scripts": {
       "lsp_watch": "cd lsp_vscode_server && npm run compile",
+      "cleancmake": "rm -rf build/* ; touch build/placeholder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
