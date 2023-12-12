@@ -19,7 +19,6 @@
 
 #include <cstdint>
 #include <ctime>
-#include <emmintrin.h>
 
 
 #include "gtest/gtest.h"
