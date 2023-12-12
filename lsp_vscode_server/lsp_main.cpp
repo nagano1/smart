@@ -20,7 +20,7 @@
 
 #include <cstdint>
 #include <ctime>
-#include <emmintrin.h>
+//#include <emmintrin.h>
 #include "../src/LSP_server/LSPMain.hpp"
 
 
