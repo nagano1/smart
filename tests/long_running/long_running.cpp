@@ -19,7 +19,6 @@
 
 #include <cstdint>
 #include <ctime>
-#include <emmintrin.h>
 
 #include "code_nodes.hpp"
 #include "parse_util.hpp"
