@@ -17,6 +17,9 @@
 - **wasm_project** : building Wasm project (contains wasi-sdk-11)
 - **wasm_project_test** : npm project folder for `npm install puppeteer` and run a test on Github actions
 
+# install 
+npm install
+cd lsp_vscode_server; npm install
 
 # Install on Ubuntu 
 ```bash
