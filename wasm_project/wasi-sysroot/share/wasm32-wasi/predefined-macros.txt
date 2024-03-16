@@ -33,10 +33,10 @@
 #define ADJ_TAI 0x0080
 #define ADJ_TICK 0x4000
 #define ADJ_TIMECONST 0x0020
-#define AF_INET 1
-#define AF_INET6 2
+#define AF_INET PF_INET
+#define AF_INET6 PF_INET6
 #define AF_UNIX 3
-#define AF_UNSPEC 0
+#define AF_UNSPEC PF_UNSPEC
 #define ALT_DIGITS 0x2002F
 #define AM_STR 0x20026
 #define ANYMARK 0x01
@@ -1119,7 +1119,6 @@
 #define NAN (0.0f/0.0f)
 #define NBBY 8
 #define NCARGS 131072
-#define NDEBUG 1
 #define ND_NA_FLAG_OVERRIDE 0x00000020
 #define ND_NA_FLAG_ROUTER 0x00000080
 #define ND_NA_FLAG_SOLICITED 0x00000040
@@ -1316,6 +1315,9 @@
 #define PAGE_SIZE PAGESIZE
 #define PATH_MAX 4096
 #define PDP_ENDIAN __PDP_ENDIAN
+#define PF_INET 1
+#define PF_INET6 2
+#define PF_UNSPEC 0
 #define PM_STR 0x20027
 #define POLLERR 0x1000
 #define POLLHUP 0x2000
@@ -1465,6 +1467,14 @@
 #define RRFIXEDSZ NS_RRFIXEDSZ
 #define RRQ 01
 #define RS_HIPRI 0x01
+#define RTLD_DEFAULT ((void *)0)
+#define RTLD_GLOBAL 256
+#define RTLD_LAZY 1
+#define RTLD_LOCAL 8
+#define RTLD_NEXT ((void *)-1)
+#define RTLD_NODELETE 4096
+#define RTLD_NOLOAD 4
+#define RTLD_NOW 2
 #define RUSAGE_CHILDREN 2
 #define RUSAGE_SELF 1
 #define R_OK (4)
@@ -2008,6 +2018,7 @@
 #define _Complex_I (0.0f+1.0fi)
 #define _DIRENT_H 
 #define _DIRENT_HAVE_D_TYPE 
+#define _DLFCN_H 
 #define _ENDIAN_H 
 #define _ERRNO_H 
 #define _ERR_H 
@@ -2648,7 +2659,6 @@
 #define __OPENCL_MEMORY_SCOPE_SUB_GROUP 4
 #define __OPENCL_MEMORY_SCOPE_WORK_GROUP 1
 #define __OPENCL_MEMORY_SCOPE_WORK_ITEM 0
-#define __OPTIMIZE__ 1
 #define __ORDER_BIG_ENDIAN__ 4321
 #define __ORDER_LITTLE_ENDIAN__ 1234
 #define __ORDER_PDP_ENDIAN__ 3412
@@ -3073,7 +3083,6 @@
 #define and_eq &=
 #define asin(x) __tg_real_complex(asin, (x))
 #define asinh(x) __tg_real_complex(asinh, (x))
-#define assert(x) (void)0
 #define atan(x) __tg_real_complex(atan, (x))
 #define atan2(x,y) __tg_real_2(atan2, (x), (y))
 #define atanh(x) __tg_real_complex(atanh, (x))
