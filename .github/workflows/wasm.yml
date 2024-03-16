@@ -59,6 +59,7 @@ jobs:
           #sudo npm i gulp -g
 
           cd wasm_project/
+          tar zxvf wasi-sysroot-21.0.tar.gz
           npm i
 
           echo ${{ steps.rkey.outputs.rkey }}
