@@ -51,6 +51,14 @@ jobs:
           
           # echo "::add-matcher::.github/problem_matcher.json"
 
+      - name: wasi build 
+        shell: bash
+        run: |
+          cd wasm_project/
+          unzip  wasi-sdk-wasi-sdk-21.zip
+          cd wasi-sdk-wasi-sdk-21
+          NINJA_FLAGS=-v make package
+
       - name: npm i && gulp show
         shell: bash
         run: |
