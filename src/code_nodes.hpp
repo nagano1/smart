@@ -18,7 +18,6 @@
 #include "common.hpp"
 #include "errors.hpp"
 
-
 //using utf8byte = char;
 /*
  *
