@@ -714,12 +714,16 @@ TEST(ParserTest_, aaHashMap) {
     }
 
     auto *context = (ParseContext *)malloc(sizeof(ParseContext));
-    context->memBuffer.init();
+    if (context != nullptr) {
+        context->memBuffer.init();
+    }
 
     for (int i = 0; i < 100; i++) {
 
         auto *hashMap = context->newMem<VoidHashMap>();
-        hashMap->init(&context->memBuffer);
+        if (hashMap != nullptr) {
+            hashMap->init(&context->memBuffer);
+        }
 
         auto *first = Cast::upcast(context->newMem<DocumentStruct>());
         const char key[] = "firstAA";
