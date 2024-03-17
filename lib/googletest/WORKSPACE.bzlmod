@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+# Copyright 2024 Google Inc.
+# All Rights Reserved.
 #
-# Copyright 2018 Google LLC. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are
@@ -27,37 +27,9 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-"""Verifies that Google Test uses filter provided via testbridge."""
 
-import os
-
-from googletest.test import gtest_test_utils
-
-binary_name = 'gtest_testbridge_test_'
-COMMAND = gtest_test_utils.GetTestExecutablePath(binary_name)
-TESTBRIDGE_NAME = 'TESTBRIDGE_TEST_ONLY'
-
-
-def Assert(condition):
-  if not condition:
-    raise AssertionError
-
-
-class GTestTestFilterTest(gtest_test_utils.TestCase):
-
-  def testTestExecutionIsFiltered(self):
-    """Tests that the test filter is picked up from the testbridge env var."""
-    subprocess_env = os.environ.copy()
-
-    subprocess_env[TESTBRIDGE_NAME] = '*.TestThatSucceeds'
-    p = gtest_test_utils.Subprocess(COMMAND, env=subprocess_env)
-
-    self.assertEqual(0, p.exit_code)
-
-    Assert('filter = *.TestThatSucceeds' in p.output)
-    Assert('[       OK ] TestFilterTest.TestThatSucceeds' in p.output)
-    Assert('[  PASSED  ] 1 test.' in p.output)
-
-
-if __name__ == '__main__':
-  gtest_test_utils.Main()
+# https://bazel.build/external/migration#workspace.bzlmod
+#
+# This file is intentionally empty. When bzlmod is enabled and this
+# file exists, the content of WORKSPACE is ignored. This prevents
+# bzlmod builds from unintentionally depending on the WORKSPACE file.
