@@ -53,7 +53,7 @@ GTEST_API_ std::string FormatMatcherDescription(
     bool negation, const char* matcher_name,
     const std::vector<const char*>& param_names, const Strings& param_values) {
   std::string result = ConvertIdentifierNameToWords(matcher_name);
-  if (param_values.size() >= 1) {
+  if (!param_values.empty()) {
     result += " " + JoinAsKeyValueTuple(param_names, param_values);
   }
   return negation ? "not (" + result + ")" : result;
@@ -120,7 +120,7 @@ GTEST_API_ std::string FormatMatcherDescription(
 //   [1] Cormen, et al (2001). "Section 26.2: The Ford-Fulkerson method".
 //       "Introduction to Algorithms (Second ed.)", pp. 651-664.
 //   [2] "Ford-Fulkerson algorithm", Wikipedia,
-//       'http://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm'
+//       'https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm'
 class MaxBipartiteMatchState {
  public:
   explicit MaxBipartiteMatchState(const MatchMatrix& graph)
